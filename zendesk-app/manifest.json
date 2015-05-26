@@ -1,0 +1,58 @@
+{
+  "name": "TxSync Zendesk App",
+  "author": {
+    "name": "@Mjjacko",
+    "email": "support@transifex.com"
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "location": "nav_bar",
+  "domainWhitelist": "www.transifex.com",
+  "version": "1.0",
+  "frameworkVersion": "1.0",
+  "singleInstall": true,
+  "parameters": [
+    {
+      "name": "tx_username",
+      "type": "text",
+      "required": true,
+      "secure": true
+    },
+    {
+      "name": "tx_password",
+      "type": "text",
+      "required": true,
+      "secure": true
+    },
+    {
+      "name": "tx_project",
+      "type": "text",
+      "required": true,
+            "secure": true
+    },
+    {
+      "name": "zd_username",
+      "type": "text",
+      "required": true,
+      "secure": true
+    },
+    {
+      "name": "zd_password",
+      "type": "text",
+      "required": true,
+      "secure": true
+    },
+    {
+      "name": "tx_oauth",
+      "type": "text",
+      "required": true,
+            "secure": true
+    },
+    {
+      "name": "zd_objects",
+      "type": "text",
+      "required": true,
+            "secure": true
+    }
+  ]
+}

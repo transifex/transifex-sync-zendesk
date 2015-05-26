@@ -1,0 +1,73 @@
+{
+	"title": "EmberJs Translation Schema",
+    "type": "object", 
+    "properties" : {
+    	"app" : {
+    		"type" : "object",
+    		"properties" : {
+    			"package" : {
+    				"type" : "string"
+    			},
+    			"description" : {
+    				"type" : "object",
+    				"properties" : {
+    					"value" : {
+    						"type" : "string"
+    					},
+    					"title" : {
+    						"type" : "string"
+    					}
+    				}
+    			},
+    			"name" : {
+    				"type" : "object",
+    				"properties" : {
+    					"value" : {
+    						"type" : "string"
+    					},
+    					"title" : {
+    						"type" : "string"
+    					}
+    				}
+    			},
+    			"parameters" : {
+    				"type" : "object",
+    				"additionalProperties" : {
+    						"type": "object",
+    						"properties" : {
+    							"label": {
+    								"type":"object",
+    								"properties":{
+    									"value" : {
+    									"type" : "string"
+    									},
+    									"title" : {
+    									"type" : "string"
+    									}
+    								}
+    							}
+    						}
+    					
+    	
+    				}
+    			}
+    		}
+    	},
+    	"mainPage" : {
+    		"type":"object",
+    		"additionalProperties":{
+    				"type":"object",
+    				"properties":{
+    					"value" : {
+    						"type" : "string"
+    					},
+    					"title" : {
+    						"type" : "string"
+    					}
+    				}
+    			
+    		}
+    	}
+    }
+}
+

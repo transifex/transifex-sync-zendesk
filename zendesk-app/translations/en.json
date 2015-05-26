@@ -1,0 +1,96 @@
+{
+    "app": {
+        "package": "txsync_zendesk_app",
+        "description": {
+            "value": "Prototype test app",
+            "title": "app description"
+        },
+        "name": {
+            "value": "TxSync Zendesk App",
+            "title": "app name"
+        },
+        "parameters": {
+            "tx_username": {
+                "label": {
+                    "value": "Transifex Username",
+                    "title": "Enter your Transifex username."
+                }
+            },
+            "tx_password": {
+                "label": {
+                    "value": "Transifex Password",
+                    "title": "Enter your Transifex password."
+                }
+            },
+            "tx_project": {
+                "label": {
+                    "value": "Transifex Project Name",
+                    "title": "Enter the Transifex Project Name you wish to export to."
+                }
+            },
+            "zd_username": {
+                "label": {
+                    "value": "Zendesk UserName",
+                    "title": "Enter your Zendesk username."
+                }
+            },
+            "zd_password": {
+                "label": {
+                    "value": "Zendesk Password",
+                    "title": "Enter your Zendesk password."
+                }
+            },
+            "tx_oauth": {
+                "label": {
+                    "value": "Transifex OAuth Enabled",
+                    "title": "Is OAuth Enabled? (Yes/No)"
+                }
+            },
+            "zd_objects": {
+                "label": {
+                    "value": "Objects in Zendesk to Export",
+                    "title": "Lists Zendesk Objects to export to Transifex"
+                }
+            }
+        }
+        },
+    "mainPage": {
+        "email": {
+                    "value": "Your Zendesk Account Email",
+                    "title": "This is the email address for your current Zendesk account"
+            },
+        "uri": {
+                    "value": "Your Zendesk Domain",
+                    "title": "This is the domain name for your current Zendesk app"
+            },
+        "installation_id": {
+                    "value": "Your Zendesk App Id",
+                    "title": "This is the Id of your current Zendesk app"
+            },
+        "tx_username": {
+                    "value": "Transifex Username",
+                    "title": "Enter your Transifex username."
+            },
+        "tx_password": {
+                    "value": "Transifex Password",
+                    "title": "Enter your Transifex password."
+            },
+        "tx_project": {
+                    "value": "Transifex Project Name",
+                    "title": "Enter the Transifex Project Name you wish to export to."
+            },
+        "tx_oauth": {
+
+                    "value": "Transifex OAuth Enabled",
+                    "title": "Is OAuth Enabled? (Yes/No)"
+            },
+         "zd_objects": {
+                    "value": "Objects in Zendesk to Export",
+                    "title": "Lists Zendesk Objects to export to Transifex"
+            },
+        "instruction": {
+            "value": "Copy the command below and paste into your terminal to update app settings using a Zendesk App API that can be found in Settings > Channels > API.",
+            "title": "Instruction message asking the user to copy and paste the command below to terminal"
+        }
+    }
+}
