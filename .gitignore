@@ -2,6 +2,7 @@
 inputs.txt
 txLiveParser.js
 zendesk-app/tmp
+zendesk-app/.zat
 
 # Logs
 logs

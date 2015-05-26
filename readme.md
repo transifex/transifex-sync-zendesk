@@ -42,7 +42,7 @@ Project Directory Structure (the interesting bits)
 |
 +- makefile // easy CLI targets - refactor to Grunt at some point
 |
-+- mjjacko-inputs.txt // Some default app settings used by make
++- inputs.txt // Some default app settings used by make
 |
 +- package.json // npm deps for tests
 |
