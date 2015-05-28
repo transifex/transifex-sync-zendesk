@@ -13,6 +13,7 @@ module.exports = {
     var a = s.split(d);
     return a[0] + o[a[1]] + a[2];
   },
+
   getDomainFromUrl: function(baseURI) {
     // Run regular expression to extract domain url
     var regexResult = this.resources.PATTERN.exec(baseURI);
@@ -33,6 +34,9 @@ module.exports = {
     c[k] = v;
     return c;
 
+  },
+  txLocaletoZd: function (l) {
+    return l.toLowerCase().replace('_', '-');
   },
 
   txGetContentObject: function(r) {
@@ -72,6 +76,9 @@ module.exports = {
     }
     return arr;
 
+  },
+  isStringinArray: function(s,arr) {
+    return (_.some(arr, function(i) { return i == s}));
   },
   validZdObject: function(o) {
     var r = this.resources.ZD_OBJECT_PATTERN.test(o);

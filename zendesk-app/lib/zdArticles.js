@@ -42,5 +42,20 @@ module.exports = {
       id: id
     });
     return a.articles[i]["locale"];
+  },
+  key: 'articles',
+
+  init: function(a,app) {
+    app.store(a); // side effect
+    return true;
+  },
+  getRaw: function(app) {
+    return app.store(key);
+  },
+  getSerialized: function(app) {
+    return JSON.stringify(app.store(key));
+  },
+  getHtml: function(app) {
+    return JSON.stringify(app.store(key));
   }
 };

@@ -1,34 +1,18 @@
-<div class="app_body">
-  <div>
-    <table class="table">
-      <tr>
-        <td>{{t "mainPage.email"}}</td>
-        <td>{{t "mainPage.uri"}}</td>
-        <td>{{t "mainPage.installation_id"}}<td>
-        <td>{{t "mainPage.tx_username"}}</td>
-        <td>{{t "mainPage.tx_password"}}</td>
-        <td>{{t "mainPage.tx_project"}}</td>
-        <td>{{t "mainPage.tx_oauth"}}</td>
-        <td>{{t "mainPage.zd_objects"}}</td>
+<table>
+  <thead>
+    <tr class="table_top">
+      <th class="collapse_column"></th>
+      <th class="names_column">Sync Log</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr class="message_log">
+      <td class="names_cell">Default message</td>
       </tr>
-      <tr>
-        <td>{{email}}</td>
-        <td>{{uri}}</td>
-        <td>{{installation_id}}</td>
-        <td>{{settings.tx_username}}</td>
-        <td>{{settings.tx_password}}</td>
-        <td>{{settings.tx_project}}</td>
-        <td>{{settings.tx_oauth}}</td>
-        <td>{{settings.zd_objects}}</td>
-      </tr>
-    </table>
-  </div>
-  <div>
-    <span>{{t "mainPage.instruction"}}</span>
-    <span class="code">
-      <code>
-        Too Legit
-      </code>
-    </span>
-  </div>
-</div>
+    {{#each messageLog}}
+    <tr class="message_log">
+      <td class="names_cell">{{{this.message}}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

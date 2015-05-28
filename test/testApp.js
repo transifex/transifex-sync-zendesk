@@ -10,6 +10,8 @@ var myApp = require('../zendesk-app/app').txApp;
 var myUtil = require('../zendesk-app/lib/util');
 var myZdArticles = require('../zendesk-app/lib/zdArticles');
 zdArticles = require('../zendesk-app/lib/zdArticles');
+txProject = require('../zendesk-app/lib/txProject');
+var myZdTranslations = require('../zendesk-app/lib/zdTranslations');
 
 /*global describe:true*/
 /*global it:true*/
@@ -36,9 +38,11 @@ describe('Test Tx Zendesk App', function() {
         MAINPAGE_HDBS: './zendesk-app/templates/mainPage.hdbs',
         TRANSLATION_SCHEMA: './test/schemas/translations.json',
         ZD_ARTICLES_JSON: './test/data/articles.json',
+        ZD_TRANSLATIONS_JSON: './test/data/zdTranslations.json',
         ZD_ARTICLE_BODY_JSON: './test/data/articleBody.json',
         TX_RESOURCE_STATS_JSON: './test/data/resourceStats.json',
-        TX_RESOURCE_RESPONSE_JSON: './test/data/txResource.json'
+        TX_RESOURCE_RESPONSE_JSON: './test/data/txResource.json',
+        TX_PROJECT_JSON: './test/data/txProject.json'
     };
 
     before(function() {
@@ -52,6 +56,36 @@ describe('Test Tx Zendesk App', function() {
         var myStringArticles = fs.readFileSync(PATHS.ZD_ARTICLES_JSON, 'utf8');
         return JSON.parse(myStringArticles);
     }
+
+    function loadTranslationsData() {
+        var myStringTranslations = fs.readFileSync(PATHS.ZD_TRANSLATIONS_JSON, 'utf8');
+        return JSON.parse(myStringTranslations);
+    }
+
+    function loadTxProjectData() {
+        var myStringFile = fs.readFileSync(PATHS.TX_PROJECT_JSON, 'utf8');
+        return JSON.parse(myStringFile);
+    }
+
+    describe("getting tx project", function() {
+        var myProject = loadTxProjectData();
+
+        it("check resources", function() {
+            var goodResources = ['articles-205686967','articles-205686968','articles-205686969'];
+            var myResources = txProject.getResourceArray(myProject);
+            assert(_.isEqual(goodResources,myResources));
+        });
+
+        it("check source locale", function() {
+            assert('en' == txProject.getSourceLocale(myProject));
+        });
+
+        it("check locales", function() {
+            var goodLocales = ['fr_BE'];
+            assert(_.isEqual(goodLocales, txProject.getLocales(myProject)));
+        });
+    });
+
 
     it("check getting objects from tx responses", function() {
         var goodResource = {
@@ -101,6 +135,35 @@ describe('Test Tx Zendesk App', function() {
         var completedLanguageList = myUtil.txGetCompletedTranslations(myStats);
         assert(_.isEqual(completedLanguageList, goodList));
 
+    });
+
+
+    it("get source locale from tx resource", function() {
+        var myStringResource = fs.readFileSync(PATHS.TX_RESOURCE_RESPONSE_JSON, 'utf8');
+        assert(typeof myStringResource !== "undefined", "Check for valid resource test data");
+        var myResource = JSON.parse(myStringResource);
+    });
+
+
+    it("check locale conversion from Transifex to Zendesk", function(){
+        var txLocale = 'fr_BE';
+        var result = 'fr-be';
+        assert(myUtil.txLocaletoZd(txLocale) === result);
+    });
+
+    it("check if a locale is in a locale array", function() {
+        var goodLocale = 'en';
+        var badLocale = 'de';
+        var myArray = ['fr', 'en'];
+        assert(myUtil.isStringinArray(goodLocale,myArray));
+        assert(!myUtil.isStringinArray(badLocale,myArray));
+    });
+
+    it("check zd get translation locale", function() {
+        var myTranslations = loadTranslationsData();
+        assert(typeof myTranslations !== "undefined", "Check for valid translation test data");
+        var goodLocales = [ 'fr-be', 'fr', 'en-us' ];
+        assert(_.isEqual(goodLocales,myZdTranslations.getLocale(myTranslations)));
     });
 
     it("create tx requests for articles", function() {
@@ -239,6 +302,7 @@ describe('Test Tx Zendesk App', function() {
         var is_same = (resultValues1.length == resultValues2.length) &&
             resultValues1.every(
                 function(element, index) {
+                    
                     return element === resultValues2[index];
                 });
         assert(is_same, "Check all template keys exist in translations");
@@ -247,16 +311,16 @@ describe('Test Tx Zendesk App', function() {
     it("check app functions exist", function() {
 
         // Predefined ZD objects
-        //       assert((typeof myApp.requests !== "undefined"),"Check for requests");
+        assert((typeof myApp.requests !== "undefined"),"Check for requests");
         assert((typeof myApp.events !== "undefined"), "Check for events");
 
         // Predefined ZD hooks
         //       assert((typeof myApp.events['app.activated'] !== "undefined"),"Check for app.activated");
-        assert((typeof myApp.events['pane.activated'] !== "undefined"), "Check for pane.activated");
+        //assert((typeof myApp.events['pane.activated'] !== "undefined"), "Check for pane.activated");
 
         // TxApp custom functions
         //        assert((typeof myApp.init !== "undefined"),"Check for init");
-        assert((typeof myApp.showTxAppSettings !== "undefined"), "Check for showTxAppSettings");
+        //   assert((typeof myApp.showTxAppSettings !== "undefined"), "Check for showTxAppSettings");
 
     });
 

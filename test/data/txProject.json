@@ -1,0 +1,44 @@
+{
+    "archived": false, 
+    "last_updated": "2015-05-28T00:25:25.568", 
+    "description": "txtest", 
+    "tags": "", 
+    "trans_instructions": "", 
+    "private": true, 
+    "slug": "txtest-1", 
+    "source_language_code": "en", 
+    "auto_join": false, 
+    "maintainers": [
+        {
+            "username": "TestMattJJacko"
+        }
+    ], 
+    "fill_up_resources": false, 
+    "team": {
+        "id": 41053, 
+        "name": "txtest team"
+    }, 
+    "organization": {
+        "slug": "test-organization-4"
+    }, 
+    "teams": [
+        "fr_BE"
+    ], 
+    "homepage": "", 
+    "long_description": "", 
+    "resources": [
+        {
+            "slug": "articles-205686967", 
+            "name": "articles-205686967"
+        },
+        {
+            "slug": "articles-205686968", 
+            "name": "articles-205686968"
+        },
+        {
+            "slug": "articles-205686969", 
+            "name": "articles-205686969"
+        }
+    ], 
+    "name": "txtest"
+}
