@@ -71,9 +71,9 @@ describe('Test Tx Zendesk App', function() {
         var myProject = loadTxProjectData();
 
         it("check resources", function() {
-            var goodResources = ['articles-205686967','articles-205686968','articles-205686969'];
+            var goodResources = ['articles-205686967', 'articles-205686968', 'articles-205686969'];
             var myResources = txProject.getResourceArray(myProject);
-            assert(_.isEqual(goodResources,myResources));
+            assert(_.isEqual(goodResources, myResources));
         });
 
         it("check source locale", function() {
@@ -145,7 +145,7 @@ describe('Test Tx Zendesk App', function() {
     });
 
 
-    it("check locale conversion from Transifex to Zendesk", function(){
+    it("check locale conversion from Transifex to Zendesk", function() {
         var txLocale = 'fr_BE';
         var result = 'fr-be';
         assert(myUtil.txLocaletoZd(txLocale) === result);
@@ -155,15 +155,15 @@ describe('Test Tx Zendesk App', function() {
         var goodLocale = 'en';
         var badLocale = 'de';
         var myArray = ['fr', 'en'];
-        assert(myUtil.isStringinArray(goodLocale,myArray));
-        assert(!myUtil.isStringinArray(badLocale,myArray));
+        assert(myUtil.isStringinArray(goodLocale, myArray));
+        assert(!myUtil.isStringinArray(badLocale, myArray));
     });
 
     it("check zd get translation locale", function() {
         var myTranslations = loadTranslationsData();
         assert(typeof myTranslations !== "undefined", "Check for valid translation test data");
-        var goodLocales = [ 'fr-be', 'fr', 'en-us' ];
-        assert(_.isEqual(goodLocales,myZdTranslations.getLocale(myTranslations)));
+        var goodLocales = ['fr-be', 'fr', 'en-us'];
+        assert(_.isEqual(goodLocales, myZdTranslations.getLocale(myTranslations)));
     });
 
     it("create tx requests for articles", function() {
@@ -302,7 +302,7 @@ describe('Test Tx Zendesk App', function() {
         var is_same = (resultValues1.length == resultValues2.length) &&
             resultValues1.every(
                 function(element, index) {
-                    
+
                     return element === resultValues2[index];
                 });
         assert(is_same, "Check all template keys exist in translations");
@@ -311,7 +311,7 @@ describe('Test Tx Zendesk App', function() {
     it("check app functions exist", function() {
 
         // Predefined ZD objects
-        assert((typeof myApp.requests !== "undefined"),"Check for requests");
+        assert((typeof myApp.requests !== "undefined"), "Check for requests");
         assert((typeof myApp.events !== "undefined"), "Check for events");
 
         // Predefined ZD hooks

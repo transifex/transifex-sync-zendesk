@@ -35,7 +35,7 @@ module.exports = {
     return c;
 
   },
-  txLocaletoZd: function (l) {
+  txLocaletoZd: function(l) {
     return l.toLowerCase().replace('_', '-');
   },
 
@@ -44,8 +44,8 @@ module.exports = {
   },
 
   txGetCompletedTranslations: function(o) {
-      var result = [];
-      _.each(o, function (value, key) {
+    var result = [];
+    _.each(o, function(value, key) {
       var match = (value['completed'] === "100%");
       if (match) {
         result.push(key);
@@ -77,8 +77,10 @@ module.exports = {
     return arr;
 
   },
-  isStringinArray: function(s,arr) {
-    return (_.some(arr, function(i) { return i == s}));
+  isStringinArray: function(s, arr) {
+    return (_.some(arr, function(i) {
+      return i == s
+    }));
   },
   validZdObject: function(o) {
     var r = this.resources.ZD_OBJECT_PATTERN.test(o);
@@ -92,9 +94,13 @@ module.exports = {
     var r = this.resources.TX_SLUG_FORMAT_PATTERN.test(s);
     return r;
   },
-  zdGetTranslationObject: function(t,l){
-    var o = _.extend(JSON.parse(t.content),{locale:l});
-    return {"translation": o };
+  zdGetTranslationObject: function(t, l) {
+    var o = _.extend(JSON.parse(t.content), {
+      locale: l
+    });
+    return {
+      "translation": o
+    };
   }
 
 
