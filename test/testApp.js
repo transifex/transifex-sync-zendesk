@@ -7,7 +7,7 @@ var tv4 = require('tv4');
 var hdbs = require('handlebars');
 var spahql = require('spahql');
 var myApp = require('../zendesk-app/app').txApp;
-var myUtil = require('../zendesk-app/lib/util');
+var myUtil = require('../zendesk-app/lib/syncUtil');
 var myZdArticles = require('../zendesk-app/lib/zdArticles');
 zdArticles = require('../zendesk-app/lib/zdArticles');
 txProject = require('../zendesk-app/lib/txProject');
@@ -37,12 +37,20 @@ describe('Test Tx Zendesk App', function() {
         MANIFEST_JSON: './zendesk-app/manifest.json',
         MAINPAGE_HDBS: './zendesk-app/templates/mainPage.hdbs',
         TRANSLATION_SCHEMA: './test/schemas/translations.json',
+        ZD_ARTICLE_JSON: './test/data/article.json',
         ZD_ARTICLES_JSON: './test/data/articles.json',
+        ZD_ARTICLES_TRANSLATIONS_JSON: './test/data/articlesTranslations.json',
         ZD_TRANSLATIONS_JSON: './test/data/zdTranslations.json',
         ZD_ARTICLE_BODY_JSON: './test/data/articleBody.json',
         TX_RESOURCE_STATS_JSON: './test/data/resourceStats.json',
         TX_RESOURCE_RESPONSE_JSON: './test/data/txResource.json',
-        TX_PROJECT_JSON: './test/data/txProject.json'
+        TX_PROJECT_JSON: './test/data/txProject.json',
+        TX_REQUEST_SINGLE: './test/data/txRequest.json',
+        TX_REQUEST_ARRAY: './test/data/txRequestArray.json',
+
+        ARTICLE_ARRAY_JSON: './test/data/syncArticleArray.json',
+
+        PAGE_SYNC_JSON: './test/data/syncPageDataSet.json'
     };
 
     before(function() {
@@ -52,8 +60,35 @@ describe('Test Tx Zendesk App', function() {
         // Test Setup
     });
 
+    function loadTxRequestSingle() {
+        var myStringArticle = fs.readFileSync(PATHS.TX_REQUEST_SINGLE, 'utf8');
+        return JSON.parse(myStringArticle);
+    }
+
+    function loadTxRequestArray() {
+        var myStringArticle = fs.readFileSync(PATHS.TX_REQUEST_ARRAY, 'utf8');
+        return JSON.parse(myStringArticle);
+    }
+
+
+
+    function loadArticleData() {
+        var myStringArticle = fs.readFileSync(PATHS.ZD_ARTICLE_JSON, 'utf8');
+        return JSON.parse(myStringArticle);
+    }
+
     function loadArticlesData() {
         var myStringArticles = fs.readFileSync(PATHS.ZD_ARTICLES_JSON, 'utf8');
+        return JSON.parse(myStringArticles);
+    }
+
+    function loadArticlesTranslationsData() {
+        var myStringArticlesTranslations = fs.readFileSync(PATHS.ZD_ARTICLES_TRANSLATIONS_JSON, 'utf8');
+        return JSON.parse(myStringArticlesTranslations);
+    }
+
+    function loadSyncArticlesArrayData() {
+        var myStringArticles = fs.readFileSync(PATHS.ARTICLE_ARRAY_JSON, 'utf8');
         return JSON.parse(myStringArticles);
     }
 
@@ -66,6 +101,17 @@ describe('Test Tx Zendesk App', function() {
         var myStringFile = fs.readFileSync(PATHS.TX_PROJECT_JSON, 'utf8');
         return JSON.parse(myStringFile);
     }
+
+    function loadTxStatsData() {
+        var myStringFile = fs.readFileSync(PATHS.TX_RESOURCE_STATS_JSON, 'utf8');
+        return JSON.parse(myStringFile);
+    }
+
+    function loadSyncPageData() {
+        var myStringFile = fs.readFileSync(PATHS.PAGE_SYNC_JSON, 'utf8');
+        return JSON.parse(myStringFile);
+    }
+
 
     describe("getting tx project", function() {
         var myProject = loadTxProjectData();
@@ -101,6 +147,7 @@ describe('Test Tx Zendesk App', function() {
         assert(_.isEqual(myObject, goodResource));
     });
 
+
     it("check getting zd translation object from tx response object", function() {
         var txStrings = {
             name: 'Cette section est uniquement visible par vos agents secrets',
@@ -127,16 +174,38 @@ describe('Test Tx Zendesk App', function() {
     });
 
     it("completed translations from tx resource stats", function() {
-        var goodList = ['fr', 'en'];
+        //       var testLang1 = [{"name":"articles-205686957","locale_completed":["en","fr_BE"]}];
+        var testLangs = {
+            name: "articles-205686967",
+            locale_completed: ['fr', 'en']
+        };
+        //        var goodList = ['fr', 'en'];
         var myStringStats = fs.readFileSync(PATHS.TX_RESOURCE_STATS_JSON, 'utf8');
         assert(typeof myStringStats !== "undefined", "Check for valid stats test data");
         var myStats = JSON.parse(myStringStats);
 
-        var completedLanguageList = myUtil.txGetCompletedTranslations(myStats);
-        assert(_.isEqual(completedLanguageList, goodList));
+        var completedLanguageList = myUtil.txGetCompletedTranslations("articles-205686967", myStats);
+        assert(_.isEqual(completedLanguageList, testLangs));
 
     });
 
+    it("get locale list from completed array", function() {
+        var testLang1 = [{
+            "name": "articles-205686937",
+            "locale_completed": ["en"]
+        }];
+        var goodTest1 = ['en'];
+        var testLangs = [{
+            name: "articles-205686967",
+            locale_completed: ['fr', 'en']
+        }];
+        var myLocales = myUtil.getLocalesFromArray("articles-205686937", testLang1);
+        assert(_.isEqual(myLocales, goodTest1));
+        var myNullLocales = myUtil.getLocalesFromArray("articles-205686937", null);
+        assert(_.isEqual(myNullLocales, []));
+        var myLocales2 = myUtil.getLocalesFromArray("articles-205686977", testLang1);
+        assert(_.isEqual(myLocales2, []));
+    });
 
     it("get source locale from tx resource", function() {
         var myStringResource = fs.readFileSync(PATHS.TX_RESOURCE_RESPONSE_JSON, 'utf8');
@@ -159,18 +228,108 @@ describe('Test Tx Zendesk App', function() {
         assert(!myUtil.isStringinArray(badLocale, myArray));
     });
 
-    it("check zd get translation locale", function() {
+    it("check get locale from zd translation", function() {
         var myTranslations = loadTranslationsData();
         assert(typeof myTranslations !== "undefined", "Check for valid translation test data");
         var goodLocales = ['fr-be', 'fr', 'en-us'];
         assert(_.isEqual(goodLocales, myZdTranslations.getLocale(myTranslations)));
     });
 
-    it("create tx requests for articles", function() {
+    it("check get status from zd translation", function() {
+        var myTranslations = loadTranslationsData();
+        assert(typeof myTranslations !== "undefined", "Check for valid translation test data");
+
+        var goodStatus = [{
+            "outdated": false
+        }, {
+            "draft": false
+        }, {
+            "hidden": false
+        }];
+        var articledId = 205686967;
+        var stringArticleId = "205686967";
+        var locale = "fr-be";
+
+        assert(_.isEqual(goodStatus, myZdTranslations.getStatus(myTranslations, articledId, locale)));
+        assert(_.isEqual(goodStatus, myZdTranslations.getStatus(myTranslations, stringArticleId, locale)));
+    });
 
 
+    describe("getting zd articles", function() {
         var myArticles = loadArticlesData();
-        var result = myUtil.txCreateArticleRequests(myArticles);
+
+        var goodArticleArray = loadSyncArticlesArrayData();
+
+        it("check array", function() {
+
+            var myArray = zdArticles.getArray(myArticles);
+            assert(_.isEqual(goodArticleArray, myArray));
+        });
+
+        it("get single", function() {
+            var goodArticle = loadArticleData();
+            var myArticle = zdArticles.getSingle(205686977, myArticles);
+
+            assert(_.isEqual(myArticle, goodArticle));
+        })
+    });
+
+    describe("getting zd articles with translations sideloaded", function() {
+        var myArticles = loadArticlesTranslationsData();
+
+        it("check array", function() {
+
+            var goodArticleArray = _.sortBy(loadSyncArticlesArrayData(), "id");
+            var myArray = zdArticles.getArray(myArticles);
+            var mySortedArray = _.sortBy(myArray, "id");
+
+            assert(_.isEqual(goodArticleArray, mySortedArray));
+        });
+    });
+
+    describe("getting ui array", function() {
+        var myArticles = loadArticlesData();
+        var myStats = loadTxStatsData();
+        var myGoodArray = loadSyncPageData();
+
+        var completedLanguagesArray = myUtil.txGetCompletedTranslations(myStats);
+
+        var testLangs = [{
+            "id": 205686967,
+            "locale_completed": ["fr-be", "en"]
+        }, {
+            "id": 205686927,
+            "locale_completed": ["fr-be", "en"]
+        }];
+
+        var articleArray = zdArticles.getArray(myArticles);
+
+
+        it("combine data", function() {
+            var articleUIArray = myUtil.mapSyncPage(articleArray, testLangs, "live-test-1");
+            assert(_.isEqual(myGoodArray, articleUIArray));
+
+        });
+    });
+
+    it("create tx request for articles", function() {
+        var goodRequestArray = loadTxRequestArray();
+        var myArticles = loadArticlesData();
+        var myRequestArray = myZdArticles.getTxRequest(myArticles);
+        assert(_.isEqual(goodRequestArray, myRequestArray));
+
+
+    });
+
+    it("create tx request for a single article", function() {
+        var goodRequest = loadTxRequestSingle();
+        var myArticles = loadArticlesData();
+        var myArticle = zdArticles.getSingle("205686957", myArticles);
+
+        var myArticle1 = zdArticles.getSingle(205686957, myArticles);
+        var myRequest = myZdArticles.getTxRequest(myArticle1);
+        assert(_.isEqual(goodRequest, myRequest));
+
 
     });
 
@@ -220,7 +379,7 @@ describe('Test Tx Zendesk App', function() {
         var goodId = 23242422442;
         var badType = "crackers";
         var badId = "crackers";
-        var result = myUtil.createResourceName(goodId, goodType, "::");
+        var result = myZdArticles.createResourceName(goodId, goodType, "::");
         assert(result === "articles::23242422442");
         assert.throws(function() {
             myUtil.createResourceName(badId, goodType, "::")
@@ -240,17 +399,17 @@ describe('Test Tx Zendesk App', function() {
     it("check zdUtil.validZdObject", function() {
         var goodType = "articles";
         var badType = "crackers";
-        assert(myUtil.validZdObject(goodType));
-        assert.equal(false, myUtil.validZdObject(badType));
+        assert(myZdArticles.validZdObject(goodType));
+        assert.equal(false, myZdArticles.validZdObject(badType));
     });
 
     it("check zdUtil.validZdIdFormat", function() {
         var goodId1 = 2322;
         var goodId2 = "34334343";
         var badId2 = "crackers";
-        assert(myUtil.validZdIdFormat(goodId1));
-        assert(myUtil.validZdIdFormat(goodId2));
-        assert.equal(false, myUtil.validZdIdFormat(badId2));
+        assert(myZdArticles.validZdIdFormat(goodId1));
+        assert(myZdArticles.validZdIdFormat(goodId2));
+        assert.equal(false, myZdArticles.validZdIdFormat(badId2));
     });
 
     it("check txUtil.replaceWithObject", function() {

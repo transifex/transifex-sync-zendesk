@@ -1,11 +1,14 @@
-.app_body div span {
-  display: block;
+th {
+  padding-right: 10px;
 }
-.code {
-  padding: 6px;
-  margin: 6px;
-  background-color: #F5F5F5;
+
+td {
+  padding-right: 10px;
 }
-.hidden {
-  display: none;
+
+.status_list li {
+  display: inline;
+  list-style-type: none;
+  padding-right: 20px;
 }
+
