@@ -1,5 +1,5 @@
 (function() {
-  var myUtil = require('util');
+  var myUtil = require('syncUtil');
   var myTxProject = require('txProject');
   var myZdArticles = require('zdArticles');
   var myZdTranslations = require('zdTranslations');
@@ -12,7 +12,7 @@ if (typeof exports !== 'undefined') {
 }
 
 // all dep libraries need to be passed in
-// TODO deal with 'this.settings' no idea where 'this' is...brittle - Mjj
+// deal with 'this.settings' no idea where 'this' is...brittle - Mjj
 function txApp(util, txProject, zdArticles, zdTranslations, messages) {
 
   return {
@@ -32,6 +32,9 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
         return {
           url: util.replaceWithObject('http://www.transifex.com/api/2/project/%%tx_project%%/resource/' + resourceName + '/stats/', '%%', this.settings),
           type: 'GET',
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.resourceName = resourceName;
+          },
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -42,6 +45,10 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
         return {
           url: util.replaceWithObject('http://www.transifex.com/api/2/project/%%tx_project%%/resource/' + resourceName + '/translation/' + languageCode + '/', '%%', this.settings),
           type: 'GET',
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.resourceName = resourceName;
+            jqxhr.languageCode = languageCode;
+          },
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -72,6 +79,15 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
       zdArticles: function() {
         return {
           url: '/api/v2/help_center/articles.json',
+          type: 'GET',
+          dataType: 'json',
+          username: this.settings.zd_username,
+          password: this.settings.zd_password
+        };
+      },
+      zdArticlesSLTranslations: function() {
+        return {
+          url: '/api/v2/help_center/articles.json?include=translations',
           type: 'GET',
           dataType: 'json',
           username: this.settings.zd_username,
@@ -113,67 +129,103 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
     events: {
       'app.activated': 'init',
       'click .nav-pills .txsync': 'sync',
+      'click .page_action_upload': 'syncUpload',
+      'click .page_action_download': 'syncDownload',
       'zdArticles.done': 'zdArticlesDone',
       'txProject.done': 'txProjectDone',
       'txResourceStats.done': 'txResourceStatsDone',
       'txResource.done': 'txResourceDone',
+      'txInsert.done': 'txInsertDone',
+      'txUpdate.done': 'txUpdateDone',
       'zdArticleGetTranslations.done': 'zdArticleGetTranslationsDone'
     },
 
+    //todo create tx done status updates
     init: function() {
       this.store(messages.key, messages.init());
-      this.uiMainPageInit();
+      this.txGetProject();
+      this.zdGetArticles();
+      //todo
+      this.uiSyncPageInit();
+      //      this.uiMainPageInit();
     },
 
-    sync: function(event) {
-      var msg = messages.add('Tx Sync Click', this.store(messages.key));
+    txInsertDone: function() {
+//todo update form on success or show error
+    },
+
+    txUpdateDone: function() {
+//todo update form on success or show error
+    },
+
+    syncUpload: function(event) {
+      var msg = messages.add('Sync Upload Click', this.store(messages.key));
       this.store(messages.key, msg);
       event.preventDefault();
-      this.txGetProject();
+      // Get Params via JQuery
+      var linkId = "#" + event.target.id;
+      var txResourceName = $(linkId).attr("data-resource");
+      var zdObjectId = $(linkId).attr("data-zd-object");
+
+      var articles = this.store(zdArticles.key); //get all Articles
+      var article = zdArticles.getSingle(zdObjectId, articles); // get the article for this event
+      var resource_request = zdArticles.getTxRequest(article); //create tx resource request format
+      this.store('debuggy', JSON.stringify(article));
+      this.txUpsertResource(resource_request, txResourceName); // POST to resource
+
+    },
+
+    syncDownload: function(event) {
+      var msg = messages.add('Sync Download Click', this.store(messages.key));
+      this.store(messages.key, msg);
+      event.preventDefault();
+
       var project = this.store(txProject.key);
-      this.zdGetArticles();
-      var articles = this.store(zdArticles.key);
-      if (_.isObject(articles) && _.isObject(project)) {
-        var idList = zdArticles.getIdList(articles);
+      var source_locale = txProject.getSourceLocale(project);
+      // Get Params via JQuery
+      var linkId = "#" + event.target.id;
+      var txResourceName = $(linkId).attr("data-resource");
+      var zdObjectId = $(linkId).attr("data-zd-object");
 
-        var source_locale = txProject.getSourceLocale(project);
-        var resource = util.createResourceName(idList[2], 'articles', '-');
-        var resource_requests = util.txCreateArticleRequests(articles);
-        this.txUpsertResource(resource_requests[2], resource);
-        this.txGetLocales(resource);
-        var locales = this.store('locales');
-        for (var i = 0; i < locales.length; i++) {
-          if (source_locale !== locales[i])
-            if (_.isArray(locales)) {
-              this.zdGetArticleTranslations(idList[2]);
-              this.txGetResource(resource, locales[i]);
-              var resource_data = this.store('resource');
+      var completedResources = this.store('completed_resources'); // get list of locales
 
-              if (_.isObject(resource_data)) {
-                var zdLocale = util.txLocaletoZd(locales[i]);
-                this.zdUpsertArticleTranslation(resource_data, idList[2], zdLocale);
-              }
-            }
+      var locales = util.getLocalesFromArray(txResourceName, completedResources);
+
+      for (var i = 0; i < locales.length; i++) { // iterate through list of locales
+        if (source_locale !== locales[i]) { // skip the source locale
+          var resource_data = this.store(txResourceName + '-' + locales[i]); // Get resource based on resource name
+
+          if (_.isObject(resource_data)) {
+            var zdLocale = util.txLocaletoZd(locales[i]);
+            this.zdUpsertArticleTranslation(resource_data, zdObjectId, zdLocale);
+          }
         }
       }
-      this.uiMainPageUpdate();
-
 
     },
+    uiSyncPageInit: function() {
+      var articles = this.store(zdArticles.key);
+      var articleArray = zdArticles.getArray(articles);
+      this.store('articlearray', articleArray);
+      var resources = this.store('completed_resources');
 
-    uiMainPageInit: function() {
-      var msg = messages.add('Displaying Main Page', this.store(messages.key));
-      this.store(messages.key, msg);
-
-      this.switchTo('mainPage', {});
-      this.uiMainPageUpdate();
+      var pageData = util.mapSyncPage(articleArray, resources, this.settings.tx_project);
+      this.switchTo('syncPage', {
+        dataset: pageData
+      });
     },
-
-    uiMainPageUpdate: function() {
-      var msg = messages.add('Updated Main Page', this.store(messages.key));
+    getArticleStatus: function(id) {
+      var msg = messages.add('Get Status from Article for' + id, this.store(messages.key));
       this.store(messages.key, msg);
 
-      this.$('.names_cell').html(this.store(messages.key));
+      var resource = zdArticles.createResourceName(id, 'articles', '-');
+      var project = this.store(txProject.key);
+      var resources = txProject.getResourceArray(project);
+      if (util.isStringinArray(resource, resources)) {
+
+        this.ajax('txResourceStats', resource);
+      }
+      //      this.ajax('zdGetArticleTranslations',id);
     },
 
     zdGetArticleTranslations: function(article_id) {
@@ -186,8 +238,17 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
     zdArticleGetTranslationsDone: function(data, textStatus) {
       var msg = messages.add('Zendesk Article Locales with status:' + textStatus, this.store(messages.key));
       this.store(messages.key, msg);
+
       var locales = zdTranslations.getLocale(data);
-      this.store('zd_locales', locales);
+      var zdLocales = [];
+      zdLocales = _.union(this.store('zd_locales'));
+      for (var i = 0; i < locales.length; i++) {
+        if (!util.isStringinArray(locales[i], zdLocales)) {
+          zdLocales.push(locales[i]);
+        }
+      }
+      this.store('zd_locales', zdLocales);
+
     },
     txGetProject: function() {
       var msg = messages.add('Get Project from Transifex', this.store(messages.key));
@@ -195,28 +256,33 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
 
       this.ajax('txProject');
     },
-
-    txGetLocales: function(resource) {
-      var msg = messages.add('Get Locales from Transifex', this.store(messages.key));
-      this.store(messages.key, msg);
-
-      this.ajax('txResourceStats', resource);
-
-    },
     txProjectDone: function(data, textStatus) {
       var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
       this.store(messages.key, msg);
 
       this.store(txProject.key, data);
     },
-    txResourceStatsDone: function(data, textStatus) {
+    txResourceStatsDone: function(data, textStatus, jqXHR) {
       var msg = messages.add('Transifex Stats Retrieved with status:' + textStatus, this.store(messages.key));
       this.store(messages.key, msg);
-      var locales = util.txGetCompletedTranslations(data);
-      this.store('locales', locales);
+      var localesComplete = util.txGetCompletedTranslations(jqXHR.resourceName, data);
+
+      var localesArray = this.store('completed_resources'); //check existing locales
+      if (localesArray instanceof Array) {
+        localesArray.push(localesComplete); //add new locales to array
+        this.store('completed_resources', localesArray);
+      } else {
+        locales = [localesComplete]; // no existing locales so just create
+        this.store('completed_resources', [localesComplete]);
+      }
+
+      var locales = util.getLocalesFromArray(jqXHR.resourceName, localesArray);
+      for (var i = 0; i < locales.length; i++) {
+
+        this.ajax('txResource', jqXHR.resourceName, locales[i]);
+      }
+
     },
-
-
     zdGetArticles: function() {
       var msg = messages.add('Get Zendesk Articles', this.store(messages.key));
       this.store(messages.key, msg);
@@ -231,24 +297,25 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
         location: this.currentLocation()
       });
       this.store(zdArticles.key, data);
+      var limit = data.articles.length;
+      if (limit > 10) {
+        limit = 10;
+      }
+      for (var i = 0; i < limit; i++) {
+        this.getArticleStatus(data.articles[i].id);
+        this.zdGetArticleTranslations(data.articles[i].id);
+      }
     },
 
-    txResourceDone: function(data, textStatus) {
+    txResourceDone: function(data, textStatus, jqXHR) {
       var msg = messages.add('Transifex Resource Retrieved with status:' + textStatus, this.store(messages.key));
       this.store(messages.key, msg);
       data = _.extend(data, {
         inline: this.inline,
         location: this.currentLocation()
       });
-      this.store('resource', data);
-    },
-
-    txGetResource: function(resource, locale) {
-      var msg = messages.add('Get Transifex Resource:' + resource, this.store(messages.key));
-      this.store(messages.key, msg);
-
-      this.ajax('txResource', resource, locale);
-
+      var resourceKey = jqXHR.resourceName + '-' + jqXHR.languageCode;
+      this.store(resourceKey, data);
     },
     txUpsertResource: function(content, slug) {
       var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
@@ -270,7 +337,7 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
 
       var locales = this.store('zd_locales');
       var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
-      this.store
+      this.store('moredebuggy', zdLocale + '||' + JSON.stringify(locales));
       if (util.isStringinArray(zdLocale, locales)) {
 
         this.ajax('zdArticleUpdate', translationData, article_id, zdLocale);

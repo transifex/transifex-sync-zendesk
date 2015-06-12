@@ -1,0 +1,24 @@
+<table>
+  <thead>
+    <tr class="table_top">
+      <th class="collapse_column"></th>
+      <th class="names_column">Name</th>
+      <th class="enable_column">Content</th>
+      <th class="enable_column">Translation</th>
+      <th class="enable_column">Article</th>
+      <th class="enable_column">Resource</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each dataset}}
+    <tr>
+      <td class="collapse_column"></td>
+      <td class="names_column">{{{this.name}}}</td>
+      <td><a id="upload-{{{this.name}}}" class="enable_column page_action_upload" data-zd-object="{{{this.zd_object_id}}}" data-resource="{{{this.name}}}">Upload</td>
+      <td><a id="download-{{{this.name}}}" class="enable_column page_action_download" data-zd-object="{{{this.zd_object_id}}}" data-resource="{{{this.name}}}">Download</a></td>
+      <td><a class="enable_column" target="_blank" href="{{{this.zd_object_url}}}">View</a></td>
+      <td><a class="enable_column" target="_blank" href="{{{this.tx_resource_url}}}">View</a></td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

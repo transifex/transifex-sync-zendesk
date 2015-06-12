@@ -1,14 +1,6 @@
 <header>
   <span class="logo"/>
-  <h3>{{setting "name"}}</h3>
-  <aside>Welcome to Transifex Sync for Zendesk</aside>
+  <h3>Welcome to Transifex Sync!</h3>
+  <aside>The easiest way to translate your Zendesk site!</aside>
 </header>
-<section data-main/>
-<ul class="nav nav-pills">
-  <li class="txsync btn"><a>Sync</a></li>
-</ul>
-<footer>
-  <a href="mailto:{{author.email}}">
-    {{author.name}}
-  </a>
-</footer>
+<section data-main />

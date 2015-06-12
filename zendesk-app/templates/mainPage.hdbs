@@ -14,5 +14,8 @@
       <td class="names_cell">{{{this.message}}}</td>
     </tr>
     {{/each}}
+    <ul class="nav nav-pills">
+  <li class="txsync btn"><a>Sync</a></li>
+</ul>
   </tbody>
 </table>
