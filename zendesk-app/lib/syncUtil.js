@@ -93,7 +93,7 @@ module.exports = {
   },
   isStringinArray: function(s, arr) {
     return (_.some(arr, function(i) {
-      return i == s
+      return i == s;
     }));
   },
   validTxSlugFormat: function(s) {

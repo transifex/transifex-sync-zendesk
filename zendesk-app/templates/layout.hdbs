@@ -1,6 +1,6 @@
 <header>
   <span class="logo"/>
-  <h3 class="txh3 underlined">Welcome to Transifex Sync!</h3>
-  <p>The easiest way to translate your Zendesk site!</p>
+  <h3 class="txh3 underlined">Transifex Sync</h3>
+  <p>Transifex is the easiest way to translate your Zendesk knowledge base</p>
 </header>
 <section data-main />
