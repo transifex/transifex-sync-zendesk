@@ -1,5 +1,12 @@
   <div class="messagebox">
-    <p><span class="message">Updates from Ajax messages</span></p>
+    <p><span>
+    {{#unless dataset.article_visible}}<span class="txh3 plain">Articles</span>{{/unless}}
+    {{#unless dataset.section_visible}}<span class="txh3 plain">Sections</span>{{/unless}}
+    Switch to:
+    {{#if dataset.article_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_articles">Articles</a>{{/if}}
+    {{#if dataset.section_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_sections">Sections</a>{{/if}}
+    </span>
+    </p>
   </div> 
 <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
   <thead>
@@ -8,8 +15,8 @@
       <th class="names_column">Name</th>
       <th class="enable_column">Content</th>
       <th class="enable_column">Translation</th>
-      <th class="enable_column">Article</th>
-      <th class="enable_column">Resource</th>
+      <th class="enable_column">Zendesk Object</th>
+      <th class="enable_column">Transifex Resource</th>
     </tr>
   </thead>
   <tbody>
@@ -17,8 +24,8 @@
     <tr>
       <td class="collapse_column"></td>
       <td class="names_column">{{{this.name}}}</td>
-      <td><a id="upload-{{{this.name}}}" class="buttonized bluebtn btn-border enable_column page_action_upload" data-zd-object="{{{this.zd_object_id}}}" data-resource="{{{this.name}}}">Upload</td>
-      <td><a id="download-{{{this.name}}}" class="buttonized greenbtn btn-border enable_column page_action_download" data-zd-object="{{{this.zd_object_id}}}" data-resource="{{{this.name}}}">Download</a></td>
+      <td><a id="upload-{{{this.name}}}" class="buttonized greenbtn btn-border enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Upload</a></td>
+      <td><a id="download-{{{this.name}}}" class="buttonized greenbtn btn-border enable_column page_action_download" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Download</a></td>
       <td><a class="enable_column" target="_blank" href="{{{this.zd_object_url}}}">View</a></td>
       <td><a class="enable_column" target="_blank" href="{{{this.tx_resource_url}}}">View</a></td>
     </tr>
