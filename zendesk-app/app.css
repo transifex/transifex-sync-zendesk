@@ -1,3 +1,17 @@
+.spinner {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 6px;
+}
+
+span.message {
+	margin-left: 130px;
+	font-family: proxima-nova, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  	font-size: 12.9219999313355px;
+
+}
+
 .txh3.underlined {
 	  color: #444;
   padding-bottom: .5em;

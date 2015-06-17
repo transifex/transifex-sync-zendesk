@@ -11,6 +11,7 @@ var myUtil = require('../zendesk-app/lib/syncUtil');
 var myZdArticles = require('../zendesk-app/lib/zdArticles');
 zdArticles = require('../zendesk-app/lib/zdArticles');
 zdSections = require('../zendesk-app/lib/zdSections');
+zdCategories = require('../zendesk-app/lib/zdCategories');
 txProject = require('../zendesk-app/lib/txProject');
 var myZdTranslations = require('../zendesk-app/lib/zdTranslations');
 
@@ -40,9 +41,11 @@ describe('Test Tx Zendesk App', function() {
         TRANSLATION_SCHEMA: './test/schemas/translations.json',
         ZD_ARTICLE_JSON: './test/data/article.json',
         ZD_SECTION_JSON: './test/data/zdSection.json',
+        ZD_CATEGORY_JSON: './test/data/zdCategory.json',
         ZD_ARTICLES_JSON: './test/data/articles.json',
         ZD_ARTICLES_TRANSLATIONS_JSON: './test/data/articlesTranslations.json',
         ZD_SECTIONS_JSON: './test/data/zdSections.json',
+        ZD_CATEGORIES_JSON: './test/data/zdCategories.json',
         ZD_TRANSLATIONS_JSON: './test/data/zdTranslations.json',
         ZD_ARTICLE_BODY_JSON: './test/data/articleBody.json',
         TX_RESOURCE_STATS_JSON: './test/data/resourceStats.json',
@@ -50,13 +53,16 @@ describe('Test Tx Zendesk App', function() {
         TX_PROJECT_JSON: './test/data/txProject.json',
         TX_REQUEST_SINGLE: './test/data/txRequest.json',
         TX_REQUEST_SECTION: './test/data/txRequestSection.json',
+        TX_REQUEST_CATEGORY: './test/data/txRequestCategory.json',
         TX_REQUEST_ARRAY: './test/data/txRequestArray.json',
 
         ARTICLE_ARRAY_JSON: './test/data/syncArticleArray.json',
         SECTION_ARRAY_JSON: './test/data/syncSectionArray.json',
+        CATEGORY_ARRAY_JSON: './test/data/syncCategoryArray.json',
 
         PAGE_SYNC_JSON: './test/data/syncPageDataSet.json',
-        PAGE_SYNC_SECTION_JSON: './test/data/syncPageSectionData.json'
+        PAGE_SYNC_SECTION_JSON: './test/data/syncPageSectionData.json',
+        PAGE_SYNC_CATEGORY_JSON: './test/data/syncPageCategoryData.json'
     };
 
     before(function() {
@@ -73,6 +79,11 @@ describe('Test Tx Zendesk App', function() {
 
     function loadTxRequestSection() {
         var myStringArticle = fs.readFileSync(PATHS.TX_REQUEST_SECTION, 'utf8');
+        return JSON.parse(myStringArticle);
+    }
+
+        function loadTxRequestCategory() {
+        var myStringArticle = fs.readFileSync(PATHS.TX_REQUEST_CATEGORY, 'utf8');
         return JSON.parse(myStringArticle);
     }
 
@@ -93,6 +104,11 @@ describe('Test Tx Zendesk App', function() {
         return JSON.parse(myStringArticle);
     }
 
+            function loadCategoryData() {
+        var myStringArticle = fs.readFileSync(PATHS.ZD_CATEGORY_JSON, 'utf8');
+        return JSON.parse(myStringArticle);
+    }
+
     function loadArticlesData() {
         var myStringArticles = fs.readFileSync(PATHS.ZD_ARTICLES_JSON, 'utf8');
         return JSON.parse(myStringArticles);
@@ -100,6 +116,11 @@ describe('Test Tx Zendesk App', function() {
 
         function loadSectionsData() {
         var myStringSections = fs.readFileSync(PATHS.ZD_SECTIONS_JSON, 'utf8');
+        return JSON.parse(myStringSections);
+    }
+
+        function loadCategoriesData() {
+        var myStringSections = fs.readFileSync(PATHS.ZD_CATEGORIES_JSON, 'utf8');
         return JSON.parse(myStringSections);
     }
 
@@ -115,6 +136,11 @@ describe('Test Tx Zendesk App', function() {
 
     function loadSyncSectionsArrayData(){
         var myStringArticles = fs.readFileSync(PATHS.SECTION_ARRAY_JSON, 'utf8');
+        return JSON.parse(myStringArticles);
+    }
+
+        function loadSyncCategoriesArrayData(){
+        var myStringArticles = fs.readFileSync(PATHS.CATEGORY_ARRAY_JSON, 'utf8');
         return JSON.parse(myStringArticles);
     }
 
@@ -140,6 +166,11 @@ describe('Test Tx Zendesk App', function() {
 
     function loadSyncPageDatawithSection(){
         var myStringFile = fs.readFileSync(PATHS.PAGE_SYNC_SECTION_JSON, 'utf8');
+        return JSON.parse(myStringFile);
+    }
+
+ function loadSyncPageDatawithCategory(){
+        var myStringFile = fs.readFileSync(PATHS.PAGE_SYNC_CATEGORY_JSON, 'utf8');
         return JSON.parse(myStringFile);
     }
 
@@ -325,6 +356,26 @@ describe('Test Tx Zendesk App', function() {
         })
     });
 
+        describe("getting zd categories", function() {
+        var myCategories = loadCategoriesData();
+
+        var goodCategoryArray = loadSyncCategoriesArrayData();
+
+        it("check array", function() {
+
+            var myArray = zdCategories.getArray(myCategories);
+            assert(_.isEqual(goodCategoryArray, myArray));
+        });
+
+        it("get single", function() {
+            var goodCategory = loadCategoryData();
+            var myCategory = zdCategories.getSingle(200287177, myCategories);
+
+
+            assert(_.isEqual(myCategory, goodCategory));
+        })
+    });
+
     describe("getting zd articles with translations sideloaded", function() {
         var myArticles = loadArticlesTranslationsData();
 
@@ -339,12 +390,15 @@ describe('Test Tx Zendesk App', function() {
     }); 
 
     describe("getting ui array", function() {
+        var myCategories = loadCategoriesData();
         var mySections = loadSectionsData();
         var myArticles = loadArticlesData();
         var myStats = loadTxStatsData();
         var myGoodArray = loadSyncPageData();
 
         var myGoodSectionArray = loadSyncPageDatawithSection();
+
+        var myGoodCategoryArray = loadSyncPageDatawithCategory();
 
         var completedLanguagesArray = myUtil.txGetCompletedTranslations(myStats);
 
@@ -357,6 +411,7 @@ describe('Test Tx Zendesk App', function() {
         }];
         var sectionArray = zdSections.getArray(mySections);
         var articleArray = zdArticles.getArray(myArticles);
+        var categoryArray = zdCategories.getArray(myCategories);
 
 
         it("combine data articles", function() {
@@ -368,6 +423,12 @@ describe('Test Tx Zendesk App', function() {
         it("combine data sections", function() {
             var sectionUIArray = zdSections.mapSyncPage(sectionArray, testLangs, "live-test-1");
             assert(_.isEqual(myGoodSectionArray, sectionUIArray));
+
+        });
+
+        it("combine data categories", function() {
+            var categoryUIArray = zdCategories.mapSyncPage(categoryArray, testLangs, "live-test-1");
+            assert(_.isEqual(myGoodCategoryArray, categoryUIArray));
 
         });
     });
@@ -400,6 +461,18 @@ describe('Test Tx Zendesk App', function() {
 
         var mySection1 = zdSections.getSingle(200801107, mySections);
         var myRequest = zdSections.getTxRequest(mySection1);
+        assert(_.isEqual(goodRequest, myRequest));
+
+
+    });
+
+                it("create tx request for a single category", function() {
+        var goodRequest = loadTxRequestCategory();
+        var myCategories = loadCategoriesData();
+        var myCategory = zdCategories.getSingle("200287177", myCategories);
+
+        var myCategory1 = zdCategories.getSingle(200287177, myCategories);
+        var myRequest = zdCategories.getTxRequest(myCategory1);
         assert(_.isEqual(goodRequest, myRequest));
 
 

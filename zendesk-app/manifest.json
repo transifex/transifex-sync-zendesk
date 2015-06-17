@@ -15,20 +15,17 @@
     {
       "name": "tx_username",
       "type": "text",
-      "required": true,
-      "secure": true
+      "required": true
     },
     {
       "name": "tx_password",
       "type": "text",
-      "required": true,
-      "secure": true
+      "required": true
     },
     {
       "name": "tx_project",
       "type": "text",
-      "required": true,
-            "secure": true
+      "required": true
     },
     {
       "name": "zd_username",

@@ -3,7 +3,8 @@ var syncUtil = require('syncUtil');
 module.exports = {
   resources: {
     ZD_OBJECT_PATTERN: /(articles|sections|categories)/,
-    ZD_ID_FORMAT_PATTERN: /^\d+$/
+    ZD_ID_FORMAT_PATTERN: /^\d+$/,
+    STRING_RADIX : 10
   },
 
   mapSyncPage: function(sections, languages, project) {
@@ -33,7 +34,7 @@ module.exports = {
     return arr;
   },
 
-  getIdList: function(a) {
+  getIdList: function(s) {
 
     var l = s.sections.length;
     var arr = [];
@@ -46,37 +47,37 @@ module.exports = {
   //todo - refactor me
   getTxRequest: function(s) { 
     var arr = [];
+    var ret = [];
     if (s.sections instanceof Array) {
-      var l = this.getIdList(s);
+      arr = this.getIdList(s);
     } else {
-      var l = [];
-      l[0] = s.id;
+      arr[0] = s.id;
     }
 
 
-    for (var i = 0; i < l.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
       var req = {
-        name: this.createResourceName(l[i], 'sections', '-'),
-        slug: this.createResourceName(l[i], 'sections', '-'),
+        name: this.createResourceName(arr[i], 'sections', '-'),
+        slug: this.createResourceName(arr[i], 'sections', '-'),
         priority: 0,
         i18n_type: 'KEYVALUEJSON'
       };
 
 
-      var o = {};
-      var o1 = syncUtil.addString('name', this.getName(l[i], s), o);
-      if (this.getDescription(l[i], s) !== "") {
-        var o2 = syncUtil.addString('description', this.getDescription(l[i], s), o1);
+      var o1 = syncUtil.addString('name', this.getName(arr[i], s), {});
+      var o2 = {};
+      if (this.getDescription(arr[i], s) !== "") {
+        o2 = syncUtil.addString('description', this.getDescription(arr[i], s), o1);
       } else {
-        var o2 = o1;
+        o2 = o1;
       }
       var o4 = syncUtil.addContent(req, o2);
-      arr[i] = o4;
+      ret[i] = o4;
     }
     if (s.sections instanceof Array) {
-      return arr;
+      return ret;
     } else {
-      return arr[0];
+      return ret[0];
     }
 
   },
@@ -111,7 +112,7 @@ module.exports = {
   },
   getSingle: function(id, s) {
     if (typeof id == 'string' || id instanceof String)
-      id = parseInt(id);
+      id = parseInt(id, this.resources.STRING_RADIX);
     var i = _.findIndex(s.sections, {
       id: id
     });
@@ -135,7 +136,7 @@ module.exports = {
       });
       return s.sections[i]["title"];
     } else {
-      return a.title;
+      return s.title;
     }
   },
   getBody: function(id, s) {
@@ -145,7 +146,7 @@ module.exports = {
       });
       return s.sections[i]["body"];
     } else {
-      return a.body;
+      return s.body;
     }
   },
     getDescription: function(id, s) {
@@ -180,12 +181,12 @@ module.exports = {
     return true;
   },
   getRaw: function(app) {
-    return app.store(key);
+    return app.store(this.key);
   },
   getSerialized: function(app) {
-    return JSON.stringify(app.store(key));
+    return JSON.stringify(app.store(this.key));
   },
   getHtml: function(app) {
-    return JSON.stringify(app.store(key));
+    return JSON.stringify(app.store(this.key));
   }
 };
