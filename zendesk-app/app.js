@@ -2,9 +2,10 @@
   var myUtil = require('syncUtil');
   var myTxProject = require('txProject');
   var myZdArticles = require('zdArticles');
+  var myZdSections = require('zdSections');
   var myZdTranslations = require('zdTranslations');
   var myMessages = require('messages');
-  return txApp(myUtil, myTxProject, myZdArticles, myZdTranslations, myMessages);
+  return txApp(myUtil, myTxProject, myZdArticles, myZdSections, myZdTranslations, myMessages);
 }());
 
 if (typeof exports !== 'undefined') {
@@ -13,7 +14,7 @@ if (typeof exports !== 'undefined') {
 
 // all dep libraries need to be passed in
 // deal with 'this.settings' no idea where 'this' is...brittle - Mjj
-function txApp(util, txProject, zdArticles, zdTranslations, messages) {
+function txApp(util, txProject, zdArticles, zdSections, zdTranslations, messages) {
 
   return {
     requests: {
@@ -85,6 +86,24 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
           password: this.settings.zd_password
         };
       },
+      zdSections: function() {
+        return {
+          url: '/api/v2/help_center/sections.json',
+          type: 'GET',
+          dataType: 'json',
+          username: this.settings.zd_username,
+          password: this.settings.zd_password
+        };
+      },
+      zdCategories: function() {
+        return {
+          url: '/api/v2/help_center/categories.json',
+          type: 'GET',
+          dataType: 'json',
+          username: this.settings.zd_username,
+          password: this.settings.zd_password
+        };
+      },
       zdArticlesSLTranslations: function() {
         return {
           url: '/api/v2/help_center/articles.json?include=translations',
@@ -122,16 +141,39 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
           data: JSON.stringify(data),
           contentType: 'application/json'
         };
+      },
+      zdSectionInsert: function(data, sectionId) {
+        return {
+          url: '/api/v2/help_center/sections/' + articleId + '/translations.json',
+          type: 'POST',
+          username: this.settings.zd_username,
+          password: this.settings.zd_password,
+          data: JSON.stringify(data),
+          contentType: 'application/json'
+        };
+      },
+      zdSectionUpdate: function(data, id, locale) {
+        return {
+          url: '/api/v2/help_center/sections/' + id + '/translations/' + locale + '.json',
+          type: 'PUT',
+          username: this.settings.zd_username,
+          password: this.settings.zd_password,
+          data: JSON.stringify(data),
+          contentType: 'application/json'
+        };
       }
 
     },
-
     events: {
       'app.activated': 'init',
       'click .nav-pills .txsync': 'sync',
       'click .page_action_upload': 'syncUpload',
       'click .page_action_download': 'syncDownload',
+      'click .page_action_articles': 'uiSyncPageArticles',
+      'click .page_action_sections': 'uiSyncPageSections',
       'zdArticles.done': 'zdArticlesDone',
+      'zdSections.done': 'zdSectionsDone',
+      'zdCategories.done': 'zdCategoriesDone',
       'txProject.done': 'txProjectDone',
       'txResourceStats.done': 'txResourceStatsDone',
       'txResource.done': 'txResourceDone',
@@ -145,17 +187,18 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
       this.store(messages.key, messages.init());
       this.txGetProject();
       this.zdGetArticles();
+      this.zdGetSections();
       //todo
       this.uiSyncPageInit();
       //      this.uiMainPageInit();
     },
 
     txInsertDone: function() {
-//todo update form on success or show error
+      //todo update form on success or show error
     },
 
     txUpdateDone: function() {
-//todo update form on success or show error
+      //todo update form on success or show error
     },
 
     syncUpload: function(event) {
@@ -165,13 +208,20 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
       // Get Params via JQuery
       var linkId = "#" + event.target.id;
       var txResourceName = $(linkId).attr("data-resource");
-      var zdObjectId = $(linkId).attr("data-zd-object");
-
-      var articles = this.store(zdArticles.key); //get all Articles
-      var article = zdArticles.getSingle(zdObjectId, articles); // get the article for this event
-      var resource_request = zdArticles.getTxRequest(article); //create tx resource request format
-      this.store('debuggy', JSON.stringify(article));
-      this.txUpsertResource(resource_request, txResourceName); // POST to resource
+      var zdObjectId = $(linkId).attr("data-zd-object-id");
+      var zdObjectType = $(linkId).attr("data-zd-object-type");
+      if (zdObjectType === "article") {
+        var articles = this.store(zdArticles.key); 
+        var article = zdArticles.getSingle(zdObjectId, articles); 
+        var resource_request = zdArticles.getTxRequest(article);
+        this.txUpsertResource(resource_request, txResourceName); 
+      }
+      if (zdObjectType === "section") {
+        var sections = this.store(zdSections.key); 
+        var section = zdSections.getSingle(zdObjectId, sections); 
+        var resource_request = zdSections.getTxRequest(section); 
+        this.txUpsertResource(resource_request, txResourceName); 
+      }
 
     },
 
@@ -185,7 +235,8 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
       // Get Params via JQuery
       var linkId = "#" + event.target.id;
       var txResourceName = $(linkId).attr("data-resource");
-      var zdObjectId = $(linkId).attr("data-zd-object");
+      var zdObjectId = $(linkId).attr("data-zd-object-id");
+      var zdObjectType = $(linkId).attr("data-zd-object-type");
 
       var completedResources = this.store('completed_resources'); // get list of locales
 
@@ -197,7 +248,12 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
 
           if (_.isObject(resource_data)) {
             var zdLocale = util.txLocaletoZd(locales[i]);
-            this.zdUpsertArticleTranslation(resource_data, zdObjectId, zdLocale);
+            if (zdObjectType === "article") {
+             this.zdUpsertArticleTranslation(resource_data, zdObjectId, zdLocale);
+          }
+          if (zdObjectType === "section") {
+             this.zdUpsertSectionTranslation(resource_data, zdObjectId, zdLocale);
+          }
           }
         }
       }
@@ -210,10 +266,46 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
       var resources = this.store('completed_resources');
 
       var pageData = util.mapSyncPage(articleArray, resources, this.settings.tx_project);
+      pageData = _.extend(pageData, {
+        article_visible: false,
+        section_visible: true,
+      });
       this.switchTo('syncPage', {
         dataset: pageData
       });
     },
+    uiSyncPageArticles: function() {
+      var articles = this.store(zdArticles.key);
+      var articleArray = zdArticles.getArray(articles);
+      this.store('articlearray', articleArray);
+      var resources = this.store('completed_resources');
+
+      var pageData = util.mapSyncPage(articleArray, resources, this.settings.tx_project);
+      pageData = _.extend(pageData, {
+        article_visible: false,
+        section_visible: true,
+      });
+      this.switchTo('syncPage', {
+        dataset: pageData
+      });
+    },
+    uiSyncPageSections: function() {
+      var sections = this.store(zdSections.key);
+      var sectionArray = zdSections.getArray(sections);
+      this.store('sectionarray', sectionArray);
+      var resources = this.store('completed_resources');
+
+      var pageData = zdSections.mapSyncPage(sectionArray, resources, this.settings.tx_project);
+      pageData = _.extend(pageData, {
+        article_visible: true,
+        section_visible: false,
+      });
+      this.switchTo('syncPage', {
+        dataset: pageData
+      });
+    },
+
+
     getArticleStatus: function(id) {
       var msg = messages.add('Get Status from Article for' + id, this.store(messages.key));
       this.store(messages.key, msg);
@@ -289,8 +381,49 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
       this.ajax('zdArticles');
 
     },
+    zdGetSections: function() {
+      var msg = messages.add('Get Zendesk Sections', this.store(messages.key));
+      this.store(messages.key, msg);
+      this.ajax('zdSections');
+
+    },
+    zdGetCategories: function() {
+      var msg = messages.add('Get Zendesk Categories', this.store(messages.key));
+      this.store(messages.key, msg);
+      this.ajax('zdCategories');
+
+    },
+    zdSectionsDone: function(data, textStatus) {
+      var msg = messages.add('Zendesk Sections Retrieved with status:' + textStatus, this.store(messages.key));
+      this.store(messages.key, msg);
+      this.store(zdSections.key, data);
+    },
+
+    zdCategoriesDone: function(data, textStatus) {
+      var msg = messages.add('Zendesk Categories Retrieved with status:' + textStatus, this.store(messages.key));
+      this.store(messages.key, msg);
+      this.store(zdCategories.key, data);
+    },
+
     zdArticlesDone: function(data, textStatus) {
       var msg = messages.add('Zendesk Articles Retrieved with status:' + textStatus, this.store(messages.key));
+      this.store(messages.key, msg);
+      data = _.extend(data, {
+        inline: this.inline,
+        location: this.currentLocation()
+      });
+      this.store(zdArticles.key, data);
+      var limit = data.articles.length;
+      if (limit > 10) {
+        limit = 10;
+      }
+      for (var i = 0; i < limit; i++) {
+        this.getArticleStatus(data.articles[i].id);
+        this.zdGetArticleTranslations(data.articles[i].id);
+      }
+    },
+    zdGetSectionsDone: function(data, textStatus) {
+      var msg = messages.add('Zendesk Sections Retrieved with status:' + textStatus, this.store(messages.key));
       this.store(messages.key, msg);
       data = _.extend(data, {
         inline: this.inline,
@@ -337,12 +470,24 @@ function txApp(util, txProject, zdArticles, zdTranslations, messages) {
 
       var locales = this.store('zd_locales');
       var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
-      this.store('moredebuggy', zdLocale + '||' + JSON.stringify(locales));
       if (util.isStringinArray(zdLocale, locales)) {
 
         this.ajax('zdArticleUpdate', translationData, article_id, zdLocale);
       } else {
         this.ajax('zdArticleInsert', translationData, article_id);
+      }
+    },
+    zdUpsertSectionTranslation: function(resource_data, section_id, zdLocale) {
+      var msg = messages.add('Upsert Section with Id:' + section_id + 'and locale:' + zdLocale, this.store(messages.key));
+      this.store(messages.key, msg);
+
+      var locales = this.store('zd_locales');
+      var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
+      if (util.isStringinArray(zdLocale, locales)) {
+
+        this.ajax('zdSectionUpdate', translationData, section_id, zdLocale);
+      } else {
+        this.ajax('zdSectionInsert', translationData, section_id);
       }
     },
 

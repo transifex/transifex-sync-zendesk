@@ -8,6 +8,16 @@
   line-height: 1;
 }
 
+.txh3.plain {
+	  color: #444;
+  padding-bottom: .5em;
+  padding-right: .5em;
+  font-size: 1.692em;
+  font-weight: 300;
+  font-family: "proxima-nova","Segoe UI",'Helvetica Neue','Arial',sans-serif;
+  line-height: 1;
+}
+
 p {
   margin: .2em 1em .3em;
   font-family: proxima-nova, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;

@@ -22,6 +22,7 @@ module.exports = {
 
       arr[i] = {
         "name": "articles-" + articles[i].id,
+        "zd_object_type": "article",
         "zd_object_id": articles[i].id,
         "zd_object_url": articles[i].url,
         "zd_outdated": articles[i].outdated,

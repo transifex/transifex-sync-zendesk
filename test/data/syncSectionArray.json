@@ -1,0 +1,16 @@
+[{
+	"id": 200801107,
+	"url": "https://txtest.zendesk.com/hc/en-us/sections/200801107",
+	"name": "FAQ",
+	"outdated": false
+}, {
+	"id": 200801117,
+	"url": "https://txtest.zendesk.com/hc/en-us/sections/200801117",
+	"name": "Agents Only",
+	"outdated": false
+}, {
+	"id": 200801097,
+	"url": "https://txtest.zendesk.com/hc/en-us/sections/200801097",
+	"name": "Announcements",
+	"outdated": false
+}]

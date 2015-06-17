@@ -1,0 +1,28 @@
+[{
+	"name": "sections-200801107",
+	"zd_object_type": "section",
+	"zd_object_id": 200801107,
+	"zd_object_url": "https://txtest.zendesk.com/hc/en-us/sections/200801107",
+	"zd_outdated": false,
+	"tx_resource_url": "https://www.transifex.com/projects/p/live-test-1/resource/sections-200801107",
+	"tx_completed": [],
+	"title_string": "FAQ"
+}, {
+	"name": "sections-200801117",
+	"zd_object_type": "section",
+	"zd_object_id": 200801117,
+	"zd_object_url": "https://txtest.zendesk.com/hc/en-us/sections/200801117",
+	"zd_outdated": false,
+	"tx_resource_url": "https://www.transifex.com/projects/p/live-test-1/resource/sections-200801117",
+	"tx_completed": [],
+	"title_string": "Agents Only"
+}, {
+	"name": "sections-200801097",
+	"zd_object_type": "section",
+	"zd_object_id": 200801097,
+	"zd_object_url": "https://txtest.zendesk.com/hc/en-us/sections/200801097",
+	"zd_outdated": false,
+	"tx_resource_url": "https://www.transifex.com/projects/p/live-test-1/resource/sections-200801097",
+	"tx_completed": [],
+	"title_string": "Announcements"
+}]
