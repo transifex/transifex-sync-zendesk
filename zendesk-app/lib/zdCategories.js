@@ -3,8 +3,37 @@ var syncUtil = require('syncUtil');
 module.exports = {
   resources: {
     ZD_OBJECT_PATTERN: /(articles|sections|categories)/,
-    ZD_ID_FORMAT_PATTERN: /^\d+$/
+    ZD_ID_FORMAT_PATTERN: /^\d+$/,
+    STRING_RADIX : 10
   },
+
+    mapSyncPage: function(categories, languages, project) {
+    var arr = [];
+    for (var i = 0; i < categories.length; i++) {
+      var tc;
+      var li = _.findIndex(languages, {
+        id: categories[i].id
+      });
+      if (li !== -1) { // not not found
+        tc = languages[li].locale_completed;
+      } else {
+        tc = [];
+      }
+
+      arr[i] = {
+        "name": "categories-" + categories[i].id,
+        "zd_object_type": "category",
+        "zd_object_id": categories[i].id,
+        "zd_object_url": categories[i].url,
+        "zd_outdated": categories[i].outdated,
+        "tx_resource_url": "https://www.transifex.com/projects/p/" + project + "/resource/categories-" + categories[i].id,
+        "tx_completed": tc,
+        "title_string": categories[i].name
+      };
+    }
+    return arr;
+  },
+
   getIdList: function(a) {
 
     var l = a.articles.length;
@@ -15,37 +44,40 @@ module.exports = {
     return arr;
   },
 
-  //todo - refactor me
-  getTxRequest: function(a) { // articles or article
+  getTxRequest: function(c) { 
     var arr = [];
-    if (a.articles instanceof Array) {
-      var l = this.getIdList(a);
+    var ret = [];
+    if (c.categories instanceof Array) {
+      arr = this.getIdList(c);
     } else {
-      var l = [];
-      l[0] = a.id;
+      arr[0] = c.id;
     }
 
 
-    for (var i = 0; i < l.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
       var req = {
-        name: this.createResourceName(l[i], 'articles', '-'),
-        slug: this.createResourceName(l[i], 'articles', '-'),
+        name: this.createResourceName(arr[i], 'categories', '-'),
+        slug: this.createResourceName(arr[i], 'categories', '-'),
         priority: 0,
         i18n_type: 'KEYVALUEJSON'
       };
 
 
       var o = {};
-      var o1 = syncUtil.addString('name', this.getName(l[i], a), o);
-      var o2 = syncUtil.addString('title', this.getTitle(l[i], a), o1);
-      var o3 = syncUtil.addString('body', this.getBody(l[i], a), o2);
-      var o4 = syncUtil.addContent(req, o3);
-      arr[i] = o4;
+      var o1 = syncUtil.addString('name', this.getName(arr[i], c), o);
+           var o2 = {};
+      if (this.getDescription(arr[i], c) !== "") {
+        o2 = syncUtil.addString('description', this.getDescription(arr[i], c), o1);
+      } else {
+        o2 = o1;
+      }
+      var o4 = syncUtil.addContent(req, o2);
+      ret[i] = o4;
     }
-    if (a.articles instanceof Array) {
-      return arr;
+    if (c.categories instanceof Array) {
+      return ret;
     } else {
-      return arr[0];
+      return ret[0];
     }
 
   },
@@ -64,86 +96,96 @@ module.exports = {
     var r = this.resources.ZD_ID_FORMAT_PATTERN.test(n);
     return r;
   },
-  getArray: function(a) {
+  getArray: function(c) {
     var arr = [];
-
-    for (var i = 0; i < a.articles.length; i++) {
+    for (var i = 0; i < c.categories.length; i++) {
       var o = {
-        id: a.articles[i].id,
-        url: a.articles[i].html_url,
-        name: a.articles[i].name,
-        outdated: a.articles[i].outdated
+        id: c.categories[i].id,
+        url: c.categories[i].html_url,
+        name: c.categories[i].name,
+        outdated: c.categories[i].outdated
       };
       arr.push(o);
     }
     return arr;
   },
-  getSingle: function(id, a) {
+  getSingle: function(id, c) {
     if (typeof id == 'string' || id instanceof String)
-      id = parseInt(id);
-    var i = _.findIndex(a.articles, {
+      id = parseInt(id,this.resources.STRING_RADIX);
+    var i = _.findIndex(c.categories, {
       id: id
     });
-    return a.articles[i];
+    return c.categories[i];
   },
-  getName: function(id, a) {
-    if (a.articles instanceof Array) {
-      var i = _.findIndex(a.articles, {
+  getName: function(id, c) {
+    if (c.categories instanceof Array) {
+      var i = _.findIndex(c.categories, {
         id: id
       });
-      return a.articles[i]["name"];
+      return c.categories[i]["name"];
     } else {
-      return a.name;
+      return c.name;
     }
 
   },
-  getTitle: function(id, a) {
-    if (a.articles instanceof Array) {
-      var i = _.findIndex(a.articles, {
+  getTitle: function(id, c) {
+    if (c.categories instanceof Array) {
+      var i = _.findIndex(c.categories, {
         id: id
       });
-      return a.articles[i]["title"];
+      return c.categories[i]["title"];
     } else {
-      return a.title;
+      return c.categories;
     }
   },
-  getBody: function(id, a) {
-    if (a.articles instanceof Array) {
-      var i = _.findIndex(a.articles, {
+  getBody: function(id, c) {
+    if (c.categories instanceof Array) {
+      var i = _.findIndex(c.categories, {
         id: id
       });
-      return a.articles[i]["body"];
+      return c.categories[i]["body"];
     } else {
-      return a.body;
+      return c.body;
     }
   },
-  getSourceLocale: function(id, a) {
+      getDescription: function(id, c) {
+    if (c.categories instanceof Array) {
+      var i = _.findIndex(c.categories, {
+        id: id
+      });
+      return c.categories[i]["categories"];
+    } else {
+      return c.categories;
+    }
 
-    var i = _.findIndex(a.articles, {
+  },
+  getSourceLocale: function(id, c) {
+
+    var i = _.findIndex(c.categories, {
       id: id
     });
-    return a.articles[i]["source_locale"];
+    return c.categories[i]["source_locale"];
   },
-  getLocale: function(id, a) {
+  getLocale: function(id, c) {
 
-    var i = _.findIndex(a.articles, {
+    var i = _.findIndex(c.categories, {
       id: id
     });
-    return a.articles[i]["locale"];
+    return c.categories[i]["locale"];
   },
-  key: 'articles',
+  key: 'categories',
 
-  init: function(a, app) {
-    app.store(a); // side effect
+  init: function(c, app) {
+    app.store(c); // side effect
     return true;
   },
   getRaw: function(app) {
-    return app.store(key);
+    return app.store(this.key);
   },
   getSerialized: function(app) {
-    return JSON.stringify(app.store(key));
+    return JSON.stringify(app.store(this.key));
   },
   getHtml: function(app) {
-    return JSON.stringify(app.store(key));
+    return JSON.stringify(app.store(this.key));
   }
 };

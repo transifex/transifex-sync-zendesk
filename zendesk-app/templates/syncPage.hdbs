@@ -2,9 +2,12 @@
     <p><span>
     {{#unless dataset.article_visible}}<span class="txh3 plain">Articles</span>{{/unless}}
     {{#unless dataset.section_visible}}<span class="txh3 plain">Sections</span>{{/unless}}
+    {{#unless dataset.category_visible}}<span class="txh3 plain">Categories</span>{{/unless}}
     Switch to:
     {{#if dataset.article_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_articles">Articles</a>{{/if}}
     {{#if dataset.section_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_sections">Sections</a>{{/if}}
+    {{#if dataset.category_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>{{/if}}
+    <span class="message"></span>
     </span>
     </p>
   </div> 

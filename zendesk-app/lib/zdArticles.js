@@ -3,7 +3,8 @@ var syncUtil = require('syncUtil');
 module.exports = {
   resources: {
     ZD_OBJECT_PATTERN: /(articles|sections|categories)/,
-    ZD_ID_FORMAT_PATTERN: /^\d+$/
+    ZD_ID_FORMAT_PATTERN: /^\d+$/,
+    STRING_RADIX : 10
   },
   getIdList: function(a) {
 
@@ -18,34 +19,34 @@ module.exports = {
   //todo - refactor me
   getTxRequest: function(a) { // articles or article
     var arr = [];
+    var ret = [];
     if (a.articles instanceof Array) {
-      var l = this.getIdList(a);
+      arr = this.getIdList(a);
     } else {
-      var l = [];
-      l[0] = a.id;
+      arr[0] = a.id;
     }
 
 
-    for (var i = 0; i < l.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
       var req = {
-        name: this.createResourceName(l[i], 'articles', '-'),
-        slug: this.createResourceName(l[i], 'articles', '-'),
+        name: this.createResourceName(arr[i], 'articles', '-'),
+        slug: this.createResourceName(arr[i], 'articles', '-'),
         priority: 0,
         i18n_type: 'KEYVALUEJSON'
       };
 
 
       var o = {};
-      var o1 = syncUtil.addString('name', this.getName(l[i], a), o);
-      var o2 = syncUtil.addString('title', this.getTitle(l[i], a), o1);
-      var o3 = syncUtil.addString('body', this.getBody(l[i], a), o2);
+      var o1 = syncUtil.addString('name', this.getName(arr[i], a), o);
+      var o2 = syncUtil.addString('title', this.getTitle(arr[i], a), o1);
+      var o3 = syncUtil.addString('body', this.getBody(arr[i], a), o2);
       var o4 = syncUtil.addContent(req, o3);
-      arr[i] = o4;
+      ret[i] = o4;
     }
     if (a.articles instanceof Array) {
-      return arr;
+      return ret;
     } else {
-      return arr[0];
+      return ret[0];
     }
 
   },
@@ -80,7 +81,7 @@ module.exports = {
   },
   getSingle: function(id, a) {
     if (typeof id == 'string' || id instanceof String)
-      id = parseInt(id);
+      id = parseInt(id,this.resources.STRING_RADIX);
     var i = _.findIndex(a.articles, {
       id: id
     });
@@ -138,12 +139,12 @@ module.exports = {
     return true;
   },
   getRaw: function(app) {
-    return app.store(key);
+    return app.store(this.key);
   },
   getSerialized: function(app) {
-    return JSON.stringify(app.store(key));
+    return JSON.stringify(app.store(this.key));
   },
   getHtml: function(app) {
-    return JSON.stringify(app.store(key));
+    return JSON.stringify(app.store(this.key));
   }
 };

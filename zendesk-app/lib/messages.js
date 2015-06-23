@@ -18,4 +18,4 @@ module.exports = {
 		return JSON.stringify(m);
 	}
 
-}
+};
