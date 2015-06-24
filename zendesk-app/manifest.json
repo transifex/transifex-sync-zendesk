@@ -19,12 +19,12 @@
     },
     {
       "name": "tx_password",
-      "type": "text",
+      "type": "password",
       "required": true
     },
     {
       "name": "tx_project",
-      "type": "text",
+      "type": "url",
       "required": true
     },
     {
