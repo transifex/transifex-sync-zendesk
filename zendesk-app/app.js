@@ -744,8 +744,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store(messages.key, msg);
 
       this.store(txProject.key, data);
-      this.uiErrorPageInit();
-      this.updateMessage("projectUrlConfig", "fail");
     },
     txResourceStatsDone: function(data, textStatus, jqXHR) {
       var msg = messages.add('Transifex Stats Retrieved with status:' + textStatus, this.store(messages.key));
