@@ -22,7 +22,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       txProject: function() {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '?details',
+          url: this.settings.tx_project + '?details',
           type: 'GET',
           dataType: 'json',
           username: this.settings.tx_username,
@@ -32,7 +32,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txResourceStats: function(resourceName) {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '/resource/' + resourceName + '/stats/',
+          url: this.settings.tx_project + 'resource/' + resourceName + '/stats/',
           type: 'GET',
           beforeSend: function(jqxhr, settings) {
             jqxhr.resourceName = resourceName;
@@ -45,7 +45,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txResource: function(resourceName, languageCode) {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '/resource/' + resourceName + '/translation/' + languageCode + '/',
+          url: this.settings.tx_project + 'resource/' + resourceName + '/translation/' + languageCode + '/',
           type: 'GET',
           beforeSend: function(jqxhr, settings) {
             jqxhr.resourceName = resourceName;
@@ -59,7 +59,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txInsert: function(data) {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '/resources/',
+          url: this.settings.tx_project + 'resources/',
           type: 'POST',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -71,7 +71,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txUpdate: function(data, resourceName) {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '/resource/' + resourceName + '/content',
+          url: this.settings.tx_project + 'resource/' + resourceName + '/content',
           type: 'PUT',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -82,7 +82,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txInsertSection: function(data) {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '/resources/',
+          url: this.settings.tx_project + 'resources/',
           type: 'POST',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -94,7 +94,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txUpdateSection: function(data, resourceName) {
         return {
-          url: 'http://www.transifex.com/api/2/project/' + this.settings.tx_project + '/resource/' + resourceName + '/content',
+          url: this.settings.tx_project + 'resource/' + resourceName + '/content',
           type: 'PUT',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -239,6 +239,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         success: 'Sync process initiated',
         fail: 'Sync error detected'
       },
+      'projectUrlConfig': {
+        success: 'Project URL succesfully configured!',
+        fail: "It looks like the Project URL isn't configured properly. Please update it in the app settings."
+      },
     },
     events: {
       'app.activated': 'init',
@@ -274,20 +278,30 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     init: function() {
       this.store(messages.key, messages.init());
-      this.txGetProject();
-      this.zdGetArticles("");
-      this.zdGetSections("");
-      this.zdGetCategories("");
-      this.switchTo('loading_page');
+      var isValidProjectUrl = txProject.checkProjectUrl(this.settings.tx_project);
+      if (isValidProjectUrl) {
+        this.txGetProject();
+        this.zdGetArticles("");
+        this.zdGetSections("");
+        this.zdGetCategories("");
+        this.switchTo('loading_page');
+
+      } else {
+      this.uiErrorPageInit();
+      this.updateMessage("projectUrlConfig", "fail");
+    }
+              
+      
+
     },
 
     zdCategoryInsertDone: function(data, textStatus) {
-      this.uiSyncPageSections();
+      this.uiSyncPageCategories();
       this.updateMessage("zdCategoryInsertDone", textStatus);
     },
 
     zdCategoryUpdateDone: function(data, textStatus) {
-      this.uiSyncPageSections();
+      this.uiSyncPageCategories();
       this.updateMessage("zdCategoryUpdateDone", textStatus);
     },
 
@@ -487,6 +501,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       this.switchTo('loading_page');
 
+    },
+    uiErrorPageInit: function() {
+      this.switchTo('error_page');
     },
 
     uiSyncPageInit: function() {

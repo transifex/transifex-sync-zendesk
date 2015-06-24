@@ -1,0 +1,6 @@
+<div class="spinner">
+  <span class="txh3 plain">Oops, an error has occurred</span>
+</div>
+  <div class="messagebox">
+    <span class="message"></span>
+  </div>

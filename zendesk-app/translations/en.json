@@ -24,8 +24,14 @@
             },
             "tx_project": {
                 "label": {
-                    "value": "Transifex project slug",
-                    "title": "Enter the Transifex Project Name you wish to export to."
+                    "value": "Transifex Project URL",
+                    "title": "Enter the Transifex Project URL you wish to export to."
+                }
+            },
+            "features": {
+                "label": {
+                    "value": "Sync application feature switch",
+                    "title": "Enter the hexidecimal feature switch number"
                 }
             }
         }

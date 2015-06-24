@@ -37,7 +37,7 @@ describe('Test Tx Zendesk App', function() {
     const PATHS = {
         TRANSLATION_EN_JSON: './zendesk-app/translations/en.json',
         MANIFEST_JSON: './zendesk-app/manifest.json',
-        SYNCPAGE_HDBS: './zendesk-app/templates/syncPage.hdbs',
+        SYNCPAGE_HDBS: './zendesk-app/templates/sync_page.hdbs',
         TRANSLATION_SCHEMA: './test/schemas/translations.json',
         ZD_ARTICLE_JSON: './test/data/article.json',
         ZD_SECTION_JSON: './test/data/zdSection.json',
@@ -178,6 +178,15 @@ describe('Test Tx Zendesk App', function() {
     describe("getting tx project", function() {
         var myProject = loadTxProjectData();
 
+        it("is valid project url", function(){
+            var goodProject="http://www.transifex.com/api/2/project/txtest-1/"
+            var result = txProject.checkProjectUrl(goodProject);
+            assert(result,"for a good project url");
+
+            var badProject = "txtest-1";
+            var badResult = txProject.checkProjectUrl(badProject);
+            assert(badResult === false,"for a bad project url");
+        });
         it("check resources", function() {
             var goodResources = ['articles-205686967', 'articles-205686968', 'articles-205686969'];
             var myResources = txProject.getResourceArray(myProject);
@@ -660,7 +669,9 @@ describe('Test Tx Zendesk App', function() {
         var myParametersLength = myParameters.length;
         for (var i = 0; i < myParametersLength; i++) {
             assert(myParameters[i].type = "text", "Check type for " + myParameters[i].name);
+            if (assert(myParameters[i].type !== "hidden")){
             assert(myParameters[i].required, "Check required for " + myParameters[i].name);
+        }
         }
     });
 
