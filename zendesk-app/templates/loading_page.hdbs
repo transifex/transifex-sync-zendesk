@@ -1,4 +1,3 @@
 <div class="spinner">
-  <!-- This is a built-in spinner. -->
   <span class="txh3 plain">Syncing{{spinner "dotted"}}</span>
 </div>
