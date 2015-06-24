@@ -2,12 +2,28 @@
     <p><span>
     {{#unless dataset.article_visible}}<span class="txh3 plain">Articles</span>{{/unless}}
     {{#unless dataset.section_visible}}<span class="txh3 plain">Sections</span>{{/unless}}
+    {{#unless dataset.category_visible}}<span class="txh3 plain">Categories</span>{{/unless}}
     Switch to:
     {{#if dataset.article_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_articles">Articles</a>{{/if}}
     {{#if dataset.section_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_sections">Sections</a>{{/if}}
+    {{#if dataset.category_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>{{/if}}
+    <span class="message"></span>
     </span>
     </p>
+  </div>
+    {{#if dataset.pagination_visible}}
+  <div class="pagination">
+  <ul>
+  {{#if dataset.page_prev_enabled}}<li><a id="page-prev" class="page_action_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>{{/if}}
+    {{#unless dataset.page_prev_enabled}}<li class="disabled"><a>&laquo;</a></li>{{/unless}}
+    {{#each dataset.pages}}
+    <li><a id="page-{{{this}}}" class="page_action_page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a></li>
+    {{/each}}
+    {{#if dataset.page_next_enabled}}<li><a id="page-next" class="page_action_next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a></li>{{/if}}
+    {{#unless dataset.page_next_enabled}}<li class="disabled"><a>&raquo;</a></li>{{/unless}}
+  </ul>
   </div> 
+  {{/if}} 
 <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
   <thead>
     <tr class="table_top">
@@ -30,5 +46,6 @@
       <td><a class="enable_column" target="_blank" href="{{{this.tx_resource_url}}}">View</a></td>
     </tr>
     {{/each}}
-  </tbody> 
+  </tbody>
+
 </table>
