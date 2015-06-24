@@ -26,6 +26,11 @@
       "name": "tx_project",
       "type": "text",
       "required": true
+    },
+    {
+      "name": "features",
+      "type": "hidden",
+      "default": "0"
     }
   ]
 }

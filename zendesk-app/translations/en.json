@@ -24,32 +24,8 @@
             },
             "tx_project": {
                 "label": {
-                    "value": "Transifex Project Name",
+                    "value": "Transifex project slug",
                     "title": "Enter the Transifex Project Name you wish to export to."
-                }
-            },
-            "zd_username": {
-                "label": {
-                    "value": "Zendesk UserName",
-                    "title": "Enter your Zendesk username."
-                }
-            },
-            "zd_password": {
-                "label": {
-                    "value": "Zendesk Password",
-                    "title": "Enter your Zendesk password."
-                }
-            },
-            "tx_oauth": {
-                "label": {
-                    "value": "Transifex OAuth Enabled",
-                    "title": "Is OAuth Enabled? (Yes/No)"
-                }
-            },
-            "zd_objects": {
-                "label": {
-                    "value": "Objects in Zendesk to Export",
-                    "title": "Lists Zendesk Objects to export to Transifex"
                 }
             }
         }
