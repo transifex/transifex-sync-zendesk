@@ -428,7 +428,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       for (var i = 0; i < locales.length; i++) { // iterate through list of locales
         if (source_locale !== locales[i]) { // skip the source locale
-          var resource_data = this.store(txResourceName + '-' + locales[i]); // Get resource based on resource name
+          var resourceList = this.store('resource_list');
+          var doesResourceExist = util.isStringinArray(txResourceName + '-' + locales[i],resourceList);
+          var resource_data = this.store(txResourceName + '-' + locales[i]); // TODO - Refactor structure
 
           if (_.isObject(resource_data)) {
             var zdLocale = util.txLocaletoZd(locales[i]);
@@ -952,8 +954,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         inline: this.inline,
         location: this.currentLocation()
       });
+      var resourceList = this.store('resourceList');
       var resourceKey = jqXHR.resourceName + '-' + jqXHR.languageCode;
-      this.store(resourceKey, data);
+      resourceList.push(resourceKey, data);
+      this.store('resourceList', resourceList);
     },
     txUpsertResource: function(content, slug) {
       if (this.isDebug()) {
