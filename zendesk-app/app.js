@@ -204,44 +204,44 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
     messages: {
       'txUpdateDone': {
-        success: 'Transifex resource created',
-        fail: 'Transifex resource creatation failed'
+        success: 'Transifex resource updated',
+        fail: 'Transifex resource update failed'
       },
       'txInsertDone': {
         success: 'Transifex resource created',
-        fail: 'Transifex resource creatation failed'
+        fail: 'Transifex resource creation failed'
       },
       'zdArticleUpdateDone': {
-        success: 'Zendesk article translation updated',
-        fail: 'Zendesk article translation update failed'
+        success: 'Translations updated',
+        fail: 'Translation update failed'
       },
       'zdArticleInsertDone': {
-        success: 'Zendesk article translation created',
-        fail: 'Zendesk article translation failed'
+        success: 'Translations created',
+        fail: 'Translation download failed'
       },
       'zdSectionUpdateDone': {
-        success: 'Zendesk article translation updated',
-        fail: 'Zendesk article translation update failed'
+        success: 'Translations updated',
+        fail: 'Translation update failed'
       },
       'zdSectionInsertDone': {
-        success: 'Zendesk section translation created',
-        fail: 'Zendesk section translation failed'
+        success: 'Translations created',
+        fail: 'Translation download failed'
       },
       'zdCategoryUpdateDone': {
-        success: 'Zendesk category translation updated',
-        fail: 'Zendesk category translation update failed'
+        success: 'Translations updated',
+        fail: 'Translation update failed'
       },
       'zdCategoryInsertDone': {
-        success: 'Zendesk category translation created',
-        fail: 'Zendesk category translation failed'
+        success: 'Translations created',
+        fail: 'Translation download failed'
       },
       'syncUpload': {
         success: 'Sync process initiated',
-        fail: 'Sync error detected'
+        fail: 'Sync error detected. Please contact support@transifex.com.'
       },
       'syncDownload': {
         success: 'Sync process initiated',
-        fail: 'Missing completed resources. Please complete translation before preceding.'
+        fail: 'Missing completed resources. Please complete translation before proceding.'
       },
       'projectUrlConfig': {
         success: 'Project URL succesfully configured!',
