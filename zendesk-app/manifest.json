@@ -31,6 +31,11 @@
       "name": "features",
       "type": "hidden",
       "default": "0"
+    },{
+      "name": "debug",
+      "type": "hidden",
+      "default": false
     }
+
   ]
 }

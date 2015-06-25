@@ -12,6 +12,7 @@
     {{#unless dataset.section_visible}}<span class="buttonized bluebtn btn-border disabled enable_column page_action_articles">Sections</span>{{/unless}}
     {{#if dataset.category_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>{{/if}}
     {{#unless dataset.category_visible}}<span class="buttonized bluebtn btn-border disabled enable_column page_action_articles">Categories</span>{{/unless}}
+    - <a id="sync" class="buttonized bluebtn btn-border enable_column page_action_sync" data-type="{{{dataset.type}}}">Sync</a>
     </span>
     </p>
     <p><span class="message"></span></p>
@@ -39,7 +40,7 @@
   </tbody>
 </table>
     {{#if dataset.pagination_visible}}
-  <div class="pagination center">
+  <div class="pagination">
   <ul>
   {{#if dataset.page_prev_enabled}}<li><a id="page-prev" class="page_action_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>{{/if}}
     {{#unless dataset.page_prev_enabled}}<li class="disabled"><a>&laquo;</a></li>{{/unless}}

@@ -178,25 +178,24 @@ describe('Test Tx Zendesk App', function() {
     describe("getting tx project", function() {
         var myProject = loadTxProjectData();
 
-        it("convert project url to api url", function(){
+        it("convert project url to api url", function() {
             var goodProjectUrl = "https://www.transifex.com/projects/p/zendesk/";
             var badProjectUrl = "http://www.transifex.com/api/2/project/txtest-1/";
             var apiProjectUrl = txProject.convertUrlToApi(goodProjectUrl);
             var goodApiProjectUrl = "http://www.transifex.com/api/2/project/zendesk/";
             var badApiProjectUrl = txProject.convertUrlToApi(badProjectUrl);
-            console.log(apiProjectUrl);
-            assert(_.isEqual(apiProjectUrl,goodApiProjectUrl));
+            assert(_.isEqual(apiProjectUrl, goodApiProjectUrl));
 
         });
 
-        it("is valid project url", function(){
-            var goodProject="http://www.transifex.com/api/2/project/txtest-1/"
+        it("is valid project url", function() {
+            var goodProject = "http://www.transifex.com/api/2/project/txtest-1/"
             var result = txProject.checkProjectApiUrl(goodProject);
-            assert(result,"for a good project url");
+            assert(result, "for a good project url");
 
             var badProject = "txtest-1";
             var badResult = txProject.checkProjectUrl(badProject);
-            assert(badResult === false,"for a bad project url");
+            assert(badResult === false, "for a bad project url");
         });
         it("check resources", function() {
             var goodResources = ['articles-205686967', 'articles-205686968', 'articles-205686969'];
@@ -357,13 +356,13 @@ describe('Test Tx Zendesk App', function() {
 
         it("has pagination", function() {
             var myBoolean = zdArticles.checkPagination(myArticles);
-            assert(myBoolean === true,"Check for valid pagination");
+            assert(myBoolean === true, "Check for valid pagination");
         });
 
         it("get pages", function() {
-            var goodPages = [1,2,3,4,5];
+            var goodPages = [1, 2, 3, 4, 5];
             var myPages = zdArticles.getPages(myArticles);
-            assert(_.isEqual(goodPages,myPages));
+            assert(_.isEqual(goodPages, myPages));
         });
     });
 
@@ -446,19 +445,19 @@ describe('Test Tx Zendesk App', function() {
 
 
         it("combine data articles", function() {
-            var articleUIArray = myUtil.mapSyncPage(articleArray, testLangs, "live-test-1");
+            var articleUIArray = myUtil.mapSyncPage(articleArray, testLangs, "https://www.transifex.com/projects/p/live-test-1/");
             assert(_.isEqual(myGoodArray, articleUIArray));
 
         });
 
         it("combine data sections", function() {
-            var sectionUIArray = zdSections.mapSyncPage(sectionArray, testLangs, "live-test-1");
+            var sectionUIArray = zdSections.mapSyncPage(sectionArray, testLangs, "https://www.transifex.com/projects/p/live-test-1/");
             assert(_.isEqual(myGoodSectionArray, sectionUIArray));
 
         });
 
         it("combine data categories", function() {
-            var categoryUIArray = zdCategories.mapSyncPage(categoryArray, testLangs, "live-test-1");
+            var categoryUIArray = zdCategories.mapSyncPage(categoryArray, testLangs, "https://www.transifex.com/projects/p/live-test-1/");
             assert(_.isEqual(myGoodCategoryArray, categoryUIArray));
 
         });
@@ -680,9 +679,9 @@ describe('Test Tx Zendesk App', function() {
         var myParametersLength = myParameters.length;
         for (var i = 0; i < myParametersLength; i++) {
             assert(myParameters[i].type = "text", "Check type for " + myParameters[i].name);
-            if (assert(myParameters[i].type !== "hidden")){
-            assert(myParameters[i].required, "Check required for " + myParameters[i].name);
-        }
+            if (assert(myParameters[i].type !== "hidden")) {
+                assert(myParameters[i].required, "Check required for " + myParameters[i].name);
+            }
         }
     });
 

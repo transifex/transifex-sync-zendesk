@@ -26,7 +26,7 @@ module.exports = {
         "zd_object_id": sections[i].id,
         "zd_object_url": sections[i].url,
         "zd_outdated": sections[i].outdated,
-        "tx_resource_url": "https://www.transifex.com/projects/p/" + project + "/resource/sections-" + sections[i].id,
+        "tx_resource_url":  project + "resource/sections-" + sections[i].id,
         "tx_completed": tc,
         "title_string": sections[i].name
       };
