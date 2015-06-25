@@ -250,7 +250,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
     events: {
       'app.activated': 'init',
-      'click .nav-pills .txsync': 'sync',
       'click .page_action_upload': 'syncUpload',
       'click .page_action_download': 'syncDownload',
       'click .page_action_articles': 'uiSyncPageArticles',
@@ -259,6 +258,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       'click .page_action_page': 'uiSyncPageGotoPage',
       'click .page_action_next': 'uiSyncPageNextPage',
       'click .page_action_prev': 'uiSyncPagePrevPage',
+      'click .page_action_sync': 'uiSync',
       'zdArticles.done': 'zdArticlesDone',
       'zdSections.done': 'zdSectionsDone',
       'zdCategories.done': 'zdCategoriesDone',
@@ -281,7 +281,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     init: function() {
-      this.store(messages.key, messages.init());
+      if (this.isDebug()) {
+        this.store(messages.key, messages.init());
+      }
 
       var tmp = txProject.convertUrlToApi(this.settings.tx_project);
       if (txProject.checkProjectApiUrl(tmp)) {
@@ -295,9 +297,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.uiErrorPageInit();
         this.updateMessage("projectUrlConfig", "fail");
       }
-
-
-
     },
 
     zdCategoryInsertDone: function(data, textStatus) {
@@ -362,9 +361,18 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
 
+    isDebug: function() {
+      if (this.settings.debug !== null && this.settings.debug) {
+        return true;
+      }
+      return false;
+    },
+
     syncUpload: function(event) {
-      var msg = messages.add('Sync Upload Click', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Sync Upload Click', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       event.preventDefault();
       // Get Params via JQuery
@@ -399,8 +407,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     syncDownload: function(event) {
-      var msg = messages.add('Sync Download Click', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Sync Download Click', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       event.preventDefault();
 
@@ -419,7 +429,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       for (var i = 0; i < locales.length; i++) { // iterate through list of locales
         if (source_locale !== locales[i]) { // skip the source locale
           var resource_data = this.store(txResourceName + '-' + locales[i]); // Get resource based on resource name
-          this.store('tempdebug', txResourceName + '-' + locales[i]);
+
           if (_.isObject(resource_data)) {
             var zdLocale = util.txLocaletoZd(locales[i]);
             if (zdObjectType === "article") {
@@ -434,14 +444,20 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
               this.zdUpsertCategoryTranslation(resource_data, zdObjectId, zdLocale);
               this.switchTo('loading_page');
             }
-          } 
+          }
         }
       }
       this.updateMessage("syncDownload", "missing-resources");
     },
+    uiSync: function(event) {
+      this.init()
+    },
+
     uiSyncPageGotoPage: function(event) {
-      var msg = messages.add('Sync Goto Page', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Sync Goto Page', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-page");
@@ -462,8 +478,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
     uiSyncPageNextPage: function(event) {
-      var msg = messages.add('Sync Next Page', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Sync Next Page', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
@@ -485,8 +503,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
     uiSyncPagePrevPage: function(event) {
-      var msg = messages.add('Sync Prev Page', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Sync Prev Page', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
@@ -632,8 +652,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       });
     },
     getArticleStatus: function(id) {
-      var msg = messages.add('Get Status from Article for' + id, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Status from Article for' + id, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var resource = zdArticles.createResourceName(id, 'articles', '-');
 
@@ -641,8 +663,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     getSectionStatus: function(id) {
-      var msg = messages.add('Get Status from Section for' + id, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Status from Section for' + id, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var resource = zdSections.createResourceName(id, 'sections', '-');
       var project = this.store(txProject.key);
@@ -656,8 +680,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     getCategoryStatus: function(id) {
-      var msg = messages.add('Get Status from Category for' + id, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Status from Category for' + id, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var resource = zdCategories.createResourceName(id, 'categories', '-');
       var project = this.store(txProject.key);
@@ -671,15 +697,19 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdGetArticleTranslations: function(article_id) {
-      var msg = messages.add('Get Locales from Article for' + article_id, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Locales from Article for' + article_id, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       this.ajax('zdArticleGetTranslations', article_id);
 
     },
     zdArticleGetTranslationsDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Article Locales with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Article Locales with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var locales = zdTranslations.getLocale(data);
       var zdLocales = [];
@@ -694,15 +724,19 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdGetSectionTranslations: function(section_id) {
-      var msg = messages.add('Get Locales from Section for' + section_id, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Locales from Section for' + section_id, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       this.ajax('zdSectionGetTranslations', section_id);
 
     },
     zdSectionGetTranslationsDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Section Locales with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Section Locales with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var locales = zdTranslations.getLocale(data);
       var zdLocales = [];
@@ -717,15 +751,19 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdGetCategoryTranslations: function(section_id) {
-      var msg = messages.add('Get Locales from Category for' + section_id, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Locales from Category for' + section_id, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       this.ajax('zdCategoryGetTranslations', section_id);
 
     },
     zdCategoryGetTranslationsDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Category Locales with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Category Locales with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var locales = zdTranslations.getLocale(data);
       var zdLocales = [];
@@ -739,20 +777,26 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     txGetProject: function() {
-      var msg = messages.add('Get Project from Transifex', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Project from Transifex', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       this.ajax('txProject');
     },
     txProjectDone: function(data, textStatus) {
-      var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       this.store(txProject.key, data);
     },
     txResourceStatsDone: function(data, textStatus, jqXHR) {
-      var msg = messages.add('Transifex Stats Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Transifex Stats Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       var localesComplete = util.txGetCompletedTranslations(jqXHR.resourceName, data);
 
       var localesArray = this.store('completed_resources'); //check existing locales
@@ -776,8 +820,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
     zdGetArticles: function(page) {
-      var msg = messages.add('Get Zendesk Articles', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Zendesk Articles', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       var pageString = "";
       if (page) {
         pageString = '&page=' + page;
@@ -786,8 +832,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
     zdGetSections: function(page) {
-      var msg = messages.add('Get Zendesk Sections', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Zendesk Sections', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       var pageString = "";
       if (page) {
         pageString = '&page=' + page;
@@ -796,8 +844,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
     zdGetCategories: function(page) {
-      var msg = messages.add('Get Zendesk Categories', this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Get Zendesk Categories', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       var pageString = "";
       if (page) {
         pageString = '&page=' + page;
@@ -806,8 +856,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
     zdSectionsDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Sections Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Sections Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       this.store(zdSections.key, data);
       var limit = data.sections.length;
       if (limit > 10) {
@@ -820,8 +872,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdCategoriesDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Categories Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Categories Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       this.store(zdCategories.key, data);
       var limit = data.categories.length;
       if (limit > 10) {
@@ -839,8 +893,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdArticlesDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Articles Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Articles Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       data = _.extend(data, {
         inline: this.inline,
         location: this.currentLocation()
@@ -863,8 +919,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdGetSectionsDone: function(data, textStatus) {
-      var msg = messages.add('Zendesk Sections Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Zendesk Sections Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       data = _.extend(data, {
         inline: this.inline,
         location: this.currentLocation()
@@ -886,8 +944,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     txResourceDone: function(data, textStatus, jqXHR) {
-      var msg = messages.add('Transifex Resource Retrieved with status:' + textStatus, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Transifex Resource Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
       data = _.extend(data, {
         inline: this.inline,
         location: this.currentLocation()
@@ -896,8 +956,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store(resourceKey, data);
     },
     txUpsertResource: function(content, slug) {
-      var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var project = this.store(txProject.key);
       var resources = txProject.getResourceArray(project);
@@ -909,8 +971,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       }
     },
     txUpsertSectionResource: function(content, slug) {
-      var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var project = this.store(txProject.key);
       var resources = txProject.getResourceArray(project);
@@ -923,8 +987,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     txUpsertCategoryResource: function(content, slug) {
-      var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Upsert Resource with Slug:' + slug, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var project = this.store(txProject.key);
       var resources = txProject.getResourceArray(project);
@@ -937,8 +1003,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdUpsertArticleTranslation: function(resource_data, article_id, zdLocale) {
-      var msg = messages.add('Upsert Article with Id:' + article_id + 'and locale:' + zdLocale, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Upsert Article with Id:' + article_id + 'and locale:' + zdLocale, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var locales = this.store('zd_locales');
       var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
@@ -950,8 +1018,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       }
     },
     zdUpsertSectionTranslation: function(resource_data, section_id, zdLocale) {
-      var msg = messages.add('Upsert Section with Id:' + section_id + 'and locale:' + zdLocale, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Upsert Section with Id:' + section_id + 'and locale:' + zdLocale, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var locales = this.store('zd_locales');
       var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
@@ -964,8 +1034,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdUpsertCategoryTranslation: function(resource_data, category_id, zdLocale) {
-      var msg = messages.add('Upsert Category with Id:' + category_id + 'and locale:' + zdLocale, this.store(messages.key));
-      this.store(messages.key, msg);
+      if (this.isDebug()) {
+        var msg = messages.add('Upsert Category with Id:' + category_id + 'and locale:' + zdLocale, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
 
       var locales = this.store('zd_locales');
       var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
@@ -975,20 +1047,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       } else {
         this.ajax('zdCategoryInsert', translationData, category_id);
       }
-    },
-
-    // generic results page for troubleshooting
-    showResult: function(data) {
-      data = _.extend(data, {
-        inline: this.inline,
-        location: this.currentLocation()
-      });
-      this.switchTo('projectPage', {
-        settings: this.settings, // An object that contains all the setting key-value pairs
-        email: this.currentUser().email(),
-        installation_id: this.installationId(),
-        data: JSON.stringify(data)
-      });
     }
   };
 }

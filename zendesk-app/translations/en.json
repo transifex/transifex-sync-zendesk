@@ -33,7 +33,13 @@
                     "value": "Sync application feature switch",
                     "title": "Enter the hexidecimal feature switch number"
                 }
+            },
+            "debug": {
+                "label": {
+                    "value": "Sync application debug mode switch",
+                    "title": "Enter true to turn on app logging"
+                }
             }
         }
-        }
+    }
 }
