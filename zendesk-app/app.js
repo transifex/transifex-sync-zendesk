@@ -476,9 +476,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         if (source_locale !== locales[i]) { // skip the source locale
           var resourceList = this.store('resource_list');
           var doesResourceExist = util.isStringinArray(txResourceName + '-' + locales[i], resourceList);
-          var resourceList = this.store('resourceList');
-
-          //         var resource_data = this.store(txResourceName + '-' + locales[i]); // TODO - Refactor structure
           var ii = _.findIndex(resourceList, {
             key: txResourceName + '-' + locales[i]
           });
@@ -871,11 +868,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       //   }
 
       var locales = util.getLocalesFromArray(jqXHR.resourceName, localesArray);
-      this.store('smartypants',locales);
       if (locales.length > 0) {
-        for (var i = 0; i < locales.length; i++) {
+        for (var ii = 0; ii < locales.length; ii++) {
 
-          this.ajax('txResource', jqXHR.resourceName, locales[i]);
+          this.ajax('txResource', jqXHR.resourceName, locales[ii]);
         }
       } else {
         this.uiSyncPageInit();
