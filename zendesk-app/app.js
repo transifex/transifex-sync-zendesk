@@ -450,7 +450,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.updateMessage("syncDownload", "missing-resources");
     },
     uiSync: function(event) {
-      this.init()
+      this.init();
     },
 
     uiSyncPageGotoPage: function(event) {
