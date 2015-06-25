@@ -239,6 +239,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         success: 'Sync process initiated',
         fail: 'Sync error detected'
       },
+      'syncDownload': {
+        success: 'Sync process initiated',
+        fail: 'Missing completed resources. Please complete translation before preceding.'
+      },
       'projectUrlConfig': {
         success: 'Project URL succesfully configured!',
         fail: "It looks like the Project URL isn't configured properly. Please update it in the app settings."
@@ -288,11 +292,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.switchTo('loading_page');
 
       } else {
-      this.uiErrorPageInit();
-      this.updateMessage("projectUrlConfig", "fail");
-    }
-              
-      
+        this.uiErrorPageInit();
+        this.updateMessage("projectUrlConfig", "fail");
+      }
+
+
 
     },
 
@@ -430,10 +434,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
               this.zdUpsertCategoryTranslation(resource_data, zdObjectId, zdLocale);
               this.switchTo('loading_page');
             }
-          }
+          } 
         }
       }
-      this.updateMessage("syncUpload", "error");
+      this.updateMessage("syncDownload", "missing-resources");
     },
     uiSyncPageGotoPage: function(event) {
       var msg = messages.add('Sync Goto Page', this.store(messages.key));
