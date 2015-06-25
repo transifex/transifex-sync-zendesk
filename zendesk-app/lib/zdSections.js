@@ -7,6 +7,24 @@ module.exports = {
     STRING_RADIX: 10
   },
 
+  zdGetTranslationObject: function(t, l) {
+    var j = JSON.parse(t.content);
+    var b = {};
+    var map = {
+      name: "title"
+    };
+    _.each(j, function(value, key) {
+      key = map[key] || key;
+      b[key] = value;
+    });
+    var o = _.extend(b, {
+      locale: l
+    });
+    return {
+      "translation": o
+    };
+  },
+
   mapSyncPage: function(sections, languages, project) {
     var arr = [];
     for (var i = 0; i < sections.length; i++) {
@@ -26,7 +44,7 @@ module.exports = {
         "zd_object_id": sections[i].id,
         "zd_object_url": sections[i].url,
         "zd_outdated": sections[i].outdated,
-        "tx_resource_url":  project + "resource/sections-" + sections[i].id,
+        "tx_resource_url": project + "resource/sections-" + sections[i].id,
         "tx_completed": tc,
         "title_string": sections[i].name
       };
