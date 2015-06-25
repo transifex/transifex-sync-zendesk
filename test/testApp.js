@@ -178,9 +178,20 @@ describe('Test Tx Zendesk App', function() {
     describe("getting tx project", function() {
         var myProject = loadTxProjectData();
 
+        it("convert project url to api url", function(){
+            var goodProjectUrl = "https://www.transifex.com/projects/p/zendesk/";
+            var badProjectUrl = "http://www.transifex.com/api/2/project/txtest-1/";
+            var apiProjectUrl = txProject.convertUrlToApi(goodProjectUrl);
+            var goodApiProjectUrl = "http://www.transifex.com/api/2/project/zendesk/";
+            var badApiProjectUrl = txProject.convertUrlToApi(badProjectUrl);
+            console.log(apiProjectUrl);
+            assert(_.isEqual(apiProjectUrl,goodApiProjectUrl));
+
+        });
+
         it("is valid project url", function(){
             var goodProject="http://www.transifex.com/api/2/project/txtest-1/"
-            var result = txProject.checkProjectUrl(goodProject);
+            var result = txProject.checkProjectApiUrl(goodProject);
             assert(result,"for a good project url");
 
             var badProject = "txtest-1";

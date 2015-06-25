@@ -22,7 +22,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       txProject: function() {
         return {
-          url: this.settings.tx_project + '?details',
+          url: txProject.url + '?details',
           type: 'GET',
           dataType: 'json',
           username: this.settings.tx_username,
@@ -32,7 +32,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txResourceStats: function(resourceName) {
         return {
-          url: this.settings.tx_project + 'resource/' + resourceName + '/stats/',
+          url: txProject.url + 'resource/' + resourceName + '/stats/',
           type: 'GET',
           beforeSend: function(jqxhr, settings) {
             jqxhr.resourceName = resourceName;
@@ -45,7 +45,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txResource: function(resourceName, languageCode) {
         return {
-          url: this.settings.tx_project + 'resource/' + resourceName + '/translation/' + languageCode + '/',
+          url: txProject.url + 'resource/' + resourceName + '/translation/' + languageCode + '/',
           type: 'GET',
           beforeSend: function(jqxhr, settings) {
             jqxhr.resourceName = resourceName;
@@ -59,7 +59,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txInsert: function(data) {
         return {
-          url: this.settings.tx_project + 'resources/',
+          url: txProject.url + 'resources/',
           type: 'POST',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -71,7 +71,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txUpdate: function(data, resourceName) {
         return {
-          url: this.settings.tx_project + 'resource/' + resourceName + '/content',
+          url: txProject.url + 'resource/' + resourceName + '/content',
           type: 'PUT',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -82,7 +82,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txInsertSection: function(data) {
         return {
-          url: this.settings.tx_project + 'resources/',
+          url: txProject.url + 'resources/',
           type: 'POST',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -94,7 +94,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       },
       txUpdateSection: function(data, resourceName) {
         return {
-          url: this.settings.tx_project + 'resource/' + resourceName + '/content',
+          url: txProject.url + 'resource/' + resourceName + '/content',
           type: 'PUT',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
@@ -278,8 +278,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     init: function() {
       this.store(messages.key, messages.init());
-      var isValidProjectUrl = txProject.checkProjectUrl(this.settings.tx_project);
-      if (isValidProjectUrl) {
+
+      var tmp = txProject.convertUrlToApi(this.settings.tx_project);
+      if (txProject.checkProjectApiUrl(tmp)) {
         this.txGetProject();
         this.zdGetArticles("");
         this.zdGetSections("");
