@@ -92,8 +92,6 @@ describe('Test Tx Zendesk App', function() {
         return JSON.parse(myStringArticle);
     }
 
-
-
     function loadArticleData() {
         var myStringArticle = fs.readFileSync(PATHS.ZD_ARTICLE_JSON, 'utf8');
         return JSON.parse(myStringArticle);
@@ -254,6 +252,26 @@ describe('Test Tx Zendesk App', function() {
 
     });
 
+    it("check getting zd translation object from tx response object for section", function() {
+        var txStrings = {
+            name: 'Cette section est uniquement visible par vos agents secrets'
+        };
+        var txContent = {
+            content: JSON.stringify(txStrings)
+        };
+        var goodZdTranslationObject = {
+            "translation": {
+                "locale": "fr",
+                "title": "Cette section est uniquement visible par vos agents secrets"
+            }
+        };
+
+        var myZdTranslation = zdSections.zdGetTranslationObject(txContent, "fr");
+
+        assert(_.isEqual(myZdTranslation, goodZdTranslationObject));
+
+    });
+
     it("completed translations from tx resource stats", function() {
         //       var testLang1 = [{"name":"articles-205686957","locale_completed":["en","fr_BE"]}];
         var testLangs = {
@@ -309,11 +327,21 @@ describe('Test Tx Zendesk App', function() {
         assert(!myUtil.isStringinArray(badLocale, myArray));
     });
 
+    it("check if a resource is in array", function() {
+        var goodResource = "categories-200287177";
+        var myArray = ["articles-205686907","articles-205686927","articles-205686937","articles-205686947","articles-205686957","articles-205686967","articles-205686977","articles-206142477","articles-206631717","articles-206631727","categories-200287177","httpstxtestzendeskcom-1","sections-200287177","sections-200700727","sections-200801107","sections-200801117"];
+        assert(myUtil.isStringinArray(goodResource, myArray));
+    });
+
     it("check get locale from zd translation", function() {
         var myTranslations = loadTranslationsData();
         assert(typeof myTranslations !== "undefined", "Check for valid translation test data");
-        var goodLocales = ['fr-be', 'fr', 'en-us'];
-        assert(_.isEqual(goodLocales, myZdTranslations.getLocale(myTranslations)));
+        var goodLocales = {
+            "id": 205686967,
+            "zd_locale": [ 'fr-be', 'fr', 'en-us' ]
+        };
+
+        assert(_.isEqual(goodLocales, myZdTranslations.getLocale(205686967,myTranslations)));
     });
 
     it("check get status from zd translation", function() {

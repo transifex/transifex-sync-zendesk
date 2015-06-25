@@ -3,9 +3,11 @@ module.exports = {
     STRING_RADIX : 10
   },
 
-  getLocale: function(t) {
-    var arr = t.translations;
-    return _.pluck(arr, 'locale');
+  getLocale: function(id,t) {
+    var m = _.filter(t.translations, {
+      source_id: id
+    });
+    return {id:id,zd_locale:_.pluck(m, 'locale')}; 
   },
 
   getStatus: function(t, id, l) {

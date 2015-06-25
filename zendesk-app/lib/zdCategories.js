@@ -4,10 +4,28 @@ module.exports = {
   resources: {
     ZD_OBJECT_PATTERN: /(articles|sections|categories)/,
     ZD_ID_FORMAT_PATTERN: /^\d+$/,
-    STRING_RADIX : 10
+    STRING_RADIX: 10
   },
 
-    mapSyncPage: function(categories, languages, project) {
+  zdGetTranslationObject: function(t, l) {
+    var j = JSON.parse(t.content);
+    var b = {};
+    var map = {
+      name: "title"
+    };
+    _.each(j, function(value, key) {
+      key = map[key] || key;
+      b[key] = value;
+    });
+    var o = _.extend(b, {
+      locale: l
+    });
+    return {
+      "translation": o
+    };
+  },
+
+  mapSyncPage: function(categories, languages, project) {
     var arr = [];
     for (var i = 0; i < categories.length; i++) {
       var tc;
@@ -44,7 +62,7 @@ module.exports = {
     return arr;
   },
 
-    checkPagination: function(c) {
+  checkPagination: function(c) {
     var i = c.page_count;
     if (!isNaN(i)) {
       if (i > 1) {
@@ -75,7 +93,7 @@ module.exports = {
     return false;
   },
 
-  getTxRequest: function(c) { 
+  getTxRequest: function(c) {
     var arr = [];
     var ret = [];
     if (c.categories instanceof Array) {
@@ -96,7 +114,7 @@ module.exports = {
 
       var o = {};
       var o1 = syncUtil.addString('name', this.getName(arr[i], c), o);
-           var o2 = {};
+      var o2 = {};
       if (this.getDescription(arr[i], c) !== "") {
         o2 = syncUtil.addString('description', this.getDescription(arr[i], c), o1);
       } else {
@@ -142,7 +160,7 @@ module.exports = {
   },
   getSingle: function(id, c) {
     if (typeof id == 'string' || id instanceof String)
-      id = parseInt(id,this.resources.STRING_RADIX);
+      id = parseInt(id, this.resources.STRING_RADIX);
     var i = _.findIndex(c.categories, {
       id: id
     });
@@ -179,7 +197,7 @@ module.exports = {
       return c.body;
     }
   },
-      getDescription: function(id, c) {
+  getDescription: function(id, c) {
     if (c.categories instanceof Array) {
       var i = _.findIndex(c.categories, {
         id: id
