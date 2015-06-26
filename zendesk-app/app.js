@@ -354,9 +354,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var tmp = txProject.convertUrlToApi(this.settings.tx_project);
       if (txProject.checkProjectApiUrl(tmp)) {
         this.txGetProject();
-        this.zdGetArticles("");
-        this.zdGetSections("");
-        this.zdGetCategories("");
         this.switchTo('loading_page');
 
       } else {
@@ -438,7 +435,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     isDebug: function() {
-      if (this.settings.debug !== null && this.settings.debug) {
+      if (this.settings.debug !== null && this.settings.debug==="1") {
         return true;
       }
       return false;
@@ -878,7 +875,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
 
+
       this.store(txProject.key, data);
+        this.zdGetArticles("");
+        this.zdGetSections("");
+        this.zdGetCategories("");
     },
     txResourceStatsDone: function(data, textStatus, jqXHR) {
       if (this.isDebug()) {
@@ -886,7 +887,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
       var localesComplete = util.txGetCompletedTranslations(jqXHR.resourceName, data);
-      this.store('trans' + jqXHR.resourceName, localesComplete);
+
       //  if (localesComplete.length > 0) {
       var localesArray = this.store('completed_resources'); //check existing locales
       if (localesArray instanceof Array) {
