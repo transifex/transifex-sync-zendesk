@@ -9,7 +9,7 @@
 .spinner{width:100%;height:100%;text-align:center;padding:6px;}
 .wrapper{margin-left:5px;}
 span.sync-btn{padding-left:193px;}
-span.message{margin-left:120px;font-family:proxima-nova,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:12.9219999313355px;}
+span.sync-message{margin-left:120px;font-family:proxima-nova,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:12.9219999313355px;}
 .txh3.underlined{color:#444;padding-bottom:.5em;border-bottom:1px solid #c3d5e3;font-size:1.692em;font-weight:300;font-family:"proxima-nova","Segoe UI",'Helvetica Neue','Arial',sans-serif;line-height:1;}
 .txh3.plain{color:#444;padding-bottom:.5em;padding-right:.5em;font-size:1.692em;font-weight:300;font-family:"proxima-nova","Segoe UI",'Helvetica Neue','Arial',sans-serif;line-height:1;}
 .txsubh3{padding-left:10px;}

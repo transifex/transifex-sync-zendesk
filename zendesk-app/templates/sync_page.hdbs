@@ -2,7 +2,7 @@
   <div class="span12">
   <div class="wrapper nowrap">
   <div class="messagebox">
-    <p><span class="message"></span></p>
+    <p><span class="message sync-message"></span></p>
     <p><span>
     {{#unless dataset.article_visible}}<span class="txh3 plain type_name">Articles</span>{{/unless}}
     {{#unless dataset.section_visible}}<span class="txh3 plain type_name">Sections</span>{{/unless}}

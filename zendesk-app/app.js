@@ -279,6 +279,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         success: 'Project URL succesfully configured!',
         fail: "It looks like the Project URL isn't configured properly. Please update it in the app settings."
       },
+      'txLogin': {
+        success: 'You successfully authenticated with Transifex.',
+        fail: "Login to Transifex failed. Please correct your username or password in the app settings."
+      },
     },
     events: {
       'app.activated': 'init',
@@ -312,6 +316,28 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       'zdSectionInsert.done': 'zdSectionInsertDone',
       'zdCategoryUpdate.done': 'zdCategoryUpdateDone',
       'zdCategoryInsert.done': 'zdCategoryInsertDone',
+
+      'zdArticles.fail': 'syncError',
+      'zdSections.fail': 'syncError',
+      'zdCategories.fail': 'syncError',
+      'txProject.fail': 'syncError',
+      'txResourceStats.fail': 'syncError',
+      'txResource.fail': 'syncError',
+      'txInsert.fail': 'syncError',
+      'txUpdate.fail': 'syncError',
+      'txInsertSection.fail': 'syncError',
+      'txUpdateSection.fail': 'syncError',
+      'txInsertCategory.fail': 'syncError',
+      'txUpdateCategory.fail': 'syncError',
+      'zdArticleGetTranslations.fail': 'syncError',
+      'zdSectionGetTranslations.fail': 'syncError',
+      'zdCategoryGetTranslations.fail': 'syncError',
+      'zdArticleUpdate.fail': 'syncError',
+      'zdArticleInsert.fail': 'syncError',
+      'zdSectionUpdate.fail': 'syncError',
+      'zdSectionInsert.fail': 'syncError',
+      'zdCategoryUpdate.fail': 'syncError',
+      'zdCategoryInsert.fail': 'syncError'
     },
 
     init: function() {
@@ -414,6 +440,13 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       return false;
     },
 
+    syncError: function(jqXHR, textStatus){
+      this.uiErrorPageInit();
+      if (jqXHR.status===401) {
+        this.updateMessage("txLogin", "error");
+    }
+    },
+
     syncUpload: function(event) {
       if (this.isDebug()) {
         var msg = messages.add('Sync Upload Click', this.store(messages.key));
@@ -421,7 +454,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       }
 
       event.preventDefault();
-      // Get Params via JQuery
       var linkId = "#" + event.target.id;
       var txResourceName = this.$(linkId).attr("data-resource");
       var zdObjectId = this.$(linkId).attr("data-zd-object-id");
