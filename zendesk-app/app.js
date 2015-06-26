@@ -474,8 +474,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       for (var i = 0; i < locales.length; i++) { // iterate through list of locales
         if (source_locale !== locales[i]) { // skip the source locale
-          var resourceList = this.store('resource_list');
-          var doesResourceExist = util.isStringinArray(txResourceName + '-' + locales[i], resourceList);
+          var resourceList = this.store('resourceList');
+
           var ii = _.findIndex(resourceList, {
             key: txResourceName + '-' + locales[i]
           });
@@ -850,6 +850,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
       var localesComplete = util.txGetCompletedTranslations(jqXHR.resourceName, data);
+      this.store('trans'+jqXHR.resourceName,localesComplete);
       //  if (localesComplete.length > 0) {
       var localesArray = this.store('completed_resources'); //check existing locales
       if (localesArray instanceof Array) {

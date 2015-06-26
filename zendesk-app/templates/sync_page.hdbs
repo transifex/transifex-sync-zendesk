@@ -1,6 +1,8 @@
   <div class="row-fluid">
-  <div class="span12 nowrap">
+  <div class="span12">
+  <div class="wrapper nowrap">
   <div class="messagebox">
+    <p><span class="message"></span></p>
     <p><span>
     {{#unless dataset.article_visible}}<span class="txh3 plain type_name">Articles</span>{{/unless}}
     {{#unless dataset.section_visible}}<span class="txh3 plain type_name">Sections</span>{{/unless}}
@@ -12,10 +14,10 @@
     {{#unless dataset.section_visible}}<span class="buttonized bluebtn btn-border disabled enable_column page_action_articles">Sections</span>{{/unless}}
     {{#if dataset.category_visible}}<a class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>{{/if}}
     {{#unless dataset.category_visible}}<span class="buttonized bluebtn btn-border disabled enable_column page_action_articles">Categories</span>{{/unless}}
-    - <a id="sync" class="buttonized bluebtn btn-border enable_column page_action_sync" data-type="{{{dataset.type}}}">Sync</a>
+    <span class="sync-btn"><a id="sync" class="buttonized bluebtn btn-border enable_column page_action_sync" data-type="{{{dataset.type}}}">Sync</a></span>
     </span>
     </p>
-    <p><span class="message"></span></p>
+
   </div>
 <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
   <thead>
@@ -23,7 +25,11 @@
       <th class="enable_column">Name</th>
       <th class="enable_column">Content</th>
       <th class="enable_column">Translation</th>
-      <th class="enable_column"><span class="cap type_name">{{{dataset.type}}}</span></th>
+      <th class="enable_column"><span class="cap type_name">
+      {{#unless dataset.article_visible}}Article{{/unless}}
+      {{#unless dataset.section_visible}}Section{{/unless}}
+      {{#unless dataset.category_visible}}Category{{/unless}}
+      </span></th>
       <th class="enable_column">Transifex Resource</th>
     </tr>
   </thead>
@@ -52,5 +58,6 @@
   </ul>
   </div> 
   {{/if}}
+</div>
 </div>
 </div>
