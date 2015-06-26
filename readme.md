@@ -6,9 +6,9 @@ This project integrates the Transifex API with an interactive plugin application
 Currently supported objects:
 Help Center
 - Articles
+- Sections
+- Categories
 
-The project UI has a main activity log screen which can be accessed via the left side navbar.  But additionally there are sync integrations with the following objects:
-- Articles
 
 Project Directory Structure (the interesting bits)
 ```
@@ -16,6 +16,8 @@ Project Directory Structure (the interesting bits)
 +- transifex-zendesk-app 
    |
    +- assets // basically images
+   |
+   +- builds // zipped tagged 
    |
    +- lib // CommonJS Modules
    |
@@ -37,20 +39,17 @@ Project Directory Structure (the interesting bits)
    +- schemas // json files used to validate...er...well json files
    |
    +- testApp.js // main unit tests...needs refactoring
-   |
-   +- testBacon.js // dummy tests to make sure env is loaded ok
+
 |
 +- makefile // easy CLI targets - refactor to Grunt at some point
 |
-+- inputs.txt // Some default app settings used by make
++- inputs.txt // Some default app settings used by make - not checked in
 |
 +- package.json // npm deps for tests
 |
 +- node_modules // not checked in created by npm
 	|
-	+- zdArticles.js // need symbolic link here so node can import - TODO figure out a better approach
-|
-+- txLiveParser.js // WIP progress...kept outside of app for now
+	+- // symbolic links for libraries - TODO figure out a better approach
 ```
     
 ## Running the code
@@ -75,14 +74,25 @@ make run
 
 ## Dependencies
 
-The dependencies loaded in package.json are to allow unit testing of the code in NodeJs.  They are not needed to run the application.
-Once loaded inside of Zendesk, dependencies 'leak' into the app.  The ones currently used are:
+The dependencies loaded in package.json are to allow unit testing of the code in NodeJs.
+The application uses a separate set of dependencies loaded in app.js.  The ones currently used are:
 - JQuery Ajax object
 - Underscore
 - Settings
 - Local Storage
 
-NEED TO FIND A GOOD WAY OF SPECIFYING THIS IN CODE
+## Views
 
-## A final note, a bit about UI integrations
-The only UI 'page' for this integration is the sync-page.  The sync page is a button and a message log.  Actual control of the sync is specified via settings.  This is the 'base' implementations.  Additional UI integrations can be enabled by adding interaction buttons...but these are tightly coupled to ZD UI and can be turned on and off via settings as well.
+Currently the app consists of 4 pages:
+- sync_page.hdbs - This is the primary page for user interaction
+- layout.hdbs - This has global tags for the app, it's part of the Zd framework
+- loading_page.hdbs - This is a spinner page that displays during syncing
+- error_page.hdbs - This page is displayed when app or ajax errors occur
+
+## Feature Switch
+
+For backward compatibility there is a feature switch specified in the configuration.  This switch is a series of binary 'flags' which is represented by a hex number.  The current set of planned features are:
+digit 1 = Html parsing
+digit 2 = Ticket support
+digit 3 = Locale sync
+digit 4 = iFrame Transifex view
