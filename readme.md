@@ -90,7 +90,8 @@ Currently the app consists of 4 pages:
 ## Feature Switch
 
 For backward compatibility there is a feature switch specified in the configuration.  This switch is a series of binary 'flags' which is represented by a hex number.  The current set of planned features are:
-digit 1 = Html parsing
-digit 2 = Ticket support
-digit 3 = Locale sync
-digit 4 = iFrame Transifex view
+
+- digit 1 = Html parsing - https://github.com/transifex/transifex-sync-zendesk/issues/21
+- digit 2 = Zendesk Ticket support - https://github.com/transifex/transifex-sync-zendesk/issues/22
+- digit 3 = Locale sync - https://github.com/transifex/transifex-sync-zendesk/issues/23
+- digit 4 = iFrame Transifex view - https://github.com/transifex/transifex-sync-zendesk/issues/24
