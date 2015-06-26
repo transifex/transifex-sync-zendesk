@@ -13,7 +13,7 @@ Help Center
 Project Directory Structure (the interesting bits)
 ```
 |
-+- transifex-zendesk-app 
++- zendesk-app 
    |
    +- assets // basically images
    |
