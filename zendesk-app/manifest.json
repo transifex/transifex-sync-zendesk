@@ -1,7 +1,7 @@
 {
-  "name": "TxSync Zendesk App",
+  "name": "Transifex Sync",
   "author": {
-    "name": "@Mjjacko",
+    "name": "Transifex",
     "email": "support@transifex.com"
   },
   "defaultLocale": "en",
