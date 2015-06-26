@@ -13,8 +13,6 @@ if (typeof exports !== 'undefined') {
   exports.txApp = txApp();
 }
 
-// all dep libraries need to be passed in
-// deal with 'this.settings' no idea where 'this' is...brittle - Mjj
 function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCategories, messages) {
 
   return {
@@ -27,7 +25,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          //        secure: true
+          timeout: 6000,
+          secure: true
         };
       },
       txResourceStats: function(resourceName) {
@@ -40,7 +39,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          //        secure: true
+          timeout: 6000,
+          secure: true
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -54,7 +54,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          //        secure: true
+          timeout: 6000,
+          secure: true
         };
       },
       txInsert: function(data) {
@@ -65,8 +66,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000 // sets timeout to 6 seconds
-            //        secure: true
+          timeout: 6000, // sets timeout to 6 seconds
+          secure: true
         };
       },
       txUpdate: function(data, resourceName) {
@@ -77,7 +78,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000 // sets timeout to 6 seconds
+          timeout: 6000, // sets timeout to 6 seconds
+          secure: true
         };
       },
       txInsertSection: function(data) {
@@ -88,8 +90,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000 // sets timeout to 6 seconds
-            //        secure: true
+          timeout: 6000, // sets timeout to 6 seconds
+          secure: true
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -100,7 +102,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000 // sets timeout to 6 seconds
+          timeout: 6000, // sets timeout to 6 seconds
+          secure: true
         };
       },
       txInsertCategory: function(data) {
@@ -111,8 +114,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000 // sets timeout to 6 seconds
-            //        secure: true
+          timeout: 6000, // sets timeout to 6 seconds
+          secure: true
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -123,7 +126,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000 // sets timeout to 6 seconds
+          timeout: 6000, // sets timeout to 6 seconds
+          secure: true
         };
       },
       zdArticles: function(pageString) {
@@ -440,11 +444,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       return false;
     },
 
-    syncError: function(jqXHR, textStatus){
+    syncError: function(jqXHR, textStatus) {
       this.uiErrorPageInit();
-      if (jqXHR.status===401) {
+      if (jqXHR.status === 401) {
         this.updateMessage("txLogin", "error");
-    }
+      }
     },
 
     syncUpload: function(event) {
@@ -739,7 +743,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         var msg = messages.add('Get Status from Article for' + id, this.store(messages.key));
         this.store(messages.key, msg);
       }
-      var resource = "articles-"+id;
+      var resource = "articles-" + id;
 
       this.ajax('txResourceStats', resource);
     },
@@ -749,8 +753,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         var msg = messages.add('Get Status from Section for' + id, this.store(messages.key));
         this.store(messages.key, msg);
       }
-          var resource = "sections-"+id;
-          this.ajax('txResourceStats', resource);
+      var resource = "sections-" + id;
+      this.ajax('txResourceStats', resource);
 
     },
 
@@ -759,8 +763,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         var msg = messages.add('Get Status from Category for' + id, this.store(messages.key));
         this.store(messages.key, msg);
       }
-          var resource = "categories-"+id;
-          this.ajax('txResourceStats', resource);
+      var resource = "categories-" + id;
+      this.ajax('txResourceStats', resource);
     },
 
     zdGetArticleTranslations: function(article_id) {
@@ -882,7 +886,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
       var localesComplete = util.txGetCompletedTranslations(jqXHR.resourceName, data);
-      this.store('trans'+jqXHR.resourceName,localesComplete);
+      this.store('trans' + jqXHR.resourceName, localesComplete);
       //  if (localesComplete.length > 0) {
       var localesArray = this.store('completed_resources'); //check existing locales
       if (localesArray instanceof Array) {
