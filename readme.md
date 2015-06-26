@@ -17,8 +17,6 @@ Project Directory Structure (the interesting bits)
    |
    +- assets // basically images
    |
-   +- builds // zipped tagged 
-   |
    +- lib // CommonJS Modules
    |
    +- templates // Handlebars UI
