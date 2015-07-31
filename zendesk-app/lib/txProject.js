@@ -6,7 +6,7 @@ module.exports = {
   resources: {
     TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
     TX_PROJECT_API_URL_PATTERN: /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
-    TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/projects\/p\/(.*)\//
+    TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/(.*)\/(.*)\//
 
   },
   convertUrlToApi: function(u) {
@@ -14,7 +14,7 @@ module.exports = {
     var m = this.resources.TX_PROJECT_URL_PATTERN.exec(u);
     var p = "";
     if (m !== null && m.length > 0){
-      p=m[1];
+      p=m[2]; //TODO make this more explicit that we are mapping the url path
     }
     var r = this.resources.TX_PROJECT_API_URL_REPLACE.replace("[PROJECT_SLUG]",p);
     if (this.checkProjectApiUrl(r)) {

@@ -25,8 +25,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: 6000,
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10),
+          secure: (this.settings.secured == "true")
         };
       },
       txResourceStats: function(resourceName) {
@@ -39,8 +39,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: 6000,
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10),
+          secure: (this.settings.secured == "true")
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -54,8 +54,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: 6000,
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10),
+          secure: (this.settings.secured == "true")
         };
       },
       txInsert: function(data) {
@@ -66,8 +66,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10), 
+          secure: (this.settings.secured == "true")
         };
       },
       txUpdate: function(data, resourceName) {
@@ -78,8 +78,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10), 
+          secure: (this.settings.secured == "true")
         };
       },
       txInsertSection: function(data) {
@@ -90,8 +90,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10), 
+          secure: (this.settings.secured == "true")
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -102,8 +102,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10), 
+          secure: (this.settings.secured == "true")
         };
       },
       txInsertCategory: function(data) {
@@ -114,8 +114,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10),
+          secure: (this.settings.secured == "true")
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -126,8 +126,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: parseInt(this.settings.tx_timeout, 10), 
+          secure: (this.settings.secured == "true")
         };
       },
       zdArticles: function(pageString) {
@@ -320,7 +320,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       'zdSectionInsert.done': 'zdSectionInsertDone',
       'zdCategoryUpdate.done': 'zdCategoryUpdateDone',
       'zdCategoryInsert.done': 'zdCategoryInsertDone',
-
       'zdArticles.fail': 'syncError',
       'zdSections.fail': 'syncError',
       'zdCategories.fail': 'syncError',
