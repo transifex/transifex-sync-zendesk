@@ -39,6 +39,18 @@
                     "value": "Sync application debug mode switch",
                     "title": "Enter true to turn on app logging"
                 }
+            },
+            "secured": {
+                "label": {
+                    "value": "Sync application to secure tx calls",
+                    "title": "Enter true to turn on secured tx calls"
+                }
+            },
+            "tx_timeout": {
+                "label": {
+                    "value": "Sync application transaction timeout",
+                    "title": "Enter millis to timeout"
+                }
             }
         }
     }

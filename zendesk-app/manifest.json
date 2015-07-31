@@ -35,6 +35,16 @@
       "name": "debug",
       "type": "hidden",
       "default": false
+    },
+    {
+      "name": "secured",
+      "type": "hidden",
+      "default": true
+    },
+    {
+      "name": "tx_timeout",
+      "type": "hidden",
+      "default": 10000
     }
 
   ]
