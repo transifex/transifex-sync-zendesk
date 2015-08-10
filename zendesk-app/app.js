@@ -25,8 +25,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: 6000,
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txResourceStats: function(resourceName) {
@@ -39,8 +39,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: 6000,
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -54,8 +54,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: 6000,
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txInsert: function(data) {
@@ -66,8 +66,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txUpdate: function(data, resourceName) {
@@ -78,8 +78,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: txProject.timeout, 
+          secure: txProject.secure
         };
       },
       txInsertSection: function(data) {
@@ -91,7 +91,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          secure: txProject.secure
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -102,8 +102,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txInsertCategory: function(data) {
@@ -114,8 +114,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -126,8 +126,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
-          secure: true
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       zdArticles: function(pageString) {
@@ -352,6 +352,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store('resourceList', '');
       this.store('completed_resources', '');
       var tmp = txProject.convertUrlToApi(this.settings.tx_project);
+      var tmpt = txProject.convertTimeoutSetting(this.settings.timeout);
+      var tmps = txProject.convertSecureSetting(this.settings.secure);
       if (txProject.checkProjectApiUrl(tmp)) {
         this.txGetProject();
         this.switchTo('loading_page');

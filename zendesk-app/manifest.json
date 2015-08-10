@@ -35,6 +35,14 @@
       "name": "debug",
       "type": "hidden",
       "default": false
+    },{
+      "name": "secure",
+      "type": "hidden",
+      "default": true
+    },{
+      "name": "timeout",
+      "type": "hidden",
+      "default": 15000
     }
 
   ]
