@@ -325,8 +325,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       'zdSections.fail': 'syncError',
       'zdCategories.fail': 'syncError',
       'txProject.fail': 'syncError',
-      'txResourceStats.fail': 'syncError',
-      'txResource.fail': 'syncError',
       'txInsert.fail': 'syncError',
       'txUpdate.fail': 'syncError',
       'txInsertSection.fail': 'syncError',
