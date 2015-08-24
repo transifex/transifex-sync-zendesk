@@ -78,7 +78,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: txProject.timeout, 
+          timeout: txProject.timeout,
           secure: txProject.secure
         };
       },
@@ -90,7 +90,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: 6000, // sets timeout to 6 seconds
+          timeout: txProject.timeout,
           secure: txProject.secure
         };
       },
@@ -290,11 +290,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
     events: {
       'app.activated': 'init',
-      'click .page_action_upload': 'syncUpload',
-      'click .page_action_download': 'syncDownload',
-      'click .page_action_articles': 'uiSyncPageArticles',
-      'click .page_action_sections': 'uiSyncPageSections',
-      'click .page_action_categories': 'uiSyncPageCategories',
+      'click .page_action_articles': 'uiSyncPageArticlesInit',
+      'click .page_action_sections': 'uiSyncPageSectionsInit',
+      'click .page_action_categories': 'uiSyncPageCategoriesInit',
       'click .page_action_page': 'uiSyncPageGotoPage',
       'click .page_action_next': 'uiSyncPageNextPage',
       'click .page_action_prev': 'uiSyncPagePrevPage',
@@ -363,62 +361,50 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
 
     zdCategoryInsertDone: function(data, textStatus) {
-      this.uiSyncPageCategories();
       this.updateMessage("zdCategoryInsertDone", textStatus);
     },
 
     zdCategoryUpdateDone: function(data, textStatus) {
-      this.uiSyncPageCategories();
       this.updateMessage("zdCategoryUpdateDone", textStatus);
     },
 
     zdSectionInsertDone: function(data, textStatus) {
-      this.uiSyncPageSections();
       this.updateMessage("zdSectionInsertDone", textStatus);
     },
 
     zdSectionUpdateDone: function(data, textStatus) {
-      this.uiSyncPageSections();
       this.updateMessage("zdSectionUpdateDone", textStatus);
     },
 
     zdArticleInsertDone: function(data, textStatus) {
-      this.uiSyncPageArticles();
       this.updateMessage("zdArticleInsertDone", textStatus);
     },
 
     zdArticleUpdateDone: function(data, textStatus) {
-      this.uiSyncPageArticles();
       this.updateMessage("zdArticleUpdateDone", textStatus);
     },
 
     txInsertDone: function(data, textStatus) {
-      this.uiSyncPageInit();
       this.updateMessage("txInsertDone", textStatus);
     },
 
     txUpdateDone: function(data, textStatus) {
-      this.uiSyncPageInit();
       this.updateMessage("txUpdateDone", textStatus);
 
     },
     txInsertSectionDone: function(data, textStatus) {
-      this.uiSyncPageSections();
       this.updateMessage("txInsertDone", textStatus);
     },
 
     txUpdateSectionDone: function(data, textStatus) {
-      this.uiSyncPageSections();
       this.updateMessage("txUpdateDone", textStatus);
 
     },
     txInsertCategoryDone: function(data, textStatus) {
-      this.uiSyncPageCategories();
       this.updateMessage("txInsertDone", textStatus);
     },
 
     txUpdateCategoryDone: function(data, textStatus) {
-      this.uiSyncPageCategories();
       this.updateMessage("txUpdateDone", textStatus);
 
     },
@@ -428,14 +414,19 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.$("span.message").attr("class", "message label label-success");
         this.$("span.message").text(this.messages[action].success);
       } else {
-        this.$("span.message").attr("class", "message label label-important");
-        this.$("span.message").text(this.messages[action].fail);
+        if (status == "clear") {
+          this.$("span.message").attr("class", "message");
+          this.$("span.message").text("");
+        } else {
+          this.$("span.message").attr("class", "message label label-important");
+          this.$("span.message").text(this.messages[action].fail);
+        }
       }
 
     },
 
     isDebug: function() {
-      if (this.settings.debug !== null && this.settings.debug==="1") {
+      if (this.settings.debug !== null && this.settings.debug === "1") {
         return true;
       }
       return false;
@@ -460,28 +451,31 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var zdObjectId = this.$(linkId).attr("data-zd-object-id");
       var zdObjectType = this.$(linkId).attr("data-zd-object-type");
       var resource_request = {};
+      var syncComplete = false;
       if (zdObjectType === "article") {
         var articles = this.store(zdArticles.key);
         var article = zdArticles.getSingle(zdObjectId, articles);
         resource_request = zdArticles.getTxRequest(article);
         this.txUpsertResource(resource_request, txResourceName);
-        this.switchTo('loading_page');
+        syncComplete = true;
       }
       if (zdObjectType === "section") {
         var sections = this.store(zdSections.key);
         var section = zdSections.getSingle(zdObjectId, sections);
         resource_request = zdSections.getTxRequest(section);
         this.txUpsertSectionResource(resource_request, txResourceName);
-        this.switchTo('loading_page');
+        syncComplete = true;
       }
       if (zdObjectType === "category") {
         var categories = this.store(zdCategories.key);
         var category = zdCategories.getSingle(zdObjectId, categories);
         resource_request = zdCategories.getTxRequest(category);
         this.txUpsertCategoryResource(resource_request, txResourceName);
-        this.switchTo('loading_page');
+        syncComplete = true;
       }
-      this.updateMessage("syncUpload", "error");
+      if (!syncComplete) {
+        this.updateMessage("syncUpload", "error");
+      }
 
     },
 
@@ -505,6 +499,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       var locales = util.getLocalesFromArray(txResourceName, completedResources);
 
+      var downloadComplete = true; // assume truth for exclusion
       for (var i = 0; i < locales.length; i++) { // iterate through list of locales
         if (source_locale !== locales[i]) { // skip the source locale
           var resourceList = this.store('resourceList');
@@ -512,29 +507,51 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           var ii = _.findIndex(resourceList, {
             key: txResourceName + '-' + locales[i]
           });
-
+          var localeComplete = false;
           if (parseInt(ii, 10) !== -1) {
 
             var zdLocale = util.txLocaletoZd(locales[i]);
             if (zdObjectType === "article") {
               this.zdUpsertArticleTranslation(resourceList[ii].value, zdObjectId, zdLocale);
-              this.switchTo('loading_page');
+              localeComplete = true;
             }
             if (zdObjectType === "section") {
               this.zdUpsertSectionTranslation(resourceList[ii].value, zdObjectId, zdLocale);
-              this.switchTo('loading_page');
+              localeComplete = true;
             }
             if (zdObjectType === "category") {
               this.zdUpsertCategoryTranslation(resourceList[ii].value, zdObjectId, zdLocale);
-              this.switchTo('loading_page');
+              localeComplete = true;
             }
           }
+          if (!localeComplete) {
+            downloadComplete = false;
+          }
         }
+
       }
-      this.updateMessage("syncDownload", "missing-resources");
+      if (!downloadComplete) {
+        setTimeout(this.updateMessage("syncDownload", "missing-resources"), 6000);
+      }
+
     },
     uiSync: function(event) {
-      this.init();
+      var linkId = "#" + event.target.id;
+      var page = this.$(linkId).attr("data-current-page");
+      var type = this.$(linkId).attr("data-type");
+      if (type === "articles") {
+        this.zdGetArticles(page);
+      }
+
+      if (type === "categories") {
+        this.zdGetCategories(page);
+      }
+
+      if (type === "sections") {
+        this.zdGetCategories(page);
+      }
+
+      this.switchTo('loading_page');
     },
 
     uiSyncPageGotoPage: function(event) {
@@ -644,6 +661,22 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         dataset: pageData
       });
     },
+
+    uiSyncPageSectionsInit: function() {
+      this.switchTo('loading_page');
+      this.zdGetSections("");
+    },
+
+    uiSyncPageCategoriesInit: function() {
+      this.switchTo('loading_page');
+      this.zdGetCategories("");
+    },
+    uiSyncPageArticlesInit: function() {
+      this.switchTo('loading_page');
+      this.zdGetArticles("");
+    },
+
+
     uiSyncPageArticles: function() {
       var articles = this.store(zdArticles.key);
       var articleArray = zdArticles.getArray(articles);
@@ -741,7 +774,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
       var resource = "articles-" + id;
-
       this.ajax('txResourceStats', resource);
     },
 
@@ -794,6 +826,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       } else {
         this.store('zd_locales', [locales]);
       }
+      var linkId = "#" + "upload-" + "articles-" + jqXHR.articleId;
+
+      this.$(linkId).removeClass("disabled");
+      this.$(linkId).click(this.syncUpload.bind(this));
+      this.$(linkId).css('cursor', 'pointer');
 
     },
 
@@ -826,6 +863,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       } else {
         this.store('zd_locales', [locales]);
       }
+      var linkId = "#" + "upload-" + "sections-" + jqXHR.sectionId;
+
+      this.$(linkId).removeClass("disabled");
+      this.$(linkId).click(this.syncUpload.bind(this));
+      this.$(linkId).css('cursor', 'pointer');
 
     },
 
@@ -859,6 +901,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       } else {
         this.store('zd_locales', [locales]);
       }
+      var linkId = "#" + "upload-" + "categories-" + jqXHR.categoryId;
+
+      this.$(linkId).removeClass("disabled");
+      this.$(linkId).click(this.syncUpload.bind(this));
+      this.$(linkId).css('cursor', 'pointer');
     },
 
     txGetProject: function() {
@@ -874,12 +921,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
         this.store(messages.key, msg);
       }
-
-
       this.store(txProject.key, data);
-        this.zdGetArticles("");
-        this.zdGetSections("");
-        this.zdGetCategories("");
+      this.zdGetArticles("");
+
     },
     txResourceStatsDone: function(data, textStatus, jqXHR) {
       if (this.isDebug()) {
@@ -971,6 +1015,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         }
         this.zdGetSectionTranslations(data.sections[i].id);
       }
+      this.uiSyncPageSections();
     },
 
     zdCategoriesDone: function(data, textStatus) {
@@ -994,6 +1039,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         }
         this.zdGetCategoryTranslations(data.categories[i].id);
       }
+      this.uiSyncPageCategories();
     },
 
     zdArticlesDone: function(data, textStatus) {
@@ -1014,13 +1060,44 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var resources = txProject.getResourceArray(project);
 
       for (var i = 0; i < limit; i++) {
-        var resourceName = 'articles-' + data.articles[i].id;
+        var articleId = data.articles[i].id;
+        var resourceName = 'articles-' + articleId;
         if (util.isStringinArray(resourceName, resources)) {
-          this.getArticleStatus(data.articles[i].id);
+
+          this.doSetTimeoutArticleStatus(articleId, i);
+
         }
-        this.zdGetArticleTranslations(data.articles[i].id);
+        this.doSetTimeoutArticleTranslations(articleId, i);
       }
-      this.uiSyncPageInit();
+      this.uiSyncPageArticles();
+    },
+    doSetTimeoutArticleStatus: function(id, i) {
+      var timeout = this.timeoutOffset(i);
+      setTimeout(function() {
+        this.getArticleStatus(id);
+      }.bind(this), timeout);
+    },
+
+    doSetTimeoutArticleTranslations: function(id, i) {
+      var timeout = this.timeoutOffsetArticles(i);
+      setTimeout(function() {
+        this.zdGetArticleTranslations(id);
+      }.bind(this), timeout);
+    },
+
+    timeoutOffset: function(increment) {
+      var max = txProject.timeout;
+      var min = txProject.timeout / (increment + 1);
+      var ret = Math.random() * (max - min);
+      return ret;
+
+    },
+
+    timeoutOffsetArticles: function(increment) {
+      var max = zdArticles.timeout;
+      var min = zdArticles.timeout / (increment + 1);
+      return Math.random() * (max - min) + min;
+
     },
 
     txResourceDone: function(data, textStatus, jqXHR) {
@@ -1034,6 +1111,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       });
       var resourceList = this.store('resourceList');
       var resourceKey = jqXHR.resourceName + '-' + jqXHR.languageCode;
+      var uiResourceKey = jqXHR.resourceName;
       var obj = {
         key: resourceKey,
         value: data
@@ -1049,6 +1127,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       } else {
         this.store('resourceList', [obj]);
       }
+      var linkId = "#" + "download-" + uiResourceKey;
+      this.$(linkId).removeClass("disabled");
+      this.$(linkId).click(this.syncDownload.bind(this));
+      this.$(linkId).css('cursor', 'pointer');
+
     },
     txUpsertResource: function(content, slug) {
       if (this.isDebug()) {
@@ -1103,7 +1186,10 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         var msg = messages.add('Upsert Article with Id:' + article_id + 'and locale:' + zdLocale, this.store(messages.key));
         this.store(messages.key, msg);
       }
-
+      var localeRegion = zdLocale.split('-');
+      if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
+        zdLocale = localeRegion[0];
+      }
       var locales = this.store('zd_locales');
       var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
       var i = _.findIndex(locales, {
