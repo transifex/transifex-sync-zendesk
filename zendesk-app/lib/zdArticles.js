@@ -1,6 +1,8 @@
 var syncUtil = require('syncUtil');
 
 module.exports = {
+  timeout: 3000,
+
   resources: {
     ZD_OBJECT_PATTERN: /(articles|sections|categories)/,
     ZD_ID_FORMAT_PATTERN: /^\d+$/,
