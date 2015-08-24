@@ -7,7 +7,17 @@
     "test": "test"
   },
   "dependencies": {
-    "should": "^6.0.1"
+    "should": "^6.0.1",
+    "csslint": "0.10.0",
+    "handlebars": "3.0.3",
+    "jquery": "2.1.4",
+    "jshint": "2.7.0",
+    "mocha": "2.2.4",
+    "should": "6.0.1",
+    "underscore": "1.8.3",
+    "tv4": "1.1.9",
+    "sinon": "1.14.1",
+    "spahql": "0.7.6"
   },
   "devDependencies": {},
   "scripts": {
