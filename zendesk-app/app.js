@@ -27,7 +27,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           },
           dataType: 'json',
           username: this.settings.tx_username,
-          password: this.settings.tx_password
+          password: this.settings.tx_password,
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txResourceStats: function(resourceName) {
@@ -39,7 +41,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           },
           dataType: 'json',
           username: this.settings.tx_username,
-          password: this.settings.tx_password
+          password: this.settings.tx_password,
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -52,7 +56,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           },
           dataType: 'json',
           username: this.settings.tx_username,
-          password: this.settings.tx_password
+          password: this.settings.tx_password,
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txInsert: function(data) {
@@ -62,7 +68,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json'
+          contentType: 'application/json',
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txUpdate: function(data, resourceName) {
@@ -72,7 +80,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json'
+          contentType: 'application/json',
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txInsertSection: function(data) {
@@ -82,7 +92,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json'
+          contentType: 'application/json',
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -92,7 +104,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json'
+          contentType: 'application/json',
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txInsertCategory: function(data) {
@@ -102,7 +116,9 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json'
+          contentType: 'application/json',
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -113,6 +129,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
+          timeout: txProject.timeout,
+          secure: txProject.secure
         };
       },
       zdArticles: function(pageString) {
