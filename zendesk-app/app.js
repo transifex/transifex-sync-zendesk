@@ -18,15 +18,16 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
   return {
     requests: {
 
-      txProject: function() {
+      txProject: function(pageString) {
         return {
           url: txProject.url + '?details',
           type: 'GET',
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.page = pageString;
+          },
           dataType: 'json',
           username: this.settings.tx_username,
-          password: this.settings.tx_password,
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          password: this.settings.tx_password
         };
       },
       txResourceStats: function(resourceName) {
@@ -38,9 +39,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           },
           dataType: 'json',
           username: this.settings.tx_username,
-          password: this.settings.tx_password,
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          password: this.settings.tx_password
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -53,9 +52,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           },
           dataType: 'json',
           username: this.settings.tx_username,
-          password: this.settings.tx_password,
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          password: this.settings.tx_password
         };
       },
       txInsert: function(data) {
@@ -65,9 +62,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json',
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          contentType: 'application/json'
         };
       },
       txUpdate: function(data, resourceName) {
@@ -77,9 +72,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json',
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          contentType: 'application/json'
         };
       },
       txInsertSection: function(data) {
@@ -89,9 +82,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json',
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          contentType: 'application/json'
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -101,9 +92,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json',
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          contentType: 'application/json'
         };
       },
       txInsertCategory: function(data) {
@@ -113,9 +102,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           data: JSON.stringify(data),
-          contentType: 'application/json',
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          contentType: 'application/json'
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -126,8 +113,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           password: this.settings.tx_password,
           data: JSON.stringify(data),
           contentType: 'application/json',
-          timeout: txProject.timeout,
-          secure: txProject.secure
         };
       },
       zdArticles: function(pageString) {
@@ -319,6 +304,8 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       'zdCategoryUpdate.done': 'zdCategoryUpdateDone',
       'zdCategoryInsert.done': 'zdCategoryInsertDone',
 
+      'txResource.fail': 'syncRetryResource',
+      'txResourceStats.fail': 'syncRetryResourceStats',
       'zdArticles.fail': 'syncError',
       'zdSections.fail': 'syncError',
       'zdCategories.fail': 'syncError',
@@ -351,7 +338,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var tmpt = txProject.convertTimeoutSetting(this.settings.timeout);
       var tmps = txProject.convertSecureSetting(this.settings.secure);
       if (txProject.checkProjectApiUrl(tmp)) {
-        this.txGetProject();
+        this.txGetProject("");
         this.switchTo('loading_page');
 
       } else {
@@ -540,15 +527,15 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var page = this.$(linkId).attr("data-current-page");
       var type = this.$(linkId).attr("data-type");
       if (type === "articles") {
-        this.zdGetArticles(page);
+        this.txGetProject(page);
       }
 
       if (type === "categories") {
-        this.zdGetCategories(page);
+        this.txGetProjectCategories(page);
       }
 
       if (type === "sections") {
-        this.zdGetCategories(page);
+        this.txGetProjectSections(page);
       }
 
       this.switchTo('loading_page');
@@ -564,15 +551,15 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var page = this.$(linkId).attr("data-page");
       var type = this.$(linkId).attr("data-type");
       if (type === "articles") {
-        this.zdGetArticles(page);
+        this.txGetProject(page);
       }
 
       if (type === "categories") {
-        this.zdGetCategories(page);
+        this.txGetProjectCategories(page);
       }
 
       if (type === "sections") {
-        this.zdGetCategories(page);
+        this.txGetProjectSections(page);
       }
 
       this.switchTo('loading_page');
@@ -589,15 +576,15 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var type = this.$(linkId).attr("data-type");
       var nextPage = parseInt(page, 10) + 1;
       if (type === "articles") {
-        this.zdGetArticles(nextPage);
+        this.txGetProject(nextPage);
       }
 
       if (type === "categories") {
-        this.zdGetCategories(nextPage);
+        this.txGetProjectCategories(nextPage);
       }
 
       if (type === "sections") {
-        this.zdGetCategories(nextPage);
+        this.txGetProjectSections(nextPage);
       }
 
       this.switchTo('loading_page');
@@ -614,15 +601,15 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var type = this.$(linkId).attr("data-type");
       var prevPage = parseInt(page, 10) - 1;
       if (type === "articles") {
-        this.zdGetArticles(prevPage);
+        this.txGetProject(prevPage);
       }
 
       if (type === "categories") {
-        this.zdGetCategories(prevPage);
+        this.txGetProjectCategories(prevPage);
       }
 
       if (type === "sections") {
-        this.zdGetCategories(prevPage);
+        this.txGetProjectSections(prevPage);
       }
 
       this.switchTo('loading_page');
@@ -664,16 +651,16 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     uiSyncPageSectionsInit: function() {
       this.switchTo('loading_page');
-      this.zdGetSections("");
+      this.txGetProjectSections("");
     },
 
     uiSyncPageCategoriesInit: function() {
       this.switchTo('loading_page');
-      this.zdGetCategories("");
+      this.txGetProjectCategories("");
     },
     uiSyncPageArticlesInit: function() {
       this.switchTo('loading_page');
-      this.zdGetArticles("");
+      this.txGetProject("");
     },
 
 
@@ -768,6 +755,32 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         dataset: pageData
       });
     },
+    syncRetry: function(xhr) {
+      console.log(xhr);
+    },
+
+    syncRetryResource: function(xhr) {
+      this.doSetTimeoutRetryResource(xhr.resourceName, xhr.languageCode);
+    },
+
+    doSetTimeoutRetryResource: function(resource, locale) {
+      var timeout = 3000;
+      setTimeout(function() {
+        this.ajax('txResource', resource, locale);
+      }.bind(this), timeout);
+    },
+
+    syncRetryResourceStats: function(xhr) {
+      this.doSetTimeoutRetryResourceStats(xhr.resourceName);
+    },
+
+    doSetTimeoutRetryResourceStats: function(resource) {
+      var timeout = 3000;
+      setTimeout(function() {
+        this.ajax('txResourceStats', resource);
+      }.bind(this), timeout);
+    },
+
     getArticleStatus: function(id) {
       if (this.isDebug()) {
         var msg = messages.add('Get Status from Article for' + id, this.store(messages.key));
@@ -908,23 +921,63 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.$(linkId).css('cursor', 'pointer');
     },
 
-    txGetProject: function() {
+    txGetProject: function(page) {
       if (this.isDebug()) {
         var msg = messages.add('Get Project from Transifex', this.store(messages.key));
         this.store(messages.key, msg);
       }
 
-      this.ajax('txProject');
+      this.ajax('txProject', page);
     },
-    txProjectDone: function(data, textStatus) {
+
+    txProjectDone: function(data, textStatus, jqXHR) {
       if (this.isDebug()) {
         var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
         this.store(messages.key, msg);
       }
       this.store(txProject.key, data);
-      this.zdGetArticles("");
+      this.zdGetArticles(jqXHR.page);
 
     },
+    txGetProjectSections: function(page) {
+      if (this.isDebug()) {
+        var msg = messages.add('Get Project from Transifex', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
+
+      this.ajax('txProject', page);
+    },
+
+    txProjectSectionsDone: function(data, textStatus, jqXHR) {
+      if (this.isDebug()) {
+        var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
+      this.store(txProject.key, data);
+      this.zdGetSections(jqXHR.page);
+
+    },
+    txGetProjectCategories: function(page) {
+      if (this.isDebug()) {
+        var msg = messages.add('Get Project from Transifex', this.store(messages.key));
+        this.store(messages.key, msg);
+      }
+
+      this.ajax('txProject', page);
+    },
+
+    txProjectCategoriesDone: function(data, textStatus, jqXHR) {
+      if (this.isDebug()) {
+        var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
+      this.store(txProject.key, data);
+      this.zdGetCategories(jqXHR.page);
+
+    },
+
+
+
     txResourceStatsDone: function(data, textStatus, jqXHR) {
       if (this.isDebug()) {
         var msg = messages.add('Transifex Stats Retrieved with status:' + textStatus, this.store(messages.key));
@@ -952,7 +1005,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var locales = util.getLocalesFromArray(jqXHR.resourceName, localesArray);
       if (locales.length > 0) {
         for (var ii = 0; ii < locales.length; ii++) {
-
           this.ajax('txResource', jqXHR.resourceName, locales[ii]);
         }
       } else {
