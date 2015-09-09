@@ -30,7 +30,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txResourceStats: function(resourceName) {
@@ -44,7 +44,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -59,7 +59,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txInsert: function(data) {
@@ -71,7 +71,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txUpdate: function(data, resourceName) {
@@ -83,7 +83,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txInsertSection: function(data) {
@@ -95,7 +95,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -107,7 +107,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txInsertCategory: function(data) {
@@ -119,7 +119,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -131,7 +131,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: true
+          secure: false
         };
       },
       zdArticles: function(pageString) {
