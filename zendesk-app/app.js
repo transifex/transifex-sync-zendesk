@@ -28,8 +28,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
-          timeout: txProject.timeout,
-          secure: txProject.secure
+          timeout: txProject.timeout
         };
       },
       txResourceStats: function(resourceName) {
