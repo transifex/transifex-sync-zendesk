@@ -10,7 +10,9 @@ Help Center
 - Categories
 
 # DevMaster Branch
-This branch enables testing with the ZAT client.  The only difference between this and master is that for all Transifex calls, secure is set to 'true' for master and 'false' for devmaster.
+This branch enables testing with the ZAT client.  The only difference between this and master is that for all Transifex calls, secure is set to 'true' for master and 'false' for devmaster.  Also be sure to update the manifest.json with the latest version info.
+
+
 
 Project Directory Structure (the interesting bits)
 ```
