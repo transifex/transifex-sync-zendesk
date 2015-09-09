@@ -9,19 +9,17 @@ Help Center
 - Sections
 - Categories
 
-# Releasing Notes
-DevMaster Branch
 
-This branch enables testing with the ZAT client.  The only differences between this and master is any dev specific configuration.  A couple of examples is the private flag in manifest.json and secure parameters on Transifex api calls. 
+## Releasing
 
+Semantic versioning -
+Each release should be versioned in Github. THese releases will be marked as 'pre-release' until the version is launched on the Zendesk app store.
 
-Semantic Versioning
-
-All releases will follow semantic versioning, and versions will be counted as 'pre-releases' until they are live on the Zendesk app store.  Also be sure to update the manifest.json with the latest version info.
-
+DevMaster branch -
+This branch enables testing with the ZAT client.  The only difference between this and master is any dev specific configuration so examples include the 'private' property in manifest.json and secure properties in Transifex api calls.
 
 
-Project Directory Structure (the interesting bits)
+## Project Directory Structure
 ```
 |
 +- zendesk-app 

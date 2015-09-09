@@ -367,7 +367,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       }
     },
 
-    teardown: function(){
+    teardown: function() {
       clearTimeout(this.updateMessage);
       clearTimeout(this.doSetTimeoutResource);
       clearTimeout(this.doSetTimeoutResourceStats);
@@ -986,7 +986,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       }
       this.store(txProject.key, data);
       var type = jqXHR.type;
-      if (type === "articles" || type === "" ) {
+      if (type === "articles" || type === "") {
         this.zdGetArticles(jqXHR.page);
       }
 
@@ -997,7 +997,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       if (type === "sections") {
         this.zdGetSections(jqXHR.page);
       }
-      
+
 
     },
     txGetProjectSections: function(page) {
