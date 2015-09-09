@@ -9,8 +9,13 @@ Help Center
 - Sections
 - Categories
 
-# DevMaster Branch
-This branch enables testing with the ZAT client.  The only difference between this and master is that for all Transifex calls, secure is set to 'true' for master and 'false' for devmaster.  Also be sure to update the manifest.json with the latest version info.
+# Releasing
+
+Semantic versioning
+Each release should be versioned in Github. THese releases will be marked as 'pre-release' until the version is launched on the Zendesk app store.
+
+DevMaster branch
+This branch enables testing with the ZAT client.  The only difference between this and master is any dev specific configuration so examples include the 'private' property in manifest.json and secure properties in Transifex api calls.
 
 
 
