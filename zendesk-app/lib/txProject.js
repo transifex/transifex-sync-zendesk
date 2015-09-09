@@ -3,7 +3,6 @@ module.exports = {
   key: 'tx_project',
   url: '',
   timeout: 6000,
-  secure: true,
 
   resources: {
     TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
@@ -17,11 +16,13 @@ module.exports = {
     return true;
 
   },
+  /* Deprecated secure setting function
   convertSecureSetting: function(s) {
     this.secure = (s == "true"); // TODO bad side-effect clean up later
     return true;
 
   },
+  */
   convertUrlToApi: function(u) {
     if (this.checkProjectUrl(u)) {
       var m = this.resources.TX_PROJECT_URL_PATTERN.exec(u);
