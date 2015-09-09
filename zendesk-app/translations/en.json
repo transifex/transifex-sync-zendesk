@@ -40,12 +40,6 @@
                     "title": "Enter true to turn on app logging"
                 }
             },
-            "secure": {
-                "label": {
-                    "value": "Sync application secure http calls",
-                    "title": "Enter true to use secure calls"
-                }
-            },
             "timeout": {
                 "label": {
                     "value": "Sync application http timout",

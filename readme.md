@@ -9,6 +9,8 @@ Help Center
 - Sections
 - Categories
 
+# DevMaster Branch
+This branch enables testing with the ZAT client.  The only difference between this and master is that for all Transifex calls, secure is set to 'true' for master and 'false' for devmaster.
 
 Project Directory Structure (the interesting bits)
 ```
@@ -17,7 +19,21 @@ Project Directory Structure (the interesting bits)
    |
    +- assets // basically images
    |
-   +- lib // CommonJS Modules
+   +- lib 
+      |
+      +- messages.js // util library for logging
+      |
+      +- syncUtil.js // helper functions and generic conversion utils
+      |
+      +- txProject.js // functions specific to the Transifex project
+      |
+      +- zdArticles.js // functions specific to the Zendesk articles
+      |
+      +- zdCategories.js // functions specific to Zendesk categories
+      |
+      +- zdSections.js // functions specific to Zendesk sections
+      |
+      +- zdTranslations.js // functions specific to Zendesk translations
    |
    +- templates // Handlebars UI
    |
@@ -47,7 +63,7 @@ Project Directory Structure (the interesting bits)
 |
 +- node_modules // not checked in created by npm
 	|
-	+- // symbolic links for libraries - TODO figure out a better approach
+	+- // symbolic links for commonJS libraries - TODO figure out a better approach
 ```
     
 ## Running the code
@@ -87,7 +103,7 @@ Currently the app consists of 4 pages:
 - loading_page.hdbs - This is a spinner page that displays during syncing
 - error_page.hdbs - This page is displayed when app or ajax errors occur
 
-## Feature Switch
+## Feature Switch - For planned future issues
 
 For backward compatibility there is a feature switch specified in the configuration.  This switch is a series of binary 'flags' which is represented by a hex number.  The current set of planned features are:
 

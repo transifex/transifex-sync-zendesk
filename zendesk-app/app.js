@@ -18,18 +18,19 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
   return {
     requests: {
 
-      txProject: function(pageString) {
+      txProject: function(typeString, pageString) {
         return {
           url: txProject.url + '?details',
           type: 'GET',
           beforeSend: function(jqxhr, settings) {
             jqxhr.page = pageString;
+            jqxhr.type = typeString;
           },
           dataType: 'json',
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txResourceStats: function(resourceName) {
@@ -43,7 +44,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txResource: function(resourceName, languageCode) {
@@ -58,7 +59,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           username: this.settings.tx_username,
           password: this.settings.tx_password,
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txInsert: function(data) {
@@ -70,7 +71,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txUpdate: function(data, resourceName) {
@@ -82,7 +83,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txInsertSection: function(data) {
@@ -94,7 +95,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txUpdateSection: function(data, resourceName) {
@@ -106,7 +107,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txInsertCategory: function(data) {
@@ -118,7 +119,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       txUpdateCategory: function(data, resourceName) {
@@ -130,7 +131,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           data: JSON.stringify(data),
           contentType: 'application/json',
           timeout: txProject.timeout,
-          secure: txProject.secure
+          secure: false
         };
       },
       zdArticles: function(pageString) {
@@ -324,6 +325,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       'txResource.fail': 'syncRetryResource',
       'txResourceStats.fail': 'syncRetryResourceStats',
+      'zdArticleGetTranslations.fail': 'syncRetryArticleTranslation',
       'zdArticles.fail': 'syncError',
       'zdSections.fail': 'syncError',
       'zdCategories.fail': 'syncError',
@@ -334,7 +336,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       'txUpdateSection.fail': 'syncError',
       'txInsertCategory.fail': 'syncError',
       'txUpdateCategory.fail': 'syncError',
-      'zdArticleGetTranslations.fail': 'syncError',
+
       'zdSectionGetTranslations.fail': 'syncError',
       'zdCategoryGetTranslations.fail': 'syncError',
       'zdArticleUpdate.fail': 'syncError',
@@ -354,7 +356,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store('completed_resources', '');
       var tmp = txProject.convertUrlToApi(this.settings.tx_project);
       var tmpt = txProject.convertTimeoutSetting(this.settings.timeout);
-      var tmps = txProject.convertSecureSetting(this.settings.secure);
       if (txProject.checkProjectApiUrl(tmp)) {
         this.txGetProject("");
         this.switchTo('loading_page');
@@ -427,7 +428,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           this.$("span.message").text(this.messages[action].fail);
         }
       }
-
+      clearTimeout(this.updateMessage);
     },
 
     isDebug: function() {
@@ -783,9 +784,17 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     doSetTimeoutRetryResource: function(resource, locale) {
       var timeout = 3000;
-      setTimeout(function() {
-        this.ajax('txResource', resource, locale);
-      }.bind(this), timeout);
+      setTimeout(this.doSetTimeoutResource(resource, locale), timeout);
+    },
+
+    doSetTimeoutResource: function(resource, locale) {
+      this.ajax('txResource', resource, locale);
+      clearTimeout(this.doSetTimeoutResource);
+    },
+
+    doSetTimeoutResourceStats: function(resource) {
+      this.ajax('txResourceStats', resource);
+      clearTimeout(this.doSetTimeoutResourceStats);
     },
 
     syncRetryResourceStats: function(xhr) {
@@ -794,9 +803,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     doSetTimeoutRetryResourceStats: function(resource) {
       var timeout = 3000;
-      setTimeout(function() {
-        this.ajax('txResourceStats', resource);
-      }.bind(this), timeout);
+      setTimeout(this.doSetTimeoutResourceStats(resource), timeout);
     },
 
     getArticleStatus: function(id) {
@@ -836,6 +843,22 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.ajax('zdArticleGetTranslations', article_id);
 
     },
+
+    doSetTimeoutArticleTranslation: function(id) {
+      this.ajax('zdArticleGetTranslations', id);
+      clearTimeout(this.doSetTimeoutArticleTranslation);
+    },
+
+    syncRetryArticleTranslation: function(xhr) {
+      this.syncRetrySetTimeoutRetryArticleTranslation(xhr.articleId);
+    },
+
+    syncRetrySetTimeoutArticleTranslation: function(id) {
+      var timeout = 3000;
+      setTimeout(this.doSetTimeoutArticleTranslation(id), timeout);
+    },
+
+
     zdArticleGetTranslationsDone: function(data, textStatus, jqXHR) {
       if (this.isDebug()) {
         var msg = messages.add('Zendesk Article Locales with status:' + textStatus, this.store(messages.key));
@@ -945,7 +968,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
 
-      this.ajax('txProject', page);
+      this.ajax('txProject', 'articles', page);
     },
 
     txProjectDone: function(data, textStatus, jqXHR) {
@@ -954,7 +977,19 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
       this.store(txProject.key, data);
-      this.zdGetArticles(jqXHR.page);
+      var type = jqXHR.type;
+      if (type === "articles" || type === "" ) {
+        this.zdGetArticles(jqXHR.page);
+      }
+
+      if (type === "categories") {
+        this.zdGetCategories(jqXHR.page);
+      }
+
+      if (type === "sections") {
+        this.zdGetSections(jqXHR.page);
+      }
+      
 
     },
     txGetProjectSections: function(page) {
@@ -963,7 +998,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
 
-      this.ajax('txProject', page);
+      this.ajax('txProject', 'sections', page);
     },
 
     txProjectSectionsDone: function(data, textStatus, jqXHR) {
@@ -981,7 +1016,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.store(messages.key, msg);
       }
 
-      this.ajax('txProject', page);
+      this.ajax('txProject', 'categories', page);
     },
 
     txProjectCategoriesDone: function(data, textStatus, jqXHR) {
@@ -1134,40 +1169,12 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         var resourceName = 'articles-' + articleId;
         if (util.isStringinArray(resourceName, resources)) {
 
-          this.doSetTimeoutArticleStatus(articleId, i);
+          this.getArticleStatus(articleId);
 
         }
-        this.doSetTimeoutArticleTranslations(articleId, i);
+        this.zdGetArticleTranslations(articleId);
       }
       this.uiSyncPageArticles();
-    },
-    doSetTimeoutArticleStatus: function(id, i) {
-      var timeout = this.timeoutOffset(i);
-      setTimeout(function() {
-        this.getArticleStatus(id);
-      }.bind(this), timeout);
-    },
-
-    doSetTimeoutArticleTranslations: function(id, i) {
-      var timeout = this.timeoutOffsetArticles(i);
-      setTimeout(function() {
-        this.zdGetArticleTranslations(id);
-      }.bind(this), timeout);
-    },
-
-    timeoutOffset: function(increment) {
-      var max = txProject.timeout;
-      var min = txProject.timeout / (increment + 1);
-      var ret = Math.random() * (max - min);
-      return ret;
-
-    },
-
-    timeoutOffsetArticles: function(increment) {
-      var max = zdArticles.timeout;
-      var min = zdArticles.timeout / (increment + 1);
-      return Math.random() * (max - min) + min;
-
     },
 
     txResourceDone: function(data, textStatus, jqXHR) {
