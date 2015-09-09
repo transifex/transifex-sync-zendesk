@@ -294,6 +294,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
     },
     events: {
       'app.activated': 'init',
+      'app.willDestroy': 'teardown',
       'click .page_action_articles': 'uiSyncPageArticlesInit',
       'click .page_action_sections': 'uiSyncPageSectionsInit',
       'click .page_action_categories': 'uiSyncPageCategoriesInit',
@@ -364,6 +365,13 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         this.uiErrorPageInit();
         this.updateMessage("projectUrlConfig", "fail");
       }
+    },
+
+    teardown: function(){
+      clearTimeout(this.updateMessage);
+      clearTimeout(this.doSetTimeoutResource);
+      clearTimeout(this.doSetTimeoutResourceStats);
+      clearTimeout(this.doSetTimeoutArticleTranslation);
     },
 
     zdCategoryInsertDone: function(data, textStatus) {
