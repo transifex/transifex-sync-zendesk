@@ -474,6 +474,8 @@ describe('Test Tx Zendesk App', function() {
 
         it("combine data articles", function() {
             var articleUIArray = myUtil.mapSyncPage(articleArray, testLangs, "https://www.transifex.com/projects/p/live-test-1/");
+            console.log(articleUIArray);
+            console.log(myGoodArray);
             assert(_.isEqual(myGoodArray, articleUIArray));
 
         });
