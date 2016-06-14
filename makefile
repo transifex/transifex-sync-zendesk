@@ -2,13 +2,7 @@ REPORTER = spec
 
 init:
 	npm install;
-	cd ./node_modules | ln -s ../zendesk-app/lib/syncUtil.js ./node_modules/syncUtil.js;
-	cd ./node_modules | ln -s ../zendesk-app/lib/txProject.js ./node_modules/txProject.js;
-	cd ./node_modules | ln -s ../zendesk-app/lib/zdArticles.js ./node_modules/zdArticles.js;
-	cd ./node_modules | ln -s ../zendesk-app/lib/zdCategories.js ./node_modules/zdCategories.js;
-	cd ./node_modules | ln -s ../zendesk-app/lib/zdSections.js ./node_modules/zdSections.js;
-	cd ./node_modules | ln -s ../zendesk-app/lib/zdTranslations.js ./node_modules/zdTranslations.js;
-	cd ./node_modules | ln -s ../zendesk-app/lib/messages.js ./node_modules/messages.js;
+	ln -s ./node_modules/webpack/bin/webpack.js ./webpack
 
 test:
 		@NODE_ENV=test ./node_modules/.bin/csslint ./**/*.css
@@ -21,9 +15,9 @@ test-w:
 				--reporter $(REPORTER) \
 				--watch
 run:
-	cd ./zendesk-app;cat ../inputs.txt | zat server;
+	cd ./dist;cat ../inputs.txt | zat server;
 
 package:
-	cd ./zendesk-app;zat package
+	cd ./dist;zat package
 
 .PHONY: test test-w

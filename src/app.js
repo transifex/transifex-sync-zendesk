@@ -1,19 +1,21 @@
 (function() {
-  var myUtil = require('syncUtil');
-  var myTxProject = require('txProject');
-  var myZdArticles = require('zdArticles');
-  var myZdSections = require('zdSections');
-  var myZdTranslations = require('zdTranslations');
-  var myZdCategories = require('zdCategories');
-  var myMessages = require('messages');
-  return txApp(myUtil, myTxProject, myZdArticles, myZdSections, myZdTranslations, myZdCategories, myMessages);
+  var myUtil = require('../lib/syncUtil.js');
+  var myTxProject = require('../lib/txProject.js');
+  var myTxResource = require('../lib/txResource.js');
+  var myZdArticles = require('../lib/zdArticles.js');
+  var myZdSections = require('../lib/zdSections.js');
+  var myZdTranslations = require('../lib/zdTranslations.js');
+  var myZdCategories = require('../lib/zdCategories.js');
+  var myMessages = require('../lib/messages.js');
+  var myCommon = require('../lib/common.js');
+  return txApp(myUtil, myTxProject, myTxResource, myZdArticles, myZdSections, myZdTranslations, myZdCategories, myMessages, myCommon);
 }());
 
 if (typeof exports !== 'undefined') {
   exports.txApp = txApp();
 }
 
-function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCategories, messages) {
+function txApp(syncUtil, txProject, txResource, zdArticles, zdSections, zdTranslations, zdCategories, messages, common) {
 
   return {
     requests: {
@@ -357,6 +359,11 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store('completed_resources', '');
       var tmp = txProject.convertUrlToApi(this.settings.tx_project);
       var tmpt = txProject.convertTimeoutSetting(this.settings.timeout);
+      this.featureConfig = function() {};
+      var features = JSON.parse(this.settings.features);
+      featureConfig.prototype.isEnabled = function(key) {
+        return (features[key]) ? true : false
+      }
       if (txProject.checkProjectApiUrl(tmp)) {
         this.txGetProject("");
         this.switchTo('loading_page');
@@ -469,7 +476,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       if (zdObjectType === "article") {
         var articles = this.store(zdArticles.key);
         var article = zdArticles.getSingle(zdObjectId, articles);
-        resource_request = zdArticles.getTxRequest(article);
+        resource_request = common.txRequestFormat(this.featureConfig, article);
         this.txUpsertResource(resource_request, txResourceName);
         syncComplete = true;
       }
@@ -511,7 +518,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       var completedResources = this.store('completed_resources'); // get list of locales
 
-      var locales = util.getLocalesFromArray(txResourceName, completedResources);
+      var locales = syncUtil.getLocalesFromArray(txResourceName, completedResources);
 
       var downloadComplete = true; // assume truth for exclusion
       for (var i = 0; i < locales.length; i++) { // iterate through list of locales
@@ -524,7 +531,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           var localeComplete = false;
           if (parseInt(ii, 10) !== -1) {
 
-            var zdLocale = util.txLocaletoZd(locales[i]);
+            var zdLocale = syncUtil.txLocaletoZd(locales[i]);
             if (zdObjectType === "article") {
               this.zdUpsertArticleTranslation(resourceList[ii].value, zdObjectId, zdLocale);
               localeComplete = true;
@@ -652,7 +659,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store('articlearray', articleArray);
       var resources = this.store('completed_resources');
 
-      var pageData = util.mapSyncPage(articleArray, resources, this.settings.tx_project);
+      var pageData = syncUtil.mapSyncPage(articleArray, resources, this.settings.tx_project);
       var paginationVisible = zdArticles.checkPagination(articles);
       if (paginationVisible) {
         var currentPage = zdArticles.getCurrentPage(articles);
@@ -697,7 +704,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       this.store('articlearray', articleArray);
       var resources = this.store('completed_resources');
 
-      var pageData = util.mapSyncPage(articleArray, resources, this.settings.tx_project);
+      var pageData = syncUtil.mapSyncPage(articleArray, resources, this.settings.tx_project);
       var paginationVisible = zdArticles.checkPagination(articles);
       if (paginationVisible) {
         var currentPage = zdArticles.getCurrentPage(articles);
@@ -740,7 +747,6 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
           pages: zdSections.getPages(sections)
         });
       }
-
 
       pageData = _.extend(pageData, {
         type: "sections",
@@ -1037,14 +1043,12 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
     },
 
-
-
     txResourceStatsDone: function(data, textStatus, jqXHR) {
       if (this.isDebug()) {
         var msg = messages.add('Transifex Stats Retrieved with status:' + textStatus, this.store(messages.key));
         this.store(messages.key, msg);
       }
-      var localesComplete = util.txGetCompletedTranslations(jqXHR.resourceName, data);
+      var localesComplete = syncUtil.txGetCompletedTranslations(jqXHR.resourceName, data);
 
       //  if (localesComplete.length > 0) {
       var localesArray = this.store('completed_resources'); //check existing locales
@@ -1063,7 +1067,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       }
       //   }
 
-      var locales = util.getLocalesFromArray(jqXHR.resourceName, localesArray);
+      var locales = syncUtil.getLocalesFromArray(jqXHR.resourceName, localesArray);
       if (locales.length > 0) {
         for (var ii = 0; ii < locales.length; ii++) {
           this.ajax('txResource', jqXHR.resourceName, locales[ii]);
@@ -1123,7 +1127,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var resources = txProject.getResourceArray(project);
       for (var i = 0; i < limit; i++) {
         var resourceName = 'sections-' + data.sections[i].id;
-        if (util.isStringinArray(resourceName, resources)) {
+        if (syncUtil.isStringinArray(resourceName, resources)) {
           this.getSectionStatus(data.sections[i].id);
         }
         this.zdGetSectionTranslations(data.sections[i].id);
@@ -1146,7 +1150,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       var resources = txProject.getResourceArray(project);
       for (var i = 0; i < limit; i++) {
         var resourceName = 'categories-' + data.categories[i].id;
-        if (util.isStringinArray(resourceName, resources)) {
+        if (syncUtil.isStringinArray(resourceName, resources)) {
 
           this.getCategoryStatus(data.categories[i].id);
         }
@@ -1175,7 +1179,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       for (var i = 0; i < limit; i++) {
         var articleId = data.articles[i].id;
         var resourceName = 'articles-' + articleId;
-        if (util.isStringinArray(resourceName, resources)) {
+        if (syncUtil.isStringinArray(resourceName, resources)) {
 
           this.getArticleStatus(articleId);
 
@@ -1226,7 +1230,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       var project = this.store(txProject.key);
       var resources = txProject.getResourceArray(project);
-      if (util.isStringinArray(slug, resources)) {
+      if (syncUtil.isStringinArray(slug, resources)) {
 
         this.ajax('txUpdate', content, slug);
       } else {
@@ -1242,7 +1246,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       var project = this.store(txProject.key);
       var resources = txProject.getResourceArray(project);
-      if (util.isStringinArray(slug, resources)) {
+      if (syncUtil.isStringinArray(slug, resources)) {
 
         this.ajax('txUpdateSection', content, slug);
       } else {
@@ -1258,7 +1262,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       var project = this.store(txProject.key);
       var resources = txProject.getResourceArray(project);
-      if (util.isStringinArray(slug, resources)) {
+      if (syncUtil.isStringinArray(slug, resources)) {
 
         this.ajax('txUpdateCategory', content, slug);
       } else {
@@ -1276,14 +1280,14 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
         zdLocale = localeRegion[0];
       }
       var locales = this.store('zd_locales');
-      var translationData = util.zdGetTranslationObject(resource_data, zdLocale);
+      var translationData = common.translationObjectFormat(this.featureConfig, resource_data, zdLocale);
       var i = _.findIndex(locales, {
         id: parseInt(article_id, 10)
       });
       if (i !== -1) {
         var localesArray = locales[i].zd_locale;
 
-        if (util.isStringinArray(zdLocale, localesArray)) {
+        if (syncUtil.isStringinArray(zdLocale, localesArray)) {
 
           this.ajax('zdArticleUpdate', translationData, article_id, zdLocale);
         } else {
@@ -1307,7 +1311,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
 
       if (i !== -1) {
         var localesArray = locales[i].zd_locale;
-        if (util.isStringinArray(zdLocale, localesArray)) {
+        if (syncUtil.isStringinArray(zdLocale, localesArray)) {
 
           this.ajax('zdSectionUpdate', translationData, section_id, zdLocale);
         } else {
@@ -1331,7 +1335,7 @@ function txApp(util, txProject, zdArticles, zdSections, zdTranslations, zdCatego
       });
       if (i !== -1) {
         var localesArray = locales[i].zd_locale;
-        if (util.isStringinArray(zdLocale, localesArray)) {
+        if (syncUtil.isStringinArray(zdLocale, localesArray)) {
 
           this.ajax('zdCategoryUpdate', translationData, category_id, zdLocale);
         } else {

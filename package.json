@@ -7,22 +7,26 @@
     "test": "test"
   },
   "dependencies": {
-    "should": "^6.0.1",
     "csslint": "0.10.0",
     "handlebars": "3.0.3",
     "jquery": "2.1.4",
     "jshint": "2.7.0",
     "mocha": "2.2.4",
+    "mocha-loader": "^0.7.1",
     "should": "6.0.1",
-    "underscore": "1.8.3",
-    "tv4": "1.1.9",
     "sinon": "1.14.1",
-    "spahql": "0.7.6"
+    "spahql": "0.7.6",
+    "tv4": "1.1.9",
+    "underscore": "1.8.3",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "make test"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jsdom": "^9.2.1"
+  }
 }
