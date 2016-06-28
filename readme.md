@@ -21,59 +21,31 @@ This branch enables testing with the ZAT client.  The only difference between th
 
 ## Project Directory Structure
 ```
-|
-+- zendesk-app 
-   |
-   +- assets // basically images
-   |
-   +- lib 
-      |
-      +- messages.js // util library for logging
-      |
-      +- syncUtil.js // helper functions and generic conversion utils
-      |
-      +- txProject.js // functions specific to the Transifex project
-      |
-      +- zdArticles.js // functions specific to the Zendesk articles
-      |
-      +- zdCategories.js // functions specific to Zendesk categories
-      |
-      +- zdSections.js // functions specific to Zendesk sections
-      |
-      +- zdTranslations.js // functions specific to Zendesk translations
-   |
-   +- templates // Handlebars UI
-   |
-   +- translations // locale specific json for the app
-   |
-   +- app.css // All CSS UI styles is here
-   |
-   +- app.js // Main app definition, includes all external endpoints
-   |
-   +- manifest.json // ZD Settings for the app
-
-|
-+- test
-   |
-   +- data // json files used to mock external calls
-   |
-   +- schemas // json files used to validate...er...well json files
-   |
-   +- testApp.js // main unit tests...needs refactoring
-
-|
-+- makefile // easy CLI targets - refactor to Grunt at some point
-|
-+- inputs.txt // Some default app settings used by make - not checked in
-|
-+- package.json // npm deps for tests
-|
-+- node_modules // not checked in created by npm
-	|
-	+- // symbolic links for commonJS libraries - TODO figure out a better approach
+├── assets             // marketing images
+├── bin
+│   └── repl.js        // interactive cli commands
+├── dist               // final app built by webpack 
+│   
+├── lib                // app modules
+├── makefile           // handy CLI commands (legacy)
+├── package.json       // webpack and testing deps
+├── readme.md          // this file
+├── src                // main app files
+│   ├── app.css
+│   ├── app.js
+│   └── manifest.json
+├── templates          // handlebars views
+├── test
+│   ├── data           // Json unit test data files
+│   ├── testApp.js     // main unittests
+├── translations
+│   └── en.json        // i18n for zendesk app
+└── webpack.config.js  // webpack config
 ```
     
-## Running the code
+## Running the code (Legacy)
+
+Note: I am moving away from maintaining a separate makefile, and instead using an interactive repl
 
 Note all make commands should be run from 'root'.
 Be sure you Download and install 'zat' tool
@@ -110,11 +82,10 @@ Currently the app consists of 4 pages:
 - loading_page.hdbs - This is a spinner page that displays during syncing
 - error_page.hdbs - This page is displayed when app or ajax errors occur
 
-## Feature Switch - For planned future issues
+## Feature Toggle - For planned future enhancement
 
-For backward compatibility there is a feature switch specified in the configuration.  This switch is a series of binary 'flags' which is represented by a hex number.  The current set of planned features are:
+For backward compatibility there is a feature switch specified in the configuration. Feature switches are a JSON array of key names.  Because of the limited types available in manifest.json...they are specified as a JSON string.
+For example turning on HTML formatting feature: '["tx-resource-html"]'.  
 
-- digit 1 = Html parsing - https://github.com/transifex/transifex-sync-zendesk/issues/21
-- digit 2 = Zendesk Ticket support - https://github.com/transifex/transifex-sync-zendesk/issues/22
-- digit 3 = Locale sync - https://github.com/transifex/transifex-sync-zendesk/issues/23
-- digit 4 = iFrame Transifex view - https://github.com/transifex/transifex-sync-zendesk/issues/24
+A list of features:
+tx-resource-html - Enables the Sync app to save Transifex Resources as HTML instead of JSON
