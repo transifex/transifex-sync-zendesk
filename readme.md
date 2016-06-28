@@ -88,5 +88,4 @@ For backward compatibility there is a feature switch specified in the configurat
 For example turning on HTML formatting feature: ```'["tx-resource-html"]'```
 
 A list of features:
-
-tx-resource-html - Enables the app to save Transifex resources as HTML instead of JSON
+- tx-resource-html - Enables the app to save Transifex resources as HTML instead of JSON
