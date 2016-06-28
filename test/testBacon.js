@@ -1,5 +1,6 @@
 var should = require('should');
-var sinon = require('sinon');
+var sinon = require('sinon')
+
 /*global describe:true*/
 /*global it:true*/
 /*global before:true*/

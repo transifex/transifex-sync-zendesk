@@ -1,3 +1,4 @@
+// npm included dependencies
 var assert = require('assert');
 var sinon = require('sinon');
 _ = require("underscore");
@@ -6,14 +7,17 @@ var fs = require('fs');
 var tv4 = require('tv4');
 var hdbs = require('handlebars');
 var spahql = require('spahql');
-var myApp = require('../zendesk-app/app').txApp;
-var myUtil = require('../zendesk-app/lib/syncUtil');
-var myZdArticles = require('../zendesk-app/lib/zdArticles');
-zdArticles = require('../zendesk-app/lib/zdArticles');
-zdSections = require('../zendesk-app/lib/zdSections');
-zdCategories = require('../zendesk-app/lib/zdCategories');
-txProject = require('../zendesk-app/lib/txProject');
-var myZdTranslations = require('../zendesk-app/lib/zdTranslations');
+
+// application included dependencies
+var myApp = require('../src/app.js').txApp;
+var myUtil = require('../lib/syncUtil.js');
+var syncUtil = require('../lib/syncUtil.js');
+var myZdArticles = require('../lib/zdArticles.js');
+zdArticles = require('../lib/zdArticles.js');
+zdSections = require('../lib/zdSections.js');
+zdCategories = require('../lib/zdCategories.js');
+txProject = require('../lib/txProject.js');
+var myZdTranslations = require('../lib/zdTranslations.js');
 
 /*global describe:true*/
 /*global it:true*/
@@ -35,9 +39,9 @@ describe('Test Tx Zendesk App', function() {
     ];
 
     const PATHS = {
-        TRANSLATION_EN_JSON: './zendesk-app/translations/en.json',
-        MANIFEST_JSON: './zendesk-app/manifest.json',
-        SYNCPAGE_HDBS: './zendesk-app/templates/sync_page.hdbs',
+        TRANSLATION_EN_JSON: './translations/en.json',
+        MANIFEST_JSON: './src/manifest.json',
+        SYNCPAGE_HDBS: './templates/sync_page.hdbs',
         TRANSLATION_SCHEMA: './test/schemas/translations.json',
         ZD_ARTICLE_JSON: './test/data/article.json',
         ZD_SECTION_JSON: './test/data/zdSection.json',
@@ -474,8 +478,6 @@ describe('Test Tx Zendesk App', function() {
 
         it("combine data articles", function() {
             var articleUIArray = myUtil.mapSyncPage(articleArray, testLangs, "https://www.transifex.com/projects/p/live-test-1/");
-            console.log(articleUIArray);
-            console.log(myGoodArray);
             assert(_.isEqual(myGoodArray, articleUIArray));
 
         });
