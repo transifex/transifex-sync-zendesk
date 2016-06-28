@@ -85,7 +85,8 @@ Currently the app consists of 4 pages:
 ## Feature Toggle - For planned future enhancement
 
 For backward compatibility there is a feature switch specified in the configuration. Feature switches are a JSON array of key names.  Because of the limited types available in manifest.json...they are specified as a JSON string.
-For example turning on HTML formatting feature: '["tx-resource-html"]'.  
+For example turning on HTML formatting feature: ```'["tx-resource-html"]'```
 
 A list of features:
-tx-resource-html - Enables the Sync app to save Transifex Resources as HTML instead of JSON
+
+tx-resource-html - Enables the app to save Transifex resources as HTML instead of JSON
