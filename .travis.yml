@@ -8,7 +8,7 @@ before_install:
 script:
   - npm test
   - if [[ "$TRAVIS_BRANCH" == "master" ]]; then npm run-script build-webpack; fi
-  - if [[ "$TRAVIS_TAG" == "$RELEASE_TAG ]]; then zat; fi
+  - if [[ "$TRAVIS_TAG" == "$RELEASE_TAG" ]]; then zat; fi
 
 after_success:
   - echo "Success - Branch($TRAVIS_BRANCH) Pull Request($TRAVIS_PULL_REQUEST) Tag($TRAVIS_TAG)"
