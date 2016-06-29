@@ -3,4 +3,5 @@ node_js:
   - "6"
 
 script:
+  - npm test
   - if [[ "$TRAVIS_BRANCH" == "master" ]]; then npm run-script build-webpack; fi
