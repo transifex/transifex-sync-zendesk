@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/transifex/transifex-sync-zendesk.svg)](https://travis-ci.org/transifex/transifex-sync-zendesk)
+
 Tx-Sync JavaScript Application for Zendesk
 ==================
 
