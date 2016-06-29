@@ -2,7 +2,6 @@ language: node_js
 node_js:
   - "6"
 before_install:
-   - rvm install 2
    - gem install zendesk_apps_tools
 
 script:
