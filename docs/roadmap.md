@@ -32,9 +32,11 @@ In order to support building this type of master 'app' from a single codebase, t
 
 - Simple UI: For this to work in many places, it's important that the UI be conceptually simple (also this seems to work well based on customer feedback) and not have many dependencies.  Right now the UI uses handlebars, but we might move to something even simpler.  Having some type of asyncronous action framework is still a *must* but this can be satisfied by jQuery for the forseeable future.
 
-## Reference Informnation
+## Diagrams
+<img alt="Tx-Sync" src="https://raw.githubusercontent.com/transifex/transifex-sync-zendesk/devel/docs/Tx-Sync_Future_Architecture.png" width="400px"/>
+<img alt="Tx-Sync with Live" src="https://raw.githubusercontent.com/transifex/transifex-sync-zendesk/devel/docs/Tx-Sync_Future_Architecture_w_Live.png" width="400px"/>
 
-This roadmap is based on development information from a number of sources:
+## Reference Informnation
 
 - Zendesk [https://developer.zendesk.com/apps/docs/agent/introduction](https://developer.zendesk.com/apps/docs/agent/introduction)
 - Desk.com [http://dev.desk.com/guides/](http://dev.desk.com/guides/)
