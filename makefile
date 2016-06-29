@@ -5,8 +5,8 @@ init:
 	ln -s ./node_modules/webpack/bin/webpack.js ./webpack
 
 test:
-		@NODE_ENV=test ./node_modules/.bin/csslint ./**/*.css
-		@NODE_ENV=test ./node_modules/.bin/jshint ./**/*.js || echo
+		@NODE_ENV=test ./node_modules/.bin/csslint ./src/app.css
+		@NODE_ENV=test ./node_modules/.bin/jshint ./src/*.js ./lib/*.js ./bin/*.js || echo
 		@NODE_ENV=test ./node_modules/mocha/bin/mocha \
 				--reporter $(REPORTER) 
 
