@@ -1,7 +1,14 @@
 language: node_js
 node_js:
   - "6"
+before_install:
+   - rvm install 2
+   - gem install zendesk_apps_tools
 
 script:
   - npm test
   - if [[ "$TRAVIS_BRANCH" == "master" ]]; then npm run-script build-webpack; fi
+  - if [[ "$TRAVIS_TAG" == "$RELEASE_TAG ]]; then zat; fi
+
+after_success:
+  - echo "Success - Branch($TRAVIS_BRANCH) Pull Request($TRAVIS_PULL_REQUEST) Tag($TRAVIS_TAG)"
