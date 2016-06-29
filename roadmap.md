@@ -36,6 +36,6 @@ In order to support building this type of master 'app' from a single codebase, t
 
 This roadmap is based on development information from a number of sources:
 
-- Zendesk[https://developer.zendesk.com/apps/docs/agent/introduction](https://developer.zendesk.com/apps/docs/agent/introduction)
+- Zendesk [https://developer.zendesk.com/apps/docs/agent/introduction](https://developer.zendesk.com/apps/docs/agent/introduction)
 - Desk.com [http://dev.desk.com/guides/](http://dev.desk.com/guides/)
 - Freshdesk [https://support.freshdesk.com/support/solutions/120519](https://support.freshdesk.com/support/solutions/120519)
