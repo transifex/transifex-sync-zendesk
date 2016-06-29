@@ -23,7 +23,8 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "build-webpack": "make build-webpack"
   },
   "author": "",
   "license": "Apache"

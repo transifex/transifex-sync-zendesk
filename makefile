@@ -20,4 +20,7 @@ run:
 package:
 	cd ./dist;zat package
 
+build-webpack:
+		@NODE_ENV=test ./node_modules/webpack/bin/webpack.js
+
 .PHONY: test test-w
