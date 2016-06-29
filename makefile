@@ -6,7 +6,7 @@ init:
 
 test:
 		@NODE_ENV=test ./node_modules/.bin/csslint ./**/*.css
-		@NODE_ENV=test ./node_modules/.bin/jshint ./**/*.js --exclude ./node_modules || echo
+		@NODE_ENV=test ./node_modules/.bin/jshint ./**/*.js || echo
 		@NODE_ENV=test ./node_modules/mocha/bin/mocha \
 				--reporter $(REPORTER) 
 
