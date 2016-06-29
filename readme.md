@@ -12,11 +12,13 @@ Help Center
 
 ## Releasing
 
-Semantic versioning -
-Each release should be versioned in Github. THese releases will be marked as 'pre-release' until the version is launched on the Zendesk app store.
+The release process for this application follows the following procedure. PRs->Devel (branch)->Master (branch)->Release (master tag)->Zendesk App Store (final artifact).
+A different set of automation processes applies to each step.
+- PRs and Devel: Mocha unit tests,jshint and csslint run in Nodejs
+- Master: Webpack build app into a single directory
+- Release: Final build using ZAT tool
 
-DevMaster branch -
-This branch enables testing with the ZAT client.  The only difference between this and master is any dev specific configuration so examples include the 'private' property in manifest.json and secure properties in Transifex api calls.
+Code will be versioned in devel but will be marked as 'pre-release' until it is launched on the Zendesk app store (note this might mean that some versions never get final versions).
 
 
 ## Project Directory Structure
