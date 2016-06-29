@@ -36,7 +36,7 @@ In order to support building this type of master 'app' from a single codebase, t
 <img alt="Tx-Sync" src="https://raw.githubusercontent.com/transifex/transifex-sync-zendesk/devel/docs/Tx-Sync_Future_Architecture.png" width="400px"/>
 <img alt="Tx-Sync with Live" src="https://raw.githubusercontent.com/transifex/transifex-sync-zendesk/devel/docs/Tx-Sync_Future_Architecture_w_Live.png" width="400px"/>
 
-## Reference Informnation
+## Reference Information
 
 - Zendesk [https://developer.zendesk.com/apps/docs/agent/introduction](https://developer.zendesk.com/apps/docs/agent/introduction)
 - Desk.com [http://dev.desk.com/guides/](http://dev.desk.com/guides/)
