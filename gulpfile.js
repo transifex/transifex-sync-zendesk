@@ -15,7 +15,7 @@ const manifest = require('./package.json');
 const $ = loadPlugins();
 
 // Gather the library data from `package.json`
-const config = manifest.babelBoilerplateOptions;
+const config = manifest.transifexSyncZendeskOptions;
 const mainFile = manifest.main;
 const destinationFolder = path.dirname(mainFile);
 const exportFileName = path.basename(mainFile, path.extname(mainFile));

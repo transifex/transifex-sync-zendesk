@@ -17,7 +17,7 @@
   },
   "keywords": [],
   "author": "Matthew Jackowski <mattjjacko@gmail.com>",
-  "license": "Apache 2",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/transifex/transifex-sync-zendesk/issues"
   },
@@ -27,7 +27,8 @@
     "babel-core": "^6.3.26",
     "babel-loader": "^6.2.0",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-polyfill": "^6.3.14",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.3.13",
     "chai": "^3.4.1",
@@ -45,6 +46,8 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
     "isparta": "^4.0.0",
+    "jquery": "^3.1.0",
+    "jsdom": "^9.4.1",
     "json-loader": "^0.5.3",
     "mocha": "^2.3.4",
     "object-assign": "^4.1.0",
@@ -54,8 +57,8 @@
     "webpack": "^1.12.9",
     "webpack-stream": "^3.1.0"
   },
-  "babelBoilerplateOptions": {
-    "entryFileName": "custard-moon.js",
+  "transifexSyncZendeskOptions": {
+    "entryFileName": "app.js",
     "mainVarName": "main"
   }
 }
