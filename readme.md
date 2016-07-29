@@ -25,27 +25,38 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
 
 ## Project Directory Structure
 ```
+├── CHANGELOG.md
+├── LICENSE
+├── README.md          // this file
 ├── assets             // marketing images
 ├── bin
-│   └── repl.js        // interactive cli commands
-├── dist               // final app built by webpack 
-│   
-├── lib                // app modules
-├── makefile           // handy CLI commands (legacy)
-├── package.json       // webpack and testing deps
-├── readme.md          // this file
-├── src                // main app files
+│   └── repl.js        // interactive ES6 cli environment
+├── dist               // FUTURE: final app built by webpack 
+├── docs               // FUTURE: Planning docs
+├── gulpfile.js        // Gulp targets for testing
+├── inputs.txt         // Preconfigured settings for testing
+├── makefile           // environment setup and zat targets
+├── package.json
+├── src   			   // main app files
+│   ├── app-new.js     // refactored app 
 │   ├── app.css
 │   ├── app.js
-│   └── manifest.json
-├── templates          // handlebars views
+│   ├── lib
+│   │   ├── transifex-api // Transifex REST API
+│   │   ├── zendesk-api   // Zendesk REST API
+│   │   └── ...  		  // Legacy libraries
+│   ├── manifest.json
+│   └── templates         // handlebars views
 ├── test
-│   ├── data           // Json unit test data files
-│   ├── testApp.js     // main unittests
-├── translations
-│   └── en.json        // i18n for zendesk app
-└── webpack.config.js  // webpack config
+│   ├── data  			  // Json unit test data files
+│   ├── runner.html       // boilerplate for browser tests
+│   ├── schemas           // Json validators
+│   ├── setup             // extra Mocha configuration
+│   ├── testApp.js        // main unittests
+└─── translations
+    └── en.json           // i18n for zendesk app
 ```
+
     
 ## Running the code (Legacy)
 
