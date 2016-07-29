@@ -37,24 +37,24 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
 ├── inputs.txt         // Preconfigured settings for testing
 ├── makefile           // environment setup and zat targets
 ├── package.json
-├── src   			   // main app files
+├── src   			       // main app files
 │   ├── app-new.js     // refactored app 
 │   ├── app.css
 │   ├── app.js
 │   ├── lib
-│   │   ├── transifex-api // Transifex REST API
-│   │   ├── zendesk-api   // Zendesk REST API
-│   │   └── ...  		  // Legacy libraries
+│   │   ├── transifex-api  // Transifex REST API
+│   │   ├── zendesk-api    // Zendesk REST API
+│   │   └── ...  		       // Legacy libraries
 │   ├── manifest.json
-│   └── templates         // handlebars views
+│   └── templates          // handlebars views
 ├── test
-│   ├── data  			  // Json unit test data files
-│   ├── runner.html       // boilerplate for browser tests
-│   ├── schemas           // Json validators
-│   ├── setup             // extra Mocha configuration
-│   ├── testApp.js        // main unittests
+│   ├── data  			       // Json unit test data files
+│   ├── runner.html        // boilerplate for browser tests
+│   ├── schemas            // Json validators
+│   ├── setup              // extra Mocha configuration
+│   ├── testApp.js         // main unittests
 └─── translations
-    └── en.json           // i18n for zendesk app
+    └── en.json            // i18n for zendesk app
 ```
 
     
