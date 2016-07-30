@@ -17,8 +17,12 @@ function txApp(txProject, txResource) {
 
   var requests = $.extend({}, txProject.requests, txResource.requests);
   var events = $.extend({}, txProject.events, txResource.events);
-  return {
-    requests: requests,
-    events: events
-  };
+  return $.extend({}, {
+    requests: txProject.requests,
+  }, {
+    events: txProject.events,
+  },
+    txProject.eventHandlers,
+    txProject.actionHandlers
+  );
 }

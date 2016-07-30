@@ -1,0 +1,105 @@
+import txProject from '../../src/lib/transifex-api/project.js';
+import { install } from 'source-map-support'
+install()
+
+global.jsonHandlers = txProject.jsonHandlers;
+
+describe('A function getResourceArray', () => {
+	let testJson
+	before(function(){
+		testJson = mockProjectJsonResponse();
+	})
+  it('should exist ', () => {
+    expect(jsonHandlers.getResourceArray).to.not.be.undefined;
+  });
+  it('should return an array ', () => {
+  	expect(jsonHandlers.getResourceArray(testJson)).to.be.array
+  });
+  it('should have a count of 3 ', () => {
+  	expect(jsonHandlers.getResourceArray(testJson).length).to.be.equal(3)
+  });
+ /*
+  it('each item should contain "slug" ', () => {
+
+  	// Check that we are pulling the slug keys
+  	var test = function (name) { return name.includes('slug') }
+  	jsonHandlers.getResourceArray(testJson).forEach(function(name,i){
+  		console.log('\nCheck array item:' + i)
+  		expect(test(name)).to.be.true
+  	});
+  });
+*/
+});
+
+describe('A function getSourceLocale', () => {
+	let testJson
+	before(function(){
+		testJson = mockProjectJsonResponse();
+	})
+  it('should exist ', () => {
+    expect(jsonHandlers.getSourceLocale).to.not.be.undefined;
+  });
+  it('should return a string ', () => {
+  	expect(jsonHandlers.getSourceLocale(testJson)).to.be.string
+  });
+});
+
+describe('A function getLocales', () => {
+	let testJson
+	before(function(){
+		testJson = mockProjectJsonResponse();
+	})
+  it('should exist ', () => {
+    expect(jsonHandlers.getLocales).to.not.be.undefined;
+  });
+  it('should return a array ', () => {
+  	expect(jsonHandlers.getLocales(testJson)).to.be.array
+  });
+});
+
+function mockProjectJsonResponse() {
+	return {
+    'archived': false, 
+    'last_updated': '2015-05-28T00:25:25.568', 
+    'description': 'txtest', 
+    'tags': '', 
+    'trans_instructions': '', 
+    'private': true, 
+    'slug': 'txtest-1', 
+    'source_language_code': 'en', 
+    'auto_join': false, 
+    'maintainers': [
+        {
+            'username': 'TestMattJJacko'
+        }
+    ], 
+    'fill_up_resources': false, 
+    'team': {
+        'id': 41053, 
+        'name': 'txtest team'
+    }, 
+    'organization': {
+        'slug': 'test-organization-4'
+    }, 
+    'teams': [
+        'fr_BE'
+    ], 
+    'homepage': '', 
+    'long_description': '', 
+    'resources': [
+        {
+            'slug': 'articles-205686967-slug', 
+            'name': 'articles-205686967-name'
+        },
+        {
+            'slug': 'articles-205686968-slug', 
+            'name': 'articles-205686968-name'
+        },
+        {
+            'slug': 'articles-205686969-slug', 
+            'name': 'articles-205686969-name'
+        }
+    ], 
+    'name': 'txtest'
+};
+}

@@ -3,6 +3,8 @@
  * @module transifex-api/project
  */
 
+var _ = require('underscore');
+
 module.exports = {
   // keep it safe, keep it secret
   // private
@@ -37,6 +39,26 @@ module.exports = {
     'txProject.fail': 'syncError'
   },
   eventHandlers: {
+    txProjectDone: function(data, textStatus, jqXHR) {
+      if (this.isDebug()) {
+        var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
+        this.store(messages.key, msg);
+      }
+      this.store(txProject.key, data);
+      var type = jqXHR.type;
+      if (type === "articles" || type === "") {
+        this.zdGetArticles(jqXHR.page);
+      }
+      if (type === "categories") {
+        this.zdGetCategories(jqXHR.page);
+      }
+      if (type === "sections") {
+        this.zdGetSections(jqXHR.page);
+      }
+
+    },
+  },
+  actionHandlers: {
     txGetProjectArticles: function(page) {
       if (this.isDebug()) {
         var msg = messages.add('Get Project from Transifex', this.store(messages.key));
@@ -60,24 +82,23 @@ module.exports = {
       }
       this.ajax('txProject', 'categories', page);
     },
-
-    txProjectDone: function(data, textStatus, jqXHR) {
-      if (this.isDebug()) {
-        var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
-        this.store(messages.key, msg);
-      }
-      this.store(txProject.key, data);
-      var type = jqXHR.type;
-      if (type === "articles" || type === "") {
-        this.zdGetArticles(jqXHR.page);
-      }
-      if (type === "categories") {
-        this.zdGetCategories(jqXHR.page);
-      }
-      if (type === "sections") {
-        this.zdGetSections(jqXHR.page);
-      }
-
-    },
+  },
+  jsonHandlers: {
+  getResourceArray: function(p) {
+    var result = [];
+    var r = p.resources;
+    if (_.isArray(r)) {
+      _.each(r, function(i) {
+        result.push(i.slug);
+      });
+    }
+    return result;
+  },
+  getSourceLocale: function(p) {
+    return p.source_language_code;
+  },
+  getLocales: function(p) {
+    return p.teams;
+  }
   }
 }

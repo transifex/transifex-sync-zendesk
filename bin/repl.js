@@ -9,7 +9,7 @@ let jsdom = require('jsdom').jsdom;
 let document = jsdom('<html></html>', {});
 let window = document.defaultView;
 let $ = require('jquery')(window);
-let txApp = require('../src/app.js');
+//let txApp = require('../src/app-new.js');
 let txProject = require('../src/lib/transifex-api/project');
 let txResource = require('../src/lib/transifex-api/resource');
 
@@ -34,7 +34,7 @@ function initializeContext(context) {
   context.app = app;
 //  context.txapi = TransifexApi;
   context.$ = $;
-  context.txApp = txApp;
+//  context.txApp = txApp;
   context.txProject = txProject;
   context.txResource = txResource;
 }
