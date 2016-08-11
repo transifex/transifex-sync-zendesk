@@ -52,7 +52,10 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
 │   ├── runner.html       // boilerplate for browser tests
 │   ├── schemas           // Json validators
 │   ├── setup             // extra Mocha configuration
-│   ├── testApp.js        // main unittests
+│   │   ├── browser       // Loads app dependencies in a browser friendly way
+│   │   ├── node          // Loads app dependencies for node tests
+│   │   └── setup         // Mocha sandbox, specifically mocks, stubs and spys
+│   └── unit              // unit tests
 └─── translations
     └── en.json           // i18n for zendesk app
 ```
