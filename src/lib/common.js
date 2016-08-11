@@ -1,16 +1,17 @@
-var zdArticles = require('../lib/zdArticles.js');
-var txResource = require('../lib/txResource.js')
-var syncUtil = require('../lib/syncUtil.js')
-module.exports = {
+var zdArticle = require('zendesk-api/article');
+var txResource = require('transifex-api/resource');
+var syncUtil = require('syncUtil');
+
+var common = module.exports = {
 
   translationObjectFormat: function(config, response, locale) {
     if (config.isEnabled("tx-resource-html")) {
-      return translationObjectHTML(response, locale);
+      return common.translationObjectHTML(response, locale);
     } else {
       return syncUtil.zdGetTranslationObject(response, locale);
     }
   },
-
+/*
   txRequestFormat: function(config, article) {
     if (config.isEnabled("tx-resource-html")) {
       return txRequestHTML(article);
@@ -18,16 +19,18 @@ module.exports = {
       return zdArticles.getTxRequest(article);
     }
   },
+*/
 
   translationObjectHTML: function(res, l) {
-    let gblTemplate =
-      "<div class=\"h-zdarticle\"><h1 class=\"p-title\"><%= title %></h1><data class=\"p-name\" value=\"<%= name %>\"></data></div>";
-    let r = txResource.Resource(res, gblTemplate)
-    let zdPartialArticle = {
-      name: Resource.getName(),
-      title: Resource.getTitle(),
-      body: Resource.getBody(),
-    }
+    var gblTemplate = "<h1><%= title %></h1>";
+    var re = new RegExp("<h1>(.*)</h1>(.*)");
+
+    var r = txResource.Resource(res, gblTemplate);
+    var zdPartialArticle = {
+      name: common.extractValues(res.content.replace(/\\"/g, '"'), gblTemplate).title,
+      title: common.extractValues(res.content.replace(/\\"/g, '"'), gblTemplate).title, 
+      body: res.content.replace(/\\"/g, '"').match(re)[2],
+    };
     var o = _.extend(zdPartialArticle, {
       locale: l
     });
@@ -35,22 +38,63 @@ module.exports = {
       "translation": o
     };
   },
+    createResourceName: function(zdId, zdObjectType, separator) {
+      return zdObjectType.toLowerCase() + separator + zdId;
+  },
 
+  //todo - refactor me
+  getTxRequest: function(a) { // articles or article
+    var arr = [];
+    var ret = [];
+    if (a.articles instanceof Array) {
+      arr = this.getIdList(a);
+    } else {
+      arr[0] = a.id;
+    }
+
+
+    for (var i = 0; i < arr.length; i++) {
+      var req = {
+        name: common.createResourceName(arr[i], 'articles', '-'),
+        slug: common.createResourceName(arr[i], 'articles', '-'),
+        priority: 0,
+        i18n_type: 'KEYVALUEJSON'
+      };
+
+
+      var o = {};
+      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getName(arr[i], a), o);
+      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitle(arr[i], a), o1);
+      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBody(arr[i], a), o2);
+      var o4 = syncUtil.addContent(req, o3);
+      ret[i] = o4;
+    }
+    if (a.articles instanceof Array) {
+      return ret;
+    } else {
+      return ret[0];
+    }
+
+  },
   txRequestHTML: function(article) {
-    let gblTemplate =
-      "<div class=\"h-zdarticle\"><h1 class=\"p-title\"><%= title %></h1><data class=\"p-name\" value=\"<%= name %>\"></data></div>";
+    var gblTemplate =
+      "<h1><%= title %></h1>";
+    var zdArticleContent = _.template(gblTemplate)({
+          title: article.title,
+          name: article.name,
+        }) + article.body;
 
-    let zdArticleContent = zdArticles.Article(article, gblTemplate)
-    let txRequestMade = {
+    var txRequestMade = {
       name: 'HTML-articles-' + article.id,
       slug: 'HTML-articles-' + article.id,
       priority: 0,
       i18n_type: 'HTML',
-      content: '{' + JSON.stringify(zdArticleContent) + '}',
-    }
-
+      content: zdArticleContent
+//      content: JSON.stringify(zdArticleContent)
+    };
     return txRequestMade;
   },
+
 
   // Extract Values via https://github.com/laktek
   // https://github.com/laktek/extract-values
