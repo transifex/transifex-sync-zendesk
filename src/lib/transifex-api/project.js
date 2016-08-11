@@ -27,7 +27,7 @@ var project = module.exports = {
         return r;
       }
     }
-    return "";
+    return false;
   },
   isValidAPIUrl: function(u) {
     var r = project.TX_PROJECT_API_URL_PATTERN.test(u);
