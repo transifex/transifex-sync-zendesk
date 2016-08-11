@@ -38,13 +38,13 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
 ├── makefile              // environment setup and zat targets
 ├── package.json
 ├── src                   // main app files
-│   ├── app-new.js        // refactored app 
 │   ├── app.css
 │   ├── app.js
 │   ├── lib
 │   │   ├── transifex-api // Transifex REST API
 │   │   ├── zendesk-api   // Zendesk REST API
-│   │   └── ...           // Legacy libraries
+│   │   ├── ui            // UI specific functions for each view
+│   │   └── ...           // Legacy libraries that need refactoring
 │   ├── manifest.json
 │   └── templates         // handlebars views
 ├── test
@@ -90,17 +90,26 @@ The application uses a separate set of dependencies loaded in app.js.  The ones 
 - Local Storage
 
 ## Views
-
-Currently the app consists of 4 pages:
-- sync_page.hdbs - This is the primary page for user interaction
+- sync_articles.hdbs - This displays a list of raw article information
+- sync-project.hdbs - This displays the Transifex project information
+- sync-resource - This displays meta information about each Transifex resource
+- sync-resource-language - This displays the content from each Transifex resource
+- sync_page_articles.hdbs - This is the primary page for managing Help Center articles
+- sync_page_sections.hdbs - This is the primary page for managing Help Center sections
+- sync_page_categories.hdbs - This is the primary page for managing Help Center categories
 - layout.hdbs - This has global tags for the app, it's part of the Zd framework
 - loading_page.hdbs - This is a spinner page that displays during syncing
 - error_page.hdbs - This page is displayed when app or ajax errors occur
 
 ## Feature Toggle - For planned future enhancement
 
-For backward compatibility there is a feature switch specified in the configuration. Feature switches are a JSON array of key names.  Because of the limited types available in manifest.json...they are specified as a JSON string.
-For example turning on HTML formatting feature: ```'["tx-resource-html"]'```
+For backward compatibility there is a feature switch specified in the configuration. Feature switches are a JSON object of key names.  Because of the limited types available in manifest.json...they are specified as a JSON string.
+This uses the 'features' config set in the manifest as a 'Text' field, so you will need to specifiy as a JSON object (ie {"html-tx-resource":false}).
+
+Example check for a feature flag inside of the app(notice 'this' refers to the global app object):
+```
+console.log(this.featureConfig('html-tx-resource'));
+```
 
 A list of features:
-- tx-resource-html - Enables the app to save Transifex resources as HTML instead of JSON
+- html-tx-resource - Enables the app to save Transifex resources as HTML instead of JSON.  Resources save this way will have a different resource name in Transifex (ie 'HTML-article-123456' instead of 'article-123456').
