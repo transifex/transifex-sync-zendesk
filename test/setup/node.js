@@ -5,6 +5,7 @@ global.jsdom = require('jsdom').jsdom;
 global.document = jsdom('<html></html>', {});
 global.window = document.defaultView;
 global.jq = require('jquery');
+global._ = require('underscore');
 
 require('babel-core/register');
 require('./setup')();

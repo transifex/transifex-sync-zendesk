@@ -3,81 +3,119 @@
  * @module transifex-api/project
  */
 
-module.exports = {
-  // keep it safe, keep it secret
-  // private
+var project = module.exports = {
+  // selfies
+  name: 'zendesk-test',
   key: 'tx_project',
-  url: '',
+  url: 'http://www.transifex.com/api/2/project/testproject/',
+  username: 'testuser',
+  password: 'testpass',
   timeout: 6000,
-  resources: {
-    TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
-    TX_PROJECT_API_URL_PATTERN: /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
-    TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/(.*)\/(.*)\//
+  logging: true,
+  TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
+  TX_PROJECT_API_URL_PATTERN: /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
+  TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/(.*)\/(.*)\//,
+  convertUrlToApi: function(u) {
+    if (project.isValidUrl(u)) {
+      var m = project.TX_PROJECT_URL_PATTERN.exec(u);
+      var p = "";
+      if (m !== null && m.length > 0) {
+        p = m[2]; //TODO make this more explicit that we are mapping the url path
+      }
+      var r = project.TX_PROJECT_API_URL_REPLACE.replace("[PROJECT_SLUG]", p);
+      if (project.isValidAPIUrl(r)) {
+        return r;
+      }
+    }
+    return false;
+  },
+  isValidAPIUrl: function(u) {
+    var r = project.TX_PROJECT_API_URL_PATTERN.test(u);
+    return r;
+
+  },
+  isValidUrl: function(u) {
+    var r = this.TX_PROJECT_URL_PATTERN.test(u);
+    return r;
+
   },
 
+  events: {
+    'txProject.done': 'txProjectDone',
+    'txProject.fail': 'txProjectSyncError'
+  },
   requests: {
     txProject: function(typeString, pageString) {
+      if (project.logging) {
+        console.log('txProject ajax request:' + typeString + '||' + pageString );
+      }
       return {
-        url: this.url + '?details',
+        url: project.url + '?details',
         type: 'GET',
         beforeSend: function(jqxhr, settings) {
           jqxhr.page = pageString;
           jqxhr.type = typeString;
         },
         dataType: 'json',
-        username: this.username,
-        password: this.password,
-        timeout: 3000,
+        username: project.username,
+        password: project.password,
+        timeout: 2000,
         secure: false
       };
     },
   },
-  events: {
-    'txProject.done': 'txProjectDone',
-    'txProject.fail': 'syncError'
-  },
   eventHandlers: {
-    txGetProjectArticles: function(page) {
-      if (this.isDebug()) {
-        var msg = messages.add('Get Project from Transifex', this.store(messages.key));
-        this.store(messages.key, msg);
-      }
-      this.ajax('txProject', 'articles', page);
-    },
-
-    txGetProjectSections: function(page) {
-      if (this.isDebug()) {
-        var msg = messages.add('Get Project from Transifex', this.store(messages.key));
-        this.store(messages.key, msg);
-      }
-      this.ajax('txProject', 'sections', page);
-    },
-
-    txGetProjectCategories: function(page) {
-      if (this.isDebug()) {
-        var msg = messages.add('Get Project from Transifex', this.store(messages.key));
-        this.store(messages.key, msg);
-      }
-      this.ajax('txProject', 'categories', page);
-    },
-
     txProjectDone: function(data, textStatus, jqXHR) {
-      if (this.isDebug()) {
-        var msg = messages.add('Transifex Project Retrieved with status:' + textStatus, this.store(messages.key));
-        this.store(messages.key, msg);
+      if (project.logging) {
+        console.log('Transifex Project Retrieved with status:' + textStatus);
       }
-      this.store(txProject.key, data);
-      var type = jqXHR.type;
-      if (type === "articles" || type === "") {
-        this.zdGetArticles(jqXHR.page);
-      }
-      if (type === "categories") {
-        this.zdGetCategories(jqXHR.page);
-      }
-      if (type === "sections") {
-        this.zdGetSections(jqXHR.page);
-      }
-
+      this.store(project.key, data);
+      this.syncStatus = _.without(this.syncStatus, project.key);
+      this.checkAsyncComplete();
     },
+    txProjectSyncError: function(jqXHR, textStatus) {
+      if (project.logging) {
+        console.log('Transifex Project Retrieved with status:' + textStatus);
+      }
+      //this.uiErrorPageInit();
+      this.syncStatus = _.without(this.syncStatus, project.key);
+      this.checkAsyncComplete();
+      if (jqXHR.status === 401) {
+        console.log('login error');
+        //this.updateMessage("txLogin", "error");
+      }
+    },
+  },
+  actionHandlers: {
+    asyncGetTxProject: function(type,page) {
+    if (project.logging) {
+        console.log('function: [asyncGetTxProject] params: [type]' + type + '|| [page]' + page );
+      }
+      this.syncStatus.push(project.key);
+        var that = this;
+        setTimeout(
+            function() {
+              that.ajax('txProject', type, page);
+            }
+          , project.timeout);
+    },
+  },
+  jsonHandlers: {
+  getResourceArray: function(p) {
+    var result = [];
+    var r = p.resources;
+    if (_.isArray(r)) {
+      _.each(r, function(i) {
+        result.push(i.slug);
+      });
+    }
+    return result;
+  },
+  getSourceLocale: function(p) {
+    return p.source_language_code;
+  },
+  getLocales: function(p) {
+    return p.teams;
   }
-}
+  }
+};

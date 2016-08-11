@@ -8,11 +8,20 @@
 .messagebox{margin-top:35px;}
 .spinner{width:100%;height:100%;text-align:center;padding:6px;}
 .wrapper{margin-left:5px;}
-span.sync-btn{padding-left:193px;}
+span.per-page-btn{padding-left:360px;}
+span.batch-upload-btn{padding-left:390px;}
+span.batch-download-btn{padding-left:0px;}
+span.sync-btn{padding-left:30px;}
 span.sync-message{margin-left:120px;font-family:proxima-nova,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:12.9219999313355px;}
 .txh3.underlined{color:#444;padding-bottom:.5em;border-bottom:1px solid #c3d5e3;font-size:1.692em;font-weight:300;font-family:"proxima-nova","Segoe UI",'Helvetica Neue','Arial',sans-serif;line-height:1;}
 .txh3.plain{color:#444;padding-bottom:.5em;padding-right:.5em;font-size:1.692em;font-weight:300;font-family:"proxima-nova","Segoe UI",'Helvetica Neue','Arial',sans-serif;line-height:1;}
 .txsubh3{padding-left:10px;}
+p.limited {
+    text-overflow: ellipsis; /* will make [...] at the end */
+    max-width: 260px; /* change to your preferences */
+    white-space: nowrap; /* paragraph to one line */
+    overflow:hidden; /* older browsers */
+    }
 p{margin:.2em 1em .3em 0em;font-family:proxima-nova,'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:12.9219999313355px;}
 
 /*
@@ -22,15 +31,11 @@ Credit: John Sardine - http://johnsardine.com/freebies/dl-html-css/simple-little
 table a:link{color:#125a8c;text-decoration:none;}
 table a:visited{color:#125a8c;text-decoration:none;}
 table a:active,table a:hover{color:#125a8c;text-decoration:underline;}
+table a.disabled{display:none;}
 table{font-weight:300;font-family:"proxima-nova","Segoe UI",'Helvetica Neue','Arial',sans-serif;color:#666;font-size:12px;background:#eaebec;margin:10px 10px 10px 0px;border:#ccc 1px solid;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px;-moz-box-shadow:0 1px 2px #d1d1d1;-webkit-box-shadow:0 1px 2px #d1d1d1;box-shadow:0 1px 2px #d1d1d1;}
 table th{padding:21px 25px 22px 25px;border-top:1px solid #fafafa;border-bottom:1px solid #e0e0e0;font-weight:300;color:#ffffff;background:#125a8c;background:-webkit-gradient(linear,left top,left bottom,from(#125a8c),to(#125a8c));background:-moz-linear-gradient(top,#125a8c,#125a8c);}
-
-/*
-table th:first-child{
-	text-align: left;
-	padding-left:20px;
-}
-*/
+table th:first-child{text-align: left;padding-left:20px;}
+table th.wide{min-width: 300px;}
 table tr:first-child th:first-child{-moz-border-radius-topleft:3px;-webkit-border-top-left-radius:3px;border-top-left-radius:3px;}
 table tr:first-child th:last-child{-moz-border-radius-topright:3px;-webkit-border-top-right-radius:3px;border-top-right-radius:3px;}
 table tr{text-align:center;padding-left:20px;}
