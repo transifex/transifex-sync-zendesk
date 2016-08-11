@@ -88,6 +88,20 @@ To sideload:
 make run
 ```
 
+inputs.txt - Quick load test config settings
+When testing the app in sideload mode using 'make run', you will not have the ability to use the Zendesk UI to mange the configuration settings.  Instead you can create a 'inputs.txt' file with these settings.
+Here is an example:
+```
+TestMattJJacko
+Password
+https://www.transifex.com/test-organization-4/zendesk-test/
+{"html-tx-resource":false}
+0
+true
+false
+30000
+```
+
 ## Dependencies
 
 The dependencies loaded in package.json are to allow unit testing of the code in NodeJs.
@@ -121,3 +135,5 @@ console.log(this.featureConfig('html-tx-resource'));
 
 A list of features:
 - html-tx-resource - Enables the app to save Transifex resources as HTML instead of JSON.  Resources save this way will have a different resource name in Transifex (ie 'HTML-article-123456' instead of 'article-123456').
+
+
