@@ -78,11 +78,6 @@ Make deploy package:
 make package
 ```
 
-To run tests:
-```bash
-make test
-```
-
 To sideload:
 ```bash
 make run
