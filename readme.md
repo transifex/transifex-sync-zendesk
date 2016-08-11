@@ -65,6 +65,11 @@ Note: I am moving away from maintaining a separate makefile, and instead using a
 Note all make commands should be run from 'root'.
 Be sure you Download and install 'zat' tool
 
+To setup the dev environment:
+```bash
+make init
+```
+
 Make deploy package:
 ```bash
 make package
