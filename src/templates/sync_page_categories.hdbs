@@ -1,61 +1,69 @@
-  <div class="row-fluid">
-  <div class="span12">
-  <div class="wrapper nowrap">
-  <div class="messagebox">
-    <p><span class="message sync-message"></span></p>
-    <p><span>
-    <span class="txh3 plain type_name">Categories</span>
-    Switch to:
-    <span class="buttonized bluebtn btn-border enable_column page_action_category_articles">Articles</span>
-    <a class="buttonized bluebtn btn-border enable_column page_action_category_sections">Sections</a>
-    <a class="buttonized bluebtn btn-border disabled enable_column page_action_category_categories">Categories</a>
-    </p>
-    <span class="sync-btn"><a id="sync" class="buttonized bluebtn btn-border enable_column page_action_category_sync" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
-    </p>
-    </span>
-    </p>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="wrapper nowrap">
+            <div class="messagebox">
+                <p><span class="message sync-message"></span></p>
+                <p><span>
+    <span class="txh3 plain type_name">Categories</span> Switch to:
+                    <span class="buttonized bluebtn btn-border enable_column page_action_category_articles">Articles</span>
+                    <a class="buttonized bluebtn btn-border enable_column page_action_category_sections">Sections</a>
+                    <a class="buttonized bluebtn btn-border disabled enable_column page_action_category_categories">Categories</a>
+                </p>
+                <span class="sync-btn"><a id="sync" class="buttonized bluebtn btn-border enable_column page_action_category_sync" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
+                </p>
+                </span>
+                </p>
 
-  </div>
-<table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
-  <thead>
-    <tr class="table_top">
-      <th class="enable_column" style="min-width: 300px;">Resource</th>
-      <th class="enable_column" style="min-width: 80px;">Last</br>Updated</th>
-      <th class="enable_column" style="min-width: 80px;">Upload</br>Content</br>to Transifex</th>
-      <th class="enable_column" style="min-width: 80px;">Download</br>Translations</br>to Zendesk</th>
-      <th class="enable_column" style="min-width: 120px;">Completed</br>Locales</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each dataset}}
-    <tr>
-      <td class="names_column">
-      <p class="limited">{{{this.title_string}}}</p>
-      <p><span class="column_name">{{{this.name}}}</span></p>
-      <p><a class="enable_column" target="_blank" href="{{{this.zd_object_url}}}">View in Zendesk</a></p>
-      <p><a id="txlink-{{{this.name}}}" class="enable_column disabled" target="_blank" href="{{{this.tx_resource_url}}}">View in Transifex</a></p>
-      </td>
-      <td><p>{{{this.zd_object_updated}}}</td>
-      <td><span id="upload-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_category_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="category" data-resource="{{{this.name}}}">Disabled</span></td>
-      <td><span id="download-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_category_download" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="category" data-resource="{{{this.name}}}">Disabled</span></td>
-      <td><span id="locales-{{{this.name}}}">None</span></td>
-    </tr>
-    {{/each}}
-  </tbody>
-</table>
-    {{#if dataset.pagination_visible}}
-  <div class="pagination">
-  <ul>
-  {{#if dataset.page_prev_enabled}}<li><a id="page-prev" class="page_action_category_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>{{/if}}
-    {{#unless dataset.page_prev_enabled}}<li class="disabled"><a>&laquo;</a></li>{{/unless}}
-    {{#each dataset.pages}}
-    <li><a id="page-{{{this}}}" class="page_action_category_page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a></li>
-    {{/each}}
-    {{#if dataset.page_next_enabled}}<li><a id="page-next" class="page_action_category_next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a></li>{{/if}}
-    {{#unless dataset.page_next_enabled}}<li class="disabled"><a>&raquo;</a></li>{{/unless}}
-  </ul>
-  </div> 
-  {{/if}}
-</div>
-</div>
+            </div>
+            <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+                <thead>
+                    <tr class="table_top">
+                        <th class="enable_column" style="min-width: 300px;">Resource</th>
+                        <th class="enable_column" style="min-width: 80px;">Last</br>Updated</th>
+                        <th class="enable_column" style="min-width: 80px;">Upload</br>Content</br>to Transifex</th>
+                        <th class="enable_column" style="min-width: 80px;">Download</br>Translations</br>to Zendesk</th>
+                        <th class="enable_column" style="min-width: 120px;">Completed</br>Locales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each dataset}}
+                        <tr>
+                            <td class="names_column">
+                                <p class="limited">{{{this.title_string}}}</p>
+                                <p><span class="column_name">{{{this.name}}}</span></p>
+                                <p><a class="enable_column" target="_blank" href="{{{this.zd_object_url}}}">View in Zendesk</a></p>
+                                <p><a id="txlink-{{{this.name}}}" class="enable_column disabled" target="_blank" href="{{{this.tx_resource_url}}}">View in Transifex</a></p>
+                            </td>
+                            <td>
+                                <p>{{{this.zd_object_updated}}}</td>
+                            <td><span id="upload-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_category_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="category" data-resource="{{{this.name}}}">Disabled</span></td>
+                            <td><span id="download-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_category_download" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="category" data-resource="{{{this.name}}}">Disabled</span></td>
+                            <td><span id="locales-{{{this.name}}}">None</span></td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            {{#if dataset.pagination_visible}}
+                <div class="pagination">
+                    <ul>
+                        {{#if dataset.page_prev_enabled}}
+                            <li><a id="page-prev" class="page_action_category_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>
+                        {{/if}}
+                        {{#unless dataset.page_prev_enabled}}
+                            <li class="disabled"><a>&laquo;</a></li>
+                        {{/unless}}
+                        {{#each dataset.pages}}
+                            <li><a id="page-{{{this}}}" class="page_action_category_page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a></li>
+                        {{/each}}
+                        {{#if dataset.page_next_enabled}}
+                            <li><a id="page-next" class="page_action_category_next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a></li>
+                        {{/if}}
+                        {{#unless dataset.page_next_enabled}}
+                            <li class="disabled"><a>&raquo;</a></li>
+                        {{/unless}}
+                    </ul>
+                </div>
+            {{/if}}
+        </div>
+    </div>
 </div>

@@ -11,15 +11,15 @@ var common = module.exports = {
       return syncUtil.zdGetTranslationObject(response, locale);
     }
   },
-/*
-  txRequestFormat: function(config, article) {
-    if (config.isEnabled("tx-resource-html")) {
-      return txRequestHTML(article);
-    } else {
-      return zdArticles.getTxRequest(article);
-    }
-  },
-*/
+  /*
+    txRequestFormat: function(config, article) {
+      if (config.isEnabled("tx-resource-html")) {
+        return txRequestHTML(article);
+      } else {
+        return zdArticles.getTxRequest(article);
+      }
+    },
+  */
 
   translationObjectHTML: function(res, l) {
     var gblTemplate = "<h1><%= title %></h1>";
@@ -27,8 +27,10 @@ var common = module.exports = {
 
     var r = txResource.Resource(res, gblTemplate);
     var zdPartialArticle = {
-      name: common.extractValues(res.content.replace(/\\"/g, '"'), gblTemplate).title,
-      title: common.extractValues(res.content.replace(/\\"/g, '"'), gblTemplate).title, 
+      name: common.extractValues(res.content.replace(/\\"/g, '"'),
+        gblTemplate).title,
+      title: common.extractValues(res.content.replace(/\\"/g, '"'),
+        gblTemplate).title,
       body: res.content.replace(/\\"/g, '"').match(re)[2],
     };
     var o = _.extend(zdPartialArticle, {
@@ -38,8 +40,8 @@ var common = module.exports = {
       "translation": o
     };
   },
-    createResourceName: function(zdId, zdObjectType, separator) {
-      return zdObjectType.toLowerCase() + separator + zdId;
+  createResourceName: function(zdId, zdObjectType, separator) {
+    return zdObjectType.toLowerCase() + separator + zdId;
   },
 
   //todo - refactor me
@@ -63,9 +65,12 @@ var common = module.exports = {
 
 
       var o = {};
-      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getName(arr[i], a), o);
-      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitle(arr[i], a), o1);
-      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBody(arr[i], a), o2);
+      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getName(
+        arr[i], a), o);
+      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitle(
+        arr[i], a), o1);
+      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBody(
+        arr[i], a), o2);
       var o4 = syncUtil.addContent(req, o3);
       ret[i] = o4;
     }
@@ -80,9 +85,9 @@ var common = module.exports = {
     var gblTemplate =
       "<h1><%= title %></h1>";
     var zdArticleContent = _.template(gblTemplate)({
-          title: article.title,
-          name: article.name,
-        }) + article.body;
+      title: article.title,
+      name: article.name,
+    }) + article.body;
 
     var txRequestMade = {
       name: 'HTML-articles-' + article.id,
@@ -90,7 +95,7 @@ var common = module.exports = {
       priority: 0,
       i18n_type: 'HTML',
       content: zdArticleContent
-//      content: JSON.stringify(zdArticleContent)
+        //      content: JSON.stringify(zdArticleContent)
     };
     return txRequestMade;
   },
@@ -106,9 +111,11 @@ var common = module.exports = {
     var whitespace = options.whitespace;
 
     var special_chars_regex = /[\\\^\$\*\+\.\?\(\)]/g;
-    var token_regex = new RegExp(delimiters[0] + "([^" + delimiters.join("") + "\t\r\n]+)" + delimiters[1], "g");
+    var token_regex = new RegExp(delimiters[0] + "([^" + delimiters.join("") +
+      "\t\r\n]+)" + delimiters[1], "g");
     var tokens = pattern.match(token_regex);
-    var pattern_regex = new RegExp(pattern.replace(special_chars_regex, "\\$&").replace(token_regex, "(\.+)"));
+    var pattern_regex = new RegExp(pattern.replace(special_chars_regex,
+      "\\$&").replace(token_regex, "(\.+)"));
 
     if (lowercase) {
       str = str.toLowerCase();
@@ -138,7 +145,8 @@ var common = module.exports = {
     matches = matches.splice(1);
     var output = {};
     for (var i = 0; i < tokens.length; i++) {
-      output[tokens[i].replace(new RegExp(delimiters[0] + "|" + delimiters[1], "g"), "").trim()] = matches[i];
+      output[tokens[i].replace(new RegExp(delimiters[0] + "|" + delimiters[
+        1], "g"), "").trim()] = matches[i];
     }
 
     return output;

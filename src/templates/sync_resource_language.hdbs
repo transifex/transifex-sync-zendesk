@@ -14,11 +14,11 @@
                 <tbody>
                     {{#each dataset}}
                         <tr>
-                        <td class="names_column"><span class="column_name">{{{this.name}}}</span></td>
+                            <td class="names_column"><span class="column_name">{{{this.name}}}</span></td>
                             <td class="names_column"><span class="column_name">{{{this.language_code}}}</span></td>
                             <td class="names_column"><span class="column_name">{{{this.mimetype}}}</span></td>
                         </tr>
-                    </tbody>
+                </tbody>
             </table>
             <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
                 <thead>
@@ -26,11 +26,11 @@
                         <th class="enable_column">Content</th>
                 </thead>
                 <tbody>
-                        <tr>
-                            <td class="names_column"><span class="column_name">{{{this.content}}}</span></td>
-                        </tr>
-                        {{/each}}
-                    </tbody>
+                    <tr>
+                        <td class="names_column"><span class="column_name">{{{this.content}}}</span></td>
+                    </tr>
+                    {{/each}}
+                </tbody>
             </table>
         </div>
     </div>
