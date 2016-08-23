@@ -8,9 +8,12 @@ init:
 	ln -s ./node_modules/mocha/bin/mocha ./mocha
 
 build:
-	cp -rf ./src/* ./dist
+	cp -rf ./src/ ./dist/
 run:
 	cd ./dist;cat ../inputs.txt | zat server;
+
+validate:
+	cd ./dist;zat validate
 
 package:
 	cd ./dist;zat package

@@ -3,7 +3,8 @@ var txResource = require('transifex-api/resource');
 var syncUtil = require('syncUtil');
 
 var common = module.exports = {
-
+  gblTemplate: "<html><head></head><body><h1><%= title %></h1></body></html>",
+  regExpTemplate: "<html><head></head><body><h1>(.*)</h1>(.*)</body></html>",
   translationObjectFormat: function(config, response, locale) {
     if (config.isEnabled("tx-resource-html")) {
       return common.translationObjectHTML(response, locale);
@@ -22,8 +23,8 @@ var common = module.exports = {
   */
 
   translationObjectHTML: function(res, l) {
-    var gblTemplate = "<h1><%= title %></h1>";
-    var re = new RegExp("<h1>(.*)</h1>(.*)");
+    var gblTemplate = common.gblTemplate;
+    var re = new RegExp(common.regExpTemplate);
 
     var r = txResource.Resource(res, gblTemplate);
     var zdPartialArticle = {
@@ -82,8 +83,7 @@ var common = module.exports = {
 
   },
   txRequestHTML: function(article) {
-    var gblTemplate =
-      "<h1><%= title %></h1>";
+    var gblTemplate = common.gblTemplate;
     var zdArticleContent = _.template(gblTemplate)({
       title: article.title,
       name: article.name,
