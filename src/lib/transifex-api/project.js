@@ -1,5 +1,5 @@
 /**
- * The Transifex project API gets project data 
+ * The Transifex project API gets project data
  * @module transifex-api/project
  */
 
@@ -8,6 +8,9 @@ var project = module.exports = {
   name: 'zendesk-test',
   key: 'tx_project',
   url: 'http://www.transifex.com/api/2/project/testproject/',
+  headers: {
+    'source-zendesk': 'v1.2.3'
+  },
   username: 'testuser',
   password: 'testpass',
   timeout: 6000,
@@ -22,7 +25,8 @@ var project = module.exports = {
       if (m !== null && m.length > 0) {
         p = m[2]; //TODO make this more explicit that we are mapping the url path
       }
-      var r = project.TX_PROJECT_API_URL_REPLACE.replace("[PROJECT_SLUG]", p);
+      var r = project.TX_PROJECT_API_URL_REPLACE.replace("[PROJECT_SLUG]",
+        p);
       if (project.isValidAPIUrl(r)) {
         return r;
       }
@@ -47,10 +51,12 @@ var project = module.exports = {
   requests: {
     txProject: function(typeString, pageString) {
       if (project.logging) {
-        console.log('txProject ajax request:' + typeString + '||' + pageString );
+        console.log('txProject ajax request:' + typeString + '||' +
+          pageString);
       }
       return {
         url: project.url + '?details',
+        headers: project.headers,
         type: 'GET',
         beforeSend: function(jqxhr, settings) {
           jqxhr.page = pageString;
@@ -87,35 +93,35 @@ var project = module.exports = {
     },
   },
   actionHandlers: {
-    asyncGetTxProject: function(type,page) {
-    if (project.logging) {
-        console.log('function: [asyncGetTxProject] params: [type]' + type + '|| [page]' + page );
+    asyncGetTxProject: function(type, page) {
+      if (project.logging) {
+        console.log('function: [asyncGetTxProject] params: [type]' + type +
+          '|| [page]' + page);
       }
       this.syncStatus.push(project.key);
-        var that = this;
-        setTimeout(
-            function() {
-              that.ajax('txProject', type, page);
-            }
-          , project.timeout);
+      var that = this;
+      setTimeout(
+        function() {
+          that.ajax('txProject', type, page);
+        }, project.timeout);
     },
   },
   jsonHandlers: {
-  getResourceArray: function(p) {
-    var result = [];
-    var r = p.resources;
-    if (_.isArray(r)) {
-      _.each(r, function(i) {
-        result.push(i.slug);
-      });
+    getResourceArray: function(p) {
+      var result = [];
+      var r = p.resources;
+      if (_.isArray(r)) {
+        _.each(r, function(i) {
+          result.push(i.slug);
+        });
+      }
+      return result;
+    },
+    getSourceLocale: function(p) {
+      return p.source_language_code;
+    },
+    getLocales: function(p) {
+      return p.teams;
     }
-    return result;
-  },
-  getSourceLocale: function(p) {
-    return p.source_language_code;
-  },
-  getLocales: function(p) {
-    return p.teams;
-  }
   }
 };

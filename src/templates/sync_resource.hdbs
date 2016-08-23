@@ -14,16 +14,16 @@
                 </thead>
                 <tbody>
                     {{#each dataset}}
-                    {{#each this}}
-                        <tr>
-                        <td class="names_column"><span class="column_name">{{{@key}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.reviewed_percentage}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.completed}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.last_update}}}</span></td>
-                        </tr>
+                        {{#each this}}
+                            <tr>
+                                <td class="names_column"><span class="column_name">{{{@key}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.reviewed_percentage}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.completed}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.last_update}}}</span></td>
+                            </tr>
                         {{/each}}
-                        {{/each}}
-                    </tbody>
+                    {{/each}}
+                </tbody>
             </table>
         </div>
     </div>

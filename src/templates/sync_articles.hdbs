@@ -4,59 +4,59 @@
             <div class="messagebox">
                 <p><span class="message sync-message"></span></p>
             </div>
-                                {{#each dataset}}
-{{#each this.articles}}
-            <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
-                <thead>
-                    <tr class="table_top">
-                        <th class="enable_column">Id</th>
-                        <th class="enable_column">Url</th>
-                        <th class="enable_column">Created At</th>
-                        <th class="enable_column">Updated At</th>
-                </thead>
-                <tbody>
-                        <tr>
-                            <td class="names_column"><span class="column_name">{{{this.id}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.url}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.created_at}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.updated_at}}}</span></td>
-                        </tr>
-                    </tbody>
-            </table>
-            <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
-                <thead>
-                <tr class="table_top">
-                        <th class="enable_column">Name</th>
-                        <th class="enable_column">Title</th>
-                        <th class="enable_column">Source Language</th>
-                        <th class="enable_column">Language</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr>
-                              <td class="names_column"><span class="column_name">{{{this.name}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.title}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.source_locale}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.locale}}}</span></td>
+            {{#each dataset}}
+                {{#each this.articles}}
+                    <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+                        <thead>
+                            <tr class="table_top">
+                                <th class="enable_column">Id</th>
+                                <th class="enable_column">Url</th>
+                                <th class="enable_column">Created At</th>
+                                <th class="enable_column">Updated At</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="names_column"><span class="column_name">{{{this.id}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.url}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.created_at}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.updated_at}}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+                        <thead>
+                            <tr class="table_top">
+                                <th class="enable_column">Name</th>
+                                <th class="enable_column">Title</th>
+                                <th class="enable_column">Source Language</th>
+                                <th class="enable_column">Language</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="names_column"><span class="column_name">{{{this.name}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.title}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.source_locale}}}</span></td>
+                                <td class="names_column"><span class="column_name">{{{this.locale}}}</span></td>
 
-                        </tr>
-                </tbody>
-            </table>
-            <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
-                <thead>
-                <tr class="table_top">
-                        <th class="enable_column">Body Content</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr>
-                              <td class="names_column"><span class="column_name">{{{this.body}}}</span></td>
-                            
-                        </tr>
-                </tbody>
-            </table>
-                                {{/each}}
-                    {{/each}}
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+                        <thead>
+                            <tr class="table_top">
+                                <th class="enable_column">Body Content</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="names_column"><span class="column_name">{{{this.body}}}</span></td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                {{/each}}
+            {{/each}}
         </div>
     </div>
 </div>

@@ -4,7 +4,7 @@
     require('transifex-api/resource'),
     require('zendesk-api/article'),
     require('ui/sync-articles')
-    );
+  );
 }());
 
 // This allows the app to be loaded in node
@@ -21,9 +21,11 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
     txProject.events,
     txResource.events,
     zdArticle.events,
-    uiSyncArticles.events,
-    {'app.activated': 'appActivated'},
-    {'app.willDestroy': 'appWillDestroy'}
+    uiSyncArticles.events, {
+      'app.activated': 'appActivated'
+    }, {
+      'app.willDestroy': 'appWillDestroy'
+    }
   );
   var requests = this.$.extend({},
     txProject.requests,
@@ -32,7 +34,7 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
   );
   return this.$.extend({}, {
       events: events,
-    },{
+    }, {
       requests: requests,
     },
     txProject.eventHandlers,
@@ -44,8 +46,7 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
     zdArticle.actionHandlers,
     zdArticle.jsonHandlers,
     uiSyncArticles.eventHandlers,
-    uiSyncArticles.actionHandlers,
-    {
+    uiSyncArticles.actionHandlers, {
       appActivated: function() {
         console.log(this);
         console.log('Convert Project Url to API');
@@ -55,7 +56,8 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
         console.log(txProject.isValidAPIUrl(txProject.url));
         console.log('Adding App Feature Flags');
         console.log(this.settings.features);
-        var settingsFeatures = (typeof this.settings.features === 'undefined')?'{}':this.settings.features;
+        var settingsFeatures = (typeof this.settings.features ===
+          'undefined') ? '{}' : this.settings.features;
         console.log(settingsFeatures);
         this.syncStatus = []; // Array of any running async processes
         var features = JSON.parse(settingsFeatures);
@@ -77,7 +79,7 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
         console.log('checkAsyncComplete started');
         if (_.isArray(this.syncStatus)) {
           var count = 0;
-          if(_.isEmpty(this.syncStatus)) {
+          if (_.isEmpty(this.syncStatus)) {
             console.log('all async calls are completed');
             // Danger!!! do not call async functions from this!
             return this.loadSyncPage();

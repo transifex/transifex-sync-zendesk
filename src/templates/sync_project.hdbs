@@ -20,11 +20,11 @@
                             <td class="names_column"><span class="column_name">{{{this.last_updated}}}</span></td>
                             <td class="names_column"><span class="column_name">{{{this.organization.slug}}}</span></td>
                         </tr>
-                    </tbody>
+                </tbody>
             </table>
             <table data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
                 <thead>
-                <tr class="table_top">
+                    <tr class="table_top">
                         <th class="enable_column">Maintainers</th>
                         <th class="enable_column">Source Language Code</th>
                         <th class="enable_column">Teams</th>
@@ -32,20 +32,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr>
-                              <td class="names_column"><span class="column_name">
+                    <tr>
+                        <td class="names_column"><span class="column_name">
                                 {{#each this.maintainers}}
                                     <p>{{{this.username}}}</p>
                                 {{/each}}
                             </span></td>
-                            <td class="names_column"><span class="column_name">{{{this.source_language_code}}}</span></td>
-                            <td class="names_column"><span class="column_name">{{{this.teams}}}</span></td>
-                            <td class="names_column"><span class="column_name">
+                        <td class="names_column"><span class="column_name">{{{this.source_language_code}}}</span></td>
+                        <td class="names_column"><span class="column_name">{{{this.teams}}}</span></td>
+                        <td class="names_column"><span class="column_name">
                                 {{#each this.resources}}
                                     <p>{{{this.name}}}::{{{this.slug}}}</p>
                                 {{/each}}
                             </span></td>
-                        </tr>
+                    </tr>
                     {{/each}}
                 </tbody>
             </table>
