@@ -89,15 +89,16 @@ var common = module.exports = {
       name: article.name,
     }) + article.body;
 
-    var txRequestMade = {
-      name: 'HTML-articles-' + article.id,
-      slug: 'HTML-articles-' + article.id,
-      priority: 0,
-      i18n_type: 'HTML',
-      content: zdArticleContent
-        //      content: JSON.stringify(zdArticleContent)
-    };
-    return txRequestMade;
+    var formData = new FormData();
+    formData.append('name', 'HTML-articles-' + article.id);
+    formData.append('slug', 'HTML-articles-' + article.id);
+    formData.append('priority', '0');
+    formData.append('i18n_type', 'HTML');
+    var blob = new Blob([zdArticleContent], {
+      type: 'text/html'
+    });
+    formData.append('content', blob);
+    return formData;
   },
 
 
