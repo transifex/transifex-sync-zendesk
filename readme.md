@@ -66,7 +66,10 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
 Note: I am moving away from maintaining a separate makefile, and instead using an interactive repl
 
 Note all make commands should be run from 'root'.
-Be sure you Download and install 'zat' tool
+Be sure you Download and install 'zat' tool by running:
+```bash
+gem install zendesk_apps_tools
+```
 
 To setup the dev environment:
 ```bash
