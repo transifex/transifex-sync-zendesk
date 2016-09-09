@@ -1,4 +1,153 @@
-<div class="row-fluid">
+
+<div class="u-display-flex u-flexDirection-column u-box-100">
+
+  <div class="u-boxShadow-outerModal">
+    <!-- Header: Info area -->
+    <div class="c-infoarea">
+      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
+        <div class="u-display-flex">
+
+          <div class="u-width-7x u-marginRight-2x">
+            <div class="o-initials-logo u-box-7x u-lineHeight-7x u-fontSize-big">
+              tx
+            </div>
+          </div>
+
+          <div class="u-flexGrow-1 u-color-primary">
+            <div class="u-fontSize-small u-lineHeight-3x">zendesk-test</div>
+            <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
+          </div>
+
+          <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
+            <a href="#" title="Send Zendesk content to Transifex" class="o-button is-disabled u-marginRight-2x">
+              Upload Content
+            </a>
+            <a href="#" title="Update Zendesk translations" class="o-button is-disabled u-marginRight-2x">
+              Import Translations
+            </a>
+            <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill page_action_sync">
+              Update table data
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header: Tabs area -->
+    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
+        <a class="o-tabs__item is-active  page_action_articles" href="javascript:;">
+          Articles
+        </a>
+        <a class="o-tabs__item u-marginLeft-5x page_action_sections" href="javascript:;">
+          Sections
+        </a>
+        <a class="o-tabs__item u-marginLeft-5x page_action_categories" href="javascript:;">
+          Categories
+        </a>
+      </div>
+    </div>
+
+    <!-- Header: Search-filters -->
+    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
+      <div class="u-flexGrow-1 u-paddingRight-3x"></div>
+      <div class="u-lineHeight-form u-fontSize-small">
+        <span class="u-color-disabled">Per page:</span>
+        <a id="perpage-ten" href="#" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
+        <a id="perpage-twenty" href="#" class="o-link o-link--muted u-marginHorizontal-1x">20</a>
+        <a id="perpage-thirty" href="#" class="o-link o-link--muted u-marginLeft-1x">30</a>
+      </div>
+    </div>
+
+    <!-- Header: List header -->
+    <div class="u-paddingHorizontal-gutter u-paddingVertical-2x u-backgroundColor-active">
+      <div class="u-position u-clearfix">
+
+        <div class="u-width-35 u-paddingLeft-gutter u-paddingRight-2x u-float-left">
+          <span class="o-link o-link--muted page_action_sort_by_title">Article Title</span>
+          </div>
+
+        <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">Transifex Resource</div>
+
+        <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">Translations completed</div>
+
+        <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">
+          <span class="o-link o-link--muted page_action_sort_by_updated">Latest Activity</span>
+        </div>
+
+        <div class="u-width-20 u-paddingRight-2x u-textAlign-center u-float-left">Actions</div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="u-flexGrow-1 o-scrollable">
+
+    <!-- articles list -->
+    <div class="o-list o-interactive-list--highlight u-paddingHorizontal-gutter u-marginBottom-4x">
+    {{#each dataset}}
+      <div class="o-list__item">
+        <div class="o-interactive-list__item u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
+          <div class="u-display-flex u-justifyContent-center u-flexDirection-row">
+            <div class="o-text-ellipsis u-width-35 u-marginRight-2x">
+              <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
+            </div>
+            <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
+              <span class="u-color-secondary">{{{this.name}}}</span>
+            </div>
+            <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
+              <span class="u-color-secondary" id="locales-{{{this.name}}}">
+                <span class="u-color-disabled">Checking...</span>
+              </span>
+            </div>
+            <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
+              <span class="u-color-secondary">
+                {{{this.zd_object_updated}}}
+              </span>
+            </div>
+            <div class="u-width-20 u-clearfix">
+              <span id="upload-{{{this.name}}}" class="o-link is-disabled enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Upload Content</span>
+              <span id="download-{{{this.name}}}" class="o-link is-disabled enable_column page_action_download u-float-right" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Import Translations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+    </div>
+
+
+    <!-- articles pager -->
+  {{#if dataset.pagination_visible}}
+    <div class="o-pagination u-marginBottom-3x">
+    {{#if dataset.page_prev_enabled}}
+        <a id="page-prev" class="o-link o-pagination__prev page_action_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a>
+    {{/if}}
+    {{#unless dataset.page_prev_enabled}}
+        <span class="o-pagination__prev is-disabled">&laquo;</span>
+    {{/unless}}
+    {{#each dataset.pages}}
+        <a id="page-{{{this}}}" class="o-link o-pagination__page page_action_page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a>
+    {{/each}}
+    {{#if dataset.page_next_enabled}}
+        <a id="page-next" class="o-link o-pagination__next page_action_next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a>
+    {{/if}}
+    {{#unless dataset.page_next_enabled}}
+        <span class="o-pagination__next is-disabled">&raquo;</span>
+    {{/unless}}
+      </ul>
+    </div>
+  {{/if}}
+
+  </div>
+
+</div>
+
+
+
+
+
+{{!-- <div class="row-fluid">
     <div class="span12">
         <div class="wrapper nowrap">
             <div class="messagebox">
@@ -17,7 +166,7 @@
                     <a id="sortby-last-updated" class="buttonized bluebtn btn-border enable_column page_action_sort_by_updated">Last Updated</a>
                     <span class="batch-upload-btn"><a id="batch-upload" class="buttonized bluebtn btn-border enable_column page_action_batch_upload" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Batch Upload</a></span>
                     <span class="batch-download-btn"><a id="batch-download" class="buttonized bluebtn btn-border enable_column page_action_batch_download" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Batch Download</a></span>
-                    <span class="sync-btn"><a id="sync" class="buttonized bluebtn btn-border enable_column page_action_sync" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
+                    <span class="sync-btn"><a class="buttonized bluebtn btn-border enable_column page_action_sync" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
                 </p>
                 <!-- TODO a class="buttonized bluebtn btn-border enable_column page_action_search">Search</a-->
                 </span>
@@ -35,21 +184,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each dataset}}
-                        <tr>
-                            <td class="names_column">
-                                <p class="limited">{{{this.title_string}}}</p>
-                                <p><span class="column_name">{{{this.name}}}</span></p>
-                                <p><a class="enable_column" target="_blank" href="{{{this.zd_object_url}}}">View in Zendesk</a></p>
-                                <p><a id="txlink-{{{this.name}}}" class="enable_column disabled" target="_blank" href="{{{this.tx_resource_url}}}">View in Transifex</a></p>
-                            </td>
-                            <td>
-                                <p>{{{this.zd_object_updated}}}</td>
-                            <td><span id="upload-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Disabled</span></td>
-                            <td><span id="download-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_download" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Disabled</span></td>
-                            <td><span id="locales-{{{this.name}}}">None</span></td>
-                        </tr>
-                    {{/each}}
+
                 </tbody>
             </table>
             {{#if dataset.pagination_visible}}
@@ -75,4 +210,4 @@
             {{/if}}
         </div>
     </div>
-</div>
+</div> --}}

@@ -24,7 +24,7 @@ var category = module.exports = {
   requests: {
     zdCategories: function() {
       return {
-        url: category.base_url + 'categories.json' + "?per_page=5",
+        url: category.base_url + 'categories.json' + "?per_page=10",
         type: 'GET',
         dataType: 'json'
       };

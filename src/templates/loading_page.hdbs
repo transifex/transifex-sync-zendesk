@@ -1,3 +1,8 @@
-<div class="spinner">
-  <span class="txh3 plain">Syncing{{spinner "dotted"}}</span>
+<div class="u-box-100 u-display-flex u-alignItems-center u-justifyContent-center">
+  <div class="u-textAlign-center u-paddingBottom-3x">
+    <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
+      Fetching data from Transifex
+    </div>
+    <div class="o-spinner"></div>
+  </div>
 </div>

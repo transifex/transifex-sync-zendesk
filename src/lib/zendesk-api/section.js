@@ -24,7 +24,7 @@ var section = module.exports = {
   requests: {
     zdSections: function() {
       return {
-        url: section.base_url + 'sections.json' + "?per_page=7",
+        url: section.base_url + 'sections.json' + "?per_page=10",
         type: 'GET',
         dataType: 'json'
       };

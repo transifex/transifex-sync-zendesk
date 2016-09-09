@@ -49,12 +49,12 @@ var syncArticles = module.exports = {
         this.$('#sortby-title').addClass("disabled");
       }
       if (syncArticles.perpage === '20') {
-        this.$('#perpage-ten').removeClass("disabled");
-        this.$('#perpage-twenty').addClass("disabled");
+        this.$('#perpage-ten').removeClass("is-active");
+        this.$('#perpage-twenty').addClass("is-active");
       }
       if (syncArticles.perpage === '10') {
-        this.$('#perpage-twenty').removeClass("disabled");
-        this.$('#perpage-ten').addClass("disabled");
+        this.$('#perpage-twenty').removeClass("is-active");
+        this.$('#perpage-ten').addClass("is-active");
       }
 
       this.loadSyncPage = this.uiSyncPageResourceStatsComplete;
@@ -308,24 +308,20 @@ var syncArticles = module.exports = {
       if (!(_.isEmpty(locales))) {
         this.$(linkId).text(locales.toString());
       } else {
-        this.$(linkId).text('None Found');
+        this.$(linkId).text('-');
       }
     },
     activateUploadButton: function(name, isNew) {
       var linkId = "#" + "upload-" + name;
-      if (isNew) {
-        this.$(linkId).text('Upload');
-      } else {
-        this.$(linkId).text('Upload');
-      }
-      this.$(linkId).removeClass("disabled");
+
+      this.$(linkId).removeClass("is-disabled");
       this.$(linkId).click(this.uiSyncUpsertArticle.bind(this));
       this.$(linkId).css('cursor', 'pointer');
     },
     activateDownloadButton: function(name) {
       var linkId = "#" + "download-" + name;
-      this.$(linkId).text('Download');
-      this.$(linkId).removeClass("disabled");
+
+      this.$(linkId).removeClass("is-disabled");
       this.$(linkId).click(function() {
         alert('Happy day');
       });
@@ -403,7 +399,7 @@ var syncArticles = module.exports = {
         tx_resource_url = "https://www.transifex.com/projects/p/" +
           txProject.name + "/" + e.resource_name;
         zd_object_updated = moment(e.updated_at).format(
-          'MMMM Do YYYY </br> h:mm:ss a');
+          'MMM D YYYY h:mm:ss a');
         d = {};
         d = _.extend(d, {
           name: e.resource_name

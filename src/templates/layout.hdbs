@@ -1,6 +1,90 @@
-<header>
-  <span class="logo"/>
-  <h3 class="txh3 underlined">Transifex Sync</h3>
-  <p><span class="txsubh3">Translate Help Center content using Transifex</span></p>
-</header>
-<section data-main />
+{{!-- <div class="u-position-fixed" style="top: 42px;bottom: 0;left: 60px;right: 0;">
+  <div class="u-display-flex u-flexDirection-column">
+
+    <div>
+      <!-- Header: Info area -->
+      <div class="c-infoarea">
+        <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
+          <div class="u-display-flex">
+
+            <div class="u-width-7x u-marginRight-2x">
+              <div class="o-initials-logo u-box-7x u-lineHeight-7x u-fontSize-big">
+                tx
+              </div>
+            </div>
+
+            <div class="u-flexGrow-1 u-color-primary">
+              <div class="u-fontSize-small u-lineHeight-3x">zendesk-test</div>
+              <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
+            </div>
+
+            <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
+              <a href="javascript:;" title="Send Zendesk content to Transifex" class="o-button is-disabled u-marginRight-2x">
+                Upload Content
+              </a>
+              <a href="javascript:;" title="Update Zendesk translations" class="o-button is-disabled u-marginRight-2x">
+                Import Translations
+              </a>
+              <a href="javascript:;" title="Fetch data from Transifex" class="o-button o-button--fill">
+                Update table data
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header: Tabs area -->
+      <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+        <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
+          <a class="o-tabs__item is-active" href="javascript:;">
+            Articles
+          </a>
+          <a class="o-tabs__item u-marginLeft-5x" href="javascript:;">
+            Sections
+          </a>
+          <a class="o-tabs__item u-marginLeft-5x" href="javascript:;">
+            Categories
+          </a>
+        </div>
+      </div>
+
+      <!-- Header: Search-filters -->
+      <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
+        <div class="u-flexGrow-1 u-paddingRight-3x"></div>
+        <div class="u-lineHeight-form u-fontSize-small">
+          <span class="u-color-disabled">Per page:</span>
+          <a href="javascript:;" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
+          <a href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x">20</a>
+          <a href="javascript:;" class="o-link o-link--muted u-marginLeft-1x">30</a>
+        </div>
+      </div>
+
+      <!-- Header: List header -->
+      <div class="u-paddingHorizontal-gutter u-paddingVertical-2x u-backgroundColor-active u-borderBottom-divider">
+        <div class="u-position u-clearfix">
+
+          <div class="u-width-30 u-paddingLeft-gutter u-paddingRight-2x u-float-left">Article Title</div>
+
+          <div class="u-width-20 u-paddingRight-2x u-float-left">Transifex Resource</div>
+
+          <div class="u-width-20 u-paddingRight-2x u-float-left">Translations completed</div>
+
+          <div class="u-width-10 u-paddingRight-2x u-float-left">Latest Activity</div>
+
+          <div class="u-width-20 u-paddingRight-2x u-float-left">Actions</div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="u-flexGrow-1Auto">
+      <div class="u-box-100 o-scrollable">
+        <section data-main />
+      </div>
+    </div>
+
+  </div>
+</div> --}}
+
+<section data-main class="main-data"/>

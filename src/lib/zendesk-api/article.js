@@ -36,7 +36,7 @@ var article = module.exports = {
       if (numperpage) {
         numberperpageString = "?per_page=" + numperpage;
       } else {
-        numberperpageString = "?per_page=7";
+        numberperpageString = "?per_page=10";
       }
       var pageString = "";
       if (page) {
