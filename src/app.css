@@ -15,17 +15,17 @@ $baseline-grid: 6px;
 $default-font-family: proxima-nova,'Segoe UI','Helvetica Neue',Arial,sans-serif;
 $system-font-family: Monaco, Consolas, monospace;
 
-$tiny-font-size:   0.714rem;
-$small-font-size:   0.857rem;
+$tiny-font-size:   10px;
+$small-font-size:   12px;
 $default-font-size: 14px;
-$default-plus-font-size: 1.2rem;
-$large-font-size:   1.286rem;
-$big-font-size:     1.786rem;
-$bigger-font-size:  2.143rem;
-$enormous-font-size:2.5rem;
-$enormous-plus-font-size: 3.49rem;
-$huge-font-size: 3.5rem;
-$gargantuan-font-size: 4.286rem;
+$default-plus-font-size: 16px;
+$large-font-size:   18px;
+$big-font-size:     25px;
+$bigger-font-size:  30px;
+$enormous-font-size:40px;
+$enormous-plus-font-size: 48;
+$huge-font-size: 49px;
+$gargantuan-font-size: 60px;
 
 
 $thin-text-weight: 100;
@@ -1335,6 +1335,31 @@ span {
     }
   }
 }
+
+/* -- Icon -- */
+
+.o-icon {
+  position: relative;
+  display: inline-block;
+	width: 1em;
+	height: 1em;
+  top: 0.14em;
+	fill: currentColor;
+  vertical-align: inherit;
+
+  &-lite {
+    display: inline-block;
+  	width: 1em;
+  	height: 1em;
+  	fill: currentColor;
+    vertical-align: inherit;
+  }
+
+  &--middle {
+    vertical-align: middle;
+  }
+}
+
 
 /* -- Pagination -- */
 

@@ -1,4 +1,3 @@
-
 <div class="u-display-flex u-flexDirection-column u-box-100">
 
   <div class="u-boxShadow-outerModal">
@@ -16,6 +15,9 @@
           <div class="u-flexGrow-1 u-color-primary">
             <div class="u-fontSize-small u-lineHeight-3x">zendesk-test</div>
             <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
+            <div class=" u-color-disabled">
+              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
+            </div>
           </div>
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
@@ -65,7 +67,8 @@
 
         <div class="u-width-35 u-paddingLeft-gutter u-paddingRight-2x u-float-left">
           <span class="o-link o-link--muted page_action_sort_by_title">Article Title</span>
-          </div>
+          <svg class="o-icon u-color-disabled"><use xlink:href="#icon-arrow-down-small"/></svg>
+        </div>
 
         <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">Transifex Resource</div>
 
@@ -73,6 +76,7 @@
 
         <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted page_action_sort_by_updated">Latest Activity</span>
+          <svg class="o-icon u-color-disabled"><use xlink:href="#icon-arrow-down-small"/></svg>
         </div>
 
         <div class="u-width-20 u-paddingRight-2x u-textAlign-center u-float-left">Actions</div>
@@ -103,7 +107,8 @@
             </div>
             <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
               <span class="u-color-secondary">
-                {{{this.zd_object_updated}}}
+                <svg class="o-icon u-marginRight-1x"><use xlink:href="#icon-clock"/>
+                </svg>{{{this.zd_object_updated}}}
               </span>
             </div>
             <div class="u-width-20 u-clearfix">
