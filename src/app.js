@@ -70,21 +70,13 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
       },
       checkAsyncComplete: function() {
         logger.debug('checkAsyncComplete started');
-        if (_.isArray(this.syncStatus)) {
-          var count = 0;
-          if (_.isEmpty(this.syncStatus)) {
-            logger.debug('All async calls are completed');
-            // Danger!!! do not call async functions from this!
-            return this.loadSyncPage();
-          } else {
-            logger.debug('Async calls are not complete:', this.syncStatus);
-          }
+        if (_.isEmpty(this.syncStatus)) {
+          logger.debug('All async calls are completed');
+          // Danger!!! do not call async functions from this!
+          return this.loadSyncPage();
         } else {
-          // Something bad happened, reset
-          // Show error and prompt user for action
-          this.syncStatus = [];
+          logger.debug('Async calls are not complete:', this.syncStatus);
         }
-        //TODO display mainpage
       },
 
       appWillDestroy: function() {
