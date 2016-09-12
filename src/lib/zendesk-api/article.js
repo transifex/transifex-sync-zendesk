@@ -4,14 +4,14 @@
  * @module zendesk-api/articles
  */
 
-var common = require('../common');
+var common = require('../common'),
+    logger = require('../logger');
 
 var article = module.exports = {
   // selfies
   key: 'zd_article',
   base_url: '/api/v2/help_center/',
   timeout: 500,
-  logging: true,
   STRING_RADIX: 10,
   events: {
     'zdArticles.done': 'zdArticlesDone',
@@ -95,39 +95,32 @@ var article = module.exports = {
   },
   eventHandlers: {
     zdArticlesDone: function(data, textStatus) {
-      if (article.logging) {
-        console.log('Zendesk Articles retrieved with status:' + textStatus);
-      }
+      logger.info('Zendesk Articles retrieved with status:', textStatus);
       this.store(article.key, data);
-      console.log('done, removing key');
+      logger.debug('done, removing key');
       this.syncStatus = _.without(this.syncStatus, article.key);
       this.checkAsyncComplete();
     },
     zdArticleSyncError: function(jqXHR, textStatus) {
-      if (article.logging) {
-        console.log('Zendesk Article Retrieved with status:' + textStatus);
-      }
+      logger.info('Zendesk Article Retrieved with status:', textStatus);
       this.syncStatus = _.without(this.syncStatus, article.key);
       this.checkAsyncComplete();
       //this.uiErrorPageInit();
       if (jqXHR.status === 401) {
-        console.log('login error');
+        logger.error('zdArticleSyncError', 'Login error');
         //this.updateMessage("txLogin", "error");
       }
     },
     zdArticleGetTranslationsDone: function(data, textStatus, jqXHR) {
-      if (article.logging) {
-        console.log('Zendesk Article Translations retrieved with status:' +
-          textStatus);
-      }
+      logger.info('Zendesk Article Translations retrieved with status:', textStatus);
       this.syncStatus = _.without(this.syncStatus, article.key + jqXHR.id);
       this.checkAsyncComplete();
     },
     zdArticleInsertDone: function(data, textStatus) {
-      console.log('Transifex Resource inserted with status:' + textStatus);
+      logger.info('Transifex Resource inserted with status:', textStatus);
     },
     zdArticleUpdateDone: function(data, textStatus) {
-      console.log('Transifex Resource updated with status:' + textStatus);
+      logger.info('Transifex Resource updated with status:', textStatus);
     },
   },
   actionHandlers: {
@@ -139,10 +132,7 @@ var article = module.exports = {
       });
     },
     zdUpsertArticleTranslation: function(resource_data, article_id, zdLocale) {
-      if (article.logging) {
-        console.log('Upsert Article with Id:' + article_id + 'and locale:' +
-          zdLocale);
-      }
+      logger.info('Upsert Article with Id:' + article_id + 'and locale:' + zdLocale);
 
       /* var localeRegion = zdLocale.split('-');
        if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
@@ -172,9 +162,7 @@ var article = module.exports = {
       }
     },
     asyncGetZdArticles: function() {
-      if (article.logging) {
-        console.log('function: [asyncGetZdArticles]');
-      }
+      logger.debug('function: [asyncGetZdArticles]');
       this.syncStatus.push(article.key);
       var that = this;
       setTimeout(
@@ -183,9 +171,7 @@ var article = module.exports = {
         }, article.timeout);
     },
     asyncGetZdArticleTranslations: function(id) {
-      if (article.logging) {
-        console.log('function: [asyncGetZdArticleTranslation]');
-      }
+      logger.debug('function: [asyncGetZdArticleTranslation]');
       this.syncStatus.push(article.key + id);
       var that = this;
       setTimeout(
@@ -194,11 +180,9 @@ var article = module.exports = {
         }, article.timeout);
     },
     asyncGetZdArticlesFull: function(page, sortby, sortdirection, numperpage) {
-      if (article.logging) {
-        console.log('function: [asyncGetZdArticlesFull] params: [page]' +
-          page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
-          '[numperpage]' + numperpage);
-      }
+      logger.debug('function: [asyncGetZdArticlesFull] params: [page]' +
+        page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
+        '[numperpage]' + numperpage);
       this.syncStatus.push(article.key);
       var that = this;
       setTimeout(
@@ -269,8 +253,6 @@ var article = module.exports = {
     },
     checkPagination: function(a) {
       var i = a.page_count;
-      console.log(a);
-      console.log(i);
       if (typeof i === 'string') {
         i = parseInt(i, 10);
       }

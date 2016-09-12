@@ -3,6 +3,8 @@
  * @module transifex-api/project
  */
 
+var logger = require('../logger');
+
 var project = module.exports = {
   // selfies
   name: 'zendesk-test',
@@ -14,7 +16,6 @@ var project = module.exports = {
   username: 'testuser',
   password: 'testpass',
   timeout: 6000,
-  logging: true,
   TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
   TX_PROJECT_API_URL_PATTERN: /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
   TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/(.*)\/(.*)\//,
@@ -50,10 +51,7 @@ var project = module.exports = {
   },
   requests: {
     txProject: function(typeString, pageString) {
-      if (project.logging) {
-        console.log('txProject ajax request:' + typeString + '||' +
-          pageString);
-      }
+      logger.debug('txProject ajax request:', typeString + '||' + pageString);
       return {
         url: project.url + '?details',
         headers: project.headers,
@@ -72,32 +70,25 @@ var project = module.exports = {
   },
   eventHandlers: {
     txProjectDone: function(data, textStatus, jqXHR) {
-      if (project.logging) {
-        console.log('Transifex Project Retrieved with status:' + textStatus);
-      }
+      logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
       this.syncStatus = _.without(this.syncStatus, project.key);
       this.checkAsyncComplete();
     },
     txProjectSyncError: function(jqXHR, textStatus) {
-      if (project.logging) {
-        console.log('Transifex Project Retrieved with status:' + textStatus);
-      }
+      logger.info('Transifex Project Retrieved with status:', textStatus);
       //this.uiErrorPageInit();
       this.syncStatus = _.without(this.syncStatus, project.key);
       this.checkAsyncComplete();
       if (jqXHR.status === 401) {
-        console.log('login error');
+        logger.error('txProjectSyncError:', 'Login error');
         //this.updateMessage("txLogin", "error");
       }
     },
   },
   actionHandlers: {
     asyncGetTxProject: function(type, page) {
-      if (project.logging) {
-        console.log('function: [asyncGetTxProject] params: [type]' + type +
-          '|| [page]' + page);
-      }
+      logger.debug('function: [asyncGetTxProject] params: [type]' + type + '|| [page]' + page);
       this.syncStatus.push(project.key);
       var that = this;
       setTimeout(

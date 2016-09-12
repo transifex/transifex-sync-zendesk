@@ -3,11 +3,12 @@
  * @module ui/sync-categories
  */
 
-var zdCategory = require('../zendesk-api/category');
-var txProject = require('../transifex-api/project');
-var txResource = require('../transifex-api/resource');
-var syncUtil = require('../syncUtil');
-var common = require('../common');
+var zdCategory = require('../zendesk-api/category'),
+    txProject = require('../transifex-api/project'),
+    txResource = require('../transifex-api/resource'),
+    syncUtil = require('../syncUtil'),
+    logger = require('../logger'),
+    common = require('../common');
 
 var syncCategories = module.exports = {
   // selfies
@@ -17,7 +18,6 @@ var syncCategories = module.exports = {
   sortdirection: '',
   perpage: '7',
   currentpage: '1',
-  logging: true,
   events: {
     'click .page_action_categories': 'uiSyncPageCategoriesInit',
     'click .page_action_page': 'uiSyncPageGotoPage',
@@ -27,9 +27,7 @@ var syncCategories = module.exports = {
   },
   eventHandlers: {
     uiSyncPageCategoriesInit: function() {
-      if (syncCategories.logging) {
-        console.log('uiSyncPageCategoriesInit');
-      }
+      logger.debug('uiSyncPageCategoriesInit');
       var pageData = this.buildSyncPageCategoriesData();
       this.switchTo('sync_page_categories', {
         dataset: pageData,
@@ -106,14 +104,12 @@ var syncCategories = module.exports = {
     },
     uiSyncUpsertCategoryComplete: function() {
       this.loadSyncPage = function() {
-        console.log('reload TxProject');
+        logger.debug('reload TxProject');
       };
       this.asyncGetTxProject();
     },
     uiSyncPageResourceStatsComplete: function() {
-      if (syncCategories.logging) {
-        console.log('uiSyncPageResourceStatsComplete');
-      }
+      logger.debug('uiSyncPageResourceStatsComplete');
       var categoryData = this.calcResourceName(this.store(zdCategory.key));
       var numCategories = categoryData.categories.length;
       var resourceName, resource;
@@ -140,9 +136,7 @@ var syncCategories = module.exports = {
 
     },
     uiSyncPageLanguageComplete: function() {
-      if (syncCategories.logging) {
-        console.log('uiSyncPageLanguageComplete');
-      }
+      logger.debug('uiSyncPageLanguageComplete');
       var categoryData = this.calcResourceName(this.store(zdCategory.key));
       var numCategories = categoryData.categories.length;
 
@@ -172,9 +166,7 @@ var syncCategories = module.exports = {
 
     },
     uiSyncPageGotoPage: function(event) {
-      if (syncCategories.logging) {
-        console.log('uiSyncPageGotoPage');
-      }
+      logger.debug('uiSyncPageGotoPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-page");
       syncCategories.currentpage = page;
@@ -185,9 +177,7 @@ var syncCategories = module.exports = {
       this.loadSyncPage = this.uiSyncPageCategoriesInit;
     },
     uiSyncPageNextPage: function(event) {
-      if (syncCategories.logging) {
-        console.log('uiSyncPageNextPage');
-      }
+      logger.debug('uiSyncPageNextPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var nextPage = parseInt(page, 10) + 1;
@@ -199,9 +189,7 @@ var syncCategories = module.exports = {
       this.loadSyncPage = this.uiSyncPageCategoriesInit;
     },
     uiSyncPagePrevPage: function(event) {
-      if (this.isDebug()) {
-        console.log('uiSyncPagePrevPage');
-      }
+      logger.debug('uiSyncPagePrevPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var prevPage = parseInt(page, 10) - 1;
@@ -248,7 +236,7 @@ var syncCategories = module.exports = {
       this.$(linkId).css('cursor', 'pointer');
     },
     syncCategoryTranslations: function() {
-      console.log('syncCategoryTranslations started');
+      logger.debug('syncCategoryTranslations started');
       var categoryData = this.store(zdCategory.key);
       var OKToGetCategoryTranslations = (typeof categoryData ===
         'undefined') ? false : true;
@@ -262,7 +250,7 @@ var syncCategories = module.exports = {
       }
     },
     syncResourceStats: function() {
-      console.log('syncResourceStats started');
+      logger.debug('syncResourceStats started');
       var categoryData = this.store(zdCategory.key);
       var OKToGetResourceStats = (typeof categoryData === 'undefined') ?
         false : true;
@@ -277,7 +265,7 @@ var syncCategories = module.exports = {
     },
     syncCompletedLanguages: function() {
       // Requires txProject, zdCategories, and ResourceStats
-      console.log('syncCompletedLanguages started');
+      logger.debug('syncCompletedLanguages started');
       // Local function vars
       var categoryData = this.calcResourceName(this.store(zdCategory.key));
       var numCategories = categoryData.categories.length;

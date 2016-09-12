@@ -4,14 +4,14 @@
  * @module zendesk-api/sections
  */
 
-var common = require('../common');
+var common = require('../common'),
+    logger = require('../logger');
 
 var section = module.exports = {
   // selfies
   key: 'zd_section',
   base_url: '/api/v2/help_center/',
   timeout: 500,
-  logging: true,
   STRING_RADIX: 10,
   events: {
     'zdSections.done': 'zdSectionsDone',
@@ -67,39 +67,31 @@ var section = module.exports = {
   },
   eventHandlers: {
     zdSectionsDone: function(data, textStatus) {
-      if (section.logging) {
-        console.log('Zendesk Sections retrieved with status:' + textStatus);
-      }
+      logger.info('Zendesk Sections retrieved with status:', textStatus);
       this.store(section.key, data);
-      console.log('done, removing key');
       this.syncStatus = _.without(this.syncStatus, section.key);
       this.checkAsyncComplete();
     },
     zdSectionSyncError: function(jqXHR, textStatus) {
-      if (section.logging) {
-        console.log('Zendesk Section Retrieved with status:' + textStatus);
-      }
+      logger.info('Zendesk Section Retrieved with status:', textStatus);
       this.syncStatus = _.without(this.syncStatus, section.key);
       this.checkAsyncComplete();
       //this.uiErrorPageInit();
       if (jqXHR.status === 401) {
-        console.log('login error');
+        logger.error('zdSectionSyncError', 'Login error');
         //this.updateMessage("txLogin", "error");
       }
     },
     zdSectionGetTranslationsDone: function(data, textStatus, jqXHR) {
-      if (section.logging) {
-        console.log('Zendesk Section Translations retrieved with status:' +
-          textStatus);
-      }
+      logger.info('Zendesk Section Translations retrieved with status:', textStatus);
       this.syncStatus = _.without(this.syncStatus, section.key + jqXHR.id);
       this.checkAsyncComplete();
     },
     zdSectionInsertDone: function(data, textStatus) {
-      console.log('Transifex Resource inserted with status:' + textStatus);
+      logger.info('Transifex Resource inserted with status:', textStatus);
     },
     zdSectionUpdateDone: function(data, textStatus) {
-      console.log('Transifex Resource updated with status:' + textStatus);
+      logger.info('Transifex Resource updated with status:', textStatus);
     },
   },
   actionHandlers: {
@@ -111,10 +103,7 @@ var section = module.exports = {
       });
     },
     zdUpsertSectionTranslation: function(resource_data, section_id, zdLocale) {
-      if (section.logging) {
-        console.log('Upsert Section with Id:' + section_id + 'and locale:' +
-          zdLocale);
-      }
+      logger.info('Upsert Section with Id: ' + section_id + 'and locale: ' + zdLocale);
 
       /* var localeRegion = zdLocale.split('-');
        if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
@@ -144,9 +133,7 @@ var section = module.exports = {
       }
     },
     asyncGetZdSections: function() {
-      if (section.logging) {
-        console.log('function: [asyncGetZdSections]');
-      }
+      logger.debug('function: [asyncGetZdSections]');
       this.syncStatus.push(section.key);
       var that = this;
       setTimeout(
@@ -155,9 +142,7 @@ var section = module.exports = {
         }, section.timeout);
     },
     asyncGetZdSectionTranslations: function(id) {
-      if (section.logging) {
-        console.log('function: [asyncGetZdSectionTranslation]');
-      }
+      logger.debug('function: [asyncGetZdSectionTranslation]');
       this.syncStatus.push(section.key + id);
       var that = this;
       setTimeout(
@@ -227,8 +212,6 @@ var section = module.exports = {
     },
     checkPagination: function(a) {
       var i = a.page_count;
-      console.log(a);
-      console.log(i);
       if (typeof i === 'string') {
         i = parseInt(i, 10);
       }

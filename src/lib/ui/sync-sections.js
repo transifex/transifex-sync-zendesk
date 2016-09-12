@@ -3,11 +3,12 @@
  * @module ui/sync-sections
  */
 
-var zdSection = require('../zendesk-api/section');
-var txProject = require('../transifex-api/project');
-var txResource = require('../transifex-api/resource');
-var syncUtil = require('../syncUtil');
-var common = require('../common');
+var zdSection = require('../zendesk-api/section'),
+    txProject = require('../transifex-api/project'),
+    txResource = require('../transifex-api/resource'),
+    syncUtil = require('../syncUtil'),
+    logger = require('../logger'),
+    common = require('../common');
 
 var syncSections = module.exports = {
   // selfies
@@ -17,7 +18,6 @@ var syncSections = module.exports = {
   sortdirection: '',
   perpage: '7',
   currentpage: '1',
-  logging: true,
   events: {
     'click .page_action_sections': 'uiSyncPageSectionsInit',
     'click .page_action_page': 'uiSyncPageGotoPage',
@@ -27,9 +27,7 @@ var syncSections = module.exports = {
   },
   eventHandlers: {
     uiSyncPageSectionsInit: function() {
-      if (syncSections.logging) {
-        console.log('uiSyncPageSectionsInit');
-      }
+      logger.debug('uiSyncPageSectionsInit');
       var pageData = this.buildSyncPageSectionsData();
       this.switchTo('sync_page_sections', {
         dataset: pageData,
@@ -105,14 +103,12 @@ var syncSections = module.exports = {
     },
     uiSyncUpsertSectionComplete: function() {
       this.loadSyncPage = function() {
-        console.log('reload TxProject');
+        logger.debug('reload TxProject');
       };
       this.asyncGetTxProject();
     },
     uiSyncPageResourceStatsComplete: function() {
-      if (syncSections.logging) {
-        console.log('uiSyncPageResourceStatsComplete');
-      }
+      logger.debug('uiSyncPageResourceStatsComplete');
       var sectionData = this.calcResourceName(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
       var resourceName, resource;
@@ -139,9 +135,7 @@ var syncSections = module.exports = {
 
     },
     uiSyncPageLanguageComplete: function() {
-      if (syncSections.logging) {
-        console.log('uiSyncPageLanguageComplete');
-      }
+      logger.debug('uiSyncPageLanguageComplete');
       var sectionData = this.calcResourceName(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
 
@@ -171,9 +165,7 @@ var syncSections = module.exports = {
 
     },
     uiSyncPageGotoPage: function(event) {
-      if (syncSections.logging) {
-        console.log('uiSyncPageGotoPage');
-      }
+      logger.debug('uiSyncPageGotoPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-page");
       syncSections.currentpage = page;
@@ -183,9 +175,7 @@ var syncSections = module.exports = {
       this.loadSyncPage = this.uiSyncPageSectionsInit;
     },
     uiSyncPageNextPage: function(event) {
-      if (syncSections.logging) {
-        console.log('uiSyncPageNextPage');
-      }
+      logger.debug('uiSyncPageNextPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var nextPage = parseInt(page, 10) + 1;
@@ -196,9 +186,7 @@ var syncSections = module.exports = {
       this.loadSyncPage = this.uiSyncPageSectionsInit;
     },
     uiSyncPagePrevPage: function(event) {
-      if (this.isDebug()) {
-        console.log('uiSyncPagePrevPage');
-      }
+      logger.debug('uiSyncPagePrevPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var prevPage = parseInt(page, 10) - 1;
@@ -244,7 +232,7 @@ var syncSections = module.exports = {
       this.$(linkId).css('cursor', 'pointer');
     },
     syncSectionTranslations: function() {
-      console.log('syncSectionTranslations started');
+      logger.debug('syncSectionTranslations started');
       var sectionData = this.store(zdSection.key);
       var OKToGetSectionTranslations = (typeof sectionData === 'undefined') ?
         false : true;
@@ -258,7 +246,7 @@ var syncSections = module.exports = {
       }
     },
     syncResourceStats: function() {
-      console.log('syncResourceStats started');
+      logger.debug('syncResourceStats started');
       var sectionData = this.store(zdSection.key);
       var OKToGetResourceStats = (typeof sectionData === 'undefined') ?
         false : true;
@@ -273,7 +261,7 @@ var syncSections = module.exports = {
     },
     syncCompletedLanguages: function() {
       // Requires txProject, zdSections, and ResourceStats
-      console.log('syncCompletedLanguages started');
+      logger.debug('syncCompletedLanguages started');
       // Local function vars
       var sectionData = this.calcResourceName(this.store(zdSection.key));
       var numSections = sectionData.sections.length;

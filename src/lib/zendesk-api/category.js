@@ -4,14 +4,14 @@
  * @module zendesk-api/categories
  */
 
-var common = require('../common');
+var common = require('../common'),
+    logger = require('../logger');
 
 var category = module.exports = {
   // selfies
   key: 'zd_category',
   base_url: '/api/v2/help_center/',
   timeout: 500,
-  logging: true,
   STRING_RADIX: 10,
   events: {
     'zdCategories.done': 'zdCategoriesDone',
@@ -67,40 +67,31 @@ var category = module.exports = {
   },
   eventHandlers: {
     zdCategoriesDone: function(data, textStatus) {
-      if (category.logging) {
-        console.log('Zendesk Categories retrieved with status:' +
-          textStatus);
-      }
+      logger.info('Zendesk Categories retrieved with status:', textStatus);
       this.store(category.key, data);
-      console.log('done, removing key');
       this.syncStatus = _.without(this.syncStatus, category.key);
       this.checkAsyncComplete();
     },
     zdCategorySyncError: function(jqXHR, textStatus) {
-      if (category.logging) {
-        console.log('Zendesk Category Retrieved with status:' + textStatus);
-      }
+      logger.info('Zendesk Category Retrieved with status:', textStatus);
       this.syncStatus = _.without(this.syncStatus, category.key);
       this.checkAsyncComplete();
       //this.uiErrorPageInit();
       if (jqXHR.status === 401) {
-        console.log('login error');
+        logger.error('zdCategorySyncError', 'Login error');
         //this.updateMessage("txLogin", "error");
       }
     },
     zdCategoryGetTranslationsDone: function(data, textStatus, jqXHR) {
-      if (category.logging) {
-        console.log('Zendesk Category Translations retrieved with status:' +
-          textStatus);
-      }
+      logger.info('Zendesk Category Translations retrieved with status:', textStatus);
       this.syncStatus = _.without(this.syncStatus, category.key + jqXHR.id);
       this.checkAsyncComplete();
     },
     zdCategoryInsertDone: function(data, textStatus) {
-      console.log('Transifex Resource inserted with status:' + textStatus);
+      logger.info('Transifex Resource inserted with status:', textStatus);
     },
     zdCategoryUpdateDone: function(data, textStatus) {
-      console.log('Transifex Resource updated with status:' + textStatus);
+      logger.info('Transifex Resource updated with status:', textStatus);
     },
   },
   actionHandlers: {
@@ -111,12 +102,8 @@ var category = module.exports = {
         dataset: pageData,
       });
     },
-    zdUpsertCategoryTranslation: function(resource_data, category_id,
-      zdLocale) {
-      if (category.logging) {
-        console.log('Upsert Category with Id:' + category_id +
-          'and locale:' + zdLocale);
-      }
+    zdUpsertCategoryTranslation: function(resource_data, category_id, zdLocale) {
+      logger.info('Upsert Category with Id: ' + category_id + ' and locale:' + zdLocale);
 
       /* var localeRegion = zdLocale.split('-');
        if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
@@ -147,9 +134,7 @@ var category = module.exports = {
       }
     },
     asyncGetZdCategories: function() {
-      if (category.logging) {
-        console.log('function: [asyncGetZdCategories]');
-      }
+      logger.debug('function: [asyncGetZdCategories]');
       this.syncStatus.push(category.key);
       var that = this;
       setTimeout(
@@ -158,9 +143,7 @@ var category = module.exports = {
         }, category.timeout);
     },
     asyncGetZdCategoryTranslations: function(id) {
-      if (category.logging) {
-        console.log('function: [asyncGetZdCategoryTranslation]');
-      }
+      logger.debug('function: [asyncGetZdCategoryTranslation]');
       this.syncStatus.push(category.key + id);
       var that = this;
       setTimeout(
@@ -230,8 +213,6 @@ var category = module.exports = {
     },
     checkPagination: function(a) {
       var i = a.page_count;
-      console.log(a);
-      console.log(i);
       if (typeof i === 'string') {
         i = parseInt(i, 10);
       }

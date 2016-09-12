@@ -3,11 +3,12 @@
  * @module transifex-api/project
  */
 
-var zdArticle = require('../zendesk-api/article');
-var txProject = require('../transifex-api/project');
-var txResource = require('../transifex-api/resource');
-var syncUtil = require('../syncUtil');
-var common = require('../common');
+var zdArticle = require('../zendesk-api/article'),
+    txProject = require('../transifex-api/project'),
+    txResource = require('../transifex-api/resource'),
+    syncUtil = require('../syncUtil'),
+    logger = require('../logger'),
+    common = require('../common');
 
 var syncArticles = module.exports = {
   // selfies
@@ -17,7 +18,6 @@ var syncArticles = module.exports = {
   sortdirection: '',
   perpage: '7',
   currentpage: '1',
-  logging: true,
   events: {
     'click .page_action_articles': 'uiSyncPageArticlesInit',
     'click .page_action_page': 'uiSyncPageGotoPage',
@@ -33,9 +33,7 @@ var syncArticles = module.exports = {
   },
   eventHandlers: {
     uiSyncPageArticlesInit: function() {
-      if (syncArticles.logging) {
-        console.log('uiSyncPageArticlesInit');
-      }
+      logger.debug('uiSyncPageArticlesInit');
       var pageData = this.buildSyncPageArticlesData();
       this.switchTo('sync_page_articles', {
         dataset: pageData,
@@ -158,9 +156,7 @@ var syncArticles = module.exports = {
       this.txUpsertResource(resource_request, txResourceName);
     },
     uiSyncUpsertArticleComplete: function() {
-      this.loadSyncPage = function() {
-        console.log('reload TxProject');
-      };
+      logger.debug('reload TxProject');
       this.asyncGetTxProject();
     },
     uiSyncPagePerPageTen: function() {
@@ -198,9 +194,7 @@ var syncArticles = module.exports = {
       this.loadSyncPage = this.uiSyncPageArticlesInit;
     },
     uiSyncPageResourceStatsComplete: function() {
-      if (syncArticles.logging) {
-        console.log('uiSyncPageResourceStatsComplete');
-      }
+      logger.debug('uiSyncPageResourceStatsComplete');
       var articleData = this.calcResourceName(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
       var resourceName, resource;
@@ -227,9 +221,7 @@ var syncArticles = module.exports = {
 
     },
     uiSyncPageLanguageComplete: function() {
-      if (syncArticles.logging) {
-        console.log('uiSyncPageLanguageComplete');
-      }
+      logger.debug('uiSyncPageLanguageComplete');
       var articleData = this.calcResourceName(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
 
@@ -259,9 +251,7 @@ var syncArticles = module.exports = {
 
     },
     uiSyncPageGotoPage: function(event) {
-      if (syncArticles.logging) {
-        console.log('uiSyncPageGotoPage');
-      }
+      logger.debug('uiSyncPageGotoPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-page");
       syncArticles.currentpage = page;
@@ -271,9 +261,7 @@ var syncArticles = module.exports = {
       this.loadSyncPage = this.uiSyncPageArticlesInit;
     },
     uiSyncPageNextPage: function(event) {
-      if (syncArticles.logging) {
-        console.log('uiSyncPageNextPage');
-      }
+      logger.debug('uiSyncPageNextPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var nextPage = parseInt(page, 10) + 1;
@@ -284,9 +272,7 @@ var syncArticles = module.exports = {
       this.loadSyncPage = this.uiSyncPageArticlesInit;
     },
     uiSyncPagePrevPage: function(event) {
-      if (this.isDebug()) {
-        console.log('uiSyncPagePrevPage');
-      }
+      logger.debug('uiSyncPagePrevPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var prevPage = parseInt(page, 10) - 1;
@@ -328,7 +314,7 @@ var syncArticles = module.exports = {
       this.$(linkId).css('cursor', 'pointer');
     },
     syncArticleTranslations: function() {
-      console.log('syncArticleTranslations started');
+      logger.debug('syncArticleTranslations started');
       var articleData = this.store(zdArticle.key);
       var OKToGetArticleTranslations = (typeof articleData === 'undefined') ?
         false : true;
@@ -342,7 +328,7 @@ var syncArticles = module.exports = {
       }
     },
     syncResourceStats: function() {
-      console.log('syncResourceStats started');
+      logger.debug('syncResourceStats started');
       var articleData = this.store(zdArticle.key);
       var OKToGetResourceStats = (typeof articleData === 'undefined') ?
         false : true;
@@ -357,7 +343,7 @@ var syncArticles = module.exports = {
     },
     syncCompletedLanguages: function() {
       // Requires txProject, zdArticles, and ResourceStats
-      console.log('syncCompletedLanguages started');
+      logger.debug('syncCompletedLanguages started');
       // Local function vars
       var articleData = this.calcResourceName(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
