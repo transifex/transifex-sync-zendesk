@@ -55,9 +55,9 @@
       <div class="u-flexGrow-1 u-paddingRight-3x"></div>
       <div class="u-lineHeight-form u-fontSize-small">
         <span class="u-color-disabled">Per page:</span>
-        <a id="perpage-ten" href="#" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
-        <a id="perpage-twenty" href="#" class="o-link o-link--muted u-marginHorizontal-1x">20</a>
-        <a id="perpage-thirty" href="#" class="o-link o-link--muted u-marginLeft-1x">30</a>
+        <a perpage="10" href="javascript:;" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
+        <a perpage="20" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x">20</a>
+        <a perpage="30" href="javascript:;" class="o-link o-link--muted u-marginLeft-1x">30</a>
       </div>
     </div>
 
