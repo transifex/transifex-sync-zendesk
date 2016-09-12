@@ -94,8 +94,16 @@
       <div class="o-list__item">
         <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider">
           <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
-            <div class="o-text-ellipsis u-width-25 u-paddingLeft-gutter u-paddingRight-1x">
-              <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
+            <div class="u-width-25 u-paddingLeft-gutter u-paddingRight-1x">
+              <div class="u-display-flex u-width-100">
+                <label class="o-checkbox-controller u-marginRight-2x" for="{{{this.name}}}">
+                  <input type="checkbox" class="o-checkbox o-checkbox--bare" name="{{{this.name}}}"/>
+                  <div class="o-checkbox__label"></div>
+                </label>
+                <div class="o-text-ellipsis u-flexGrow-1">
+                  <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
+                </div>
+              </div>
             </div>
             <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small">{{{this.name}}}</span>
