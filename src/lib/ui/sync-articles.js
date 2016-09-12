@@ -399,7 +399,7 @@ var syncArticles = module.exports = {
         tx_resource_url = "https://www.transifex.com/projects/p/" +
           txProject.name + "/" + e.resource_name;
         zd_object_updated = moment(e.updated_at).format(
-          'MMM D YYYY h:mm:ss a');
+          'MMM D YYYY h:mma');
         d = {};
         d = _.extend(d, {
           name: e.resource_name

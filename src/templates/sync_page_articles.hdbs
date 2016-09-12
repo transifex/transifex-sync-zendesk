@@ -38,14 +38,14 @@
     <!-- Header: Tabs area -->
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
-        <a class="o-tabs__item is-active  page_action_articles" href="javascript:;">
-          Articles
+        <a class="o-tabs__item page_action_categories" href="javascript:;">
+          Categories
         </a>
         <a class="o-tabs__item u-marginLeft-5x page_action_sections" href="javascript:;">
           Sections
         </a>
-        <a class="o-tabs__item u-marginLeft-5x page_action_categories" href="javascript:;">
-          Categories
+        <a class="o-tabs__item u-marginLeft-5x is-active page_action_articles" href="javascript:;">
+          Articles
         </a>
       </div>
     </div>
@@ -65,21 +65,21 @@
     <div class="u-paddingHorizontal-gutter u-paddingVertical-2x u-backgroundColor-active">
       <div class="u-position u-clearfix">
 
-        <div class="u-width-35 u-paddingLeft-gutter u-paddingRight-2x u-float-left">
+        <div class="u-width-25 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
           <span class="o-link o-link--muted page_action_sort_by_title">Article Title</span>
           <svg class="o-icon u-color-disabled"><use xlink:href="#icon-arrow-down-small"/></svg>
         </div>
 
-        <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">Transifex Resource</div>
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
 
-        <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">Translations completed</div>
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">Translations completed</div>
 
-        <div class="u-width-15 u-paddingRight-2x u-textAlign-center u-float-left">
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted page_action_sort_by_updated">Latest Activity</span>
           <svg class="o-icon u-color-disabled"><use xlink:href="#icon-arrow-down-small"/></svg>
         </div>
 
-        <div class="u-width-20 u-paddingRight-2x u-textAlign-center u-float-left">Actions</div>
+        <div class="u-width-30 u-textAlign-center u-float-left">Actions</div>
 
       </div>
     </div>
@@ -92,28 +92,28 @@
     <div class="o-list o-interactive-list--highlight u-paddingHorizontal-gutter u-marginBottom-4x">
     {{#each dataset}}
       <div class="o-list__item">
-        <div class="o-interactive-list__item u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
-          <div class="u-display-flex u-justifyContent-center u-flexDirection-row">
-            <div class="o-text-ellipsis u-width-35 u-marginRight-2x">
+        <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider">
+          <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
+            <div class="o-text-ellipsis u-width-25 u-paddingLeft-gutter u-paddingRight-1x">
               <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
             </div>
-            <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
-              <span class="u-color-secondary">{{{this.name}}}</span>
+            <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small">{{{this.name}}}</span>
             </div>
-            <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
-              <span class="u-color-secondary" id="locales-{{{this.name}}}">
+            <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small" id="locales-{{{this.name}}}">
                 <span class="u-color-disabled">Checking...</span>
               </span>
             </div>
-            <div class="o-text-ellipsis u-width-15 u-marginRight-2x u-textAlign-center">
-              <span class="u-color-secondary">
+            <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small">
                 <svg class="o-icon u-marginRight-1x"><use xlink:href="#icon-clock"/>
                 </svg>{{{this.zd_object_updated}}}
               </span>
             </div>
-            <div class="u-width-20 u-clearfix">
-              <span id="upload-{{{this.name}}}" class="o-link is-disabled enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Upload Content</span>
-              <span id="download-{{{this.name}}}" class="o-link is-disabled enable_column page_action_download u-float-right" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Import Translations</span>
+            <div class="u-width-30 u-clearfix">
+              <span id="upload-{{{this.name}}}" class="o-button is-disabled enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Upload Content</span>
+              <span id="download-{{{this.name}}}" class="o-button is-disabled enable_column page_action_download u-float-right" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Import Translations</span>
             </div>
           </div>
         </div>
