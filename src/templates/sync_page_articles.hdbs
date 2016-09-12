@@ -66,8 +66,11 @@
       <div class="u-position u-clearfix">
 
         <div class="u-width-25 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
-          <span class="o-link o-link--muted page_action_sort_by_title">Article Title</span>
-          <svg class="o-icon u-color-disabled"><use xlink:href="#icon-arrow-down-small"/></svg>
+          <span class="o-link o-link--muted page_action_sort_by_title">
+            Article Title<svg class="o-icon" viewBox="0 0 16 16">
+              <path id="arrow-down-small" class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
+            </svg>
+          </span>
         </div>
 
         <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
@@ -75,8 +78,11 @@
         <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">Translations completed</div>
 
         <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">
-          <span class="o-link o-link--muted page_action_sort_by_updated">Latest Activity</span>
-          <svg class="o-icon u-color-disabled"><use xlink:href="#icon-arrow-down-small"/></svg>
+          <span class="o-link o-link--muted page_action_sort_by_updated">
+            Latest Activity<svg class="o-icon" viewBox="0 0 16 16">
+              <path class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
+            </svg>
+          </span>
         </div>
 
         <div class="u-width-30 u-textAlign-center u-float-left">Actions</div>
@@ -115,7 +121,8 @@
             </div>
             <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small">
-                <svg class="o-icon u-marginRight-1x"><use xlink:href="#icon-clock"/>
+                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
+                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
                 </svg>{{{this.zd_object_updated}}}
               </span>
             </div>
