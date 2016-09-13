@@ -1,8 +1,87 @@
-<div class="u-box-100 u-display-flex u-alignItems-center u-justifyContent-center">
-  <div class="u-textAlign-center u-paddingBottom-3x">
-    <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
-      Fetching data from Transifex
+<div class="u-display-flex u-flexDirection-column u-box-100">
+
+  <div class="u-position-relative u-boxShadow-outerModal">
+    <!-- Header: Info area -->
+    <div class="c-infoarea">
+      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
+        <div class="u-display-flex">
+
+          <div class="u-width-7x u-marginRight-2x">
+            <div class="o-initials-logo u-box-7x u-lineHeight-7x u-fontSize-big">
+              tx
+            </div>
+          </div>
+
+          <div class="u-flexGrow-1 u-color-primary">
+            <div class="u-fontSize-small u-lineHeight-3x">zendesk-test</div>
+            <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
+            <div class=" u-color-disabled">
+              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link is-disabled u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
+            </div>
+          </div>
+
+          <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
+            <a href="javascript:;" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form is-disabled">
+              Update table data
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="o-spinner"></div>
+
+    <!-- Header: Tabs area -->
+    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
+        <a tab="categories" class="o-tabs__item" href="javascript:;">
+          Categories
+        </a>
+        <a tab="sections" class="o-tabs__item u-marginLeft-5x" href="javascript:;">
+          Sections
+        </a>
+        <a class="o-tabs__item u-marginLeft-5x" href="javascript:;">
+          Articles
+        </a>
+      </div>
+    </div>
+
+    <!-- Header: Search-filters -->
+    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
+      <div class="u-flexGrow-1 u-height-form u-paddingRight-3x">
+        <a href="#" title="Send Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x">
+          Upload Content
+        </a>
+        <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled">
+          Import Translations
+        </a>
+      </div>
+      <div class="u-height-form u-lineHeight-form u-fontSize-small">
+        <span class="u-color-disabled">Per page:</span>
+        <a perpage="10" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x is-disabled">10</a>
+        <a perpage="25" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x is-disabled">25</a>
+        <a perpage="50" href="javascript:;" class="o-link o-link--muted u-marginLeft-1x is-disabled">50</a>
+      </div>
+    </div>
+
+    <!-- Header: List header -->
+    <div class="u-paddingHorizontal-gutter u-paddingVertical-1x u-backgroundColor-active">
+      <div class="u-position u-clearfix u-lineHeight-form">
+        &nbsp;
+      </div>
+    </div>
+
   </div>
+
+  <div class="u-flexGrow-1 o-scrollable">
+
+    <div class="u-box-100 u-display-flex u-alignItems-center u-justifyContent-center">
+      <div class="u-textAlign-center u-paddingBottom-3x">
+        <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
+          Fetching data from Transifex
+        </div>
+        <div class="o-spinner"></div>
+      </div>
+    </div>
+
+  </div>
+
 </div>

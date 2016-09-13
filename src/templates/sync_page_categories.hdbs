@@ -73,7 +73,7 @@
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted page_action_sort_by_title">
-              Section<svg class="o-icon" viewBox="0 0 16 16">
+              Category<svg class="o-icon" viewBox="0 0 16 16">
                 <path id="arrow-down-small" class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
               </svg>
             </span>
