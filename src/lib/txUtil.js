@@ -3,8 +3,8 @@
  * @module txUtil
  */
 
-var TX_PROJECT_API_URL_REPLACE = "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
-    TX_PROJECT_API_URL_PATTERN = /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
+var TX_PROJECT_API_URL_REPLACE = "https://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
+    TX_PROJECT_API_URL_PATTERN = /(https:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
     TX_PROJECT_URL_PATTERN = /https:\/\/www.transifex.com\/(.*)\/(.*)\//;
 
 function convertUrlToApi(u) {

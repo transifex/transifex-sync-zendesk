@@ -12,10 +12,10 @@ var txProject = require('./project'),
 var resource = module.exports = {
   // selfies
   key: 'tx_resource',
-  url: 'http://www.transifex.com/api/2/project/zendesk-test/resource/',
-  inserturl: 'http://www.transifex.com/api/2/project/zendesk-test/resources/',
+  url: 'https://www.transifex.com/api/2/project/zendesk-test/resource/',
+  inserturl: 'https://www.transifex.com/api/2/project/zendesk-test/resources/',
   headers: {
-    'source-zendesk': 'v1.2.3'
+    'X-Source-Zendesk': 'v2.0.0'
   },
   username: 'testuser',
   password: 'testpass',
@@ -49,6 +49,7 @@ var resource = module.exports = {
         username: resource.username,
         password: resource.password,
         timeout: resource.timeout,
+        cors: true,
         secure: false
       };
     },
@@ -67,6 +68,7 @@ var resource = module.exports = {
         username: resource.username,
         password: resource.password,
         timeout: resource.timeout,
+        cors: true,
         secure: false
       };
     },
@@ -85,6 +87,7 @@ var resource = module.exports = {
         data: JSON.stringify(data),
         contentType: 'application/json',
         timeout: resource.timeout,
+        cors: true,
         secure: false
       };
     },
@@ -105,6 +108,7 @@ var resource = module.exports = {
         contentType: false,
         processData: false,
         timeout: resource.timeout,
+        cors: true,
         secure: false
       };
     },
@@ -125,6 +129,7 @@ var resource = module.exports = {
         contentType: false,
         processData: false,
         timeout: resource.timeout,
+        cors: true,
         secure: false
       };
     },
@@ -143,6 +148,7 @@ var resource = module.exports = {
         data: JSON.stringify(data),
         contentType: 'application/json',
         timeout: resource.timeout,
+        cors: true,
         secure: false
       };
     },
