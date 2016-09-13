@@ -57,13 +57,13 @@ var syncSections = module.exports = {
       this.$('[perpage="' + syncSections.perpage + '"]').addClass('is-active');
 
       this.loadSyncPage = this.uiSectionsResourceStatsComplete;
-      this.syncResourceStatsSection();
-      this.syncSectionTranslations();
+      this.syncResourceStatsSections();
+      this.syncSectionsTranslations();
     },
     uiSectionsBatchUpload: function(event) {
       if (event) event.preventDefault();
       var sectionData = this.store(zdSection.key);
-      var obj = this.calcResourceNameSection(sectionData);
+      var obj = this.calcResourceNameSections(sectionData);
       var numSections = obj.sections.length;
       var section, resource_request, txResourceName;
       for (var i = 0; i < numSections; i++) {
@@ -85,7 +85,7 @@ var syncSections = module.exports = {
       var project = this.store(txProject.key);
       var sourceLocale = txProject.getSourceLocale(project);
       var sectionData = this.store(zdSection.key);
-      var obj = this.calcResourceNameSection(sectionData);
+      var obj = this.calcResourceNameSections(sectionData);
       var numSections = obj.sections.length;
       var section, resource, txResourceName, completedLocales;
       var zdLocale, translation;
@@ -101,7 +101,7 @@ var syncSections = module.exports = {
               completedLocales[ii]);
             if (typeof translation.content === 'string') {
               zdLocale = syncUtil.txLocaletoZd(completedLocales[ii]);
-              this.zdUpsertSectionTranslation(translation.content, section.id,
+              this.zdUpsertSectionsTranslation(translation.content, section.id,
                 zdLocale);
             }
           }
@@ -132,7 +132,7 @@ var syncSections = module.exports = {
             completedLocales[i]);
           if (typeof translation.content === 'string') {
             zdLocale = syncUtil.txLocaletoZd(completedLocales[i]);
-            this.zdUpsertSectionTranslation(translation.content, zdObjectId,
+            this.zdUpsertSectionsTranslation(translation.content, zdObjectId,
               zdLocale);
           }
         }
@@ -145,7 +145,7 @@ var syncSections = module.exports = {
       var zdObjectId = this.$(linkId).attr("data-zd-object-id");
       var zdObjectType = this.$(linkId).attr("data-zd-object-type");
       var sections = this.store(zdSection.key);
-      var section = this.getSingleSection(zdObjectId, sections);
+      var section = this.getSingleSections(zdObjectId, sections);
       var resource_request = {};
       if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(section);
@@ -191,7 +191,7 @@ var syncSections = module.exports = {
     },
     uiSectionsResourceStatsComplete: function() {
       logger.debug('uiSectionsResourceStatsComplete');
-      var sectionData = this.calcResourceNameSection(this.store(zdSection.key));
+      var sectionData = this.calcResourceNameSections(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
       var resourceName, resource;
       for (var i = 0; i < numSections; i++) {
@@ -213,12 +213,12 @@ var syncSections = module.exports = {
       }
 
       this.loadSyncPage = this.uiSectionsLanguageComplete;
-      this.syncCompletedLanguagesSection();
+      this.syncCompletedLanguagesSections();
 
     },
     uiSectionsLanguageComplete: function() {
       logger.debug('uiSectionsLanguageComplete');
-      var sectionData = this.calcResourceNameSection(this.store(zdSection.key));
+      var sectionData = this.calcResourceNameSections(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
 
       // Local loop vars
@@ -284,39 +284,39 @@ var syncSections = module.exports = {
 
   },
   actionHandlers: {
-    syncSectionTranslations: function() {
-      logger.debug('syncSectionTranslations started');
+    syncSectionsTranslations: function() {
+      logger.debug('syncSectionsTranslations started');
       var sectionData = this.store(zdSection.key);
       var OKToGetSectionTranslations = (typeof sectionData === 'undefined') ?
         false : true;
       var obj, numSections;
       if (OKToGetSectionTranslations) {
-        obj = this.calcResourceNameSection(sectionData);
+        obj = this.calcResourceNameSections(sectionData);
         numSections = obj.sections.length;
         for (var i = 0; i < numSections; i++) {
-          this.asyncGetZdSectionTranslations(obj.sections[i].id);
+          this.asyncGetZdSectionsTranslations(obj.sections[i].id);
         }
       }
     },
-    syncResourceStatsSection: function() {
-      logger.debug('syncResourceStatsSection started');
+    syncResourceStatsSections: function() {
+      logger.debug('syncResourceStatsSections started');
       var sectionData = this.store(zdSection.key);
       var OKToGetResourceStats = (typeof sectionData === 'undefined') ?
         false : true;
       var obj, numSections;
       if (OKToGetResourceStats) {
-        obj = this.calcResourceNameSection(sectionData);
+        obj = this.calcResourceNameSections(sectionData);
         numSections = obj.sections.length;
         for (var i = 0; i < numSections; i++) {
           this.asyncGetTxResourceStats(obj.sections[i].resource_name);
         }
       }
     },
-    syncCompletedLanguagesSection: function() {
+    syncCompletedLanguagesSections: function() {
       // Requires txProject, zdSections, and ResourceStats
-      logger.debug('syncCompletedLanguagesSection started');
+      logger.debug('syncCompletedLanguagesSections started');
       // Local function vars
-      var sectionData = this.calcResourceNameSection(this.store(zdSection.key));
+      var sectionData = this.calcResourceNameSections(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
 
       // Local loop vars
@@ -341,7 +341,7 @@ var syncSections = module.exports = {
     },
     buildSyncPageSectionsData: function() {
       var sectionData = this.store(zdSection.key);
-      var sections = this.calcResourceNameSection(sectionData);
+      var sections = this.calcResourceNameSections(sectionData);
       var type = 'sections';
       var limit = sections.sections.length;
       var ret = [];
@@ -379,16 +379,16 @@ var syncSections = module.exports = {
         });
         ret.push(d);
       }
-      var paginationVisible = this.checkPaginationSection(sectionData);
+      var paginationVisible = this.checkPaginationSections(sectionData);
       if (paginationVisible) {
-        var currentPage = this.getCurrentPageSection(sectionData);
+        var currentPage = this.getCurrentPageSections(sectionData);
         syncSections.currentpage = currentPage;
         ret = _.extend(ret, {
-          page_prev_enabled: this.isFewerSection(sectionData, currentPage),
-          page_next_enabled: this.isMoreSection(sectionData, currentPage),
-          current_page: this.getCurrentPageSection(sectionData),
+          page_prev_enabled: this.isFewerSections(sectionData, currentPage),
+          page_next_enabled: this.isMoreSections(sectionData, currentPage),
+          current_page: this.getCurrentPageSections(sectionData),
           pagination_visible: paginationVisible,
-          pages: this.getPagesSection(sectionData)
+          pages: this.getPagesSections(sectionData)
         });
       }
       return ret;

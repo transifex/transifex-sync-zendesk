@@ -66,11 +66,11 @@ var common = module.exports = {
 
 
       var o = {};
-      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getNameArticle(
+      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getNameArticles(
         arr[i], a), o);
-      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitleArticle(
+      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitleArticles(
         arr[i], a), o1);
-      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBodyArticle(
+      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBodyArticles(
         arr[i], a), o2);
       var o4 = syncUtil.addContent(req, o3);
       ret[i] = o4;

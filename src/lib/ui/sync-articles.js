@@ -57,13 +57,13 @@ var syncArticles = module.exports = {
       this.$('[perpage="' + syncArticles.perpage + '"]').addClass('is-active');
 
       this.loadSyncPage = this.uiArticlesResourceStatsComplete;
-      this.syncResourceStatsArticle();
-      this.syncArticleTranslations();
+      this.syncResourceStatsArticles();
+      this.syncArticlesTranslations();
     },
     uiArticlesBatchUpload: function(event) {
       if (event) event.preventDefault();
       var articleData = this.store(zdArticle.key);
-      var obj = this.calcResourceNameArticle(articleData);
+      var obj = this.calcResourceNameArticles(articleData);
       var numArticles = obj.articles.length;
       var article, resource_request, txResourceName;
       for (var i = 0; i < numArticles; i++) {
@@ -85,7 +85,7 @@ var syncArticles = module.exports = {
       var project = this.store(txProject.key);
       var sourceLocale = txProject.getSourceLocale(project);
       var articleData = this.store(zdArticle.key);
-      var obj = this.calcResourceNameArticle(articleData);
+      var obj = this.calcResourceNameArticles(articleData);
       var numArticles = obj.articles.length;
       var article, resource, txResourceName, completedLocales;
       var zdLocale, translation;
@@ -101,7 +101,7 @@ var syncArticles = module.exports = {
               completedLocales[ii]);
             if (typeof translation.content === 'string') {
               zdLocale = syncUtil.txLocaletoZd(completedLocales[ii]);
-              this.zdUpsertArticleTranslation(translation.content, article.id,
+              this.zdUpsertArticlesTranslation(translation.content, article.id,
                 zdLocale);
             }
           }
@@ -132,7 +132,7 @@ var syncArticles = module.exports = {
             completedLocales[i]);
           if (typeof translation.content === 'string') {
             zdLocale = syncUtil.txLocaletoZd(completedLocales[i]);
-            this.zdUpsertArticleTranslation(translation.content, zdObjectId,
+            this.zdUpsertArticlesTranslation(translation.content, zdObjectId,
               zdLocale);
           }
         }
@@ -191,7 +191,7 @@ var syncArticles = module.exports = {
     },
     uiArticlesResourceStatsComplete: function() {
       logger.debug('uiArticlesResourceStatsComplete');
-      var articleData = this.calcResourceNameArticle(this.store(zdArticle.key));
+      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
       var resourceName, resource;
       for (var i = 0; i < numArticles; i++) {
@@ -213,12 +213,12 @@ var syncArticles = module.exports = {
       }
 
       this.loadSyncPage = this.uiArticlesLanguageComplete;
-      this.syncCompletedLanguagesArticle();
+      this.syncCompletedLanguagesArticles();
 
     },
     uiArticlesLanguageComplete: function() {
       logger.debug('uiArticlesLanguageComplete');
-      var articleData = this.calcResourceNameArticle(this.store(zdArticle.key));
+      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
 
       // Local loop vars
@@ -284,39 +284,39 @@ var syncArticles = module.exports = {
 
   },
   actionHandlers: {
-    syncArticleTranslations: function() {
-      logger.debug('syncArticleTranslations started');
+    syncArticlesTranslations: function() {
+      logger.debug('syncArticlesTranslations started');
       var articleData = this.store(zdArticle.key);
       var OKToGetArticleTranslations = (typeof articleData === 'undefined') ?
         false : true;
       var obj, numArticles;
       if (OKToGetArticleTranslations) {
-        obj = this.calcResourceNameArticle(articleData);
+        obj = this.calcResourceNameArticles(articleData);
         numArticles = obj.articles.length;
         for (var i = 0; i < numArticles; i++) {
-          this.asyncGetZdArticleTranslations(obj.articles[i].id);
+          this.asyncGetZdArticlesTranslations(obj.articles[i].id);
         }
       }
     },
-    syncResourceStatsArticle: function() {
-      logger.debug('syncResourceStatsArticle started');
+    syncResourceStatsArticles: function() {
+      logger.debug('syncResourceStatsArticles started');
       var articleData = this.store(zdArticle.key);
       var OKToGetResourceStats = (typeof articleData === 'undefined') ?
         false : true;
       var obj, numArticles;
       if (OKToGetResourceStats) {
-        obj = this.calcResourceNameArticle(articleData);
+        obj = this.calcResourceNameArticles(articleData);
         numArticles = obj.articles.length;
         for (var i = 0; i < numArticles; i++) {
           this.asyncGetTxResourceStats(obj.articles[i].resource_name);
         }
       }
     },
-    syncCompletedLanguagesArticle: function() {
+    syncCompletedLanguagesArticles: function() {
       // Requires txProject, zdArticles, and ResourceStats
-      logger.debug('syncCompletedLanguagesArticle started');
+      logger.debug('syncCompletedLanguagesArticles started');
       // Local function vars
-      var articleData = this.calcResourceNameArticle(this.store(zdArticle.key));
+      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
 
       // Local loop vars
@@ -341,7 +341,7 @@ var syncArticles = module.exports = {
     },
     buildSyncPageArticlesData: function() {
       var articleData = this.store(zdArticle.key);
-      var articles = this.calcResourceNameArticle(articleData);
+      var articles = this.calcResourceNameArticles(articleData);
       var type = 'articles';
       var limit = articles.articles.length;
       var ret = [];
@@ -379,16 +379,16 @@ var syncArticles = module.exports = {
         });
         ret.push(d);
       }
-      var paginationVisible = this.checkPaginationArticle(articleData);
+      var paginationVisible = this.checkPaginationArticles(articleData);
       if (paginationVisible) {
-        var currentPage = this.getCurrentPageArticle(articleData);
+        var currentPage = this.getCurrentPageArticles(articleData);
         syncArticles.currentpage = currentPage;
         ret = _.extend(ret, {
-          page_prev_enabled: this.isFewerArticle(articleData, currentPage),
-          page_next_enabled: this.isMoreArticle(articleData, currentPage),
-          current_page: this.getCurrentPageArticle(articleData),
+          page_prev_enabled: this.isFewerArticles(articleData, currentPage),
+          page_next_enabled: this.isMoreArticles(articleData, currentPage),
+          current_page: this.getCurrentPageArticles(articleData),
           pagination_visible: paginationVisible,
-          pages: this.getPagesArticle(articleData)
+          pages: this.getPagesArticles(articleData)
         });
       }
       return ret;
