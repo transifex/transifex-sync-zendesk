@@ -45,6 +45,9 @@ var resource = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
         },
+        xhrFields: {
+          withCredentials: true
+        },
         dataType: 'json',
         username: resource.username,
         password: resource.password,
@@ -64,6 +67,9 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.languageCode = languageCode;
         },
+        xhrFields: {
+          withCredentials: true
+        },
         dataType: 'json',
         username: resource.username,
         password: resource.password,
@@ -81,6 +87,9 @@ var resource = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
           jqxhr.type = typeString;
+        },
+        xhrFields: {
+          withCredentials: true
         },
         username: resource.username,
         password: resource.password,
@@ -100,6 +109,9 @@ var resource = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
           jqxhr.type = typeString;
+        },
+        xhrFields: {
+          withCredentials: true
         },
         username: resource.username,
         password: resource.password,
@@ -122,6 +134,9 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = typeString;
         },
+        xhrFields: {
+          withCredentials: true
+        },
         username: resource.username,
         password: resource.password,
         data: new FormData(data),
@@ -142,6 +157,9 @@ var resource = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
           jqxhr.type = typeString;
+        },
+        xhrFields: {
+          withCredentials: true
         },
         username: resource.username,
         password: resource.password,

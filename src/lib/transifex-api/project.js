@@ -47,6 +47,9 @@ var project = module.exports = {
           jqxhr.page = pageString;
           jqxhr.type = typeString;
         },
+        xhrFields: {
+          withCredentials: true
+        },
         dataType: 'json',
         username: project.username,
         password: project.password,
