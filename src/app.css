@@ -1888,6 +1888,94 @@ span {
   }
 }
 
+/* -- Notifications -- */
+
+.c-notification {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+  width: 100%;
+  min-height: $top-navigation-bar-height;
+
+  padding-left: $gutter-width;
+  padding-right: $gutter-width;
+
+  color: $text-secondary-color;
+  font-size: $small-font-size;
+  line-height: $baseline-grid*3;
+
+  border-left-width: 4px;
+  border-left-style: solid;
+
+  &--info {
+    border-left-color: $status-information-color;
+    background-color: fade-out( $status-information-color, 1 - $lightness-twice-percentage );
+  }
+  &--info .c-notification__symbol { fill: $status-information-color; }
+
+  &--success {
+    border-left-color: $status-success-color;
+    background-color: fade-out( $status-success-color, 1 - $lightness-twice-percentage );
+  }
+  &--success .c-notification__symbol { fill: $status-success-color; }
+
+  &--warning {
+    border-left-color: $status-warning-color;
+    background-color: fade-out( $status-warning-color, 1 - $lightness-twice-percentage );
+  }
+  &--warning .c-notification__symbol { fill: $status-warning-color; }
+
+  &--error {
+    border-left-color: $status-error-color;
+    background-color: fade-out( $status-error-color, 1 - $lightness-twice-percentage );
+  }
+  &--error .c-notification__symbol { fill: $status-error-color; }
+
+  &--autoheight {
+    height: auto;
+    line-height: $baseline-grid*4;
+
+    padding-top: $baseline-grid;
+    padding-bottom: $baseline-grid;
+  }
+
+  &__content {
+    position: relative;
+    flex: 1 0 0%;
+    -webkit-flex: 1 0 0%;
+  }
+
+  &__symbol {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    margin-right: $baseline-grid;
+  }
+
+  &__button {
+    $button-height: $top-navigation-bar-height - 4*$baseline-grid;
+
+    font-size: $small-font-size;
+
+  }
+
+  &__close {
+    font-size: $tiny-font-size;
+  }
+}
+
 section.main-data {
   position: relative;
   display: block;
