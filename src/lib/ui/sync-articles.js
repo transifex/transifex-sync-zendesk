@@ -21,21 +21,26 @@ var syncArticles = module.exports = {
   perpage: '10',
   currentpage: '1',
   events: {
-    'click [tab="articles"]': 'uiSyncPageArticlesInit',
-    'click .page_action_page': 'uiSyncPageGotoPage',
-    'click .page_action_next': 'uiSyncPageNextPage',
-    'click .page_action_prev': 'uiSyncPagePrevPage',
-    'click .page_action_sort_by_title': 'uiSyncPageSortByTitle',
-    'click .page_action_sort_by_updated': 'uiSyncPageSortByUpdated',
-    'click [perpage]': 'uiSyncPagePerPage',
-    'click .page_action_batch_upload': 'uiBatchUpload',
-    'click .page_action_batch_download': 'uiBatchDownload',
-    'click .page_action_sync': 'uiSyncArticles'
+    'click [tab="articles"]': 'uiArticlesTab',
+    'click .page_action_page': 'uiArticlesGotoPage',
+    'click .page_action_next': 'uiArticlesNextPage',
+    'click .page_action_prev': 'uiArticlesPrevPage',
+    'click .page_action_sort_by_title': 'uiArticlesSortByTitle',
+    'click .page_action_sort_by_updated': 'uiArticlesSortByUpdated',
+    'click [perpage]': 'uiArticlesPerPage',
+    'click .page_action_batch_upload': 'uiArticlesBatchUpload',
+    'click .page_action_batch_download': 'uiArticlesBatchDownload',
+    'click .page_action_sync': 'uiArticlesSync'
   },
   eventHandlers: {
-    uiSyncPageArticlesInit: function(event) {
+    uiArticlesTab: function(event) {
       if (event) event.preventDefault();
-      logger.debug('uiSyncPageArticlesInit');
+      this.currentpage = '1';
+      this.uiArticlesSync();
+    },
+    uiArticlesInit: function(event) {
+      if (event) event.preventDefault();
+      logger.debug('uiArticlesInit');
       var pageData = this.buildSyncPageArticlesData();
       this.switchTo('sync_page_articles', {
         dataset: pageData,
@@ -51,14 +56,14 @@ var syncArticles = module.exports = {
       this.$('[perpage]').removeClass('is-active');
       this.$('[perpage="' + syncArticles.perpage + '"]').addClass('is-active');
 
-      this.loadSyncPage = this.uiSyncPageResourceStatsComplete;
-      this.syncResourceStats();
+      this.loadSyncPage = this.uiArticlesResourceStatsComplete;
+      this.syncResourceStatsArticle();
       this.syncArticleTranslations();
     },
-    uiBatchUpload: function(event) {
+    uiArticlesBatchUpload: function(event) {
       if (event) event.preventDefault();
       var articleData = this.store(zdArticle.key);
-      var obj = this.calcResourceName(articleData);
+      var obj = this.calcResourceNameArticle(articleData);
       var numArticles = obj.articles.length;
       var article, resource_request, txResourceName;
       for (var i = 0; i < numArticles; i++) {
@@ -70,17 +75,17 @@ var syncArticles = module.exports = {
         } else {
           resource_request = common.getTxRequest(article);
         }
-        this.loadSyncPage = this.uiSyncUpsertArticleComplete;
+        this.loadSyncPage = this.uiArticlesUpsertComplete;
         io.pushSync(txResource.key + txResourceName + 'upsert');
         this.txUpsertResource(resource_request, txResourceName);
       }
     },
-    uiBatchDownload: function(event) {
+    uiArticlesBatchDownload: function(event) {
       if (event) event.preventDefault();
       var project = this.store(txProject.key);
       var sourceLocale = txProject.getSourceLocale(project);
       var articleData = this.store(zdArticle.key);
-      var obj = this.calcResourceName(articleData);
+      var obj = this.calcResourceNameArticle(articleData);
       var numArticles = obj.articles.length;
       var article, resource, txResourceName, completedLocales;
       var zdLocale, translation;
@@ -103,15 +108,15 @@ var syncArticles = module.exports = {
         }
       }
     },
-    uiSyncArticles: function(event) {
+    uiArticlesSync: function(event) {
       if (event) event.preventDefault();
       this.asyncGetTxProject();
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection, syncArticles.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
-    uiSyncDownloadCompletedTranslations: function(event) {
+    uiArticlesDownloadCompletedTranslations: function(event) {
       if (event) event.preventDefault();
       var linkId = "#" + event.target.id;
       var project = this.store(txProject.key);
@@ -133,38 +138,38 @@ var syncArticles = module.exports = {
         }
       }
     },
-    uiSyncUpsertArticle: function(event) {
+    uiArticlesUpsert: function(event) {
       if (event) event.preventDefault();
       var linkId = "#" + event.target.id;
       var txResourceName = this.$(linkId).attr("data-resource");
       var zdObjectId = this.$(linkId).attr("data-zd-object-id");
       var zdObjectType = this.$(linkId).attr("data-zd-object-type");
       var articles = this.store(zdArticle.key);
-      var article = this.getSingle(zdObjectId, articles);
+      var article = this.getSingleArticle(zdObjectId, articles);
       var resource_request = {};
       if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(article);
       } else {
         resource_request = common.getTxRequest(article);
       }
-      this.loadSyncPage = this.uiSyncUpsertArticleComplete;
+      this.loadSyncPage = this.uiArticlesUpsertComplete;
       io.pushSync(txResource.key + txResourceName + 'upsert');
       this.txUpsertResource(resource_request, txResourceName);
     },
-    uiSyncUpsertArticleComplete: function() {
+    uiArticlesUpsertComplete: function() {
       logger.debug('reload TxProject');
       this.asyncGetTxProject();
     },
-    uiSyncPagePerPage: function(event) {
+    uiArticlesPerPage: function(event) {
       if (event) event.preventDefault();
       syncArticles.perpage = this.$(event.target).closest('[perpage]').attr('perpage');
       syncArticles.currentpage = '1';
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection, syncArticles.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
-    uiSyncPageSortByUpdated: function(event) {
+    uiArticlesSortByUpdated: function(event) {
       if (event) event.preventDefault();
       syncArticles.sortby = 'updated_at';
       syncArticles.sortdirection = 'asc';
@@ -172,9 +177,9 @@ var syncArticles = module.exports = {
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
-    uiSyncPageSortByTitle: function(event) {
+    uiArticlesSortByTitle: function(event) {
       if (event) event.preventDefault();
       syncArticles.sortby = 'title';
       syncArticles.sortdirection = 'asc';
@@ -182,24 +187,24 @@ var syncArticles = module.exports = {
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
-    uiSyncPageResourceStatsComplete: function() {
-      logger.debug('uiSyncPageResourceStatsComplete');
-      var articleData = this.calcResourceName(this.store(zdArticle.key));
+    uiArticlesResourceStatsComplete: function() {
+      logger.debug('uiArticlesResourceStatsComplete');
+      var articleData = this.calcResourceNameArticle(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
       var resourceName, resource;
       for (var i = 0; i < numArticles; i++) {
         resourceName = articleData.articles[i].resource_name;
         resource = this.store(txResource.key + resourceName);
         var tx_completed = this.completedLanguages(resource);
-        this.addCompletedLocales(resourceName, tx_completed);
+        common.addCompletedLocales(this.$, resourceName, tx_completed);
         if (typeof resource !== 'number') {
-          this.activateTxLink(resourceName);
-          this.activateUploadButton(resourceName, false);
+          common.activateTxLink(this.$, resourceName);
+          common.activateUploadButton(this.$, resourceName, false);
         } else {
           if ((typeof resource === 'number') && (resource === 404)) {
-            this.activateUploadButton(resourceName, true);
+            common.activateUploadButton(this.$, resourceName, true);
           }
           if ((typeof resource === 'number') && (resource === 401)) {
             //TODO Error message on this resource
@@ -207,13 +212,13 @@ var syncArticles = module.exports = {
         }
       }
 
-      this.loadSyncPage = this.uiSyncPageLanguageComplete;
-      this.syncCompletedLanguages();
+      this.loadSyncPage = this.uiArticlesLanguageComplete;
+      this.syncCompletedLanguagesArticle();
 
     },
-    uiSyncPageLanguageComplete: function() {
-      logger.debug('uiSyncPageLanguageComplete');
-      var articleData = this.calcResourceName(this.store(zdArticle.key));
+    uiArticlesLanguageComplete: function() {
+      logger.debug('uiArticlesLanguageComplete');
+      var articleData = this.calcResourceNameArticle(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
 
       // Local loop vars
@@ -234,27 +239,27 @@ var syncArticles = module.exports = {
             resourceLanguage = this.store(txResource.key + resourceName +
               languageArray[ii]);
             if (resourceLanguage) {
-              this.activateDownloadButton(resourceName);
+              common.activateDownloadButton(this.$, resourceName);
             }
           }
         }
       }
 
     },
-    uiSyncPageGotoPage: function(event) {
+    uiArticlesGotoPage: function(event) {
       if (event) event.preventDefault();
-      logger.debug('uiSyncPageGotoPage');
+      logger.debug('uiArticlesGotoPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-page");
       syncArticles.currentpage = page;
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection, syncArticles.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
-    uiSyncPageNextPage: function(event) {
+    uiArticlesNextPage: function(event) {
       if (event) event.preventDefault();
-      logger.debug('uiSyncPageNextPage');
+      logger.debug('uiArticlesNextPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var nextPage = parseInt(page, 10) + 1;
@@ -262,11 +267,11 @@ var syncArticles = module.exports = {
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection, syncArticles.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
-    uiSyncPagePrevPage: function(event) {
+    uiArticlesPrevPage: function(event) {
       if (event) event.preventDefault();
-      logger.debug('uiSyncPagePrevPage');
+      logger.debug('uiArticlesPrevPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var prevPage = parseInt(page, 10) - 1;
@@ -274,39 +279,11 @@ var syncArticles = module.exports = {
       this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
         syncArticles.sortdirection, syncArticles.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageArticlesInit;
+      this.loadSyncPage = this.uiArticlesInit;
     },
 
   },
   actionHandlers: {
-    activateTxLink: function(name) {
-      var linkId = "#" + "txlink-" + name;
-      this.$(linkId).removeClass("disabled");
-    },
-    addCompletedLocales: function(name, locales) {
-      var linkId = "#" + "locales-" + name;
-      if (!(_.isEmpty(locales))) {
-        this.$(linkId).text(locales.toString());
-      } else {
-        this.$(linkId).text('-');
-      }
-    },
-    activateUploadButton: function(name, isNew) {
-      var linkId = "#" + "upload-" + name;
-
-      this.$(linkId).removeClass("is-disabled");
-      this.$(linkId).click(this.uiSyncUpsertArticle.bind(this));
-      this.$(linkId).css('cursor', 'pointer');
-    },
-    activateDownloadButton: function(name) {
-      var linkId = "#" + "download-" + name;
-
-      this.$(linkId).removeClass("is-disabled");
-      this.$(linkId).click(function() {
-        alert('Happy day');
-      });
-      this.$(linkId).css('cursor', 'pointer');
-    },
     syncArticleTranslations: function() {
       logger.debug('syncArticleTranslations started');
       var articleData = this.store(zdArticle.key);
@@ -314,32 +291,32 @@ var syncArticles = module.exports = {
         false : true;
       var obj, numArticles;
       if (OKToGetArticleTranslations) {
-        obj = this.calcResourceName(articleData);
+        obj = this.calcResourceNameArticle(articleData);
         numArticles = obj.articles.length;
         for (var i = 0; i < numArticles; i++) {
           this.asyncGetZdArticleTranslations(obj.articles[i].id);
         }
       }
     },
-    syncResourceStats: function() {
-      logger.debug('syncResourceStats started');
+    syncResourceStatsArticle: function() {
+      logger.debug('syncResourceStatsArticle started');
       var articleData = this.store(zdArticle.key);
       var OKToGetResourceStats = (typeof articleData === 'undefined') ?
         false : true;
       var obj, numArticles;
       if (OKToGetResourceStats) {
-        obj = this.calcResourceName(articleData);
+        obj = this.calcResourceNameArticle(articleData);
         numArticles = obj.articles.length;
         for (var i = 0; i < numArticles; i++) {
           this.asyncGetTxResourceStats(obj.articles[i].resource_name);
         }
       }
     },
-    syncCompletedLanguages: function() {
+    syncCompletedLanguagesArticle: function() {
       // Requires txProject, zdArticles, and ResourceStats
-      logger.debug('syncCompletedLanguages started');
+      logger.debug('syncCompletedLanguagesArticle started');
       // Local function vars
-      var articleData = this.calcResourceName(this.store(zdArticle.key));
+      var articleData = this.calcResourceNameArticle(this.store(zdArticle.key));
       var numArticles = articleData.articles.length;
 
       // Local loop vars
@@ -364,7 +341,7 @@ var syncArticles = module.exports = {
     },
     buildSyncPageArticlesData: function() {
       var articleData = this.store(zdArticle.key);
-      var articles = this.calcResourceName(articleData);
+      var articles = this.calcResourceNameArticle(articleData);
       var type = 'articles';
       var limit = articles.articles.length;
       var ret = [];
@@ -402,16 +379,16 @@ var syncArticles = module.exports = {
         });
         ret.push(d);
       }
-      var paginationVisible = this.checkPagination(articleData);
+      var paginationVisible = this.checkPaginationArticle(articleData);
       if (paginationVisible) {
-        var currentPage = this.getCurrentPage(articleData);
+        var currentPage = this.getCurrentPageArticle(articleData);
         syncArticles.currentpage = currentPage;
         ret = _.extend(ret, {
-          page_prev_enabled: this.isFewer(articleData, currentPage),
-          page_next_enabled: this.isMore(articleData, currentPage),
-          current_page: this.getCurrentPage(articleData),
+          page_prev_enabled: this.isFewerArticle(articleData, currentPage),
+          page_next_enabled: this.isMoreArticle(articleData, currentPage),
+          current_page: this.getCurrentPageArticle(articleData),
           pagination_visible: paginationVisible,
-          pages: this.getPages(articleData)
+          pages: this.getPagesArticle(articleData)
         });
       }
       return ret;

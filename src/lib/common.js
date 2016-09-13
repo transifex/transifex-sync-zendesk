@@ -66,11 +66,11 @@ var common = module.exports = {
 
 
       var o = {};
-      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getName(
+      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getNameArticle(
         arr[i], a), o);
-      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitle(
+      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitleArticle(
         arr[i], a), o1);
-      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBody(
+      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBodyArticle(
         arr[i], a), o2);
       var o4 = syncUtil.addContent(req, o3);
       ret[i] = o4;
@@ -150,6 +150,35 @@ var common = module.exports = {
     }
 
     return output;
-  }
+  },
+
+  activateTxLink: function($, name) {
+    var linkId = "#" + "txlink-" + name;
+    $(linkId).removeClass("disabled");
+  },
+  addCompletedLocales: function($, name, locales) {
+    var linkId = "#" + "locales-" + name;
+    if (!(_.isEmpty(locales))) {
+      $(linkId).text(locales.toString());
+    } else {
+      $(linkId).text('-');
+    }
+  },
+  activateUploadButton: function($, name, isNew) {
+    var linkId = "#" + "upload-" + name;
+
+    $(linkId).removeClass("is-disabled");
+    $(linkId).click(this.uiArticlesUpsert.bind(this));
+    $(linkId).css('cursor', 'pointer');
+  },
+  activateDownloadButton: function($, name) {
+    var linkId = "#" + "download-" + name;
+
+    $(linkId).removeClass("is-disabled");
+    $(linkId).click(function() {
+      alert('Happy day');
+    });
+    $(linkId).css('cursor', 'pointer');
+  },
 
 };

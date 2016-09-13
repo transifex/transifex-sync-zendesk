@@ -16,16 +16,44 @@ var category = module.exports = {
   STRING_RADIX: 10,
   events: {
     'zdCategories.done': 'zdCategoriesDone',
+    'zdCategoriesFull.done': 'zdCategoriesDone',
     'zdCategoryGetTranslations.done': 'zdCategoryGetTranslationsDone',
     'zdCategoryUpdate.done': 'zdCategoryUpdateDone',
     'zdCategoryInsert.done': 'zdCategoryInsertDone',
     'zdCategoryGetTranslations.fail': 'zdCategorySyncError',
     'zdCategories.fail': 'zdCategorySyncError',
+    'zdCategoriesFull.fail': 'zdCategorySyncError',
   },
   requests: {
     zdCategories: function() {
       return {
-        url: category.base_url + 'categories.json' + "?per_page=10",
+        url: category.base_url + 'categories.json' + "?per_page=7",
+        type: 'GET',
+        dataType: 'json'
+      };
+    },
+    zdCategoriesFull: function(page, sortby, sortdirection, numperpage) {
+      var numberperpageString = "";
+      if (numperpage) {
+        numberperpageString = "?per_page=" + numperpage;
+      } else {
+        numberperpageString = "?per_page=10";
+      }
+      var pageString = "";
+      if (page) {
+        pageString = '&page=' + page;
+      }
+      var sortbyString = "";
+      if (sortby) {
+        sortbyString = '&sort_by=' + sortby;
+      }
+      var sortdirectionString = "";
+      if (sortdirection) {
+        sortdirectionString = '&sort_order=' + sortdirection;
+      }
+      return {
+        url: category.base_url + 'en-us/categories.json' + numberperpageString +
+          pageString + sortbyString + sortdirectionString,
         type: 'GET',
         dataType: 'json'
       };
@@ -70,6 +98,7 @@ var category = module.exports = {
     zdCategoriesDone: function(data, textStatus) {
       logger.info('Zendesk Categories retrieved with status:', textStatus);
       this.store(category.key, data);
+      logger.debug('done, removing key');
       io.popSync(category.key);
       this.checkAsyncComplete();
     },
@@ -99,12 +128,12 @@ var category = module.exports = {
     displayCategories: function() {
       var pageData = this.store(category.key);
       pageData = [pageData];
-      this.switchTo('sync_categorys', {
+      this.switchTo('sync_categories', {
         dataset: pageData,
       });
     },
     zdUpsertCategoryTranslation: function(resource_data, category_id, zdLocale) {
-      logger.info('Upsert Category with Id: ' + category_id + ' and locale:' + zdLocale);
+      logger.info('Upsert Category with Id:' + category_id + 'and locale:' + zdLocale);
 
       /* var localeRegion = zdLocale.split('-');
        if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
@@ -128,8 +157,7 @@ var category = module.exports = {
       var checkLocaleExists = (typeof translations[zdLocale] ===
         'undefined') ? false : true;
       if (checkLocaleExists) {
-        this.ajax('zdCategoryUpdate', translationData, category_id,
-          zdLocale);
+        this.ajax('zdCategoryUpdate', translationData, category_id, zdLocale);
       } else {
         this.ajax('zdCategoryInsert', translationData, category_id);
       }
@@ -152,67 +180,79 @@ var category = module.exports = {
           that.ajax('zdCategoryGetTranslations', id);
         }, category.timeout);
     },
+    asyncGetZdCategoriesFull: function(page, sortby, sortdirection, numperpage) {
+      logger.debug('function: [asyncGetZdCategoriesFull] params: [page]' +
+        page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
+        '[numperpage]' + numperpage);
+      io.pushSync(category.key);
+      var that = this;
+      setTimeout(
+        function() {
+          that.ajax('zdCategoriesFull', page, sortby, sortdirection,
+            numperpage);
+        }, category.timeout);
+    },
 
   },
   jsonHandlers: {
-    getSingle: function(id, a) {
+    getSingleCategory: function(id, a) {
       if (typeof id == 'string' || id instanceof String)
         id = parseInt(id, category.STRING_RADIX);
-      var i = _.findIndex(a.categorys, {
+      var i = _.findIndex(a.categories, {
         id: id
       });
-      return a.categorys[i];
+      return a.categories[i];
     },
-    calcResourceName: function(obj) {
-      var ret = obj.categorys;
-      var type = 'categorys';
+    calcResourceNameCategory: function(obj) {
+      var ret = obj.categories;
+      var type = 'categories';
       if (io.hasFeature('html-tx-resource')) {
         type = 'HTML-' + type;
       }
       var typeString = type + '-';
       // Get the array key and use it as a type
-      var limit = obj.categorys.length;
+      var limit = obj.categories.length;
       for (var i = 0; i < limit; i++) {
         ret[i] = _.extend(ret[i], {
           resource_name: typeString + ret[i].id
         });
       }
       return {
-        categorys: ret
+        categories: ret
       };
     },
-    getName: function(id, a) {
-      if (a.categorys instanceof Array) {
-        var i = _.findIndex(a.categorys, {
+    getNameCategory: function(id, a) {
+      if (a.categories instanceof Array) {
+        var i = _.findIndex(a.categories, {
           id: id
         });
-        return a.categorys[i]["name"];
+        return a.categories[i]["name"];
       } else {
         return a.name;
       }
 
     },
-    getTitle: function(id, a) {
-      if (a.categorys instanceof Array) {
-        var i = _.findIndex(a.categorys, {
+    getTitleCategory: function(id, a) {
+      if (a.categories instanceof Array) {
+        var i = _.findIndex(a.categories, {
           id: id
         });
-        return a.categorys[i]["title"];
+        return a.categories[i]["title"];
       } else {
         return a.title;
       }
     },
-    getBody: function(id, a) {
-      if (a.categorys instanceof Array) {
-        var i = _.findIndex(a.categorys, {
+    getBodyCategory: function(id, a) {
+      if (a.categories instanceof Array) {
+        var i = _.findIndex(a.categories, {
           id: id
         });
-        return a.categorys[i]["body"];
+        return a.categories[i]["body"];
       } else {
         return a.body;
       }
     },
-    checkPagination: function(a) {
+    checkPaginationCategory: function(a) {
       var i = a.page_count;
       if (typeof i === 'string') {
         i = parseInt(i, 10);
@@ -225,21 +265,21 @@ var category = module.exports = {
       return false;
     },
 
-    getPages: function(a) {
+    getPagesCategory: function(a) {
       var i = a.page_count;
       return _.range(1, i + 1);
     },
-    getCurrentPage: function(a) {
+    getCurrentPageCategory: function(a) {
       var i = a.page;
       return i;
     },
-    isFewer: function(a, i) {
+    isFewerCategory: function(a, i) {
       if (i > 1) {
         return true;
       }
       return false;
     },
-    isMore: function(a, i) {
+    isMoreCategory: function(a, i) {
       if (a.page_count > i) {
         return true;
       }

@@ -195,7 +195,7 @@ var article = module.exports = {
 
   },
   jsonHandlers: {
-    getSingle: function(id, a) {
+    getSingleArticle: function(id, a) {
       if (typeof id == 'string' || id instanceof String)
         id = parseInt(id, article.STRING_RADIX);
       var i = _.findIndex(a.articles, {
@@ -203,7 +203,7 @@ var article = module.exports = {
       });
       return a.articles[i];
     },
-    calcResourceName: function(obj) {
+    calcResourceNameArticle: function(obj) {
       var ret = obj.articles;
       var type = 'articles';
       if (io.hasFeature('html-tx-resource')) {
@@ -221,7 +221,7 @@ var article = module.exports = {
         articles: ret
       };
     },
-    getName: function(id, a) {
+    getNameArticle: function(id, a) {
       if (a.articles instanceof Array) {
         var i = _.findIndex(a.articles, {
           id: id
@@ -232,7 +232,7 @@ var article = module.exports = {
       }
 
     },
-    getTitle: function(id, a) {
+    getTitleArticle: function(id, a) {
       if (a.articles instanceof Array) {
         var i = _.findIndex(a.articles, {
           id: id
@@ -242,7 +242,7 @@ var article = module.exports = {
         return a.title;
       }
     },
-    getBody: function(id, a) {
+    getBodyArticle: function(id, a) {
       if (a.articles instanceof Array) {
         var i = _.findIndex(a.articles, {
           id: id
@@ -252,7 +252,7 @@ var article = module.exports = {
         return a.body;
       }
     },
-    checkPagination: function(a) {
+    checkPaginationArticle: function(a) {
       var i = a.page_count;
       if (typeof i === 'string') {
         i = parseInt(i, 10);
@@ -265,21 +265,21 @@ var article = module.exports = {
       return false;
     },
 
-    getPages: function(a) {
+    getPagesArticle: function(a) {
       var i = a.page_count;
       return _.range(1, i + 1);
     },
-    getCurrentPage: function(a) {
+    getCurrentPageArticle: function(a) {
       var i = a.page;
       return i;
     },
-    isFewer: function(a, i) {
+    isFewerArticle: function(a, i) {
       if (i > 1) {
         return true;
       }
       return false;
     },
-    isMore: function(a, i) {
+    isMoreArticle: function(a, i) {
       if (a.page_count > i) {
         return true;
       }

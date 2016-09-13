@@ -3,11 +3,11 @@
     require('transifex-api/project'),
     require('transifex-api/resource'),
     require('zendesk-api/article'),
-    //require('zendesk-api/category'),
-    //require('zendesk-api/section'),
+    require('zendesk-api/category'),
+    require('zendesk-api/section'),
     require('ui/sync-articles'),
-    //require('ui/sync-categories'),
-    //require('ui/sync-sections'),
+    require('ui/sync-categories'),
+    require('ui/sync-sections'),
   ]);
 }());
 
@@ -43,7 +43,7 @@ function txApp(modules) {
     this.asyncGetTxProject();
     this.asyncGetZdArticles();
     this.switchTo('loading_page');
-    this.loadSyncPage = this.uiSyncPageArticlesInit;
+    this.loadSyncPage = this.uiArticlesInit;
   }
 
   // Check for completion of asynchronous operation

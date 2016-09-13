@@ -16,16 +16,44 @@ var section = module.exports = {
   STRING_RADIX: 10,
   events: {
     'zdSections.done': 'zdSectionsDone',
+    'zdSectionsFull.done': 'zdSectionsDone',
     'zdSectionGetTranslations.done': 'zdSectionGetTranslationsDone',
     'zdSectionUpdate.done': 'zdSectionUpdateDone',
     'zdSectionInsert.done': 'zdSectionInsertDone',
     'zdSectionGetTranslations.fail': 'zdSectionSyncError',
     'zdSections.fail': 'zdSectionSyncError',
+    'zdSectionsFull.fail': 'zdSectionSyncError',
   },
   requests: {
     zdSections: function() {
       return {
-        url: section.base_url + 'sections.json' + "?per_page=10",
+        url: section.base_url + 'sections.json' + "?per_page=7",
+        type: 'GET',
+        dataType: 'json'
+      };
+    },
+    zdSectionsFull: function(page, sortby, sortdirection, numperpage) {
+      var numberperpageString = "";
+      if (numperpage) {
+        numberperpageString = "?per_page=" + numperpage;
+      } else {
+        numberperpageString = "?per_page=10";
+      }
+      var pageString = "";
+      if (page) {
+        pageString = '&page=' + page;
+      }
+      var sortbyString = "";
+      if (sortby) {
+        sortbyString = '&sort_by=' + sortby;
+      }
+      var sortdirectionString = "";
+      if (sortdirection) {
+        sortdirectionString = '&sort_order=' + sortdirection;
+      }
+      return {
+        url: section.base_url + 'en-us/sections.json' + numberperpageString +
+          pageString + sortbyString + sortdirectionString,
         type: 'GET',
         dataType: 'json'
       };
@@ -70,12 +98,13 @@ var section = module.exports = {
     zdSectionsDone: function(data, textStatus) {
       logger.info('Zendesk Sections retrieved with status:', textStatus);
       this.store(section.key, data);
-      this.syncStatus = _.without(this.syncStatus, section.key);
+      logger.debug('done, removing key');
+      io.popSync(section.key);
       this.checkAsyncComplete();
     },
     zdSectionSyncError: function(jqXHR, textStatus) {
       logger.info('Zendesk Section Retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, section.key);
+      io.popSync(section.key);
       this.checkAsyncComplete();
       //this.uiErrorPageInit();
       if (jqXHR.status === 401) {
@@ -85,7 +114,7 @@ var section = module.exports = {
     },
     zdSectionGetTranslationsDone: function(data, textStatus, jqXHR) {
       logger.info('Zendesk Section Translations retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, section.key + jqXHR.id);
+      io.popSync(section.key + jqXHR.id);
       this.checkAsyncComplete();
     },
     zdSectionInsertDone: function(data, textStatus) {
@@ -104,7 +133,7 @@ var section = module.exports = {
       });
     },
     zdUpsertSectionTranslation: function(resource_data, section_id, zdLocale) {
-      logger.info('Upsert Section with Id: ' + section_id + 'and locale: ' + zdLocale);
+      logger.info('Upsert Section with Id:' + section_id + 'and locale:' + zdLocale);
 
       /* var localeRegion = zdLocale.split('-');
        if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
@@ -135,7 +164,7 @@ var section = module.exports = {
     },
     asyncGetZdSections: function() {
       logger.debug('function: [asyncGetZdSections]');
-      this.syncStatus.push(section.key);
+      io.pushSync(section.key);
       var that = this;
       setTimeout(
         function() {
@@ -144,17 +173,29 @@ var section = module.exports = {
     },
     asyncGetZdSectionTranslations: function(id) {
       logger.debug('function: [asyncGetZdSectionTranslation]');
-      this.syncStatus.push(section.key + id);
+      io.pushSync(section.key + id);
       var that = this;
       setTimeout(
         function() {
           that.ajax('zdSectionGetTranslations', id);
         }, section.timeout);
     },
+    asyncGetZdSectionsFull: function(page, sortby, sortdirection, numperpage) {
+      logger.debug('function: [asyncGetZdSectionsFull] params: [page]' +
+        page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
+        '[numperpage]' + numperpage);
+      io.pushSync(section.key);
+      var that = this;
+      setTimeout(
+        function() {
+          that.ajax('zdSectionsFull', page, sortby, sortdirection,
+            numperpage);
+        }, section.timeout);
+    },
 
   },
   jsonHandlers: {
-    getSingle: function(id, a) {
+    getSingleSection: function(id, a) {
       if (typeof id == 'string' || id instanceof String)
         id = parseInt(id, section.STRING_RADIX);
       var i = _.findIndex(a.sections, {
@@ -162,7 +203,7 @@ var section = module.exports = {
       });
       return a.sections[i];
     },
-    calcResourceName: function(obj) {
+    calcResourceNameSection: function(obj) {
       var ret = obj.sections;
       var type = 'sections';
       if (io.hasFeature('html-tx-resource')) {
@@ -180,7 +221,7 @@ var section = module.exports = {
         sections: ret
       };
     },
-    getName: function(id, a) {
+    getNameSection: function(id, a) {
       if (a.sections instanceof Array) {
         var i = _.findIndex(a.sections, {
           id: id
@@ -191,7 +232,7 @@ var section = module.exports = {
       }
 
     },
-    getTitle: function(id, a) {
+    getTitleSection: function(id, a) {
       if (a.sections instanceof Array) {
         var i = _.findIndex(a.sections, {
           id: id
@@ -201,7 +242,7 @@ var section = module.exports = {
         return a.title;
       }
     },
-    getBody: function(id, a) {
+    getBodySection: function(id, a) {
       if (a.sections instanceof Array) {
         var i = _.findIndex(a.sections, {
           id: id
@@ -211,7 +252,7 @@ var section = module.exports = {
         return a.body;
       }
     },
-    checkPagination: function(a) {
+    checkPaginationSection: function(a) {
       var i = a.page_count;
       if (typeof i === 'string') {
         i = parseInt(i, 10);
@@ -224,21 +265,21 @@ var section = module.exports = {
       return false;
     },
 
-    getPages: function(a) {
+    getPagesSection: function(a) {
       var i = a.page_count;
       return _.range(1, i + 1);
     },
-    getCurrentPage: function(a) {
+    getCurrentPageSection: function(a) {
       var i = a.page;
       return i;
     },
-    isFewer: function(a, i) {
+    isFewerSection: function(a, i) {
       if (i > 1) {
         return true;
       }
       return false;
     },
-    isMore: function(a, i) {
+    isMoreSection: function(a, i) {
       if (a.page_count > i) {
         return true;
       }

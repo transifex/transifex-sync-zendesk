@@ -3,6 +3,7 @@
  * @module ui/sync-sections
  */
 
+
 var zdSection = require('../zendesk-api/section'),
     txProject = require('../transifex-api/project'),
     txResource = require('../transifex-api/resource'),
@@ -17,18 +18,29 @@ var syncSections = module.exports = {
   key: 'sync_page_sections',
   sortby: '',
   sortdirection: '',
-  perpage: '7',
+  perpage: '10',
   currentpage: '1',
   events: {
-    'click [tab="sections"]': 'uiSyncPageSectionsInit',
-    'click .page_action_page': 'uiSyncPageGotoPage',
-    'click .page_action_next': 'uiSyncPageNextPage',
-    'click .page_action_prev': 'uiSyncPagePrevPage',
-    'click .page_action_sync': 'uiSyncSections'
+    'click [tab="sections"]': 'uiSectionsTab',
+    'click .page_action_page': 'uiSectionsGotoPage',
+    'click .page_action_next': 'uiSectionsNextPage',
+    'click .page_action_prev': 'uiSectionsPrevPage',
+    'click .page_action_sort_by_title': 'uiSectionsSortByTitle',
+    'click .page_action_sort_by_updated': 'uiSectionsSortByUpdated',
+    'click [perpage]': 'uiSectionsPerPage',
+    'click .page_action_batch_upload': 'uiSectionsBatchUpload',
+    'click .page_action_batch_download': 'uiSectionsBatchDownload',
+    'click .page_action_sync': 'uiSectionsSync'
   },
   eventHandlers: {
-    uiSyncPageSectionsInit: function() {
-      logger.debug('uiSyncPageSectionsInit');
+    uiSectionsTab: function(event) {
+      if (event) event.preventDefault();
+      this.currentpage = '1';
+      this.uiSectionsSync();
+    },
+    uiSectionsInit: function(event) {
+      if (event) event.preventDefault();
+      logger.debug('uiSectionsInit');
       var pageData = this.buildSyncPageSectionsData();
       this.switchTo('sync_page_sections', {
         dataset: pageData,
@@ -41,29 +53,71 @@ var syncSections = module.exports = {
         this.$('#sortby-last-updated').removeClass("disabled");
         this.$('#sortby-title').addClass("disabled");
       }
-      if (syncSections.perpage === '20') {
-        this.$('#perpage-ten').removeClass("disabled");
-        this.$('#perpage-twenty').addClass("disabled");
-      }
-      if (syncSections.perpage === '10') {
-        this.$('#perpage-twenty').removeClass("disabled");
-        this.$('#perpage-ten').addClass("disabled");
-      }
+      this.$('[perpage]').removeClass('is-active');
+      this.$('[perpage="' + syncSections.perpage + '"]').addClass('is-active');
 
-      this.loadSyncPage = this.uiSyncPageResourceStatsComplete;
-      this.syncResourceStats();
+      this.loadSyncPage = this.uiSectionsResourceStatsComplete;
+      this.syncResourceStatsSection();
       this.syncSectionTranslations();
     },
-    uiSyncSections: function(event) {
-      event.preventDefault();
+    uiSectionsBatchUpload: function(event) {
+      if (event) event.preventDefault();
+      var sectionData = this.store(zdSection.key);
+      var obj = this.calcResourceNameSection(sectionData);
+      var numSections = obj.sections.length;
+      var section, resource_request, txResourceName;
+      for (var i = 0; i < numSections; i++) {
+        section = obj.sections[i];
+        txResourceName = section.resource_name;
+        resource_request = {};
+        if (io.hasFeature('html-tx-resource')) {
+          resource_request = common.txRequestHTML(section);
+        } else {
+          resource_request = common.getTxRequest(section);
+        }
+        this.loadSyncPage = this.uiSectionsUpsertComplete;
+        io.pushSync(txResource.key + txResourceName + 'upsert');
+        this.txUpsertResource(resource_request, txResourceName);
+      }
+    },
+    uiSectionsBatchDownload: function(event) {
+      if (event) event.preventDefault();
+      var project = this.store(txProject.key);
+      var sourceLocale = txProject.getSourceLocale(project);
+      var sectionData = this.store(zdSection.key);
+      var obj = this.calcResourceNameSection(sectionData);
+      var numSections = obj.sections.length;
+      var section, resource, txResourceName, completedLocales;
+      var zdLocale, translation;
+      for (var i = 0; i < numSections; i++) {
+        section = obj.sections[i];
+        txResourceName = section.resource_name;
+        resource = this.store(txResource.key + txResourceName);
+        completedLocales = this.completedLanguages(resource);
+
+        for (var ii = 0; ii < completedLocales.length; ii++) { // iterate through list of locales
+          if (sourceLocale !== completedLocales[ii]) { // skip the source locale
+            translation = this.store(txResource.key + txResourceName +
+              completedLocales[ii]);
+            if (typeof translation.content === 'string') {
+              zdLocale = syncUtil.txLocaletoZd(completedLocales[ii]);
+              this.zdUpsertSectionTranslation(translation.content, section.id,
+                zdLocale);
+            }
+          }
+        }
+      }
+    },
+    uiSectionsSync: function(event) {
+      if (event) event.preventDefault();
       this.asyncGetTxProject();
       this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
         syncSections.sortdirection, syncSections.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageSectionsInit;
+      this.loadSyncPage = this.uiSectionsInit;
     },
-    uiSyncDownloadCompletedTranslations: function(event) {
-      event.preventDefault();
+    uiSectionsDownloadCompletedTranslations: function(event) {
+      if (event) event.preventDefault();
       var linkId = "#" + event.target.id;
       var project = this.store(txProject.key);
       var sourceLocale = txProject.getSourceLocale(project);
@@ -84,46 +138,73 @@ var syncSections = module.exports = {
         }
       }
     },
-    uiSyncUpsertSection: function(event) {
-      event.preventDefault();
+    uiSectionsUpsert: function(event) {
+      if (event) event.preventDefault();
       var linkId = "#" + event.target.id;
       var txResourceName = this.$(linkId).attr("data-resource");
       var zdObjectId = this.$(linkId).attr("data-zd-object-id");
       var zdObjectType = this.$(linkId).attr("data-zd-object-type");
       var sections = this.store(zdSection.key);
-      var section = this.getSingle(zdObjectId, sections);
+      var section = this.getSingleSection(zdObjectId, sections);
       var resource_request = {};
       if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(section);
       } else {
         resource_request = common.getTxRequest(section);
       }
-      this.loadSyncPage = this.uiSyncUpsertSectionComplete;
+      this.loadSyncPage = this.uiSectionsUpsertComplete;
       io.pushSync(txResource.key + txResourceName + 'upsert');
       this.txUpsertResource(resource_request, txResourceName);
     },
-    uiSyncUpsertSectionComplete: function() {
-      this.loadSyncPage = function() {
-        logger.debug('reload TxProject');
-      };
+    uiSectionsUpsertComplete: function() {
+      logger.debug('reload TxProject');
       this.asyncGetTxProject();
     },
-    uiSyncPageResourceStatsComplete: function() {
-      logger.debug('uiSyncPageResourceStatsComplete');
-      var sectionData = this.calcResourceName(this.store(zdSection.key));
+    uiSectionsPerPage: function(event) {
+      if (event) event.preventDefault();
+      syncSections.perpage = this.$(event.target).closest('[perpage]').attr('perpage');
+      syncSections.currentpage = '1';
+      this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
+        syncSections.sortdirection, syncSections.perpage);
+      this.switchTo('loading_page');
+      this.loadSyncPage = this.uiSectionsInit;
+    },
+    uiSectionsSortByUpdated: function(event) {
+      if (event) event.preventDefault();
+      syncSections.sortby = 'updated_at';
+      syncSections.sortdirection = 'asc';
+      syncSections.currentpage = '1';
+      this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
+        syncSections.sortdirection);
+      this.switchTo('loading_page');
+      this.loadSyncPage = this.uiSectionsInit;
+    },
+    uiSectionsSortByTitle: function(event) {
+      if (event) event.preventDefault();
+      syncSections.sortby = 'title';
+      syncSections.sortdirection = 'asc';
+      syncSections.currentpage = '1';
+      this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
+        syncSections.sortdirection);
+      this.switchTo('loading_page');
+      this.loadSyncPage = this.uiSectionsInit;
+    },
+    uiSectionsResourceStatsComplete: function() {
+      logger.debug('uiSectionsResourceStatsComplete');
+      var sectionData = this.calcResourceNameSection(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
       var resourceName, resource;
       for (var i = 0; i < numSections; i++) {
         resourceName = sectionData.sections[i].resource_name;
         resource = this.store(txResource.key + resourceName);
         var tx_completed = this.completedLanguages(resource);
-        this.addCompletedLocales(resourceName, tx_completed);
+        common.addCompletedLocales(this.$, resourceName, tx_completed);
         if (typeof resource !== 'number') {
-          this.activateTxLink(resourceName);
-          this.activateUploadButton(resourceName, false);
+          common.activateTxLink(this.$, resourceName);
+          common.activateUploadButton(this.$, resourceName, false);
         } else {
           if ((typeof resource === 'number') && (resource === 404)) {
-            this.activateUploadButton(resourceName, true);
+            common.activateUploadButton(this.$, resourceName, true);
           }
           if ((typeof resource === 'number') && (resource === 401)) {
             //TODO Error message on this resource
@@ -131,13 +212,13 @@ var syncSections = module.exports = {
         }
       }
 
-      this.loadSyncPage = this.uiSyncPageLanguageComplete;
-      this.syncCompletedLanguages();
+      this.loadSyncPage = this.uiSectionsLanguageComplete;
+      this.syncCompletedLanguagesSection();
 
     },
-    uiSyncPageLanguageComplete: function() {
-      logger.debug('uiSyncPageLanguageComplete');
-      var sectionData = this.calcResourceName(this.store(zdSection.key));
+    uiSectionsLanguageComplete: function() {
+      logger.debug('uiSectionsLanguageComplete');
+      var sectionData = this.calcResourceNameSection(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
 
       // Local loop vars
@@ -158,25 +239,27 @@ var syncSections = module.exports = {
             resourceLanguage = this.store(txResource.key + resourceName +
               languageArray[ii]);
             if (resourceLanguage) {
-              this.activateDownloadButton(resourceName);
+              common.activateDownloadButton(this.$, resourceName);
             }
           }
         }
       }
 
     },
-    uiSyncPageGotoPage: function(event) {
-      logger.debug('uiSyncPageGotoPage');
+    uiSectionsGotoPage: function(event) {
+      if (event) event.preventDefault();
+      logger.debug('uiSectionsGotoPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-page");
       syncSections.currentpage = page;
       this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
         syncSections.sortdirection, syncSections.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageSectionsInit;
+      this.loadSyncPage = this.uiSectionsInit;
     },
-    uiSyncPageNextPage: function(event) {
-      logger.debug('uiSyncPageNextPage');
+    uiSectionsNextPage: function(event) {
+      if (event) event.preventDefault();
+      logger.debug('uiSectionsNextPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var nextPage = parseInt(page, 10) + 1;
@@ -184,10 +267,11 @@ var syncSections = module.exports = {
       this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
         syncSections.sortdirection, syncSections.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageSectionsInit;
+      this.loadSyncPage = this.uiSectionsInit;
     },
-    uiSyncPagePrevPage: function(event) {
-      logger.debug('uiSyncPagePrevPage');
+    uiSectionsPrevPage: function(event) {
+      if (event) event.preventDefault();
+      logger.debug('uiSectionsPrevPage');
       var linkId = "#" + event.target.id;
       var page = this.$(linkId).attr("data-current-page");
       var prevPage = parseInt(page, 10) - 1;
@@ -195,43 +279,11 @@ var syncSections = module.exports = {
       this.asyncGetZdSectionsFull(syncSections.currentpage, syncSections.sortby,
         syncSections.sortdirection, syncSections.perpage);
       this.switchTo('loading_page');
-      this.loadSyncPage = this.uiSyncPageSectionsInit;
+      this.loadSyncPage = this.uiSectionsInit;
     },
 
   },
   actionHandlers: {
-    activateTxLink: function(name) {
-      var linkId = "#" + "txlink-" + name;
-      this.$(linkId).removeClass("disabled");
-    },
-    addCompletedLocales: function(name, locales) {
-      var linkId = "#" + "locales-" + name;
-      if (!(_.isEmpty(locales))) {
-        this.$(linkId).text(locales.toString());
-      } else {
-        this.$(linkId).text('None Found');
-      }
-    },
-    activateUploadButton: function(name, isNew) {
-      var linkId = "#" + "upload-" + name;
-      if (isNew) {
-        this.$(linkId).text('Upload');
-      } else {
-        this.$(linkId).text('Upload');
-      }
-      this.$(linkId).removeClass("disabled");
-      this.$(linkId).click(this.uiSyncUpsertSection.bind(this));
-      this.$(linkId).css('cursor', 'pointer');
-    },
-    activateDownloadButton: function(name) {
-      var linkId = "#" + "download-" + name;
-      this.$(linkId).text('Download');
-      this.$(linkId).removeClass("disabled");
-      this.$(linkId).click(function() {
-        alert('Happy day');
-      });
-      this.$(linkId).css('cursor', 'pointer');
-    },
     syncSectionTranslations: function() {
       logger.debug('syncSectionTranslations started');
       var sectionData = this.store(zdSection.key);
@@ -239,32 +291,32 @@ var syncSections = module.exports = {
         false : true;
       var obj, numSections;
       if (OKToGetSectionTranslations) {
-        obj = this.calcResourceName(sectionData);
+        obj = this.calcResourceNameSection(sectionData);
         numSections = obj.sections.length;
         for (var i = 0; i < numSections; i++) {
           this.asyncGetZdSectionTranslations(obj.sections[i].id);
         }
       }
     },
-    syncResourceStats: function() {
-      logger.debug('syncResourceStats started');
+    syncResourceStatsSection: function() {
+      logger.debug('syncResourceStatsSection started');
       var sectionData = this.store(zdSection.key);
       var OKToGetResourceStats = (typeof sectionData === 'undefined') ?
         false : true;
       var obj, numSections;
       if (OKToGetResourceStats) {
-        obj = this.calcResourceName(sectionData);
+        obj = this.calcResourceNameSection(sectionData);
         numSections = obj.sections.length;
         for (var i = 0; i < numSections; i++) {
           this.asyncGetTxResourceStats(obj.sections[i].resource_name);
         }
       }
     },
-    syncCompletedLanguages: function() {
+    syncCompletedLanguagesSection: function() {
       // Requires txProject, zdSections, and ResourceStats
-      logger.debug('syncCompletedLanguages started');
+      logger.debug('syncCompletedLanguagesSection started');
       // Local function vars
-      var sectionData = this.calcResourceName(this.store(zdSection.key));
+      var sectionData = this.calcResourceNameSection(this.store(zdSection.key));
       var numSections = sectionData.sections.length;
 
       // Local loop vars
@@ -289,7 +341,7 @@ var syncSections = module.exports = {
     },
     buildSyncPageSectionsData: function() {
       var sectionData = this.store(zdSection.key);
-      var sections = this.calcResourceName(sectionData);
+      var sections = this.calcResourceNameSection(sectionData);
       var type = 'sections';
       var limit = sections.sections.length;
       var ret = [];
@@ -304,7 +356,7 @@ var syncSections = module.exports = {
         tx_resource_url = "https://www.transifex.com/projects/p/" +
           txProject.name + "/" + e.resource_name;
         zd_object_updated = moment(e.updated_at).format(
-          'MMMM Do YYYY </br> h:mm:ss a');
+          'MMM D YYYY h:mma');
         d = {};
         d = _.extend(d, {
           name: e.resource_name
@@ -327,16 +379,16 @@ var syncSections = module.exports = {
         });
         ret.push(d);
       }
-      var paginationVisible = this.checkPagination(sectionData);
+      var paginationVisible = this.checkPaginationSection(sectionData);
       if (paginationVisible) {
-        var currentPage = this.getCurrentPage(sectionData);
+        var currentPage = this.getCurrentPageSection(sectionData);
         syncSections.currentpage = currentPage;
         ret = _.extend(ret, {
-          page_prev_enabled: this.isFewer(sectionData, currentPage),
-          page_next_enabled: this.isMore(sectionData, currentPage),
-          current_page: this.getCurrentPage(sectionData),
+          page_prev_enabled: this.isFewerSection(sectionData, currentPage),
+          page_next_enabled: this.isMoreSection(sectionData, currentPage),
+          current_page: this.getCurrentPageSection(sectionData),
           pagination_visible: paginationVisible,
-          pages: this.getPages(sectionData)
+          pages: this.getPagesSection(sectionData)
         });
       }
       return ret;
