@@ -1,13 +1,15 @@
 /**
- * The Transifex project API gets project data
- * @module transifex-api/project
+ * Code behind for the sync-page-articles
+ * @module ui/sync-articles
  */
+
 
 var zdArticle = require('../zendesk-api/article'),
     txProject = require('../transifex-api/project'),
     txResource = require('../transifex-api/resource'),
     syncUtil = require('../syncUtil'),
     logger = require('../logger'),
+    io = require('../io'),
     common = require('../common');
 
 var syncArticles = module.exports = {
@@ -19,7 +21,7 @@ var syncArticles = module.exports = {
   perpage: '10',
   currentpage: '1',
   events: {
-    'click .page_action_articles': 'uiSyncPageArticlesInit',
+    'click [tab="articles"]': 'uiSyncPageArticlesInit',
     'click .page_action_page': 'uiSyncPageGotoPage',
     'click .page_action_next': 'uiSyncPageNextPage',
     'click .page_action_prev': 'uiSyncPagePrevPage',
@@ -63,13 +65,13 @@ var syncArticles = module.exports = {
         article = obj.articles[i];
         txResourceName = article.resource_name;
         resource_request = {};
-        if (this.featureConfig('html-tx-resource')) {
+        if (io.hasFeature('html-tx-resource')) {
           resource_request = common.txRequestHTML(article);
         } else {
           resource_request = common.getTxRequest(article);
         }
         this.loadSyncPage = this.uiSyncUpsertArticleComplete;
-        this.syncStatus.push(txResource.key + txResourceName + 'upsert');
+        io.pushSync(txResource.key + txResourceName + 'upsert');
         this.txUpsertResource(resource_request, txResourceName);
       }
     },
@@ -140,13 +142,13 @@ var syncArticles = module.exports = {
       var articles = this.store(zdArticle.key);
       var article = this.getSingle(zdObjectId, articles);
       var resource_request = {};
-      if (this.featureConfig('html-tx-resource')) {
+      if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(article);
       } else {
         resource_request = common.getTxRequest(article);
       }
       this.loadSyncPage = this.uiSyncUpsertArticleComplete;
-      this.syncStatus.push(txResource.key + txResourceName + 'upsert');
+      io.pushSync(txResource.key + txResourceName + 'upsert');
       this.txUpsertResource(resource_request, txResourceName);
     },
     uiSyncUpsertArticleComplete: function() {

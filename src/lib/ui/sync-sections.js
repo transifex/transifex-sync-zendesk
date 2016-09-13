@@ -8,6 +8,7 @@ var zdSection = require('../zendesk-api/section'),
     txResource = require('../transifex-api/resource'),
     syncUtil = require('../syncUtil'),
     logger = require('../logger'),
+    io = require('../io'),
     common = require('../common');
 
 var syncSections = module.exports = {
@@ -19,7 +20,7 @@ var syncSections = module.exports = {
   perpage: '7',
   currentpage: '1',
   events: {
-    'click .page_action_sections': 'uiSyncPageSectionsInit',
+    'click [tab="sections"]': 'uiSyncPageSectionsInit',
     'click .page_action_page': 'uiSyncPageGotoPage',
     'click .page_action_next': 'uiSyncPageNextPage',
     'click .page_action_prev': 'uiSyncPagePrevPage',
@@ -92,13 +93,13 @@ var syncSections = module.exports = {
       var sections = this.store(zdSection.key);
       var section = this.getSingle(zdObjectId, sections);
       var resource_request = {};
-      if (this.featureConfig('html-tx-resource')) {
+      if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(section);
       } else {
         resource_request = common.getTxRequest(section);
       }
       this.loadSyncPage = this.uiSyncUpsertSectionComplete;
-      this.syncStatus.push(txResource.key + txResourceName + 'upsert');
+      io.pushSync(txResource.key + txResourceName + 'upsert');
       this.txUpsertResource(resource_request, txResourceName);
     },
     uiSyncUpsertSectionComplete: function() {

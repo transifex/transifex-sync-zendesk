@@ -5,6 +5,7 @@
  */
 
 var common = require('../common'),
+    io = require('../io'),
     logger = require('../logger');
 
 var article = module.exports = {
@@ -98,12 +99,12 @@ var article = module.exports = {
       logger.info('Zendesk Articles retrieved with status:', textStatus);
       this.store(article.key, data);
       logger.debug('done, removing key');
-      this.syncStatus = _.without(this.syncStatus, article.key);
+      io.popSync(article.key);
       this.checkAsyncComplete();
     },
     zdArticleSyncError: function(jqXHR, textStatus) {
       logger.info('Zendesk Article Retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, article.key);
+      io.popSync(article.key);
       this.checkAsyncComplete();
       //this.uiErrorPageInit();
       if (jqXHR.status === 401) {
@@ -113,7 +114,7 @@ var article = module.exports = {
     },
     zdArticleGetTranslationsDone: function(data, textStatus, jqXHR) {
       logger.info('Zendesk Article Translations retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, article.key + jqXHR.id);
+      io.popSync(article.key + jqXHR.id);
       this.checkAsyncComplete();
     },
     zdArticleInsertDone: function(data, textStatus) {
@@ -140,11 +141,11 @@ var article = module.exports = {
        }
        */
       var translationData;
-      if (this.featureConfig('html-tx-resource')) {
-        translationData = common.translationObjectFormat(this.featureConfig,
+      if (io.hasFeature('html-tx-resource')) {
+        translationData = common.translationObjectFormat('html-tx-resource',
           resource_data, zdLocale);
       } else {
-        translationData = common.translationObjectFormat(this.featureConfig,
+        translationData = common.translationObjectFormat('',
           resource_data, zdLocale);
       }
       /*
@@ -163,7 +164,7 @@ var article = module.exports = {
     },
     asyncGetZdArticles: function() {
       logger.debug('function: [asyncGetZdArticles]');
-      this.syncStatus.push(article.key);
+      io.pushSync(article.key);
       var that = this;
       setTimeout(
         function() {
@@ -172,7 +173,7 @@ var article = module.exports = {
     },
     asyncGetZdArticleTranslations: function(id) {
       logger.debug('function: [asyncGetZdArticleTranslation]');
-      this.syncStatus.push(article.key + id);
+      io.pushSync(article.key + id);
       var that = this;
       setTimeout(
         function() {
@@ -183,7 +184,7 @@ var article = module.exports = {
       logger.debug('function: [asyncGetZdArticlesFull] params: [page]' +
         page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
         '[numperpage]' + numperpage);
-      this.syncStatus.push(article.key);
+      io.pushSync(article.key);
       var that = this;
       setTimeout(
         function() {
@@ -205,7 +206,7 @@ var article = module.exports = {
     calcResourceName: function(obj) {
       var ret = obj.articles;
       var type = 'articles';
-      if (this.featureConfig('html-tx-resource')) {
+      if (io.hasFeature('html-tx-resource')) {
         type = 'HTML-' + type;
       }
       var typeString = type + '-';

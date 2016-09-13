@@ -5,6 +5,7 @@
  */
 
 var common = require('../common'),
+    io = require('../io'),
     logger = require('../logger');
 
 var section = module.exports = {
@@ -111,11 +112,11 @@ var section = module.exports = {
        }
        */
       var translationData;
-      if (this.featureConfig('html-tx-resource')) {
-        translationData = common.translationObjectFormat(this.featureConfig,
+      if (io.hasFeature('html-tx-resource')) {
+        translationData = common.translationObjectFormat('html-tx-resource',
           resource_data, zdLocale);
       } else {
-        translationData = common.translationObjectFormat(this.featureConfig,
+        translationData = common.translationObjectFormat('',
           resource_data, zdLocale);
       }
       /*
@@ -164,7 +165,7 @@ var section = module.exports = {
     calcResourceName: function(obj) {
       var ret = obj.sections;
       var type = 'sections';
-      if (this.featureConfig('html-tx-resource')) {
+      if (io.hasFeature('html-tx-resource')) {
         type = 'HTML-' + type;
       }
       var typeString = type + '-';

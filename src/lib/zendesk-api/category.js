@@ -5,6 +5,7 @@
  */
 
 var common = require('../common'),
+    io = require('../io'),
     logger = require('../logger');
 
 var category = module.exports = {
@@ -69,12 +70,12 @@ var category = module.exports = {
     zdCategoriesDone: function(data, textStatus) {
       logger.info('Zendesk Categories retrieved with status:', textStatus);
       this.store(category.key, data);
-      this.syncStatus = _.without(this.syncStatus, category.key);
+      io.popSync(category.key);
       this.checkAsyncComplete();
     },
     zdCategorySyncError: function(jqXHR, textStatus) {
       logger.info('Zendesk Category Retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, category.key);
+      io.popSync(category.key);
       this.checkAsyncComplete();
       //this.uiErrorPageInit();
       if (jqXHR.status === 401) {
@@ -84,7 +85,7 @@ var category = module.exports = {
     },
     zdCategoryGetTranslationsDone: function(data, textStatus, jqXHR) {
       logger.info('Zendesk Category Translations retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, category.key + jqXHR.id);
+      io.popSync(category.key + jqXHR.id);
       this.checkAsyncComplete();
     },
     zdCategoryInsertDone: function(data, textStatus) {
@@ -111,11 +112,11 @@ var category = module.exports = {
        }
        */
       var translationData;
-      if (this.featureConfig('html-tx-resource')) {
-        translationData = common.translationObjectFormat(this.featureConfig,
+      if (io.hasFeature('html-tx-resource')) {
+        translationData = common.translationObjectFormat('html-tx-resource',
           resource_data, zdLocale);
       } else {
-        translationData = common.translationObjectFormat(this.featureConfig,
+        translationData = common.translationObjectFormat('',
           resource_data, zdLocale);
       }
       /*
@@ -135,7 +136,7 @@ var category = module.exports = {
     },
     asyncGetZdCategories: function() {
       logger.debug('function: [asyncGetZdCategories]');
-      this.syncStatus.push(category.key);
+      io.pushSync(category.key);
       var that = this;
       setTimeout(
         function() {
@@ -144,7 +145,7 @@ var category = module.exports = {
     },
     asyncGetZdCategoryTranslations: function(id) {
       logger.debug('function: [asyncGetZdCategoryTranslation]');
-      this.syncStatus.push(category.key + id);
+      io.pushSync(category.key + id);
       var that = this;
       setTimeout(
         function() {
@@ -165,7 +166,7 @@ var category = module.exports = {
     calcResourceName: function(obj) {
       var ret = obj.categorys;
       var type = 'categorys';
-      if (this.featureConfig('html-tx-resource')) {
+      if (io.hasFeature('html-tx-resource')) {
         type = 'HTML-' + type;
       }
       var typeString = type + '-';

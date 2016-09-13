@@ -8,6 +8,7 @@ var zdCategory = require('../zendesk-api/category'),
     txResource = require('../transifex-api/resource'),
     syncUtil = require('../syncUtil'),
     logger = require('../logger'),
+    io = require('../io'),
     common = require('../common');
 
 var syncCategories = module.exports = {
@@ -19,7 +20,7 @@ var syncCategories = module.exports = {
   perpage: '7',
   currentpage: '1',
   events: {
-    'click .page_action_categories': 'uiSyncPageCategoriesInit',
+    'click [tab="categories"]': 'uiSyncPageCategoriesInit',
     'click .page_action_page': 'uiSyncPageGotoPage',
     'click .page_action_next': 'uiSyncPageNextPage',
     'click .page_action_prev': 'uiSyncPagePrevPage',
@@ -93,13 +94,13 @@ var syncCategories = module.exports = {
       var categories = this.store(zdCategory.key);
       var category = this.getSingle(zdObjectId, categories);
       var resource_request = {};
-      if (this.featureConfig('html-tx-resource')) {
+      if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(category);
       } else {
         resource_request = common.getTxRequest(category);
       }
       this.loadSyncPage = this.uiSyncUpsertCategoryComplete;
-      this.syncStatus.push(txResource.key + txResourceName + 'upsert');
+      io.pushSync(txResource.key + txResourceName + 'upsert');
       this.txUpsertResource(resource_request, txResourceName);
     },
     uiSyncUpsertCategoryComplete: function() {

@@ -5,8 +5,8 @@ var syncUtil = require('syncUtil');
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1></body></html>",
   regExpTemplate: "<html><head></head><body><h1>(.*)</h1>(.*)</body></html>",
-  translationObjectFormat: function(config, response, locale) {
-    if (config.isEnabled("tx-resource-html")) {
+  translationObjectFormat: function(format, response, locale) {
+    if (format == 'html-tx-resource') {
       return common.translationObjectHTML(response, locale);
     } else {
       return syncUtil.zdGetTranslationObject(response, locale);

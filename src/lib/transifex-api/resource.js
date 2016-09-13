@@ -6,6 +6,7 @@
 
 var txProject = require('./project'),
     syncUtil = require('../syncUtil'),
+    io = require('../io'),
     logger = require('../logger');
 
 var resource = module.exports = {
@@ -28,6 +29,11 @@ var resource = module.exports = {
     'txInsertResource.fail': 'txResourceSyncError',
     'txUpdateResource.done': 'txUpdateResourceDone',
     'txUpdateResource.fail': 'txResourceSyncError',
+  },
+  initialize: function() {
+    var settings = io.getSettings();
+    resource.username = settings.tx_username;
+    resource.password = settings.tx_password;
   },
   requests: {
     txResourceStats: function(resourceName) {
@@ -145,40 +151,36 @@ var resource = module.exports = {
     txResourceStatsDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource Stats retrieved with status:', textStatus);
       this.store(resource.key + jqXHR.resourceName, data);
-      this.syncStatus = _.without(this.syncStatus, resource.key + jqXHR.resourceName);
+      io.popSync(resource.key + jqXHR.resourceName);
       this.checkAsyncComplete();
     },
     txResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource retrieved with status:', textStatus);
       this.store(resource.key + jqXHR.resourceName + jqXHR.languageCode,
         data);
-      this.syncStatus = _.without(this.syncStatus, resource.key + jqXHR.resourceName +
-        jqXHR.languageCode);
+      io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
       this.checkAsyncComplete();
     },
     txInsertResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource inserted with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, resource.key + jqXHR.resourceName +
-        'upsert');
+      io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       this.checkAsyncComplete();
     },
     txUpdateResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource updated with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, resource.key + jqXHR.resourceName +
-        'upsert');
+      io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       this.checkAsyncComplete();
     },
     txResourceStatsSyncError: function(jqXHR, textStatus) {
       logger.info('Transifex Resource Stats Retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, resource.key + jqXHR.resourceName);
+      io.popSync(resource.key + jqXHR.resourceName);
       // Save error status instead of resource
       this.store(resource.key + jqXHR.resourceName, jqXHR.status);
       this.checkAsyncComplete();
     },
     txResourceSyncError: function(jqXHR, textStatus) {
       logger.info('Transifex Resource Retrieved with status:', textStatus);
-      this.syncStatus = _.without(this.syncStatus, resource.key + jqXHR.resourceName +
-        jqXHR.languageCode);
+      io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
       this.store(resource.key + jqXHR.resourceName, jqXHR.status);
       this.checkAsyncComplete();
     },
@@ -222,13 +224,13 @@ var resource = module.exports = {
       var resources = this.getResourceArray(project);
       //check list of resources in the project
       if (syncUtil.isStringinArray(slug, resources)) {
-        if (this.featureConfig('html-tx-resource')) {
+        if (io.hasFeature('html-tx-resource')) {
           this.ajax('txUpdateResourceFormData', content, slug);
         } else {
           this.ajax('txUpdateResourceJsonData', content, slug);
         }
       } else {
-        if (this.featureConfig('html-tx-resource')) {
+        if (io.hasFeature('html-tx-resource')) {
           this.ajax('txInsertResourceFormData', content, slug);
         } else {
           this.ajax('txInsertResourceJsonData', content, slug);
@@ -237,7 +239,7 @@ var resource = module.exports = {
     },
     asyncGetTxResourceStats: function(name) {
       logger.info('asyncGetTxResourceStats:', name);
-      this.syncStatus.push(resource.key + name);
+      io.pushSync(resource.key + name);
       var that = this;
       setTimeout(
         function() {
@@ -246,7 +248,7 @@ var resource = module.exports = {
     },
     asyncGetTxResource: function(name, code) {
       logger.info('asyncGetTxResource:', name + code);
-      this.syncStatus.push(resource.key + name + code);
+      io.pushSync(resource.key + name + code);
       var that = this;
       setTimeout(
         function() {
@@ -255,7 +257,7 @@ var resource = module.exports = {
     },
     asyncTxUpsertResource: function(data, name) {
       logger.info('asyncTxUpdateResource:', name);
-      this.syncStatus.push(resource.key + name + 'upsert');
+      io.pushSync(resource.key + name + 'upsert');
       var that = this;
       setTimeout(
         function() {

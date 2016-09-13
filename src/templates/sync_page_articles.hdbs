@@ -32,10 +32,10 @@
     <!-- Header: Tabs area -->
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
-        <a class="o-tabs__item page_action_categories" href="javascript:;">
+        <a tab="categories" class="o-tabs__item page_action_categories" href="javascript:;">
           Categories
         </a>
-        <a class="o-tabs__item u-marginLeft-5x page_action_sections" href="javascript:;">
+        <a tab="sections" class="o-tabs__item u-marginLeft-5x" href="javascript:;">
           Sections
         </a>
         <a class="o-tabs__item u-marginLeft-5x is-active page_action_articles" href="javascript:;">
@@ -180,8 +180,8 @@
                 <p>
                     <span class="txh3 plain type_name">Articles</span><span>Switch to:</span>
                     <span class="buttonized bluebtn btn-border disabled enable_column page_action_articles">Articles</span>
-                    <a class="buttonized bluebtn btn-border enable_column page_action_sections">Sections</a>
-                    <a class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>
+                    <a page-action="section" class="buttonized bluebtn btn-border enable_column page_action_sections">Sections</a>
+                    <a page-action="categories" class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>
                     <span class="per-page-btn">Per Page:
     <a id="perpage-ten" class="buttonized bluebtn btn-border enable_column page_action_per_page_ten">10</a>
     <a id="perpage-twenty" class="buttonized bluebtn btn-border enable_column page_action_per_page_twenty">20</a>

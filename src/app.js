@@ -1,90 +1,99 @@
 (function() {
-  return txApp(
+  return txApp([
     require('transifex-api/project'),
     require('transifex-api/resource'),
     require('zendesk-api/article'),
-    require('ui/sync-articles')
-  );
+    //require('zendesk-api/category'),
+    //require('zendesk-api/section'),
+    require('ui/sync-articles'),
+    //require('ui/sync-categories'),
+    //require('ui/sync-sections'),
+  ]);
 }());
 
 var logger = require('logger'),
+    io = require('io'),
     txutils = require('txUtil');
 
-function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
+function txApp(modules) {
+
+  // App was activated
+  function appActivated() {
+    //set settings to be accessible from everywhere
+    io.setSettings(this.settings);
+
+    //parse features
+    if (this.settings.features) {
+      try {
+        io.setFeatures(JSON.parse(this.settings.features));
+        logger.info('Adding features:', this.settings.features);
+      }
+      catch(err) {
+        logger.error('Could not parse features', this.settings.features);
+      }
+    }
+
+    //call optional initialize on each module
+    _.each(modules, function(mod) {
+      if (mod.initialize) mod.initialize();
+    }, this);
+
+    // Do Async!!!!
+    // Queue async calls and set callback page init
+    this.asyncGetTxProject();
+    this.asyncGetZdArticles();
+    this.switchTo('loading_page');
+    this.loadSyncPage = this.uiSyncPageArticlesInit;
+  }
+
+  // Check for completion of asynchronous operation
+  function checkAsyncComplete() {
+    logger.debug('checkAsyncComplete started');
+    if (!io.syncLength()) {
+      logger.debug('All async calls are completed');
+      // Danger!!! do not call async functions from this!
+      return this.loadSyncPage();
+    }
+  }
+
+  // App destroyed event
+  function appWillDestroy() {
+    //TODO cleanup
+  }
+
   // Note certain deps come from the framework:
   // this.$ = jQuery
-  var events = this.$.extend({
+  var events = {
       'app.activated': 'appActivated',
       'app.willDestroy': 'appWillDestroy'
     },
-    txProject.events,
-    txResource.events,
-    zdArticle.events,
-    uiSyncArticles.events
-  );
-  var requests = this.$.extend({},
-    txProject.requests,
-    txResource.requests,
-    zdArticle.requests
-  );
-  return this.$.extend({
-      events: events,
-      requests: requests,
-    },
-    txProject.eventHandlers,
-    txProject.actionHandlers,
-    txProject.jsonHandlers,
-    txResource.eventHandlers,
-    txResource.actionHandlers,
-    zdArticle.eventHandlers,
-    zdArticle.actionHandlers,
-    zdArticle.jsonHandlers,
-    uiSyncArticles.eventHandlers,
-    uiSyncArticles.actionHandlers, {
-      appActivated: function() {
-        logger.info('Convert Project Url to API:', this.settings.tx_project);
-        txProject.url = txutils.convertUrlToApi(this.settings.tx_project);
+    requests = {},
+    app = {};
 
-        logger.info('Validate TxProject API URL:', txProject.url);
-        if (!txutils.isValidAPIUrl(txProject.url)) {
-          logger.error('API URL is invalid');
-        }
+  //load modules
+  _.each(modules, function(mod) {
+    if (mod.events) {
+      events = _.extend(events, mod.events);
+    }
+    if (mod.requests) {
+      requests = _.extend(requests, mod.requests);
+    }
+    if (mod.eventHandlers) {
+      app = _.extend(app, mod.eventHandlers);
+    }
+    if (mod.actionHandlers) {
+      app = _.extend(app, mod.actionHandlers);
+    }
+    if (mod.jsonHandlers) {
+      app = _.extend(app, mod.jsonHandlers);
+    }
+  }, this);
 
-        var settingsFeatures = (typeof this.settings.features ===
-          'undefined') ? '{}' : this.settings.features;
-        logger.info('Adding App Feature Flags:', settingsFeatures);
-
-        this.syncStatus = []; // Array of any running async processes
-        var features = JSON.parse(settingsFeatures);
-        this.featureConfig = function(key) {
-          return (features[key]) ? true : false;
-        };
-
-        txProject.username = txResource.username = this.settings.tx_username;
-        txProject.password = txResource.password = this.settings.tx_password;
-
-        // Do Async!!!!
-        // Queue async calls and set callback page init
-        this.asyncGetTxProject();
-        this.asyncGetZdArticles();
-        this.switchTo('loading_page');
-        this.loadSyncPage = this.uiSyncPageArticlesInit;
-      },
-      checkAsyncComplete: function() {
-        logger.debug('checkAsyncComplete started');
-        if (_.isEmpty(this.syncStatus)) {
-          logger.debug('All async calls are completed');
-          // Danger!!! do not call async functions from this!
-          return this.loadSyncPage();
-        } else {
-          logger.debug('Async calls are not complete:', this.syncStatus);
-        }
-      },
-
-      appWillDestroy: function() {
-        //TODO cleanup
-      },
-
-    });
-
+  return _.extend(app, {
+    events: events,
+    requests: requests,
+    appActivated: appActivated,
+    appWillDestroy: appWillDestroy,
+    checkAsyncComplete: checkAsyncComplete,
+  });
 }

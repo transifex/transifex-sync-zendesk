@@ -4,6 +4,7 @@
  */
 
 var logger = require('../logger'),
+    io = require('../io'),
     txutils = require('../txUtil');
 
 var project = module.exports = {
@@ -20,6 +21,20 @@ var project = module.exports = {
   events: {
     'txProject.done': 'txProjectDone',
     'txProject.fail': 'txProjectSyncError'
+  },
+  initialize: function() {
+    var settings = io.getSettings();
+
+    logger.info('Convert Project Url to API:', settings.tx_project);
+    project.url = txutils.convertUrlToApi(settings.tx_project);
+
+    logger.info('Validate TxProject API URL:', project.url);
+    if (!txutils.isValidAPIUrl(project.url)) {
+      logger.error('API URL is invalid');
+    }
+
+    project.username = settings.tx_username;
+    project.password = settings.tx_password;
   },
   requests: {
     txProject: function(typeString, pageString) {
@@ -44,13 +59,13 @@ var project = module.exports = {
     txProjectDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
-      this.syncStatus = _.without(this.syncStatus, project.key);
+      io.popSync(project.key);
       this.checkAsyncComplete();
     },
     txProjectSyncError: function(jqXHR, textStatus) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       //this.uiErrorPageInit();
-      this.syncStatus = _.without(this.syncStatus, project.key);
+      io.popSync(project.key);
       this.checkAsyncComplete();
       if (jqXHR.status === 401) {
         logger.error('txProjectSyncError:', 'Login error');
@@ -61,7 +76,7 @@ var project = module.exports = {
   actionHandlers: {
     asyncGetTxProject: function(type, page) {
       logger.debug('function: [asyncGetTxProject] params: [type]' + type + '|| [page]' + page);
-      this.syncStatus.push(project.key);
+      io.pushSync(project.key);
       var that = this;
       setTimeout(
         function() {
