@@ -1,10 +1,10 @@
 import txProject from '../../src/lib/transifex-api/project.js';
+import txUtil from '../../src/lib/txUtil.js';
 import {
-install
+  install
 }
 from 'source-map-support'
 install()
-
 
 global.jsonHandlers = txProject.jsonHandlers
 global.txProject = txProject
@@ -68,17 +68,17 @@ describe('A function convertUrlToApi', () => {
     projectUrl = 'https://www.transifex.com/test-organization-4/zendesk-test/'
   })
   it('should exist ', () => {
-    expect(txProject.convertUrlToApi).to.not.be.undefined;
+    expect(txUtil.convertUrlToApi).to.not.be.undefined;
   });
   it('should return a string ', () => {
-    expect(txProject.convertUrlToApi(projectUrl)).to.be.a('string')
+    expect(txUtil.convertUrlToApi(projectUrl)).to.be.a('string')
   });
   it('should return a string that includes api ', () => {
-    expect(txProject.convertUrlToApi(projectUrl)).to.be.string('/api/2/')
+    expect(txUtil.convertUrlToApi(projectUrl)).to.be.string('/api/2/')
   });
   it('should return false if string unconverted ', () => {
-    expect(txProject.convertUrlToApi('')).to.be.a('boolean')
-    expect(txProject.convertUrlToApi('')).to.be.false
+    expect(txUtil.convertUrlToApi('')).to.be.a('boolean')
+    expect(txUtil.convertUrlToApi('')).to.be.false
   });
 });
 
@@ -88,10 +88,10 @@ describe('A function isValidAPIUrl', () => {
     projectApiUrl = 'http://www.transifex.com/api/2/project/zendesk-test/'
   })
   it('should exist ', () => {
-    expect(txProject.isValidAPIUrl).to.not.be.undefined;
+    expect(txUtil.isValidAPIUrl).to.not.be.undefined;
   });
   it('should return a boolean ', () => {
-    expect(txProject.isValidAPIUrl(projectApiUrl)).to.be.a('boolean')
+    expect(txUtil.isValidAPIUrl(projectApiUrl)).to.be.a('boolean')
   });
 });
 

@@ -3,7 +3,8 @@
  * @module transifex-api/project
  */
 
-var logger = require('../logger');
+var logger = require('../logger'),
+    txutils = require('../txUtil');
 
 var project = module.exports = {
   // selfies
@@ -16,35 +17,6 @@ var project = module.exports = {
   username: 'testuser',
   password: 'testpass',
   timeout: 6000,
-  TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
-  TX_PROJECT_API_URL_PATTERN: /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
-  TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/(.*)\/(.*)\//,
-  convertUrlToApi: function(u) {
-    if (project.isValidUrl(u)) {
-      var m = project.TX_PROJECT_URL_PATTERN.exec(u);
-      var p = "";
-      if (m !== null && m.length > 0) {
-        p = m[2]; //TODO make this more explicit that we are mapping the url path
-      }
-      var r = project.TX_PROJECT_API_URL_REPLACE.replace("[PROJECT_SLUG]",
-        p);
-      if (project.isValidAPIUrl(r)) {
-        return r;
-      }
-    }
-    return false;
-  },
-  isValidAPIUrl: function(u) {
-    var r = project.TX_PROJECT_API_URL_PATTERN.test(u);
-    return r;
-
-  },
-  isValidUrl: function(u) {
-    var r = this.TX_PROJECT_URL_PATTERN.test(u);
-    return r;
-
-  },
-
   events: {
     'txProject.done': 'txProjectDone',
     'txProject.fail': 'txProjectSyncError'

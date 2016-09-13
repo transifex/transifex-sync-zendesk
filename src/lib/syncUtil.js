@@ -1,3 +1,9 @@
+/**
+ * Sync utilities
+ * @module syncUtil
+ */
+
+
 module.exports = {
   resources: {
     PATTERN: /[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+/,

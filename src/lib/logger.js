@@ -1,3 +1,9 @@
+/**
+ * Logger
+ * @module logger
+ */
+
+
 function message() {
   return Array.prototype.join.call(arguments, ' ');
 }

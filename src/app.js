@@ -7,7 +7,9 @@
   );
 }());
 
-var logger = require('logger');
+var logger = require('logger'),
+    txutils = require('txUtil');
+
 function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
   // Note certain deps come from the framework:
   // this.$ = jQuery
@@ -41,10 +43,10 @@ function txApp(txProject, txResource, zdArticle, uiSyncArticles) {
     uiSyncArticles.actionHandlers, {
       appActivated: function() {
         logger.info('Convert Project Url to API:', this.settings.tx_project);
-        txProject.url = txProject.convertUrlToApi(this.settings.tx_project);
+        txProject.url = txutils.convertUrlToApi(this.settings.tx_project);
 
         logger.info('Validate TxProject API URL:', txProject.url);
-        if (!txProject.isValidAPIUrl(txProject.url)) {
+        if (!txutils.isValidAPIUrl(txProject.url)) {
           logger.error('API URL is invalid');
         }
 
