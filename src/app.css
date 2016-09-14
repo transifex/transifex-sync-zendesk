@@ -1465,6 +1465,7 @@ span {
   &--bare {
     & + .o-checkbox__label {
       min-width: 1em;
+      min-height: auto;
       width: 1em;
       padding-left: 0;
     }
@@ -1888,68 +1889,62 @@ span {
   }
 }
 
-/* -- Notifications -- */
+/* -- System messages -- */
 
-.c-notification {
+.c-system-message {
   position: relative;
 
   display: flex;
 
-  align-items: center;
-
   &:before,
   &:after {
-    content: " ";
+    content: ' ';
     display: table;
   }
   &:after {
     clear: both;
   }
-
   width: 100%;
-  min-height: $top-navigation-bar-height;
 
-  padding-left: $gutter-width;
-  padding-right: $gutter-width;
+  padding: $baseline-grid*3;
+
+  margin-bottom: $baseline-grid*5;
 
   color: $text-secondary-color;
-  font-size: $small-font-size;
+  font-size: $default-font-size;
   line-height: $baseline-grid*3;
 
+  border-width: 1px;
+  border-style: solid;
   border-left-width: 4px;
-  border-left-style: solid;
+  border-radius: $default-border-radius;
+  -moz-border-radius: $default-border-radius;
+  -webkit-border-radius: $default-border-radius;
 
-  &--info {
-    border-left-color: $status-information-color;
-    background-color: fade-out( $status-information-color, 1 - $lightness-twice-percentage );
+  background-color: $white-color;
+
+  &--compact {
+    padding-top: $baseline-grid*2;
+    padding-bottom: $baseline-grid*2;
+
+    margin-bottom: $baseline-grid*2;
   }
-  &--info .c-notification__symbol { fill: $status-information-color; }
 
-  &--success {
-    border-left-color: $status-success-color;
-    background-color: fade-out( $status-success-color, 1 - $lightness-twice-percentage );
-  }
-  &--success .c-notification__symbol { fill: $status-success-color; }
+  &--info { border-color: $status-information-color; }
+  &--info .c-system-message__symbol { fill: $status-information-color; }
+  &--info .c-system-message__title  { color: $status-information-color; }
 
-  &--warning {
-    border-left-color: $status-warning-color;
-    background-color: fade-out( $status-warning-color, 1 - $lightness-twice-percentage );
-  }
-  &--warning .c-notification__symbol { fill: $status-warning-color; }
+  &--success { border-color: $status-success-color; }
+  &--success .c-system-message__symbol { fill: $status-success-color; }
+  &--success .c-system-message__title  { color: $status-success-color; }
 
-  &--error {
-    border-left-color: $status-error-color;
-    background-color: fade-out( $status-error-color, 1 - $lightness-twice-percentage );
-  }
-  &--error .c-notification__symbol { fill: $status-error-color; }
+  &--warning { border-color: $status-warning-color; }
+  &--warning .c-system-message__symbol { fill: $status-warning-color; }
+  &--warning .c-system-message__title  { color: $status-warning-color; }
 
-  &--autoheight {
-    height: auto;
-    line-height: $baseline-grid*4;
-
-    padding-top: $baseline-grid;
-    padding-bottom: $baseline-grid;
-  }
+  &--error { border-color: $status-error-color; }
+  &--error .c-system-message__symbol { fill: $status-error-color; }
+  &--error .c-system-message__title  { color: $status-error-color; }
 
   &__content {
     position: relative;
@@ -1959,20 +1954,49 @@ span {
 
   &__symbol {
     position: relative;
-    width: 1em;
-    height: 1em;
-    margin-right: $baseline-grid;
+    width: $large-font-size;
+    height: $large-font-size;
+
+    margin-top: 0;
+    margin-right: $gutter-width/2;
+  }
+
+  &__title {
+    font-size: $large-font-size;
+    line-height: $baseline-grid*4;
+    margin-bottom: $baseline-grid;
   }
 
   &__button {
     $button-height: $top-navigation-bar-height - 4*$baseline-grid;
 
     font-size: $small-font-size;
-
+    line-height: $button-height;
   }
 
   &__close {
-    font-size: $tiny-font-size;
+    position: absolute;
+    display: block;
+
+    width: $baseline-grid*1.5;
+    height: $baseline-grid*1.5;
+
+    top: $baseline-grid;
+    right: $baseline-grid;
+
+    color: $link-muted-color !important;
+
+    opacity: 0.4;
+
+    z-index: $zindex1;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__svgFill {
+    fill: currentColor;
   }
 }
 

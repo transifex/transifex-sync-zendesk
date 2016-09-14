@@ -1,6 +1,6 @@
 <div class="u-display-flex u-flexDirection-column u-box-100">
 
-  <div class="u-position-relative u-boxShadow-outerModal">
+  <div class="u-position-relative">
     <!-- Header: Info area -->
     <div class="c-infoarea">
       <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
@@ -22,7 +22,7 @@
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
             <a href="javascript:;" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form is-disabled">
-              Refresh
+              Update data
             </a>
           </div>
         </div>
@@ -55,26 +55,26 @@
     </div>
 
     <!-- Header: Search-filters -->
-    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
+    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-3x">
       <div class="u-flexGrow-1 u-height-form u-paddingRight-3x">
-        <a href="#" title="Send Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x">
-          Upload Content
+        <a href="#" title="Upload Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x">
+          Send Resource
         </a>
         <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled">
-          Import Translations
+          Get Translations
         </a>
       </div>
       <div class="u-height-form u-lineHeight-form u-fontSize-small">
         <span class="u-color-disabled">Per page:</span>
-        <a perpage="10" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x is-disabled">10</a>
-        <a perpage="25" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x is-disabled">25</a>
-        <a perpage="50" href="javascript:;" class="o-link o-link--muted u-marginLeft-1x is-disabled">50</a>
+        <a perpage="10" href="javascript:;" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
+        <a perpage="25" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x">25</a>
+        <a perpage="50" href="javascript:;" class="o-link o-link--muted u-marginLeft-1x">50</a>
       </div>
     </div>
 
     <!-- Header: List header -->
-    <div class="u-paddingHorizontal-gutter u-paddingVertical-1x u-backgroundColor-active">
-      <div class="u-position u-clearfix u-lineHeight-form">
+    <div class="u-paddingHorizontal-gutter">
+      <div class="u-position u-clearfix u-lineHeight-button u-backgroundColor-active">
         &nbsp;
       </div>
     </div>

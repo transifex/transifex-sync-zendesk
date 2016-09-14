@@ -1,6 +1,6 @@
 <div class="u-display-flex u-flexDirection-column u-box-100 js-{{page}}">
 
-  <div class="u-position-relative u-boxShadow-outerModal">
+  <div class="u-position-relative">
     <!-- Header: Info area -->
     <div class="c-infoarea">
       <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
@@ -22,7 +22,7 @@
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
             <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form js-refresh">
-              Refresh
+              Update data
             </a>
           </div>
         </div>
@@ -55,13 +55,13 @@
     </div>
 
     <!-- Header: Search-filters -->
-    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-2x u-borderBottom-divider">
+    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-3x">
       <div class="u-flexGrow-1 u-height-form u-paddingRight-3x">
-        <a href="#" title="Send Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x">
-          Upload Content
+        <a href="#" title="Upload Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x">
+          Send Resource
         </a>
         <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled">
-          Import Translations
+          Get Translations
         </a>
       </div>
       <div class="u-height-form u-lineHeight-form u-fontSize-small">
@@ -72,9 +72,47 @@
       </div>
     </div>
 
+    <!-- System messages/notifications -->
+    <div class="u-paddingHorizontal-gutter">
+
+      <div class="c-system-message c-system-message--compact c-system-message--success">
+        <svg class="c-system-message__symbol" viewBox="0 0 16 16">
+          <path class="path1" d="M11.9 4.4l-5.4 5.4-2.4-2.5-0.9 0.9 3.3 3.4 6.3-6.3z"></path>
+          <path class="path2" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 14.7c-3.7 0-6.7-3-6.7-6.7s3-6.7 6.7-6.7 6.7 3 6.7 6.7-3 6.7-6.7 6.7z"></path>
+        </svg>
+        <div class="c-system-message__content">
+          This is a success message
+        </div>
+      </div>
+
+      <div class="c-system-message c-system-message--compact c-system-message--error">
+        <svg class="c-system-message__symbol" viewBox="0 0 16 16">
+          <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
+          <path class="path2" d="M7.2 4.6h1.6v4.1h-1.6v-4.1z"></path>
+          <path class="path3" d="M8.8 10.9c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
+        </svg>
+        <div class="c-system-message__content">This is an error message</div>
+      </div>
+
+      <div class="c-system-message c-system-message--compact c-system-message--warning">
+        <svg class="c-system-message__symbol" viewBox="0 0 16 16">
+          <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
+          <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
+          <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
+        </svg>
+        <div class="c-system-message__content">This is a warning message</div>
+        <a href="javascript:;" class="c-system-message__close">
+          <svg class="o-icon" viewBox="0 0 16 16">
+            <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+
     <!-- Header: List header -->
-    <div class="u-paddingHorizontal-gutter u-paddingVertical-1x u-backgroundColor-active">
-      <div class="u-position u-clearfix u-lineHeight-form">
+    <div class="u-paddingHorizontal-gutter">
+      <div class="u-position u-clearfix u-lineHeight-button u-backgroundColor-active">
 
         <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
           <div class="u-display-flex">
@@ -83,10 +121,7 @@
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted js-sortby-title">
-              {{#if page_articles}}Article Title{{/if}}
-              {{#if page_categories}}Category{{/if}}
-              {{#if page_sections}}Section{{/if}}
-              <svg class="o-icon" viewBox="0 0 16 16">
+              {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
                 <path id="arrow-down-small" class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
               </svg>
             </span>
@@ -106,34 +141,6 @@
         </div>
 
       </div>
-    </div>
-
-
-    <!-- System messages/notifications -->
-
-    <div class="c-notification c-notification--success">
-      <div class="c-notification__content">This is a success message</div>
-    </div>
-    <div class="c-notification c-notification--error">
-      <svg class="c-notification__symbol" viewBox="0 0 16 16">
-        <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
-        <path class="path2" d="M7.2 4.6h1.6v4.1h-1.6v-4.1z"></path>
-        <path class="path3" d="M8.8 10.9c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
-      </svg>
-      <div class="c-notification__content">This is an error message</div>
-    </div>
-    <div class="c-notification c-notification--warning">
-      <svg class="c-notification__symbol" viewBox="0 0 16 16">
-        <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
-        <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
-        <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
-      </svg>
-      <div class="c-notification__content">This is a warning message</div>
-      <a href="javascript:;" class="c-notification__close o-link o-link--muted">
-        <svg class="o-icon" viewBox="0 0 16 16">
-          <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
-        </svg>
-      </a>
     </div>
 
   </div>
@@ -172,10 +179,6 @@
                 </svg>{{{this.zd_object_updated}}}
               </span>
             </div>
-            {{!-- <div class="u-width-30 u-clearfix">
-              <span id="upload-{{{this.name}}}" class="o-button is-disabled enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Upload Content</span>
-              <span id="download-{{{this.name}}}" class="o-button is-disabled enable_column page_action_download u-float-right" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Import Translations</span>
-            </div> --}}
           </div>
         </div>
       </div>
