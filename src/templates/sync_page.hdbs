@@ -1,4 +1,4 @@
-<div class="u-display-flex u-flexDirection-column u-box-100">
+<div class="u-display-flex u-flexDirection-column u-box-100 js-{{page}}">
 
   <div class="u-position-relative u-boxShadow-outerModal">
     <!-- Header: Info area -->
@@ -13,7 +13,7 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x">zendesk-test</div>
+            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
             <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
             <div class=" u-color-disabled">
               <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
@@ -21,8 +21,8 @@
           </div>
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
-            <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form page_action_sync">
-              Update table data
+            <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form js-refresh">
+              Refresh
             </a>
           </div>
         </div>
@@ -32,15 +32,25 @@
     <!-- Header: Tabs area -->
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
-        <a tab="categories" class="o-tabs__item is-active page_action_section_categories" href="javascript:;">
-          Categories
-        </a>
-        <a tab="sections" class="o-tabs__item u-marginLeft-5x page_action_section_sections" href="javascript:;">
-          Sections
-        </a>
-        <a class="o-tabs__item u-marginLeft-5x page_action_section_articles" href="javascript:;">
-          Articles
-        </a>
+
+        {{#if page_categories}}
+        <a class="o-tabs__item is-active" href="javascript:;">Categories</a>
+        {{else}}
+        <a tab="categories" class="o-tabs__item" href="javascript:;">Categories</a>
+        {{/if}}
+
+        {{#if page_sections}}
+        <a class="o-tabs__item is-active" href="javascript:;">Sections</a>
+        {{else}}
+        <a tab="sections" class="o-tabs__item" href="javascript:;">Sections</a>
+        {{/if}}
+
+        {{#if page_articles}}
+        <a class="o-tabs__item is-active" href="javascript:;">Articles</a>
+        {{else}}
+        <a tab="articles" class="o-tabs__item" href="javascript:;">Articles</a>
+        {{/if}}
+
       </div>
     </div>
 
@@ -72,8 +82,11 @@
               <input type="checkbox" class="o-checkbox o-checkbox--bare" name="all_page" id="all_page"/>
               <div class="o-checkbox__label"></div>
             </label>
-            <span class="o-link o-link--muted page_action_sort_by_title">
-              Category<svg class="o-icon" viewBox="0 0 16 16">
+            <span class="o-link o-link--muted js-sortby-title">
+              {{#if page_articles}}Article Title{{/if}}
+              {{#if page_categories}}Category{{/if}}
+              {{#if page_sections}}Section{{/if}}
+              <svg class="o-icon" viewBox="0 0 16 16">
                 <path id="arrow-down-small" class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
               </svg>
             </span>
@@ -85,7 +98,7 @@
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Translations completed</div>
 
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
-          <span class="o-link o-link--muted page_action_sort_by_updated">
+          <span class="o-link o-link--muted js-sortby-updated">
             Latest Activity<svg class="o-icon" viewBox="0 0 16 16">
               <path class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
             </svg>
@@ -96,7 +109,32 @@
     </div>
 
 
-    <!-- System messages/notifications below here -->
+    <!-- System messages/notifications -->
+
+    <div class="c-notification c-notification--success">
+      <div class="c-notification__content">This is a success message</div>
+    </div>
+    <div class="c-notification c-notification--error">
+      <svg class="c-notification__symbol" viewBox="0 0 16 16">
+        <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
+        <path class="path2" d="M7.2 4.6h1.6v4.1h-1.6v-4.1z"></path>
+        <path class="path3" d="M8.8 10.9c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
+      </svg>
+      <div class="c-notification__content">This is an error message</div>
+    </div>
+    <div class="c-notification c-notification--warning">
+      <svg class="c-notification__symbol" viewBox="0 0 16 16">
+        <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
+        <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
+        <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
+      </svg>
+      <div class="c-notification__content">This is a warning message</div>
+      <a href="javascript:;" class="c-notification__close o-link o-link--muted">
+        <svg class="o-icon" viewBox="0 0 16 16">
+          <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
+        </svg>
+      </a>
+    </div>
 
   </div>
 
@@ -120,20 +158,24 @@
               </div>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <a class="o-link" target="_blank" href="{{{this.tx_resource_url}}}">{{{this.name}}}</a>
+              <span class="u-color-secondary u-fontSize-small">{{{this.name}}}</span>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-secondary" id="locales-{{{this.name}}}">
+              <span class="u-color-secondary u-fontSize-small" id="locales-{{{this.name}}}">
                 <span class="u-color-disabled">Checking...</span>
               </span>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-secondary">
+              <span class="u-color-secondary u-fontSize-small">
                 <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
                   <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
                 </svg>{{{this.zd_object_updated}}}
               </span>
             </div>
+            {{!-- <div class="u-width-30 u-clearfix">
+              <span id="upload-{{{this.name}}}" class="o-button is-disabled enable_column page_action_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Upload Content</span>
+              <span id="download-{{{this.name}}}" class="o-button is-disabled enable_column page_action_download u-float-right" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="{{{this.zd_object_type}}}" data-resource="{{{this.name}}}">Import Translations</span>
+            </div> --}}
           </div>
         </div>
       </div>
@@ -145,16 +187,16 @@
   {{#if dataset.pagination_visible}}
     <div class="o-pagination u-marginBottom-3x">
     {{#if dataset.page_prev_enabled}}
-        <a id="page-prev" class="o-link o-pagination__prev page_action_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a>
+        <a id="page-prev" class="o-link o-pagination__prev js-goto-prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a>
     {{/if}}
     {{#unless dataset.page_prev_enabled}}
         <span class="o-pagination__prev is-disabled">&laquo;</span>
     {{/unless}}
     {{#each dataset.pages}}
-        <a id="page-{{{this}}}" class="o-link o-pagination__page page_action_page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a>
+        <a id="page-{{{this}}}" class="o-link o-pagination__page js-goto-page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a>
     {{/each}}
     {{#if dataset.page_next_enabled}}
-        <a id="page-next" class="o-link o-pagination__next page_action_next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a>
+        <a id="page-next" class="o-link o-pagination__next js-goto-next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a>
     {{/if}}
     {{#unless dataset.page_next_enabled}}
         <span class="o-pagination__next is-disabled">&raquo;</span>
@@ -167,19 +209,32 @@
 
 </div>
 
+
+
+
+
 {{!-- <div class="row-fluid">
     <div class="span12">
         <div class="wrapper nowrap">
             <div class="messagebox">
                 <p><span class="message sync-message"></span></p>
-                <p><span>
-    <span class="txh3 plain type_name">Categories</span> Switch to:
-                    <span class="buttonized bluebtn btn-border enable_column page_action_category_articles">Articles</span>
-                    <a class="buttonized bluebtn btn-border enable_column page_action_category_sections">Sections</a>
-                    <a class="buttonized bluebtn btn-border disabled enable_column page_action_category_categories">Categories</a>
+                <p>
+                    <span class="txh3 plain type_name">Articles</span><span>Switch to:</span>
+                    <span class="buttonized bluebtn btn-border disabled enable_column page_action_articles">Articles</span>
+                    <a page-action="section" class="buttonized bluebtn btn-border enable_column page_action_sections">Sections</a>
+                    <a page-action="categories" class="buttonized bluebtn btn-border enable_column page_action_categories">Categories</a>
+                    <span class="per-page-btn">Per Page:
+    <a id="perpage-ten" class="buttonized bluebtn btn-border enable_column page_action_per_page_ten">10</a>
+    <a id="perpage-twenty" class="buttonized bluebtn btn-border enable_column page_action_per_page_twenty">20</a>
+    </p>
+                <p><span>Sort By:</span>
+                    <a id="sortby-title" class="buttonized bluebtn btn-border enable_column js-sortby-title">Title</a>
+                    <a id="sortby-last-updated" class="buttonized bluebtn btn-border enable_column js-sortby-updated">Last Updated</a>
+                    <span class="batch-upload-btn"><a id="batch-upload" class="buttonized bluebtn btn-border enable_column js-batch-upload" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Batch Upload</a></span>
+                    <span class="batch-download-btn"><a id="batch-download" class="buttonized bluebtn btn-border enable_column js-batch-download" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Batch Download</a></span>
+                    <span class="sync-btn"><a class="buttonized bluebtn btn-border enable_column js-refresh" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
                 </p>
-                <span class="sync-btn"><a id="sync" class="buttonized bluebtn btn-border enable_column page_action_category_sync" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
-                </p>
+                <!-- TODO a class="buttonized bluebtn btn-border enable_column page_action_search">Search</a-->
                 </span>
                 </p>
 
@@ -195,37 +250,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each dataset}}
-                        <tr>
-                            <td class="names_column">
-                                <p class="limited">{{{this.title_string}}}</p>
-                                <p><span class="column_name">{{{this.name}}}</span></p>
-                                <p><a class="enable_column" target="_blank" href="{{{this.zd_object_url}}}">View in Zendesk</a></p>
-                                <p><a id="txlink-{{{this.name}}}" class="enable_column disabled" target="_blank" href="{{{this.tx_resource_url}}}">View in Transifex</a></p>
-                            </td>
-                            <td>
-                                <p>{{{this.zd_object_updated}}}</td>
-                            <td><span id="upload-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_category_upload" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="category" data-resource="{{{this.name}}}">Disabled</span></td>
-                            <td><span id="download-{{{this.name}}}" class="buttonized greenbtn btn-border disabled enable_column page_action_category_download" data-zd-object-id="{{{this.zd_object_id}}}" data-zd-object-type="category" data-resource="{{{this.name}}}">Disabled</span></td>
-                            <td><span id="locales-{{{this.name}}}">None</span></td>
-                        </tr>
-                    {{/each}}
+
                 </tbody>
             </table>
             {{#if dataset.pagination_visible}}
                 <div class="pagination">
                     <ul>
                         {{#if dataset.page_prev_enabled}}
-                            <li><a id="page-prev" class="page_action_category_prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>
+                            <li><a id="page-prev" class="js-goto-prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>
                         {{/if}}
                         {{#unless dataset.page_prev_enabled}}
                             <li class="disabled"><a>&laquo;</a></li>
                         {{/unless}}
                         {{#each dataset.pages}}
-                            <li><a id="page-{{{this}}}" class="page_action_category_page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a></li>
+                            <li><a id="page-{{{this}}}" class="js-goto-page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a></li>
                         {{/each}}
                         {{#if dataset.page_next_enabled}}
-                            <li><a id="page-next" class="page_action_category_next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a></li>
+                            <li><a id="page-next" class="js-goto-next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a></li>
                         {{/if}}
                         {{#unless dataset.page_next_enabled}}
                             <li class="disabled"><a>&raquo;</a></li>

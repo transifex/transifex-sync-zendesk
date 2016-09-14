@@ -1,5 +1,5 @@
 <div class="spinner">
-  <span class="txh3 plain">Oops, an error has occurred, click <a id="sync" class="buttonized bluebtn btn-border enable_column page_action_sync" data-type="articles">Sync</a> to try again.</span>
+  <span class="txh3 plain">Oops, an error has occurred, click <a id="sync" class="buttonized bluebtn btn-border enable_column js-refresh" data-type="articles">Sync</a> to try again.</span>
     <div class="messagebox">
     <span class="message"></span>
   </div>

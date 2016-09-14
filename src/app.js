@@ -21,6 +21,7 @@ function txApp(modules) {
   function appActivated() {
     //set settings to be accessible from everywhere
     io.setSettings(this.settings);
+    this.store('page_title', this.settings.title || 'Zendesk');
 
     //parse features
     if (this.settings.features) {
@@ -42,7 +43,9 @@ function txApp(modules) {
     // Queue async calls and set callback page init
     this.asyncGetTxProject();
     this.asyncGetZdArticles();
-    this.switchTo('loading_page');
+    this.switchTo('loading_page', {
+      page_articles: true
+    });
     this.loadSyncPage = this.uiArticlesInit;
   }
 

@@ -154,7 +154,7 @@ var common = module.exports = {
 
   activateTxLink: function($, name) {
     var linkId = "#" + "txlink-" + name;
-    $(linkId).removeClass("disabled");
+    $(linkId).removeClass("is-disabled");
   },
   addCompletedLocales: function($, name, locales) {
     var linkId = "#" + "locales-" + name;

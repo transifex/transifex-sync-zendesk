@@ -14,47 +14,47 @@ var zdArticle = require('../zendesk-api/article'),
 
 var syncArticles = module.exports = {
   // selfies
-  name: 'sync_page_articles_ui',
-  key: 'sync_page_articles',
-  sortby: '',
-  sortdirection: '',
-  perpage: '10',
   currentpage: '1',
   events: {
     'click [tab="articles"]': 'uiArticlesTab',
-    'click .page_action_page': 'uiArticlesGotoPage',
-    'click .page_action_next': 'uiArticlesNextPage',
-    'click .page_action_prev': 'uiArticlesPrevPage',
-    'click .page_action_sort_by_title': 'uiArticlesSortByTitle',
-    'click .page_action_sort_by_updated': 'uiArticlesSortByUpdated',
-    'click [perpage]': 'uiArticlesPerPage',
-    'click .page_action_batch_upload': 'uiArticlesBatchUpload',
-    'click .page_action_batch_download': 'uiArticlesBatchDownload',
-    'click .page_action_sync': 'uiArticlesSync'
+    'click js-articles .js-goto-page': 'uiArticlesGotoPage',
+    'click js-articles .js-goto-next': 'uiArticlesNextPage',
+    'click js-articles .js-goto-prev': 'uiArticlesPrevPage',
+    'click js-articles .js-sortby-title': 'uiArticlesSortByTitle',
+    'click js-articles .js-sortby-updated': 'uiArticlesSortByUpdated',
+    'click js-articles [perpage]': 'uiArticlesPerPage',
+    'click js-articles .js-batch-upload': 'uiArticlesBatchUpload',
+    'click js-articles .js-batch-download': 'uiArticlesBatchDownload',
+    'click js-articles .js-refresh': 'uiArticlesSync'
   },
   eventHandlers: {
     uiArticlesTab: function(event) {
       if (event) event.preventDefault();
-      this.currentpage = '1';
+      syncArticles.currentpage = '1';
       this.uiArticlesSync();
     },
     uiArticlesInit: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesInit');
+
       var pageData = this.buildSyncPageArticlesData();
-      this.switchTo('sync_page_articles', {
+      this.switchTo('sync_page', {
+        page: 'articles',
+        page_articles: true,
         dataset: pageData,
       });
-      if (syncArticles.sortby === 'updated_at') {
+
+      var sorting = io.getSorting();
+      if (sorting.sortby === 'updated_at') {
         this.$('#sortby-last-updated').addClass("disabled");
         this.$('#sortby-title').removeClass("disabled");
       }
-      if (syncArticles.sortby === 'title') {
+      else if (sorting.sortby === 'title') {
         this.$('#sortby-last-updated').removeClass("disabled");
         this.$('#sortby-title').addClass("disabled");
       }
       this.$('[perpage]').removeClass('is-active');
-      this.$('[perpage="' + syncArticles.perpage + '"]').addClass('is-active');
+      this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
 
       this.loadSyncPage = this.uiArticlesResourceStatsComplete;
       this.syncResourceStatsArticles();
@@ -62,10 +62,10 @@ var syncArticles = module.exports = {
     },
     uiArticlesBatchUpload: function(event) {
       if (event) event.preventDefault();
-      var articleData = this.store(zdArticle.key);
-      var obj = this.calcResourceNameArticles(articleData);
-      var numArticles = obj.articles.length;
-      var article, resource_request, txResourceName;
+      var articleData = this.store(zdArticle.key),
+          obj = this.calcResourceNameArticles(articleData),
+          numArticles = obj.articles.length,
+          article, resource_request, txResourceName;
       for (var i = 0; i < numArticles; i++) {
         article = obj.articles[i];
         txResourceName = article.resource_name;
@@ -82,13 +82,13 @@ var syncArticles = module.exports = {
     },
     uiArticlesBatchDownload: function(event) {
       if (event) event.preventDefault();
-      var project = this.store(txProject.key);
-      var sourceLocale = txProject.getSourceLocale(project);
-      var articleData = this.store(zdArticle.key);
-      var obj = this.calcResourceNameArticles(articleData);
-      var numArticles = obj.articles.length;
-      var article, resource, txResourceName, completedLocales;
-      var zdLocale, translation;
+      var project = this.store(txProject.key),
+          sourceLocale = txProject.getSourceLocale(project),
+          articleData = this.store(zdArticle.key),
+          obj = this.calcResourceNameArticles(articleData),
+          numArticles = obj.articles.length,
+          article, resource, txResourceName, completedLocales,
+          zdLocale, translation;
       for (var i = 0; i < numArticles; i++) {
         article = obj.articles[i];
         txResourceName = article.resource_name;
@@ -97,12 +97,10 @@ var syncArticles = module.exports = {
 
         for (var ii = 0; ii < completedLocales.length; ii++) { // iterate through list of locales
           if (sourceLocale !== completedLocales[ii]) { // skip the source locale
-            translation = this.store(txResource.key + txResourceName +
-              completedLocales[ii]);
+            translation = this.store(txResource.key + txResourceName + completedLocales[ii]);
             if (typeof translation.content === 'string') {
               zdLocale = syncUtil.txLocaletoZd(completedLocales[ii]);
-              this.zdUpsertArticlesTranslation(translation.content, article.id,
-                zdLocale);
+              this.zdUpsertArticlesTranslation(translation.content, article.id, zdLocale);
             }
           }
         }
@@ -110,43 +108,44 @@ var syncArticles = module.exports = {
     },
     uiArticlesSync: function(event) {
       if (event) event.preventDefault();
+      var sorting = io.getSorting();
       this.asyncGetTxProject();
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection, syncArticles.perpage);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection, sorting.perpage
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesDownloadCompletedTranslations: function(event) {
       if (event) event.preventDefault();
-      var linkId = "#" + event.target.id;
-      var project = this.store(txProject.key);
-      var sourceLocale = txProject.getSourceLocale(project);
-      var txResourceName = this.$(linkId).attr("data-resource");
-      var zdObjectId = this.$(linkId).attr("data-zd-object-id");
-      var s = this.store(txResource.key + txResourceName);
-      var completedLocales = this.completedLanguages(s);
-      var zdLocale, translation;
+      var linkId = "#" + event.target.id,
+          project = this.store(txProject.key),
+          sourceLocale = txProject.getSourceLocale(project),
+          txResourceName = this.$(linkId).attr("data-resource"),
+          zdObjectId = this.$(linkId).attr("data-zd-object-id"),
+          s = this.store(txResource.key + txResourceName),
+          completedLocales = this.completedLanguages(s),
+          zdLocale, translation;
       for (var i = 0; i < completedLocales.length; i++) { // iterate through list of locales
         if (sourceLocale !== completedLocales[i]) { // skip the source locale
-          translation = this.store(txResource.key + txResourceName +
-            completedLocales[i]);
+          translation = this.store(txResource.key + txResourceName + completedLocales[i]);
           if (typeof translation.content === 'string') {
             zdLocale = syncUtil.txLocaletoZd(completedLocales[i]);
-            this.zdUpsertArticlesTranslation(translation.content, zdObjectId,
-              zdLocale);
+            this.zdUpsertArticlesTranslation(translation.content, zdObjectId, zdLocale);
           }
         }
       }
     },
     uiArticlesUpsert: function(event) {
       if (event) event.preventDefault();
-      var linkId = "#" + event.target.id;
-      var txResourceName = this.$(linkId).attr("data-resource");
-      var zdObjectId = this.$(linkId).attr("data-zd-object-id");
-      var zdObjectType = this.$(linkId).attr("data-zd-object-type");
-      var articles = this.store(zdArticle.key);
-      var article = this.getSingleArticle(zdObjectId, articles);
-      var resource_request = {};
+      var linkId = "#" + event.target.id,
+          txResourceName = this.$(linkId).attr("data-resource"),
+          zdObjectId = this.$(linkId).attr("data-zd-object-id"),
+          zdObjectType = this.$(linkId).attr("data-zd-object-type"),
+          articles = this.store(zdArticle.key),
+          article = this.getSingleArticle(zdObjectId, articles),
+          resource_request = {};
       if (io.hasFeature('html-tx-resource')) {
         resource_request = common.txRequestHTML(article);
       } else {
@@ -162,38 +161,49 @@ var syncArticles = module.exports = {
     },
     uiArticlesPerPage: function(event) {
       if (event) event.preventDefault();
-      syncArticles.perpage = this.$(event.target).closest('[perpage]').attr('perpage');
+      var sorting = io.getSorting();
+      sorting.perpage = this.$(event.target).closest('[perpage]').attr('perpage');
+      io.setSorting(sorting);
       syncArticles.currentpage = '1';
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection, syncArticles.perpage);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection, sorting.perpage
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesSortByUpdated: function(event) {
       if (event) event.preventDefault();
-      syncArticles.sortby = 'updated_at';
-      syncArticles.sortdirection = 'asc';
+      var sorting = io.getSorting();
+      sorting.sortby = 'updated_at';
+      sorting.sortdirection = 'asc';
+      io.setSorting(sorting);
       syncArticles.currentpage = '1';
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesSortByTitle: function(event) {
       if (event) event.preventDefault();
-      syncArticles.sortby = 'title';
-      syncArticles.sortdirection = 'asc';
+      var sorting = io.getSorting();
+      sorting.sortby = 'title';
+      sorting.sortdirection = 'asc';
       syncArticles.currentpage = '1';
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesResourceStatsComplete: function() {
       logger.debug('uiArticlesResourceStatsComplete');
-      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key));
-      var numArticles = articleData.articles.length;
-      var resourceName, resource;
+      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key)),
+          numArticles = articleData.articles.length,
+          resourceName, resource;
       for (var i = 0; i < numArticles; i++) {
         resourceName = articleData.articles[i].resource_name;
         resource = this.store(txResource.key + resourceName);
@@ -211,23 +221,18 @@ var syncArticles = module.exports = {
           }
         }
       }
-
       this.loadSyncPage = this.uiArticlesLanguageComplete;
       this.syncCompletedLanguagesArticles();
-
     },
     uiArticlesLanguageComplete: function() {
       logger.debug('uiArticlesLanguageComplete');
-      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key));
-      var numArticles = articleData.articles.length;
-
-      // Local loop vars
-      var numLanguages = 0;
-      var resourceName = '';
-      var resource = {};
-      var languageArray = [];
-      var resourceLanguage = {};
-
+      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key)),
+          numArticles = articleData.articles.length,
+          numLanguages = 0,
+          resourceName = '',
+          resource = {},
+          languageArray = [],
+          resourceLanguage = {};
       for (var i = 0; i < numArticles; i++) {
         resourceName = articleData.articles[i].resource_name;
         resource = this.store(txResource.key + resourceName);
@@ -236,60 +241,65 @@ var syncArticles = module.exports = {
           languageArray = this.completedLanguages(resource);
           numLanguages = languageArray.length;
           for (var ii = 0; ii < numLanguages; ii++) {
-            resourceLanguage = this.store(txResource.key + resourceName +
-              languageArray[ii]);
+            resourceLanguage = this.store(txResource.key + resourceName + languageArray[ii]);
             if (resourceLanguage) {
               common.activateDownloadButton(this.$, resourceName);
             }
           }
         }
       }
-
     },
     uiArticlesGotoPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesGotoPage');
-      var linkId = "#" + event.target.id;
-      var page = this.$(linkId).attr("data-page");
+      var linkId = "#" + event.target.id,
+          page = this.$(linkId).attr("data-page"),
+          sorting = io.getSorting();
       syncArticles.currentpage = page;
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection, syncArticles.perpage);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection, sorting.perpage
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesNextPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesNextPage');
-      var linkId = "#" + event.target.id;
-      var page = this.$(linkId).attr("data-current-page");
-      var nextPage = parseInt(page, 10) + 1;
+      var linkId = "#" + event.target.id,
+          page = this.$(linkId).attr("data-current-page"),
+          nextPage = parseInt(page, 10) + 1,
+          sorting = io.getSorting();
       syncArticles.currentpage = nextPage;
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection, syncArticles.perpage);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection, sorting.perpage
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesPrevPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesPrevPage');
-      var linkId = "#" + event.target.id;
-      var page = this.$(linkId).attr("data-current-page");
-      var prevPage = parseInt(page, 10) - 1;
+      var linkId = "#" + event.target.id,
+          page = this.$(linkId).attr("data-current-page"),
+          prevPage = parseInt(page, 10) - 1,
+          sorting = io.getSorting();
       syncArticles.currentpage = prevPage;
-      this.asyncGetZdArticlesFull(syncArticles.currentpage, syncArticles.sortby,
-        syncArticles.sortdirection, syncArticles.perpage);
-      this.switchTo('loading_page');
+      this.asyncGetZdArticlesFull(
+        syncArticles.currentpage, sorting.sortby,
+        sorting.sortdirection, sorting.perpage
+      );
+      this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
     },
-
   },
   actionHandlers: {
     syncArticlesTranslations: function() {
       logger.debug('syncArticlesTranslations started');
-      var articleData = this.store(zdArticle.key);
-      var OKToGetArticleTranslations = (typeof articleData === 'undefined') ?
-        false : true;
-      var obj, numArticles;
+      var articleData = this.store(zdArticle.key),
+          OKToGetArticleTranslations = (typeof articleData === 'undefined') ? false : true,
+          obj, numArticles;
       if (OKToGetArticleTranslations) {
         obj = this.calcResourceNameArticles(articleData);
         numArticles = obj.articles.length;
@@ -300,10 +310,9 @@ var syncArticles = module.exports = {
     },
     syncResourceStatsArticles: function() {
       logger.debug('syncResourceStatsArticles started');
-      var articleData = this.store(zdArticle.key);
-      var OKToGetResourceStats = (typeof articleData === 'undefined') ?
-        false : true;
-      var obj, numArticles;
+      var articleData = this.store(zdArticle.key),
+          OKToGetResourceStats = (typeof articleData === 'undefined') ? false : true,
+          obj, numArticles;
       if (OKToGetResourceStats) {
         obj = this.calcResourceNameArticles(articleData);
         numArticles = obj.articles.length;
@@ -316,15 +325,12 @@ var syncArticles = module.exports = {
       // Requires txProject, zdArticles, and ResourceStats
       logger.debug('syncCompletedLanguagesArticles started');
       // Local function vars
-      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key));
-      var numArticles = articleData.articles.length;
-
-      // Local loop vars
-      var numLanguages = 0;
-      var resourceName = '';
-      var resource = {};
-      var languageArray = [];
-
+      var articleData = this.calcResourceNameArticles(this.store(zdArticle.key)),
+          numArticles = articleData.articles.length,
+          numLanguages = 0,
+          resourceName = '',
+          resource = {},
+          languageArray = [];
       for (var i = 0; i < numArticles; i++) {
         resourceName = articleData.articles[i].resource_name;
         resource = this.store(txResource.key + resourceName);
@@ -340,13 +346,13 @@ var syncArticles = module.exports = {
       }
     },
     buildSyncPageArticlesData: function() {
-      var articleData = this.store(zdArticle.key);
-      var articles = this.calcResourceNameArticles(articleData);
-      var type = 'articles';
-      var limit = articles.articles.length;
-      var ret = [];
-      var d, e, s;
-      var tx_completed, zd_object_url, tx_resource_url, zd_object_updated;
+      var articleData = this.store(zdArticle.key),
+          articles = this.calcResourceNameArticles(articleData),
+          type = 'articles',
+          limit = articles.articles.length,
+          ret = [],
+          d, e, s,
+          tx_completed, zd_object_url, tx_resource_url, zd_object_updated;
       for (var i = 0; i < limit; i++) {
         e = articles.articles[i];
         s = this.store(txResource.key + e.resource_name);

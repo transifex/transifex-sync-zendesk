@@ -13,16 +13,16 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x">zendesk-test</div>
+            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
             <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
             <div class=" u-color-disabled">
-              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link is-disabled u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
+              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
             </div>
           </div>
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
             <a href="javascript:;" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form is-disabled">
-              Update table data
+              Refresh
             </a>
           </div>
         </div>
@@ -32,15 +32,25 @@
     <!-- Header: Tabs area -->
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
-        <a tab="categories" class="o-tabs__item" href="javascript:;">
-          Categories
-        </a>
-        <a tab="sections" class="o-tabs__item u-marginLeft-5x" href="javascript:;">
-          Sections
-        </a>
-        <a class="o-tabs__item u-marginLeft-5x" href="javascript:;">
-          Articles
-        </a>
+
+        {{#if page_categories}}
+        <a class="o-tabs__item is-active" href="javascript:;">Categories</a>
+        {{else}}
+        <a tab="categories" class="o-tabs__item" href="javascript:;">Categories</a>
+        {{/if}}
+
+        {{#if page_sections}}
+        <a class="o-tabs__item is-active" href="javascript:;">Sections</a>
+        {{else}}
+        <a tab="sections" class="o-tabs__item" href="javascript:;">Sections</a>
+        {{/if}}
+
+        {{#if page_articles}}
+        <a class="o-tabs__item is-active" href="javascript:;">Articles</a>
+        {{else}}
+        <a tab="articles" class="o-tabs__item" href="javascript:;">Articles</a>
+        {{/if}}
+
       </div>
     </div>
 

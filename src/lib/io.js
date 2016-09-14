@@ -5,6 +5,11 @@
 
 var SETTINGS = {},
     FEATURES = {},
+    SORTING = {
+      sortby: '',
+      sortdirection: '',
+      perpage: '10',
+    },
     SYNC_STATUS = [];
 
 module.exports = {
@@ -33,5 +38,12 @@ module.exports = {
   },
   syncLength: function() {
     return SYNC_STATUS.length;
-  }
+  },
+
+  setSorting: function(obj) {
+    SORTING = obj;
+  },
+  getSorting: function() {
+    return SORTING || {};
+  },
 };
