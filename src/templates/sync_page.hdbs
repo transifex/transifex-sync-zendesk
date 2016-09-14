@@ -73,35 +73,33 @@
     </div>
 
     <!-- System messages/notifications -->
-    <div class="u-paddingHorizontal-gutter">
+    <div class="u-paddingHorizontal-gutter js-notifications">
 
-      <div class="c-system-message c-system-message--compact c-system-message--success">
+      <div class="c-system-message c-system-message--compact c-system-message--success u-display-none" data-notification="success">
         <svg class="c-system-message__symbol" viewBox="0 0 16 16">
           <path class="path1" d="M11.9 4.4l-5.4 5.4-2.4-2.5-0.9 0.9 3.3 3.4 6.3-6.3z"></path>
           <path class="path2" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 14.7c-3.7 0-6.7-3-6.7-6.7s3-6.7 6.7-6.7 6.7 3 6.7 6.7-3 6.7-6.7 6.7z"></path>
         </svg>
-        <div class="c-system-message__content">
-          This is a success message
-        </div>
+        <div class="c-system-message__content js-notification-message"></div>
       </div>
 
-      <div class="c-system-message c-system-message--compact c-system-message--error">
+      <div class="c-system-message c-system-message--compact c-system-message--error u-display-none" data-notification="error">
         <svg class="c-system-message__symbol" viewBox="0 0 16 16">
           <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
           <path class="path2" d="M7.2 4.6h1.6v4.1h-1.6v-4.1z"></path>
           <path class="path3" d="M8.8 10.9c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
         </svg>
-        <div class="c-system-message__content">This is an error message</div>
+        <div class="c-system-message__content js-notification-message"></div>
       </div>
 
-      <div class="c-system-message c-system-message--compact c-system-message--warning">
+      <div class="c-system-message c-system-message--compact c-system-message--warning u-display-none" data-notification="warning">
         <svg class="c-system-message__symbol" viewBox="0 0 16 16">
           <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
           <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
           <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
         </svg>
-        <div class="c-system-message__content">This is a warning message</div>
-        <a href="javascript:;" class="c-system-message__close">
+        <div class="c-system-message__content js-notification-message"></div>
+        <a href="javascript:;" class="c-system-message__close js-notification-close">
           <svg class="o-icon" viewBox="0 0 16 16">
             <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
           </svg>

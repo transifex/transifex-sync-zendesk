@@ -31,6 +31,10 @@ var syncArticles = module.exports = {
     uiArticlesTab: function(event) {
       if (event) event.preventDefault();
       syncArticles.currentpage = '1';
+      var sorting = io.getSorting();
+      sorting.sortby = 'title';
+      sorting.sortdirection = 'asc';
+      io.setSorting(sorting);
       this.uiArticlesSync();
     },
     uiArticlesInit: function(event) {
@@ -168,13 +172,9 @@ var syncArticles = module.exports = {
     uiArticlesSortByUpdated: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
-      if (sorting.sortby == 'updated_at') {
-        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
-      }
-      else {
-        sorting.sortdirection = 'desc';
-      }
+      if (sorting.sortby == 'updated_at') return;
       sorting.sortby = 'updated_at';
+      sorting.sortdirection = 'desc';
       io.setSorting(sorting);
       syncArticles.currentpage = '1';
       this.asyncGetZdArticlesFull(
@@ -187,13 +187,9 @@ var syncArticles = module.exports = {
     uiArticlesSortByTitle: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
-      if (sorting.sortby == 'title') {
-        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
-      }
-      else {
-        sorting.sortdirection = 'asc';
-      }
+      if (sorting.sortby == 'title') return;
       sorting.sortby = 'title';
+      sorting.sortdirection = 'asc';
       syncArticles.currentpage = '1';
       this.asyncGetZdArticlesFull(
         syncArticles.currentpage, sorting.sortby,

@@ -31,6 +31,10 @@ var syncCategories = module.exports = {
     uiCategoriesTab: function(event) {
       if (event) event.preventDefault();
       syncCategories.currentpage = '1';
+      var sorting = io.getSorting();
+      sorting.sortby = 'title';
+      sorting.sortdirection = 'asc';
+      io.setSorting(sorting);
       this.uiCategoriesSync();
     },
     uiCategoriesInit: function(event) {
@@ -168,13 +172,9 @@ var syncCategories = module.exports = {
     uiCategoriesSortByUpdated: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
-      if (sorting.sortby == 'updated_at') {
-        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
-      }
-      else {
-        sorting.sortdirection = 'desc';
-      }
+      if (sorting.sortby == 'updated_at') return;
       sorting.sortby = 'updated_at';
+      sorting.sortdirection = 'desc';
       io.setSorting(sorting);
       syncCategories.currentpage = '1';
       this.asyncGetZdCategoriesFull(
@@ -187,13 +187,9 @@ var syncCategories = module.exports = {
     uiCategoriesSortByTitle: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
-      if (sorting.sortby == 'title') {
-        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
-      }
-      else {
-        sorting.sortdirection = 'asc';
-      }
+      if (sorting.sortby == 'title') return;
       sorting.sortby = 'title';
+      sorting.sortdirection = 'asc';
       syncCategories.currentpage = '1';
       this.asyncGetZdCategoriesFull(
         syncCategories.currentpage, sorting.sortby,
