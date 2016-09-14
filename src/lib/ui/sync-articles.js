@@ -25,9 +25,46 @@ var syncArticles = module.exports = {
     'click .js-articles[perpage]': 'uiArticlesPerPage',
     'click .js-articles.js-batch-upload': 'uiArticlesBatchUpload',
     'click .js-articles.js-batch-download': 'uiArticlesBatchDownload',
-    'click .js-articles.js-refresh': 'uiArticlesSync'
+    'click .js-articles.js-refresh': 'uiArticlesSync',
+    'click .js-row input': 'uiArticlesUpdateButtons',
   },
   eventHandlers: {
+    uiArticlesUpdateButtons: function(event) {
+      var ready_for_download = 0,
+          selected = this.$('.js-row input:checked'),
+          selected_count = selected.length,
+          batch_upload = this.$('.js-articles.js-batch-upload'),
+          batch_download = this.$('.js-articles.js-batch-download');
+
+      if (this.$(event.target).is(':checked')){
+        this.$(event.target).addClass('is-checked');
+      } else {
+        this.$(event.target).removeClass('is-checked');
+      }
+      _.each(selected, function(el){
+        var resource_id = this.$(el).attr('id');
+        if (!(this.$('#locales-' + resource_id).text() === '-')) 
+          ready_for_download += 1;
+      });
+      if (selected_count > 0) {
+        batch_upload.removeAttr('disabled');
+        batch_upload.removeClass('is-disabled');
+        batch_upload.text('Send Resource (' + selected_count + ')');
+      } else {
+        batch_upload.attr('disabled');
+        batch_upload.addClass('is-disabled');
+        batch_upload.text('Send Resource');
+      }
+      if (ready_for_download > 0) {
+        batch_download.removeAttr('disabled');
+        batch_download.removeClass('is-disabled');
+        batch_download.text('Get Translations (' + ready_for_download + ')');
+      } else {
+        batch_download.attr('disabled');
+        batch_download.addClass('is-disabled');
+        batch_download.text('Get Translations');
+      }
+    },
     uiArticlesTab: function(event) {
       if (event) event.preventDefault();
       syncArticles.currentpage = '1';
