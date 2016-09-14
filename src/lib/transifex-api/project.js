@@ -70,11 +70,14 @@ var project = module.exports = {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       //this.uiErrorPageInit();
       io.popSync(project.key);
-      this.checkAsyncComplete();
       if (jqXHR.status === 401) {
         logger.error('txProjectSyncError:', 'Login error');
-        //this.updateMessage("txLogin", "error");
+        io.setPageError('txProject:login');
       }
+      else {
+        io.setPageError('txProject');
+      }
+      this.checkAsyncComplete();
     },
   },
   actionHandlers: {

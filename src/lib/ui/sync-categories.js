@@ -41,6 +41,18 @@ var syncCategories = module.exports = {
       if (event) event.preventDefault();
       logger.debug('uiCategoriesInit');
 
+      if (io.getPageError()) {
+        this.switchTo('loading_page', {
+          page: 'categories',
+          page_categories: true,
+          error: true,
+          login_error: io.getPageError().split(':')[1] === 'login',
+          transifex_error: io.getPageError().split(':')[0] === 'txProject',
+          zendesk_error: io.getPageError().split(':')[0] === 'zdSync',
+        });
+        return;
+      }
+
       var pageData = this.buildSyncPageCategoriesData();
       this.switchTo('sync_page', {
         page: 'categories',
@@ -106,12 +118,13 @@ var syncCategories = module.exports = {
     uiCategoriesSync: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      io.setPageError(null);
       this.asyncGetTxProject();
       this.asyncGetZdCategoriesFull(
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
     uiCategoriesDownloadCompletedTranslations: function(event) {
@@ -166,7 +179,7 @@ var syncCategories = module.exports = {
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
     uiCategoriesSortByUpdated: function(event) {
@@ -181,7 +194,7 @@ var syncCategories = module.exports = {
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
     uiCategoriesSortByTitle: function(event) {
@@ -195,7 +208,7 @@ var syncCategories = module.exports = {
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
     uiCategoriesResourceStatsComplete: function() {
@@ -258,7 +271,7 @@ var syncCategories = module.exports = {
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
     uiCategoriesNextPage: function(event) {
@@ -272,7 +285,7 @@ var syncCategories = module.exports = {
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
     uiCategoriesPrevPage: function(event) {
@@ -286,7 +299,7 @@ var syncCategories = module.exports = {
         syncCategories.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_categories: true });
+      this.switchTo('loading_page', { page_categories: true, page: 'categories' });
       this.loadSyncPage = this.uiCategoriesInit;
     },
   },

@@ -85,13 +85,7 @@
 
     <div class="u-box-100 u-display-flex u-alignItems-center u-justifyContent-center">
 
-      <div class="u-textAlign-center u-paddingBottom-3x">
-        <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
-          Fetching data from Transifex
-        </div>
-        <div class="o-spinner"></div>
-      </div>
-
+      {{#if error}}
       <div class="c-emptystate u-paddingTop-2x">
         <svg class="c-emptystate__symbol" viewBox="0 0 16 16">
           <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
@@ -110,11 +104,34 @@
           {{/if}}
         </div>
         <div class="c-emptystate__description">
-          There was an error contacting Zendesk to get content data.<br>
-          <a href="#" class="o-link">Update data</a> to try again.
+
+        {{#if transifex_error}}
+          {{#if login_error}}
+          Could not authenticate you to Transifex, check username/password.
+          {{else}}
+          There was an error contacting Transifex to get content data.
+          {{/if}}
+        {{/if}}
+
+        {{#if zendesk_error}}
+          {{#if login_error}}
+          Could not authenticate you to Zendesk.
+          {{else}}
+          There was an error contacting Zendesk to get content data.
+          {{/if}}
+        {{/if}}
+
+          <br><a href="javascript:;" class="o-link js-{{page}} js-refresh">Update data</a> to try again.
         </div>
       </div>
-
+      {{else}}
+      <div class="u-textAlign-center u-paddingBottom-3x">
+        <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
+          Fetching data from Transifex
+        </div>
+        <div class="o-spinner"></div>
+      </div>
+      {{/if}}
 
     </div>
 

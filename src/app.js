@@ -47,9 +47,7 @@ function txApp(modules) {
 
   // Check for completion of asynchronous operation
   function checkAsyncComplete() {
-    logger.debug('checkAsyncComplete started');
     if (!io.syncLength()) {
-      logger.debug('All async calls are completed');
       // Danger!!! do not call async functions from this!
       return this.loadSyncPage();
     }

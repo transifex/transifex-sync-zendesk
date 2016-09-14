@@ -41,6 +41,18 @@ var syncArticles = module.exports = {
       if (event) event.preventDefault();
       logger.debug('uiArticlesInit');
 
+      if (io.getPageError()) {
+        this.switchTo('loading_page', {
+          page: 'articles',
+          page_articles: true,
+          error: true,
+          login_error: io.getPageError().split(':')[1] === 'login',
+          transifex_error: io.getPageError().split(':')[0] === 'txProject',
+          zendesk_error: io.getPageError().split(':')[0] === 'zdSync',
+        });
+        return;
+      }
+
       var pageData = this.buildSyncPageArticlesData();
       this.switchTo('sync_page', {
         page: 'articles',
@@ -106,12 +118,13 @@ var syncArticles = module.exports = {
     uiArticlesSync: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      io.setPageError(null);
       this.asyncGetTxProject();
       this.asyncGetZdArticlesFull(
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesDownloadCompletedTranslations: function(event) {
@@ -166,7 +179,7 @@ var syncArticles = module.exports = {
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesSortByUpdated: function(event) {
@@ -181,7 +194,7 @@ var syncArticles = module.exports = {
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesSortByTitle: function(event) {
@@ -195,7 +208,7 @@ var syncArticles = module.exports = {
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesResourceStatsComplete: function() {
@@ -258,7 +271,7 @@ var syncArticles = module.exports = {
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesNextPage: function(event) {
@@ -272,7 +285,7 @@ var syncArticles = module.exports = {
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
     uiArticlesPrevPage: function(event) {
@@ -286,7 +299,7 @@ var syncArticles = module.exports = {
         syncArticles.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_articles: true });
+      this.switchTo('loading_page', { page_articles: true, page: 'articles' });
       this.loadSyncPage = this.uiArticlesInit;
     },
   },

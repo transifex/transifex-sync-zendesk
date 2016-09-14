@@ -10,6 +10,7 @@ var SETTINGS = {},
       sortdirection: 'asc',
       perpage: '10',
     },
+    PAGE_ERROR = '',
     SYNC_STATUS = [];
 
 module.exports = {
@@ -45,5 +46,12 @@ module.exports = {
   },
   getSorting: function() {
     return SORTING || {};
+  },
+
+  setPageError: function(error) {
+    PAGE_ERROR = error || '';
+  },
+  getPageError: function() {
+    return PAGE_ERROR;
   },
 };

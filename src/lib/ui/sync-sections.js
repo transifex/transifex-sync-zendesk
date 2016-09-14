@@ -41,6 +41,18 @@ var syncSections = module.exports = {
       if (event) event.preventDefault();
       logger.debug('uiSectionsInit');
 
+      if (io.getPageError()) {
+        this.switchTo('loading_page', {
+          page: 'sections',
+          page_sections: true,
+          error: true,
+          login_error: io.getPageError().split(':')[1] === 'login',
+          transifex_error: io.getPageError().split(':')[0] === 'txProject',
+          zendesk_error: io.getPageError().split(':')[0] === 'zdSync',
+        });
+        return;
+      }
+
       var pageData = this.buildSyncPageSectionsData();
       this.switchTo('sync_page', {
         page: 'sections',
@@ -106,12 +118,13 @@ var syncSections = module.exports = {
     uiSectionsSync: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      io.setPageError(null);
       this.asyncGetTxProject();
       this.asyncGetZdSectionsFull(
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
     uiSectionsDownloadCompletedTranslations: function(event) {
@@ -166,7 +179,7 @@ var syncSections = module.exports = {
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
     uiSectionsSortByUpdated: function(event) {
@@ -181,7 +194,7 @@ var syncSections = module.exports = {
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
     uiSectionsSortByTitle: function(event) {
@@ -195,7 +208,7 @@ var syncSections = module.exports = {
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
     uiSectionsResourceStatsComplete: function() {
@@ -258,7 +271,7 @@ var syncSections = module.exports = {
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
     uiSectionsNextPage: function(event) {
@@ -272,7 +285,7 @@ var syncSections = module.exports = {
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
     uiSectionsPrevPage: function(event) {
@@ -286,7 +299,7 @@ var syncSections = module.exports = {
         syncSections.currentpage, sorting.sortby,
         sorting.sortdirection, sorting.perpage
       );
-      this.switchTo('loading_page', { page_sections: true });
+      this.switchTo('loading_page', { page_sections: true, page: 'sections' });
       this.loadSyncPage = this.uiSectionsInit;
     },
   },

@@ -143,12 +143,15 @@ module.exports = function(name, key, api) {
   factory.eventHandlers[m('zd<T>SyncError')] = function(jqXHR, textStatus) {
     logger.info(m('Zendesk <T> Retrieved with status:'), textStatus);
     io.popSync(factory.key);
-    this.checkAsyncComplete();
     //this.uiErrorPageInit();
     if (jqXHR.status === 401) {
       logger.error(m('zd<T>SyncError'), 'Login error');
-      //this.updateMessage("txLogin", "error");
+      io.setPageError('zdSync:login');
     }
+    else {
+      io.setPageError('zdSync');
+    }
+    this.checkAsyncComplete();
   };
 
   factory.eventHandlers[m('zd<T>GetTranslationsDone')] = function(data, textStatus, jqXHR) {
