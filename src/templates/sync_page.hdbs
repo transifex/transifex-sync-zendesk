@@ -1,4 +1,4 @@
-<div class="u-display-flex u-flexDirection-column u-box-100 js-{{page}}">
+<div class="u-display-flex u-flexDirection-column u-box-100">
 
   <div class="u-position-relative">
     <!-- Header: Info area -->
@@ -21,7 +21,7 @@
           </div>
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
-            <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form js-refresh">
+            <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form js-{{page}} js-refresh">
               Update data
             </a>
           </div>
@@ -66,9 +66,9 @@
       </div>
       <div class="u-height-form u-lineHeight-form u-fontSize-small">
         <span class="u-color-disabled">Per page:</span>
-        <a perpage="10" href="javascript:;" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
-        <a perpage="25" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x">25</a>
-        <a perpage="50" href="javascript:;" class="o-link o-link--muted u-marginLeft-1x">50</a>
+        <a perpage="10" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">10</a>
+        <a perpage="25" href="javascript:;" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">25</a>
+        <a perpage="50" href="javascript:;" class="o-link o-link--muted u-marginLeft-1x js-{{page}}">50</a>
       </div>
     </div>
 
@@ -120,7 +120,7 @@
               <input type="checkbox" class="o-checkbox o-checkbox--bare" name="all_page" id="all_page"/>
               <div class="o-checkbox__label"></div>
             </label>
-            <span class="o-link o-link--muted js-sortby-title">
+            <span class="o-link o-link--muted js-{{page}} js-sortby-title">
               {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
                 <path id="arrow-down-small" class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
               </svg>
@@ -133,7 +133,7 @@
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Translations completed</div>
 
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
-          <span class="o-link o-link--muted js-sortby-updated">
+          <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
             Latest Activity<svg class="o-icon" viewBox="0 0 16 16">
               <path class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
             </svg>
@@ -190,16 +190,16 @@
   {{#if dataset.pagination_visible}}
     <div class="o-pagination u-marginBottom-3x">
     {{#if dataset.page_prev_enabled}}
-        <a id="page-prev" class="o-link o-pagination__prev js-goto-prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a>
+        <a class="o-link o-pagination__prev js-{{page}} js-goto-prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a>
     {{/if}}
     {{#unless dataset.page_prev_enabled}}
         <span class="o-pagination__prev is-disabled">&laquo;</span>
     {{/unless}}
     {{#each dataset.pages}}
-        <a id="page-{{{this}}}" class="o-link o-pagination__page js-goto-page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a>
+        <a class="o-link o-pagination__page js-{{../page}} js-goto-page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a>
     {{/each}}
     {{#if dataset.page_next_enabled}}
-        <a id="page-next" class="o-link o-pagination__next js-goto-next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a>
+        <a class="o-link o-pagination__next js-{{page}} js-goto-next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a>
     {{/if}}
     {{#unless dataset.page_next_enabled}}
         <span class="o-pagination__next is-disabled">&raquo;</span>
@@ -232,7 +232,7 @@
     </p>
                 <p><span>Sort By:</span>
                     <a id="sortby-title" class="buttonized bluebtn btn-border enable_column js-sortby-title">Title</a>
-                    <a id="sortby-last-updated" class="buttonized bluebtn btn-border enable_column js-sortby-updated">Last Updated</a>
+                    <a id="sortby-last-updated" class="buttonized bluebtn btn-border enable_column js-sortby-updated_at">Last Updated</a>
                     <span class="batch-upload-btn"><a id="batch-upload" class="buttonized bluebtn btn-border enable_column js-batch-upload" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Batch Upload</a></span>
                     <span class="batch-download-btn"><a id="batch-download" class="buttonized bluebtn btn-border enable_column js-batch-download" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Batch Download</a></span>
                     <span class="sync-btn"><a class="buttonized bluebtn btn-border enable_column js-refresh" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">Sync</a></span>
@@ -263,7 +263,7 @@
                             <li><a id="page-prev" class="js-goto-prev" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&laquo;</a></li>
                         {{/if}}
                         {{#unless dataset.page_prev_enabled}}
-                            <li class="disabled"><a>&laquo;</a></li>
+                            <li class="is-disabled"><a>&laquo;</a></li>
                         {{/unless}}
                         {{#each dataset.pages}}
                             <li><a id="page-{{{this}}}" class="js-goto-page" data-type="{{{../dataset.type}}}" data-page="{{{this}}}">{{{this}}}</a></li>
@@ -272,7 +272,7 @@
                             <li><a id="page-next" class="js-goto-next" data-type="{{{dataset.type}}}" data-current-page="{{{dataset.current_page}}}">&raquo;</a></li>
                         {{/if}}
                         {{#unless dataset.page_next_enabled}}
-                            <li class="disabled"><a>&raquo;</a></li>
+                            <li class="is-disabled"><a>&raquo;</a></li>
                         {{/unless}}
                     </ul>
                 </div>

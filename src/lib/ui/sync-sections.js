@@ -17,15 +17,15 @@ var syncSections = module.exports = {
   currentpage: '1',
   events: {
     'click [tab="sections"]': 'uiSectionsTab',
-    'click js-sections .js-goto-page': 'uiSectionsGotoPage',
-    'click js-sections .js-goto-next': 'uiSectionsNextPage',
-    'click js-sections .js-goto-prev': 'uiSectionsPrevPage',
-    'click js-sections .js-sortby-title': 'uiSectionsSortByTitle',
-    'click js-sections .js-sortby-updated': 'uiSectionsSortByUpdated',
-    'click js-sections [perpage]': 'uiSectionsPerPage',
-    'click js-sections .js-batch-upload': 'uiSectionsBatchUpload',
-    'click js-sections .js-batch-download': 'uiSectionsBatchDownload',
-    'click js-sections .js-refresh': 'uiSectionsSync'
+    'click .js-sections.js-goto-page': 'uiSectionsGotoPage',
+    'click .js-sections.js-goto-next': 'uiSectionsNextPage',
+    'click .js-sections.js-goto-prev': 'uiSectionsPrevPage',
+    'click .js-sections.js-sortby-title': 'uiSectionsSortByTitle',
+    'click .js-sections.js-sortby-updated_at': 'uiSectionsSortByUpdated',
+    'click .js-sections[perpage]': 'uiSectionsPerPage',
+    'click .js-sections.js-batch-upload': 'uiSectionsBatchUpload',
+    'click .js-sections.js-batch-download': 'uiSectionsBatchDownload',
+    'click .js-sections.js-refresh': 'uiSectionsSync'
   },
   eventHandlers: {
     uiSectionsTab: function(event) {
@@ -45,16 +45,9 @@ var syncSections = module.exports = {
       });
 
       var sorting = io.getSorting();
-      if (sorting.sortby === 'updated_at') {
-        this.$('#sortby-last-updated').addClass("disabled");
-        this.$('#sortby-title').removeClass("disabled");
-      }
-      else if (sorting.sortby === 'title') {
-        this.$('#sortby-last-updated').removeClass("disabled");
-        this.$('#sortby-title').addClass("disabled");
-      }
-      this.$('[perpage]').removeClass('is-active');
+      this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
       this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
+      this.$('.js-goto-page[data-page="' + syncSections.currentpage + '"]').addClass('is-active');
 
       this.loadSyncPage = this.uiSectionsResourceStatsComplete;
       this.syncResourceStatsSections();
@@ -175,13 +168,18 @@ var syncSections = module.exports = {
     uiSectionsSortByUpdated: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      if (sorting.sortby == 'updated_at') {
+        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
+      }
+      else {
+        sorting.sortdirection = 'desc';
+      }
       sorting.sortby = 'updated_at';
-      sorting.sortdirection = 'asc';
       io.setSorting(sorting);
       syncSections.currentpage = '1';
       this.asyncGetZdSectionsFull(
         syncSections.currentpage, sorting.sortby,
-        sorting.sortdirection
+        sorting.sortdirection, sorting.perpage
       );
       this.switchTo('loading_page', { page_sections: true });
       this.loadSyncPage = this.uiSectionsInit;
@@ -189,12 +187,17 @@ var syncSections = module.exports = {
     uiSectionsSortByTitle: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      if (sorting.sortby == 'title') {
+        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
+      }
+      else {
+        sorting.sortdirection = 'asc';
+      }
       sorting.sortby = 'title';
-      sorting.sortdirection = 'asc';
       syncSections.currentpage = '1';
       this.asyncGetZdSectionsFull(
         syncSections.currentpage, sorting.sortby,
-        sorting.sortdirection
+        sorting.sortdirection, sorting.perpage
       );
       this.switchTo('loading_page', { page_sections: true });
       this.loadSyncPage = this.uiSectionsInit;
@@ -252,8 +255,7 @@ var syncSections = module.exports = {
     uiSectionsGotoPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiSectionsGotoPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-page"),
+      var page = this.$(event.target).attr("data-page"),
           sorting = io.getSorting();
       syncSections.currentpage = page;
       this.asyncGetZdSectionsFull(
@@ -266,8 +268,7 @@ var syncSections = module.exports = {
     uiSectionsNextPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiSectionsNextPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-current-page"),
+      var page = this.$(event.target).attr("data-current-page"),
           nextPage = parseInt(page, 10) + 1,
           sorting = io.getSorting();
       syncSections.currentpage = nextPage;
@@ -281,8 +282,7 @@ var syncSections = module.exports = {
     uiSectionsPrevPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiSectionsPrevPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-current-page"),
+      var page = this.$(event.target).attr("data-current-page"),
           prevPage = parseInt(page, 10) - 1,
           sorting = io.getSorting();
       syncSections.currentpage = prevPage;

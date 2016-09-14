@@ -153,8 +153,10 @@ var common = module.exports = {
   },
 
   activateTxLink: function($, name) {
+    /*
     var linkId = "#" + "txlink-" + name;
     $(linkId).removeClass("is-disabled");
+    */
   },
   addCompletedLocales: function($, name, locales) {
     var linkId = "#" + "locales-" + name;
@@ -165,13 +167,16 @@ var common = module.exports = {
     }
   },
   activateUploadButton: function($, name, isNew) {
+    /*
     var linkId = "#" + "upload-" + name;
 
     $(linkId).removeClass("is-disabled");
     $(linkId).click(this.uiArticlesUpsert.bind(this));
     $(linkId).css('cursor', 'pointer');
+    */
   },
   activateDownloadButton: function($, name) {
+    /*
     var linkId = "#" + "download-" + name;
 
     $(linkId).removeClass("is-disabled");
@@ -179,6 +184,7 @@ var common = module.exports = {
       alert('Happy day');
     });
     $(linkId).css('cursor', 'pointer');
+    */
   },
 
 };

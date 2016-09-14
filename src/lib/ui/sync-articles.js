@@ -17,15 +17,15 @@ var syncArticles = module.exports = {
   currentpage: '1',
   events: {
     'click [tab="articles"]': 'uiArticlesTab',
-    'click js-articles .js-goto-page': 'uiArticlesGotoPage',
-    'click js-articles .js-goto-next': 'uiArticlesNextPage',
-    'click js-articles .js-goto-prev': 'uiArticlesPrevPage',
-    'click js-articles .js-sortby-title': 'uiArticlesSortByTitle',
-    'click js-articles .js-sortby-updated': 'uiArticlesSortByUpdated',
-    'click js-articles [perpage]': 'uiArticlesPerPage',
-    'click js-articles .js-batch-upload': 'uiArticlesBatchUpload',
-    'click js-articles .js-batch-download': 'uiArticlesBatchDownload',
-    'click js-articles .js-refresh': 'uiArticlesSync'
+    'click .js-articles.js-goto-page': 'uiArticlesGotoPage',
+    'click .js-articles.js-goto-next': 'uiArticlesNextPage',
+    'click .js-articles.js-goto-prev': 'uiArticlesPrevPage',
+    'click .js-articles.js-sortby-title': 'uiArticlesSortByTitle',
+    'click .js-articles.js-sortby-updated_at': 'uiArticlesSortByUpdated',
+    'click .js-articles[perpage]': 'uiArticlesPerPage',
+    'click .js-articles.js-batch-upload': 'uiArticlesBatchUpload',
+    'click .js-articles.js-batch-download': 'uiArticlesBatchDownload',
+    'click .js-articles.js-refresh': 'uiArticlesSync'
   },
   eventHandlers: {
     uiArticlesTab: function(event) {
@@ -45,16 +45,9 @@ var syncArticles = module.exports = {
       });
 
       var sorting = io.getSorting();
-      if (sorting.sortby === 'updated_at') {
-        this.$('#sortby-last-updated').addClass("disabled");
-        this.$('#sortby-title').removeClass("disabled");
-      }
-      else if (sorting.sortby === 'title') {
-        this.$('#sortby-last-updated').removeClass("disabled");
-        this.$('#sortby-title').addClass("disabled");
-      }
-      this.$('[perpage]').removeClass('is-active');
+      this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
       this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
+      this.$('.js-goto-page[data-page="' + syncArticles.currentpage + '"]').addClass('is-active');
 
       this.loadSyncPage = this.uiArticlesResourceStatsComplete;
       this.syncResourceStatsArticles();
@@ -175,13 +168,18 @@ var syncArticles = module.exports = {
     uiArticlesSortByUpdated: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      if (sorting.sortby == 'updated_at') {
+        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
+      }
+      else {
+        sorting.sortdirection = 'desc';
+      }
       sorting.sortby = 'updated_at';
-      sorting.sortdirection = 'asc';
       io.setSorting(sorting);
       syncArticles.currentpage = '1';
       this.asyncGetZdArticlesFull(
         syncArticles.currentpage, sorting.sortby,
-        sorting.sortdirection
+        sorting.sortdirection, sorting.perpage
       );
       this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
@@ -189,12 +187,17 @@ var syncArticles = module.exports = {
     uiArticlesSortByTitle: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      if (sorting.sortby == 'title') {
+        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
+      }
+      else {
+        sorting.sortdirection = 'asc';
+      }
       sorting.sortby = 'title';
-      sorting.sortdirection = 'asc';
       syncArticles.currentpage = '1';
       this.asyncGetZdArticlesFull(
         syncArticles.currentpage, sorting.sortby,
-        sorting.sortdirection
+        sorting.sortdirection, sorting.perpage
       );
       this.switchTo('loading_page', { page_articles: true });
       this.loadSyncPage = this.uiArticlesInit;
@@ -252,8 +255,7 @@ var syncArticles = module.exports = {
     uiArticlesGotoPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesGotoPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-page"),
+      var page = this.$(event.target).attr("data-page"),
           sorting = io.getSorting();
       syncArticles.currentpage = page;
       this.asyncGetZdArticlesFull(
@@ -266,8 +268,7 @@ var syncArticles = module.exports = {
     uiArticlesNextPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesNextPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-current-page"),
+      var page = this.$(event.target).attr("data-current-page"),
           nextPage = parseInt(page, 10) + 1,
           sorting = io.getSorting();
       syncArticles.currentpage = nextPage;
@@ -281,8 +282,7 @@ var syncArticles = module.exports = {
     uiArticlesPrevPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiArticlesPrevPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-current-page"),
+      var page = this.$(event.target).attr("data-current-page"),
           prevPage = parseInt(page, 10) - 1,
           sorting = io.getSorting();
       syncArticles.currentpage = prevPage;

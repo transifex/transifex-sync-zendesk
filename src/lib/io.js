@@ -6,8 +6,8 @@
 var SETTINGS = {},
     FEATURES = {},
     SORTING = {
-      sortby: '',
-      sortdirection: '',
+      sortby: 'title',
+      sortdirection: 'asc',
       perpage: '10',
     },
     SYNC_STATUS = [];

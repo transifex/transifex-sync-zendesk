@@ -17,15 +17,15 @@ var syncCategories = module.exports = {
   currentpage: '1',
   events: {
     'click [tab="categories"]': 'uiCategoriesTab',
-    'click js-categories .js-goto-page': 'uiCategoriesGotoPage',
-    'click js-categories .js-goto-next': 'uiCategoriesNextPage',
-    'click js-categories .js-goto-prev': 'uiCategoriesPrevPage',
-    'click js-categories .js-sortby-title': 'uiCategoriesSortByTitle',
-    'click js-categories .js-sortby-updated': 'uiCategoriesSortByUpdated',
-    'click js-categories [perpage]': 'uiCategoriesPerPage',
-    'click js-categories .js-batch-upload': 'uiCategoriesBatchUpload',
-    'click js-categories .js-batch-download': 'uiCategoriesBatchDownload',
-    'click js-categories .js-refresh': 'uiCategoriesSync'
+    'click .js-categories.js-goto-page': 'uiCategoriesGotoPage',
+    'click .js-categories.js-goto-next': 'uiCategoriesNextPage',
+    'click .js-categories.js-goto-prev': 'uiCategoriesPrevPage',
+    'click .js-categories.js-sortby-title': 'uiCategoriesSortByTitle',
+    'click .js-categories.js-sortby-updated_at': 'uiCategoriesSortByUpdated',
+    'click .js-categories[perpage]': 'uiCategoriesPerPage',
+    'click .js-categories.js-batch-upload': 'uiCategoriesBatchUpload',
+    'click .js-categories.js-batch-download': 'uiCategoriesBatchDownload',
+    'click .js-categories.js-refresh': 'uiCategoriesSync'
   },
   eventHandlers: {
     uiCategoriesTab: function(event) {
@@ -45,16 +45,9 @@ var syncCategories = module.exports = {
       });
 
       var sorting = io.getSorting();
-      if (sorting.sortby === 'updated_at') {
-        this.$('#sortby-last-updated').addClass("disabled");
-        this.$('#sortby-title').removeClass("disabled");
-      }
-      else if (sorting.sortby === 'title') {
-        this.$('#sortby-last-updated').removeClass("disabled");
-        this.$('#sortby-title').addClass("disabled");
-      }
-      this.$('[perpage]').removeClass('is-active');
+      this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
       this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
+      this.$('.js-goto-page[data-page="' + syncCategories.currentpage + '"]').addClass('is-active');
 
       this.loadSyncPage = this.uiCategoriesResourceStatsComplete;
       this.syncResourceStatsCategories();
@@ -175,13 +168,18 @@ var syncCategories = module.exports = {
     uiCategoriesSortByUpdated: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      if (sorting.sortby == 'updated_at') {
+        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
+      }
+      else {
+        sorting.sortdirection = 'desc';
+      }
       sorting.sortby = 'updated_at';
-      sorting.sortdirection = 'asc';
       io.setSorting(sorting);
       syncCategories.currentpage = '1';
       this.asyncGetZdCategoriesFull(
         syncCategories.currentpage, sorting.sortby,
-        sorting.sortdirection
+        sorting.sortdirection, sorting.perpage
       );
       this.switchTo('loading_page', { page_categories: true });
       this.loadSyncPage = this.uiCategoriesInit;
@@ -189,12 +187,17 @@ var syncCategories = module.exports = {
     uiCategoriesSortByTitle: function(event) {
       if (event) event.preventDefault();
       var sorting = io.getSorting();
+      if (sorting.sortby == 'title') {
+        sorting.sortdirection = (sorting.sortdirection == 'desc')?'asc':'desc';
+      }
+      else {
+        sorting.sortdirection = 'asc';
+      }
       sorting.sortby = 'title';
-      sorting.sortdirection = 'asc';
       syncCategories.currentpage = '1';
       this.asyncGetZdCategoriesFull(
         syncCategories.currentpage, sorting.sortby,
-        sorting.sortdirection
+        sorting.sortdirection, sorting.perpage
       );
       this.switchTo('loading_page', { page_categories: true });
       this.loadSyncPage = this.uiCategoriesInit;
@@ -252,8 +255,7 @@ var syncCategories = module.exports = {
     uiCategoriesGotoPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiCategoriesGotoPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-page"),
+      var page = this.$(event.target).attr("data-page"),
           sorting = io.getSorting();
       syncCategories.currentpage = page;
       this.asyncGetZdCategoriesFull(
@@ -266,8 +268,7 @@ var syncCategories = module.exports = {
     uiCategoriesNextPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiCategoriesNextPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-current-page"),
+      var page = this.$(event.target).attr("data-current-page"),
           nextPage = parseInt(page, 10) + 1,
           sorting = io.getSorting();
       syncCategories.currentpage = nextPage;
@@ -281,8 +282,7 @@ var syncCategories = module.exports = {
     uiCategoriesPrevPage: function(event) {
       if (event) event.preventDefault();
       logger.debug('uiCategoriesPrevPage');
-      var linkId = "#" + event.target.id,
-          page = this.$(linkId).attr("data-current-page"),
+      var page = this.$(event.target).attr("data-current-page"),
           prevPage = parseInt(page, 10) - 1,
           sorting = io.getSorting();
       syncCategories.currentpage = prevPage;

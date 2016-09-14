@@ -8,6 +8,7 @@
     require('ui/sync-articles'),
     require('ui/sync-categories'),
     require('ui/sync-sections'),
+    require('ui/notifications'),
   ]);
 }());
 
