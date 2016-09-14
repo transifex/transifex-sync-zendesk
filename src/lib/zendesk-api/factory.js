@@ -29,26 +29,16 @@ module.exports = function(name, key, api) {
   // ---------------------------------------------------------------------------
 
   //events
-  factory.events[m('zd<T>.done')] = m('zd<T>Done');
   factory.events[m('zd<T>Full.done')] = m('zd<T>Done');
   factory.events[m('zd<T>GetTranslations.done')] = m('zd<T>GetTranslationsDone');
   factory.events[m('zd<T>Update.done')] = m('zd<T>UpdateDone');
   factory.events[m('zd<T>Insert.done')] = m('zd<T>InsertDone');
   factory.events[m('zd<T>GetTranslations.fail')] = m('zd<T>SyncError');
-  factory.events[m('zd<T>.fail')] = m('zd<T>SyncError');
   factory.events[m('zd<T>Full.fail')] = m('zd<T>SyncError');
 
   // ---------------------------------------------------------------------------
 
   //requests
-  factory.requests[m('zd<T>')] = function() {
-    return {
-      url: factory.base_url + api + '.json' + "?per_page=10",
-      type: 'GET',
-      dataType: 'json'
-    };
-  };
-
   factory.requests[m('zd<T>Full')] = function(page, sortby, sortdirection, numperpage) {
     var numberperpageString = "";
     if (numperpage) {
@@ -56,16 +46,27 @@ module.exports = function(name, key, api) {
     } else {
       numberperpageString = "?per_page=10";
     }
+
     var pageString = "";
     if (page) {
       pageString = '&page=' + page;
     }
+
     var sortbyString = "";
     if (sortby) {
+      //sections and categories sort by position instead of title
+      if (sortby == 'title' && key != 'article') {
+        sortby = 'position';
+      }
       sortbyString = '&sort_by=' + sortby;
     }
+
     var sortdirectionString = "";
     if (sortdirection) {
+      //sections and categories should invert direction
+      if (sortby == 'title' && key != 'article') {
+        sortdirectionString = (sortdirectionString == 'asc')?'desc':'asc';
+      }
       sortdirectionString = '&sort_order=' + sortdirection;
     }
     return {
@@ -120,6 +121,19 @@ module.exports = function(name, key, api) {
   // Event handlers
   factory.eventHandlers[m('zd<T>Done')] = function(data, textStatus) {
     logger.info(m('Zendesk <T> retrieved with status:'), textStatus);
+    //map category/section name to title
+    if (data) {
+      if (data.categories) {
+        _.each(data.categories, function(entry) {
+          entry.title = entry.name;
+        });
+      }
+      if (data.sections) {
+        _.each(data.sections, function(entry) {
+          entry.title = entry.name;
+        });
+      }
+    }
     this.store(factory.key, data);
     logger.debug('done, removing key');
     io.popSync(factory.key);
@@ -182,16 +196,6 @@ module.exports = function(name, key, api) {
     } else {
       this.ajax(m('zd<T>Insert'), translationData, id);
     }
-  };
-
-  factory.actionHandlers[m('asyncGetZd<T>')] = function() {
-    logger.debug(m('function: [asyncGetZd<T>]'));
-    io.pushSync(factory.key);
-    var that = this;
-    setTimeout(
-      function() {
-        that.ajax(m('zd<T>'));
-      }, factory.timeout);
   };
 
   factory.actionHandlers[m('asyncGetZd<T>Translations')] = function(id) {

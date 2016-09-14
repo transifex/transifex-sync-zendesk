@@ -42,12 +42,7 @@ function txApp(modules) {
 
     // Do Async!!!!
     // Queue async calls and set callback page init
-    this.asyncGetTxProject();
-    this.asyncGetZdArticles();
-    this.switchTo('loading_page', {
-      page_articles: true
-    });
-    this.loadSyncPage = this.uiArticlesInit;
+    this.uiArticlesTab();
   }
 
   // Check for completion of asynchronous operation
