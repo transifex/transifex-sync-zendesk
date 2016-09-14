@@ -78,15 +78,15 @@ var resource = module.exports = {
         secure: false
       };
     },
-    txInsertResourceJsonData: function(data, resourceName, typeString) {
-      logger.debug('txInsertResource ajax request:', data + '||' + typeString);
+    txInsertResource: function(data, resourceName) {
+      logger.debug('txInsertResource ajax request:', data + '||' + data.i18n_type);
       return {
         url: resource.inserturl,
         type: 'POST',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
-          jqxhr.type = typeString;
+          jqxhr.type = data.i18n_type;
         },
         xhrFields: {
           withCredentials: true
@@ -100,63 +100,15 @@ var resource = module.exports = {
         secure: false
       };
     },
-    txInsertResourceFormData: function(data, resourceName, typeString) {
-      logger.debug('txInsertResource ajax request:', data + '||' + typeString);
-      return {
-        url: resource.inserturl,
-        type: 'POST',
-        headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.type = typeString;
-        },
-        xhrFields: {
-          withCredentials: true
-        },
-        username: resource.username,
-        password: resource.password,
-        data: new FormData(data),
-        cache: false,
-        contentType: false,
-        processData: false,
-        timeout: resource.timeout,
-        cors: true,
-        secure: false
-      };
-    },
-    txUpdateResourceFormData: function(data, resourceName, typeString) {
-      logger.debug('txUpdateResource ajax request:', data + '||' + resourceName + '||' + typeString);
+    txUpdateResource: function(data, resourceName) {
+      logger.debug('txUpdateResource ajax request:', data + '||' + resourceName + '||' + data.i18n_type);
       return {
         url: resource.url + resourceName + '/content',
         type: 'PUT',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
-          jqxhr.type = typeString;
-        },
-        xhrFields: {
-          withCredentials: true
-        },
-        username: resource.username,
-        password: resource.password,
-        data: new FormData(data),
-        cache: false,
-        contentType: false,
-        processData: false,
-        timeout: resource.timeout,
-        cors: true,
-        secure: false
-      };
-    },
-    txUpdateResourceJsonData: function(data, resourceName, typeString) {
-      logger.debug('txUpdateResource ajax request:', data + '||' + resourceName + '||' + typeString);
-      return {
-        url: resource.url + resourceName + '/content',
-        type: 'PUT',
-        headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.type = typeString;
+          jqxhr.type = data.i18n_type;
         },
         xhrFields: {
           withCredentials: true
@@ -164,6 +116,7 @@ var resource = module.exports = {
         username: resource.username,
         password: resource.password,
         data: JSON.stringify(data),
+        cache: false,
         contentType: 'application/json',
         timeout: resource.timeout,
         cors: true,
@@ -248,17 +201,9 @@ var resource = module.exports = {
       var resources = this.getResourceArray(project);
       //check list of resources in the project
       if (syncUtil.isStringinArray(slug, resources)) {
-        if (io.hasFeature('html-tx-resource')) {
-          this.ajax('txUpdateResourceFormData', content, slug);
-        } else {
-          this.ajax('txUpdateResourceJsonData', content, slug);
-        }
+        this.ajax('txUpdateResource', content, slug);
       } else {
-        if (io.hasFeature('html-tx-resource')) {
-          this.ajax('txInsertResourceFormData', content, slug);
-        } else {
-          this.ajax('txInsertResourceJsonData', content, slug);
-        }
+        this.ajax('txInsertResource', content, slug);
       }
     },
     asyncGetTxResourceStats: function(name) {
@@ -286,7 +231,6 @@ var resource = module.exports = {
       setTimeout(
         function() {
           that.txUpsertResource(data, name);
-          //that.ajax('txUpdateResource', data, name);
         }, resource.timeout);
     },
   },
