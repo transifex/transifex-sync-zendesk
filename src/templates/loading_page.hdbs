@@ -22,7 +22,7 @@
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
             <a href="javascript:;" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form is-disabled">
-              Update data
+              Update Data
             </a>
           </div>
         </div>
@@ -81,15 +81,41 @@
 
   </div>
 
-  <div class="u-flexGrow-1 o-scrollable">
+  <div class="u-flexGrow-1">
 
     <div class="u-box-100 u-display-flex u-alignItems-center u-justifyContent-center">
+
       <div class="u-textAlign-center u-paddingBottom-3x">
         <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
           Fetching data from Transifex
         </div>
         <div class="o-spinner"></div>
       </div>
+
+      <div class="c-emptystate u-paddingTop-2x">
+        <svg class="c-emptystate__symbol" viewBox="0 0 16 16">
+          <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
+          <path class="path2" d="M7.2 4.6h1.6v4.1h-1.6v-4.1z"></path>
+          <path class="path3" d="M8.8 10.9c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
+        </svg>
+        <div class="c-emptystate__title">
+          {{#if page_categories}}
+          Failed to fetch categories
+          {{/if}}
+          {{#if page_sections}}
+          Failed to fetch sections
+          {{/if}}
+          {{#if page_articles}}
+          Failed to fetch articles
+          {{/if}}
+        </div>
+        <div class="c-emptystate__description">
+          There was an error contacting Zendesk to get content data.<br>
+          <a href="#" class="o-link">Update data</a> to try again.
+        </div>
+      </div>
+
+
     </div>
 
   </div>

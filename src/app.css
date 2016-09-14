@@ -1671,6 +1671,75 @@ span {
   }
 }
 
+/* -- Status -- */
+
+.o-status {
+  position: relative;
+
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+  &:before {
+    content: "" !important; //needed to override u-clearfix utility
+    position: absolute;
+    display: block !important; //needed to override u-clearfix utility
+
+    top: 0;
+    left: 0;
+
+    width: 4px;
+    height: 100%;
+  }
+
+  &.is-disabled {
+    .o-status__text {
+      color: $text-disabled-color;
+    }
+  }
+
+  &.is-success {
+    &:before {
+      background-color: $status-success-color;
+    }
+    .o-status__text {
+      color: $status-success-color;
+    }
+  }
+
+  &.is-information {
+    &:before {
+      background-color: $status-information-color;
+    }
+    .o-status__text {
+      color: $status-information-color;
+    }
+  }
+
+  &.is-warning {
+    &:before {
+      background-color: $status-warning-color;
+    }
+    .o-status__text {
+      color: $status-warning-color;
+    }
+  }
+
+  &.is-error {
+    &:before {
+      background-color: $status-error-color;
+    }
+    .o-status__text {
+      color: $status-error-color;
+    }
+  }
+
+}
+
 /* -- interactive -- */
 
 .o-interactive {
@@ -1997,6 +2066,60 @@ span {
 
   &__svgFill {
     fill: currentColor;
+  }
+}
+
+/* -- Empty state -- */
+.c-emptystate {
+  position: relative;
+
+  color: $text-disabled-color;
+  text-align: center;
+
+  padding-top: $baseline-grid*10;
+  padding-bottom: $baseline-grid*2;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  &--large {
+    .c-emptystate__symbol {
+      width: $baseline-grid*12;
+      height: $baseline-grid*12;
+
+      margin-bottom: $baseline-grid*4;
+    }
+
+    .c-emptystate__title {
+      font-size: $big-font-size;
+      line-height: $baseline-grid*5;
+
+      margin-bottom: $baseline-grid*2;
+    }
+  }
+
+
+  &__symbol {
+    width: $baseline-grid*8;
+    height: $baseline-grid*8;
+
+    fill: currentColor;
+
+    margin-bottom: $baseline-grid*3;
+  }
+
+  &__title {
+    font-size: $large-font-size;
+    font-weight: $thin-text-weight;
+    line-height: $baseline-grid*4;
+
+    margin-bottom: $baseline-grid;
+  }
+
+  &__description {
+    font-size: $default-font-size;
+    font-weight: $thin-text-weight;
+    line-height: $baseline-grid*3;
   }
 }
 

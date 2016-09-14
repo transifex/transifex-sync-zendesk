@@ -22,7 +22,7 @@
 
           <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
             <a href="#" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form js-{{page}} js-refresh">
-              Update data
+              Update Data
             </a>
           </div>
         </div>
@@ -115,7 +115,7 @@
         <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
           <div class="u-display-flex">
             <label class="o-checkbox-controller u-marginRight-2x" for="all_page">
-              <input type="checkbox" class="o-checkbox o-checkbox--bare" name="all_page" id="all_page"/>
+              <input type="checkbox" class="o-checkbox o-checkbox--bare" disabled="disabled" name="all_page" id="all_page"/>
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted js-{{page}} js-sortby-title">
@@ -128,7 +128,7 @@
 
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
 
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Translations completed</div>
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Translations Completed</div>
 
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
@@ -154,7 +154,7 @@
             <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x">
               <div class="u-display-flex u-width-100">
                 <label class="o-checkbox-controller u-marginRight-2x" for="{{{this.name}}}">
-                  <input type="checkbox" class="o-checkbox o-checkbox--bare" name="{{{this.name}}}" id="{{this.name}}"/>
+                  <input type="checkbox" class="o-checkbox o-checkbox--bare" disabled="disabled" name="{{{this.name}}}" id="{{this.name}}"/>
                   <div class="o-checkbox__label"></div>
                 </label>
                 <div class="o-text-ellipsis u-flexGrow-1">
