@@ -15,14 +15,14 @@ module.exports = {
   },
   error: function() {
     if (typeof console !== 'undefined')
-      console.log('[ERROR] ' + message.apply(this, arguments));
+      (console.error || console.log)('[ERROR] ' + message.apply(this, arguments));
   },
   warn: function() {
     if (typeof console !== 'undefined')
-      console.log('[WARN] ' + message.apply(this, arguments));
+      (console.warn || console.log)('[WARN] ' + message.apply(this, arguments));
   },
   debug: function() {
     if (typeof console !== 'undefined')
-      console.log('[DEBUG] ' + message.apply(this, arguments));
+      (console.debug || console.log)('[DEBUG] ' + message.apply(this, arguments));
   }
 };
