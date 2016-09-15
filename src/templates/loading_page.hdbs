@@ -88,24 +88,33 @@
           {{/if}}
         </div>
         <div class="c-emptystate__description">
-
         {{#if transifex_error}}
           {{#if login_error}}
-          Could not authenticate you to Transifex, check username/password.
+          We could not validate the Transifex account used by the Zendesk app.<br>
+          Visit your Transifex App Configuration settings under the <a href="/agent/admin/apps/manage" class="o-link">Manage tab</a>,<br>
+          and check your Transifex Username and Password.
           {{else}}
-          There was an error contacting Transifex to get content data.
+            {{#if project_error}}
+            We could not validate the associated Transifex project.<br>
+            Visit your Transifex App Configuration settings under the <a href="/agent/admin/apps/manage" class="o-link">Manage tab</a>,<br>
+            and check your Transifex Project URL.<br>
+            Alternatively, check your project URL in <a href="https://www.transifex.com/home" class="o-link" target="_blank">Transifex</a> settings.
+            {{else}}
+            We could not contact Transifex server.<br>
+            <a href="javascript:;" class="o-link js-{{page}} js-refresh">Update data</a> to try again.
+            {{/if}}
           {{/if}}
         {{/if}}
 
         {{#if zendesk_error}}
           {{#if login_error}}
-          Could not authenticate you to Zendesk.
+          We could not authenticate your Zendesk account.<br>
+          Your session has expired or you have logged out. Try to login again.
           {{else}}
-          There was an error contacting Zendesk to get content data.
+          We could not contact Zendesk server.<br>
+          <a href="javascript:;" class="o-link js-{{page}} js-refresh">Update data</a> to try again.
           {{/if}}
         {{/if}}
-
-          <br><a href="javascript:;" class="o-link js-{{page}} js-refresh">Update data</a> to try again.
         </div>
       </div>
       {{else}}
