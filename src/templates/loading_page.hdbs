@@ -95,7 +95,7 @@
           and check your Transifex Username and Password.
           {{else}}
             {{#if project_error}}
-            We could not validate the associated Transifex project.<br>
+            We could not validate the associated Transifex project (<a href="{{setting "tx_project"}}" class="o-link">{{setting "tx_project"}}</a>).<br>
             Visit your Transifex App Configuration settings under the <a href="/agent/admin/apps/manage" class="o-link">Manage tab</a>,<br>
             and check your Transifex Project URL.<br>
             Alternatively, check your project URL in <a href="https://www.transifex.com/home" class="o-link" target="_blank">Transifex</a> settings.

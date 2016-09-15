@@ -68,7 +68,11 @@ var project = module.exports = {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       //this.uiErrorPageInit();
       io.popSync(project.key);
-      if (jqXHR.status === 401) {
+      if (jqXHR.status === 404) {
+        logger.error('txProjectSyncError:', 'Not found');
+        io.setPageError('txProject:not_found');
+      }
+      else if (jqXHR.status === 401) {
         logger.error('txProjectSyncError:', 'Login error');
         io.setPageError('txProject:login');
       }

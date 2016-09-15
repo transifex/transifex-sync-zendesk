@@ -86,6 +86,7 @@ module.exports = function(T, t, api) {
             page_sections: t == 'sections',
             error: true,
             login_error: io.getPageError().split(':')[1] === 'login',
+            project_error: io.getPageError().split(':')[1] === 'not_found',
             transifex_error: io.getPageError().split(':')[0] === 'txProject',
             zendesk_error: io.getPageError().split(':')[0] === 'zdSync',
           });
