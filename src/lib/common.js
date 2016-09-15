@@ -26,6 +26,7 @@ var common = module.exports = {
     var gblTemplate = common.gblTemplate;
     var re = new RegExp(common.regExpTemplate);
 
+    res = res.replace(new RegExp('\n', 'g'), '');
     var zdPartialArticle = {
       name: common.extractValues(res.replace(/\\"/g, '"'),
         gblTemplate).title,

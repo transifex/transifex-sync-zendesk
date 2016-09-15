@@ -113,12 +113,24 @@ module.exports = function(T, t, api) {
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
+        var object_ids = [],
+            selected = this.$(m(".js-<t>.js-can-upload:checked"));
+        _.each(selected, function(row){
+          object_ids.push(this.$(row).attr('id'));
+        });
         var data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
-            num = obj[t].length,
             entry, resource_request, txResourceName;
-        for (var i = 0; i < num; i++) {
-          entry = obj[t][i];
+
+        var objects = _.filter(obj[m('<t>')], function(o){
+          for (var i = 0; i < object_ids.length; i++) {
+            if (o.resource_name == object_ids[i])
+              return true;
+          }
+          return false;
+        });
+        for (var i = 0; i < objects.length; i++) {
+          entry = objects[i];
           txResourceName = entry.resource_name;
           resource_request = {};
           if (io.hasFeature('html-tx-resource')) {
@@ -133,15 +145,27 @@ module.exports = function(T, t, api) {
       },
       'ui<T>BatchDownload': function(event) {
         if (event) event.preventDefault();
+        var object_ids = [],
+            selected = this.$(m(".js-<t>.js-can-download:checked"));
+        _.each(selected, function(row){
+          object_ids.push(this.$(row).attr('id'));
+        });
         var project = this.store(txProject.key),
-            sourceLocale = txProject.getSourceLocale(project),
+            sourceLocale = txProject.jsonHandlers.getSourceLocale(project),
             data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
-            num = obj[t].length,
             entry, resource, txResourceName, completedLocales,
             zdLocale, translation;
-        for (var i = 0; i < num; i++) {
-          entry = obj[t][i];
+
+        var objects = _.filter(obj[m('<t>')], function(o){
+          for (var i = 0; i < object_ids.length; i++) {
+            if (o.resource_name == object_ids[i])
+              return true;
+          }
+          return false;
+        });
+        for (var i = 0; i < objects.length; i++) {
+          entry = objects[i];
           txResourceName = entry.resource_name;
           resource = this.store(txResource.key + txResourceName);
           completedLocales = this.completedLanguages(resource);
