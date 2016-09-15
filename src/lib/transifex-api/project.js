@@ -17,7 +17,6 @@ var project = module.exports = {
   },
   username: 'testuser',
   password: 'testpass',
-  timeout: 6000,
   events: {
     'txProject.done': 'txProjectDone',
     'txProject.fail': 'txProjectSyncError'
@@ -53,7 +52,6 @@ var project = module.exports = {
         dataType: 'json',
         username: project.username,
         password: project.password,
-        timeout: 2000,
         cors: true,
         secure: false
       };
@@ -84,11 +82,7 @@ var project = module.exports = {
     asyncGetTxProject: function(type, page) {
       logger.debug('function: [asyncGetTxProject] params: [type]' + type + '|| [page]' + page);
       io.pushSync(project.key);
-      var that = this;
-      setTimeout(
-        function() {
-          that.ajax('txProject', type, page);
-        }, project.timeout);
+      this.ajax('txProject', type, page);
     },
   },
   jsonHandlers: {

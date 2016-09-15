@@ -19,7 +19,6 @@ var resource = module.exports = {
   },
   username: 'testuser',
   password: 'testpass',
-  timeout: 6000,
   events: {
     'txResourceStats.done': 'txResourceStatsDone',
     'txResourceStats.fail': 'txResourceStatsSyncError',
@@ -51,7 +50,6 @@ var resource = module.exports = {
         dataType: 'json',
         username: resource.username,
         password: resource.password,
-        timeout: resource.timeout,
         cors: true,
         secure: false
       };
@@ -73,7 +71,6 @@ var resource = module.exports = {
         dataType: 'json',
         username: resource.username,
         password: resource.password,
-        timeout: resource.timeout,
         cors: true,
         secure: false
       };
@@ -95,7 +92,6 @@ var resource = module.exports = {
         password: resource.password,
         data: JSON.stringify(data),
         contentType: 'application/json',
-        timeout: resource.timeout,
         cors: true,
         secure: false
       };
@@ -118,7 +114,6 @@ var resource = module.exports = {
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',
-        timeout: resource.timeout,
         cors: true,
         secure: false
       };
@@ -209,29 +204,17 @@ var resource = module.exports = {
     asyncGetTxResourceStats: function(name) {
       logger.info('asyncGetTxResourceStats:', name);
       io.pushSync(resource.key + name);
-      var that = this;
-      setTimeout(
-        function() {
-          that.ajax('txResourceStats', name);
-        }, resource.timeout);
+      this.ajax('txResourceStats', name);
     },
     asyncGetTxResource: function(name, code) {
       logger.info('asyncGetTxResource:', name + code);
       io.pushSync(resource.key + name + code);
-      var that = this;
-      setTimeout(
-        function() {
-          that.ajax('txResource', name, code);
-        }, resource.timeout);
+      this.ajax('txResource', name, code);
     },
     asyncTxUpsertResource: function(data, name) {
       logger.info('asyncTxUpdateResource:', name);
       io.pushSync(resource.key + name + 'upsert');
-      var that = this;
-      setTimeout(
-        function() {
-          that.txUpsertResource(data, name);
-        }, resource.timeout);
+      this.txUpsertResource(data, name);
     },
   },
 };

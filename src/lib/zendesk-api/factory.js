@@ -17,7 +17,6 @@ module.exports = function(name, key, api) {
   var factory = {
     key: 'zd_' + key,
     base_url: '/api/v2/help_center/',
-    timeout: 500,
     STRING_RADIX: 10,
     events: {
       'zd<T>Full.done': M('zd<T>Done'),
@@ -181,23 +180,14 @@ module.exports = function(name, key, api) {
       'asyncGetZd<T>Translations': function(id) {
         logger.debug(M('function: [asyncGetZd<T>Translation]'));
         io.pushSync(factory.key + id);
-        var that = this;
-        setTimeout(
-          function() {
-            that.ajax(M('zd<T>GetTranslations'), id);
-          }, factory.timeout);
+        this.ajax(M('zd<T>GetTranslations'), id);
       },
       'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage) {
         logger.debug(M('function: [asyncGetZd<T>Full] params: [page]') +
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
-        var that = this;
-        setTimeout(
-          function() {
-            that.ajax(M('zd<T>Full'), page, sortby, sortdirection,
-              numperpage);
-          }, factory.timeout);
+        this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
       },
     },
     jsonHandlers: {
