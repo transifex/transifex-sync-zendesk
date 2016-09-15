@@ -17,7 +17,6 @@ module.exports = function(name, key, api) {
   var factory = {
     key: 'zd_' + key,
     base_url: '/api/v2/help_center/',
-    STRING_RADIX: 10,
     events: {
       'zd<T>Full.done': M('zd<T>Done'),
       'zd<T>GetTranslations.done': M('zd<T>GetTranslationsDone'),
@@ -193,7 +192,7 @@ module.exports = function(name, key, api) {
     jsonHandlers: {
       'getSingle<T>': function(id, a) {
         if (typeof id == 'string' || id instanceof String)
-          id = parseInt(id, factory.STRING_RADIX);
+          id = parseInt(id, 10);
         var i = _.findIndex(a[api], {
           id: id
         });
