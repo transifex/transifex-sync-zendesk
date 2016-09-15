@@ -496,17 +496,13 @@ module.exports = function(T, t, api) {
       }
     }
   };
-  _.each(factory.events, function(value, key) {
-    delete factory.events[key];
-    factory.events[M(m(key))] = value;
-  });
-  _.each(factory.eventHandlers, function(value, key) {
-    delete factory.eventHandlers[key];
-    factory.eventHandlers[M(m(key))] = value;
-  });
-  _.each(factory.actionHandlers, function(value, key) {
-    delete factory.actionHandlers[key];
-    factory.actionHandlers[M(m(key))] = value;
+
+  _.each(['events', 'eventHandlers', 'actionHandlers'], function(entry) {
+    var object = factory[entry];
+    _.each(object, function(value, key) {
+      delete object[key];
+      object[M(m(key))] = value;
+    });
   });
 
   return factory;
