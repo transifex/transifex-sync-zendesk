@@ -315,7 +315,15 @@ module.exports = function(T, t, api) {
         logger.debug(M('ui<T>ResourceStatsComplete'));
         var data = this[M('calcResourceName<T>')](this.store(zdApi.key)),
             num = data[t].length,
-            resourceName, resource;
+            resourceName, resource, has_error = false,
+            projectData = this.store('tx_project'),
+            projectResources = [];
+
+        if (projectData && projectData.resources) {
+          projectResources = _.map(projectData.resources, function(entry) {
+            return entry.slug;
+          });
+        }
         for (var i = 0; i < num; i++) {
           resourceName = data[t][i].resource_name;
           resource = this.store(txResource.key + resourceName);
@@ -327,7 +335,7 @@ module.exports = function(T, t, api) {
           el_item.find('[data-item="controller"]').addClass('o-interactive-list__item').removeClass('o-status is-warning');
 
           //not uploaded resource
-          if (resource === 404) {
+          if (typeof resource === 'number' && !_.contains(projectResources, resourceName)) {
             this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="not_found"]').removeClass('is-hidden');
           }
@@ -337,9 +345,13 @@ module.exports = function(T, t, api) {
             el_item.find('[data-status="found"]').removeClass('is-hidden');
           }
           else {
+            has_error = true;
             el_item.find('[data-status="error"]').removeClass('is-hidden');
             el_item.find('[data-item="controller"]').removeClass('o-interactive-list__item').addClass('o-status is-warning');
           }
+        }
+        if (has_error) {
+          this.notifyWarning('Some Transifex resources could not be loaded.');
         }
         this.$(m('.js-<t>.js-select-all')).prop('disabled', false);
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];
