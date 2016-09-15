@@ -37,8 +37,17 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-batch-download': M('ui<T>BatchDownload'),
       'click .js-<t>.js-refresh': M('ui<T>Sync'),
       'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
+      'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
     },
     eventHandlers: {
+      'ui<T>SelectAll': function(event) {
+        if (this.$(event.target).is(':checked')) {
+          this.$(m('.js-<t>.js-checkbox:not(:disabled)')).prop('checked', true);
+        }
+        else {
+          this.$(m('.js-<t>.js-checkbox')).prop('checked', false);
+        }
+      },
       'ui<T>UpdateButtons': function(event) {
         var ready_for_download = this.$(m('.js-<t>.js-checkbox.js-can-download:checked')).length,
             selected = this.$(m('.js-<t>.js-checkbox:checked')),
@@ -64,6 +73,11 @@ module.exports = function(T, t, api) {
           batch_download.addClass('is-disabled');
           batch_download.text('Get Translations');
         }
+        //update select all
+        this.$(m('.js-<t>.js-select-all')).prop(
+          'checked',
+          selected_count == this.$(m('.js-<t>.js-checkbox:not(:disabled)')).length
+        );
       },
       'ui<T>Tab': function(event) {
         if (event) event.preventDefault();
@@ -327,6 +341,7 @@ module.exports = function(T, t, api) {
             el_item.find('[data-item="controller"]').removeClass('o-interactive-list__item').addClass('o-status is-warning');
           }
         }
+        this.$(m('.js-<t>.js-select-all')).prop('disabled', false);
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];
         this[M('syncCompletedLanguages<T>')]();
       },

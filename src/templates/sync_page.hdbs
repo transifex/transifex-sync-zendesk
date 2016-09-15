@@ -125,7 +125,7 @@
         <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
           <div class="u-display-flex">
             <label class="o-checkbox-controller u-marginRight-2x" for="all_page">
-              <input type="checkbox" class="o-checkbox o-checkbox--bare" disabled="disabled" name="all_page" id="all_page"/>
+              <input type="checkbox" class="o-checkbox o-checkbox--bare js-{{page}} js-select-all" disabled="disabled" name="all_page" id="all_page"/>
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted js-{{page}} js-sortby-title">
