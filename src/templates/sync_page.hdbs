@@ -159,7 +159,7 @@
     <div class="o-list o-interactive-list--highlight u-paddingHorizontal-gutter u-marginBottom-4x">
     {{#each dataset}}
       <div class="o-list__item js-{{../page}}" data-resource="{{this.name}}">
-        <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider">
+        <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider" data-item="controller">
           <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
             <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x">
               <div class="u-display-flex u-width-100">
@@ -174,7 +174,7 @@
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-disabled u-fontSize-small" data-status="checking">Checking...</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">Not uploaded yet</span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No Resource Yet</span>
               <span class="u-color-secondary u-fontSize-small is-hidden" data-status="found">{{{this.name}}}</span>
               <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Error</span>
             </div>

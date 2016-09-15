@@ -286,6 +286,7 @@ module.exports = function(T, t, api) {
 
           var el_item = this.$(m('.js-<t>[data-resource="' + resourceName + '"]'));
           el_item.find('[data-status]').addClass('is-hidden');
+          el_item.find('[data-item="controller"]').addClass('o-interactive-list__item').removeClass('o-status is-warning');
 
           //not uploaded resource
           if (resource === 404) {
@@ -299,6 +300,7 @@ module.exports = function(T, t, api) {
           }
           else {
             el_item.find('[data-status="error"]').removeClass('is-hidden');
+            el_item.find('[data-item="controller"]').removeClass('o-interactive-list__item').addClass('o-status is-warning');
           }
         }
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];

@@ -823,7 +823,7 @@ span {
     text-decoration: none;
     color: $action-CTA-hover-color;
     border-color: $action-CTA-hover-color;
-    background-color: fade-out( $action-CTA-hover-color ,$active-element-fade-once );
+    background-color: fade-out( $action-CTA-hover-color , 1 - $active-element-fade-once );
 
     .o-button__svgFill {
       fill: $action-CTA-hover-color;
@@ -835,14 +835,14 @@ span {
     text-decoration: none;
     color: $action-CTA-clicked-color;
     border-color: $action-CTA-clicked-color;
-    background-color: fade-out( $action-CTA-clicked-color ,$active-element-fade-once );
+    background-color: fade-out( $action-CTA-clicked-color ,1 - $active-element-fade-once );
 
     .o-button__svgFill {
       fill: lighten( $action-CTA-color, $lightness-twice-percentage );
     }
 
     &:hover {
-      border-color: lighten( $action-CTA-color, $lightness-twice-percentage );
+      border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
     }
 
   }
@@ -904,8 +904,8 @@ span {
 
     &.is-hover,
     &:hover {
-      background-color: lighten( $action-CTA-color, $lightness-once-percentage );
-      border-color: lighten( $action-CTA-color, $lightness-once-percentage );
+      background-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage );
+      border-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage );
       color: $white-color;
       .o-button__svgFill {
         fill: $white-color;
@@ -914,8 +914,8 @@ span {
 
     &.is-active,
     &:active {
-      background-color: lighten( $action-CTA-color, $lightness-twice-percentage );
-      border-color: lighten( $action-CTA-color, $lightness-twice-percentage );
+      background-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
+      border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
       color: $white-color;
       .o-button__svgFill {
         fill: $white-color;
@@ -937,18 +937,18 @@ span {
     &:hover,
     &.is-focus,
     &:hover {
-      border-color: lighten( $status-success-color, $lightness-once-percentage );
-      background-color: lighten( $status-success-color, $lightness-once-percentage );
+      border-color: lighten( $status-success-color, 1 - $lightness-once-percentage );
+      background-color: lighten( $status-success-color, 1 - $lightness-once-percentage );
       color: $white-color;
     }
 
     &.is-active,
     &:active {
-      border-color: lighten( $status-success-color, $lightness-twice-percentage );
-      background-color: lighten( $status-success-color, $lightness-twice-percentage );
+      border-color: lighten( $status-success-color, 1 - $lightness-twice-percentage );
+      background-color: lighten( $status-success-color, 1 - $lightness-twice-percentage );
       color: $white-color;
       &:hover {
-        border-color: lighten( $status-success-color, $lightness-twice-percentage );
+        border-color: lighten( $status-success-color, 1 - $lightness-twice-percentage );
         color: $white-color;
       }
     }
@@ -964,18 +964,18 @@ span {
     &:hover,
     &.is-focus,
     &:hover {
-      border-color: lighten( $status-error-color, $lightness-once-percentage );
-      background-color: lighten( $status-error-color, $lightness-once-percentage );
+      border-color: lighten( $status-error-color, 1 - $lightness-once-percentage );
+      background-color: lighten( $status-error-color, 1 - $lightness-once-percentage );
       color: $white-color;
     }
 
     &.is-active,
     &:active {
-      border-color: lighten( $status-error-color, $lightness-twice-percentage );
-      background-color: lighten( $status-error-color, $lightness-twice-percentage );
+      border-color: lighten( $status-error-color, 1 - $lightness-twice-percentage );
+      background-color: lighten( $status-error-color, 1 - $lightness-twice-percentage );
       color: $white-color;
       &:hover {
-        border-color: lighten( $status-error-color, $lightness-twice-percentage );
+        border-color: lighten( $status-error-color, 1 - $lightness-twice-percentage );
         color: $white-color;
       }
     }
@@ -991,18 +991,18 @@ span {
     &:hover,
     &.is-focus,
     &:hover {
-      border-color: lighten( $status-warning-color, $lightness-once-percentage );
-      background-color: lighten( $status-warning-color, $lightness-once-percentage );
+      border-color: lighten( $status-warning-color, 1 - $lightness-once-percentage );
+      background-color: lighten( $status-warning-color, 1 - $lightness-once-percentage );
       color: $white-color;
     }
 
     &.is-active,
     &:active {
-      border-color: lighten( $status-warning-color, $lightness-twice-percentage );
-      background-color: lighten( $status-warning-color, $lightness-twice-percentage );
+      border-color: lighten( $status-warning-color, 1 - $lightness-twice-percentage );
+      background-color: lighten( $status-warning-color, 1 - $lightness-twice-percentage );
       color: $white-color;
       &:hover {
-        border-color: lighten( $status-warning-color, $lightness-twice-percentage );
+        border-color: lighten( $status-warning-color, 1 - $lightness-twice-percentage );
         color: $white-color;
       }
     }
@@ -1018,18 +1018,18 @@ span {
     &:hover,
     &.is-focus,
     &:hover {
-      border-color: lighten( $status-information-color, $lightness-once-percentage );
-      background-color: lighten( $status-information-color, $lightness-once-percentage );
+      border-color: lighten( $status-information-color, 1 - $lightness-once-percentage );
+      background-color: lighten( $status-information-color, 1 - $lightness-once-percentage );
       color: $white-color;
     }
 
     &.is-active,
     &:active {
-      border-color: lighten( $status-information-color, $lightness-twice-percentage );
-      background-color: lighten( $status-information-color, $lightness-twice-percentage );
+      border-color: lighten( $status-information-color, 1 - $lightness-twice-percentage );
+      background-color: lighten( $status-information-color, 1 - $lightness-twice-percentage );
       color: $white-color;
       &:hover {
-        border-color: lighten( $status-information-color, $lightness-twice-percentage );
+        border-color: lighten( $status-information-color, 1 - $lightness-twice-percentage );
         color: $white-color;
       }
     }
@@ -1383,7 +1383,7 @@ span {
     & + .o-checkbox__label {
       &:before {
         border-color: $action-CTA-hover-color;
-        background-color: fade-out( $action-CTA-hover-color ,$active-element-fade-once );
+        background-color: fade-out( $action-CTA-hover-color ,1 - $active-element-fade-once );
       }
     }
 
@@ -1597,7 +1597,7 @@ span {
     }
 
 
-    &.is-current{
+    &.is-active{
       border: 1px solid $link-active-color;
       border-radius: $default-border-radius;
       -moz-border-radius: $default-border-radius;
