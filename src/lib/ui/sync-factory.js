@@ -36,12 +36,12 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-batch-upload': M('ui<T>BatchUpload'),
       'click .js-<t>.js-batch-download': M('ui<T>BatchDownload'),
       'click .js-<t>.js-refresh': M('ui<T>Sync'),
-      'click .js-<T>.js-checkbox': M('ui<T>UpdateButtons'),
+      'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
     },
     eventHandlers: {
       'ui<T>UpdateButtons': function(event) {
         var ready_for_download = 0,
-            selected = this.$(m('.js-<T>.js-checkbox:checked')),
+            selected = this.$(m('.js-<t>.js-checkbox:checked')),
             selected_count = selected.length,
             batch_upload = this.$(m('.js-<t>.js-batch-upload')),
             batch_download = this.$(m('.js-<t>.js-batch-download'));
@@ -292,16 +292,22 @@ module.exports = function(T, t, api) {
           resource = this.store(txResource.key + resourceName);
           var tx_completed = this.completedLanguages(resource);
           common.addCompletedLocales(this.$, resourceName, tx_completed);
-          if (typeof resource !== 'number') {
-            common.activateTxLink(this.$, resourceName);
-            common.activateUploadButton(this.$, resourceName, false);
-          } else {
-            if ((typeof resource === 'number') && (resource === 404)) {
-              common.activateUploadButton(this.$, resourceName, true);
-            }
-            if ((typeof resource === 'number') && (resource === 401)) {
-              //TODO Error message on this resource
-            }
+
+          var el_item = this.$(m('.js-<t>[data-resource="' + resourceName + '"]'));
+          el_item.find('[data-status]').addClass('is-hidden');
+
+          //not uploaded resource
+          if (resource === 404) {
+            this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
+            el_item.find('[data-status="not_found"]').removeClass('is-hidden');
+          }
+          //normal
+          else if (typeof resource !== 'number') {
+            this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
+            el_item.find('[data-status="found"]').removeClass('is-hidden');
+          }
+          else {
+            el_item.find('[data-status="error"]').removeClass('is-hidden');
           }
         }
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];
@@ -326,7 +332,7 @@ module.exports = function(T, t, api) {
             for (var ii = 0; ii < numLanguages; ii++) {
               resourceLanguage = this.store(txResource.key + resourceName + languageArray[ii]);
               if (resourceLanguage) {
-                common.activateDownloadButton(this.$, resourceName);
+                this.$('#' + resourceName).addClass('js-can-download');
               }
             }
           }

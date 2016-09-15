@@ -165,25 +165,6 @@ var common = module.exports = {
       $(linkId).text('-');
     }
   },
-  activateUploadButton: function($, name, isNew) {
-    /*
-    var linkId = "#" + "upload-" + name;
 
-    $(linkId).removeClass("is-disabled");
-    $(linkId).click(this.uiArticlesUpsert.bind(this));
-    $(linkId).css('cursor', 'pointer');
-    */
-  },
-  activateDownloadButton: function($, name) {
-    /*
-    var linkId = "#" + "download-" + name;
-
-    $(linkId).removeClass("is-disabled");
-    $(linkId).click(function() {
-      alert('Happy day');
-    });
-    $(linkId).css('cursor', 'pointer');
-    */
-  },
 
 };
