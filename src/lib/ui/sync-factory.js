@@ -40,22 +40,12 @@ module.exports = function(T, t, api) {
     },
     eventHandlers: {
       'ui<T>UpdateButtons': function(event) {
-        var ready_for_download = 0,
+        var ready_for_download = this.$(m('.js-<t>.js-checkbox.js-can-download:checked')).length,
             selected = this.$(m('.js-<t>.js-checkbox:checked')),
             selected_count = selected.length,
             batch_upload = this.$(m('.js-<t>.js-batch-upload')),
             batch_download = this.$(m('.js-<t>.js-batch-download'));
 
-        this.$(event.target).toggleClass(
-          'is-checked',
-          this.$(event.target).is(':checked')
-        );
-        _.each(selected, function(el) {
-          var resource_id = this.$(el).attr('id');
-          if (this.$('#locales-' + resource_id).text() !== '-') {
-            ready_for_download += 1;
-          }
-        });
         if (selected_count) {
           batch_upload.removeAttr('disabled');
           batch_upload.removeClass('is-disabled');
