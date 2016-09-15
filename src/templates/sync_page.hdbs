@@ -57,10 +57,10 @@
     <!-- Header: Search-filters -->
     <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-3x">
       <div class="u-flexGrow-1 u-height-form u-paddingRight-3x">
-        <a href="#" title="Upload Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x {{#if page_articles}}js-articles{{/if}} js-batch-upload" disabled>
+        <a href="#" title="Upload Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x js-{{page}} js-batch-upload" disabled>
           Send Resource
         </a>
-        <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled {{#if page_articles}}js-articles{{/if}} js-batch-download" disabled>
+        <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled js-{{page}} js-batch-download" disabled>
           Get Translations
         </a>
       </div>
@@ -148,13 +148,13 @@
     <!-- articles list -->
     <div class="o-list o-interactive-list--highlight u-paddingHorizontal-gutter u-marginBottom-4x">
     {{#each dataset}}
-      <div class="o-list__item js-row">
+      <div class="o-list__item">
         <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider">
           <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
             <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x">
               <div class="u-display-flex u-width-100">
                 <label class="o-checkbox-controller u-marginRight-2x" for="{{{this.name}}}">
-                  <input type="checkbox" class="o-checkbox o-checkbox--bare" disabled="disabled" name="{{{this.name}}}" id="{{this.name}}"/>
+                  <input type="checkbox" class="o-checkbox o-checkbox--bare js-{{../page}} js-checkbox" disabled="disabled" name="{{{this.name}}}" id="{{this.name}}"/>
                   <div class="o-checkbox__label"></div>
                 </label>
                 <div class="o-text-ellipsis u-flexGrow-1">
