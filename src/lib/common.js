@@ -3,7 +3,7 @@ var txResource = require('transifex-api/resource');
 var syncUtil = require('syncUtil');
 
 var common = module.exports = {
-  gblTemplate: "<html><head></head><body><h1><%= title %></h1></body></html>",
+  gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
   regExpTemplate: "<html><head></head><body><h1>(.*)</h1>(.*)</body></html>",
   translationObjectFormat: function(format, response, locale) {
     if (format == 'html-tx-resource') {
@@ -26,13 +26,12 @@ var common = module.exports = {
     var gblTemplate = common.gblTemplate;
     var re = new RegExp(common.regExpTemplate);
 
-    var r = txResource.Resource(res, gblTemplate);
     var zdPartialArticle = {
-      name: common.extractValues(res.content.replace(/\\"/g, '"'),
+      name: common.extractValues(res.replace(/\\"/g, '"'),
         gblTemplate).title,
-      title: common.extractValues(res.content.replace(/\\"/g, '"'),
+      title: common.extractValues(res.replace(/\\"/g, '"'),
         gblTemplate).title,
-      body: res.content.replace(/\\"/g, '"').match(re)[2],
+      body: res.replace(/\\"/g, '"').match(re)[2],
     };
     var o = _.extend(zdPartialArticle, {
       locale: l
@@ -87,7 +86,8 @@ var common = module.exports = {
     var zdArticleContent = _.template(gblTemplate)({
       title: article.title,
       name: article.name,
-    }) + article.body;
+      body: article.body,
+    });
 
     var txRequestMade = {
       name: 'HTML-articles-' + article.id,
@@ -95,7 +95,6 @@ var common = module.exports = {
       priority: 0,
       i18n_type: 'HTML',
       content: zdArticleContent
-        //      content: JSON.stringify(zdArticleContent)
     };
     return txRequestMade;
   },
