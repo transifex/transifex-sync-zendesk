@@ -7,18 +7,19 @@
 var txProject = require('./project'),
     syncUtil = require('../syncUtil'),
     io = require('../io'),
-    logger = require('../logger');
+    logger = require('../logger'),
+    txutils = require('../txUtil');
 
 var resource = module.exports = {
   // selfies
   key: 'tx_resource',
-  url: 'https://www.transifex.com/api/2/project/zendesk-test/resource/',
-  inserturl: 'https://www.transifex.com/api/2/project/zendesk-test/resources/',
+  url: '',
+  inserturl: '',
   headers: {
     'X-Source-Zendesk': 'v2.0.0'
   },
-  username: 'testuser',
-  password: 'testpass',
+  username: '',
+  password: '',
   events: {
     'txResourceStats.done': 'txResourceStatsDone',
     'txResourceStats.fail': 'txResourceStatsSyncError',
@@ -33,6 +34,8 @@ var resource = module.exports = {
     var settings = io.getSettings();
     resource.username = settings.tx_username;
     resource.password = settings.tx_password;
+    resource.url = txutils.convertUrlToApi(settings.tx_project) + 'resource/';
+    resource.inserturl = txutils.convertUrlToApi(settings.tx_project) + 'resources/';
   },
   requests: {
     txResourceStats: function(resourceName) {

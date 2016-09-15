@@ -11,12 +11,12 @@ var project = module.exports = {
   // selfies
   name: 'zendesk-test',
   key: 'tx_project',
-  url: 'https://www.transifex.com/api/2/project/testproject/',
+  url: '',
   headers: {
     'X-Source-Zendesk': 'v2.0.0'
   },
-  username: 'testuser',
-  password: 'testpass',
+  username: '',
+  password: '',
   events: {
     'txProject.done': 'txProjectDone',
     'txProject.fail': 'txProjectSyncError'
@@ -49,6 +49,7 @@ var project = module.exports = {
         xhrFields: {
           withCredentials: true
         },
+        cache: false,
         dataType: 'json',
         username: project.username,
         password: project.password,
