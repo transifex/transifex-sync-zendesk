@@ -82,6 +82,28 @@ describe('A function convertUrlToApi', () => {
   });
 });
 
+describe('A function extractOrgFromUrl', () => {
+  let projectUrl
+  before(function() {
+    projectUrl = 'https://www.transifex.com/test-organization-4/zendesk-test/'
+  })
+  it('should exist ', () => {
+    expect(txUtil.extractOrgFromUrl).to.not.be.undefined;
+  });
+  it('should return an object ', () => {
+    expect(txUtil.extractOrgFromUrl(projectUrl)).to.be.a('object')
+  });
+  it('should return a string that includes api ', () => {
+    expect(txUtil.extractOrgFromUrl(projectUrl).organization_slug).to.be.string('test-organization-4');
+    expect(txUtil.extractOrgFromUrl(projectUrl).project_slug).to.be.string('zendesk-test');
+  });
+  it('should return empty object if string unconverted ', () => {
+    expect(txUtil.extractOrgFromUrl('')).to.be.a('object')
+    expect(txUtil.extractOrgFromUrl('').organization_slug).to.be.string('');
+    expect(txUtil.extractOrgFromUrl('').project_slug).to.be.string('');
+  });
+});
+
 describe('A function isValidAPIUrl', () => {
   let projectApiUrl
   before(function() {

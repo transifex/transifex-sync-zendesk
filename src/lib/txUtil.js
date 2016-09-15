@@ -32,7 +32,23 @@ function isValidUrl(u) {
   return r;
 }
 
+function extractOrgFromUrl(u) {
+  var response = {
+    organization_slug: '',
+    project_slug: ''
+  };
+  if (isValidUrl(u)) {
+    var m = TX_PROJECT_URL_PATTERN.exec(u);
+    if (m && m.length) {
+      response.organization_slug = m[1];
+      response.project_slug = m[2];
+    }
+  }
+  return response;
+}
+
 module.exports = {
+  extractOrgFromUrl: extractOrgFromUrl,
   convertUrlToApi: convertUrlToApi,
   isValidAPIUrl: isValidAPIUrl,
   isValidUrl: isValidUrl,

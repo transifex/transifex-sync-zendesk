@@ -22,7 +22,10 @@ function txApp(modules) {
   function appActivated() {
     //set settings to be accessible from everywhere
     io.setSettings(this.settings);
-    this.store('page_title', this.settings.title || 'Zendesk');
+    this.store(
+      'page_title',
+      txutils.extractOrgFromUrl(this.settings.tx_project).project_slug || 'Zendesk'
+    );
 
     //parse features
     if (this.settings.features) {
