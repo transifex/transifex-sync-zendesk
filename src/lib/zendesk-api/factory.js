@@ -72,7 +72,7 @@ module.exports = function(name, key, api) {
       },
       'zd<T>GetTranslations': function(id) {
         return {
-          url: factory.base_url + api + '/' + id + '/translations',
+          url: factory.base_url + api + '/' + id + '/translations.json',
           type: 'GET',
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
@@ -135,10 +135,17 @@ module.exports = function(name, key, api) {
       },
       'zd<T>GetTranslationsDone': function(data, textStatus, jqXHR) {
         logger.info(M('Zendesk <T> Translations retrieved with status:'), textStatus);
+        var existing_locales = _.map(data['translations'], function(t){
+          return t['locale'];
+        });
+        this.store(factory.key + jqXHR.id + '_locales', existing_locales)
         io.popSync(factory.key + jqXHR.id);
         this.checkAsyncComplete();
       },
-      'zd<T>InsertDone': function(data, textStatus) {
+      'zd<T>InsertDone': function(data, textStatus, jqXHR) {
+        var existing_locales = this.store(factory.key + jqXHR.id + '_locales');
+        existing_locales.push(jqXHR.locale);
+        this.store(factory.key + jqXHR.id + '_locales', existing_locales);
         logger.info('Transifex Resource inserted with status:', textStatus);
       },
       'zd<T>UpdateDone': function(data, textStatus) {
@@ -167,9 +174,10 @@ module.exports = function(name, key, api) {
           id: parseInt(id, 10)
         });
         */
-        var translations = this.store(factory.key + id);
-        var checkLocaleExists = (typeof translations[zdLocale] ===
-          'undefined') ? false : true;
+        var existing_locales = this.store(factory.key + id + '_locales');
+        var checkLocaleExists = _.any(existing_locales, function(l){
+          return l == zdLocale; 
+        });
         if (checkLocaleExists) {
           this.ajax(M('zd<T>Update'), translationData, id, zdLocale);
         } else {
