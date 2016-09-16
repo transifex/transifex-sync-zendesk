@@ -35,10 +35,10 @@
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
 
-        {{#if page_categories}}
-        <a class="o-tabs__item is-active" href="javascript:;">Categories</a>
+        {{#if page_articles}}
+        <a class="o-tabs__item is-active" href="javascript:;">Articles</a>
         {{else}}
-        <a tab="categories" class="o-tabs__item" href="javascript:;">Categories</a>
+        <a tab="articles" class="o-tabs__item" href="javascript:;">Articles</a>
         {{/if}}
 
         {{#if page_sections}}
@@ -47,10 +47,10 @@
         <a tab="sections" class="o-tabs__item" href="javascript:;">Sections</a>
         {{/if}}
 
-        {{#if page_articles}}
-        <a class="o-tabs__item is-active" href="javascript:;">Articles</a>
+        {{#if page_categories}}
+        <a class="o-tabs__item is-active" href="javascript:;">Categories</a>
         {{else}}
-        <a tab="articles" class="o-tabs__item" href="javascript:;">Articles</a>
+        <a tab="categories" class="o-tabs__item" href="javascript:;">Categories</a>
         {{/if}}
 
       </div>

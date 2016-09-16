@@ -161,7 +161,7 @@ var common = module.exports = {
   addCompletedLocales: function($, name, locales) {
     var linkId = "#" + "locales-" + name;
     if (!(_.isEmpty(locales))) {
-      $(linkId).text(locales.toString());
+      $(linkId).text(locales.join(', '));
     } else {
       $(linkId).text('-');
     }

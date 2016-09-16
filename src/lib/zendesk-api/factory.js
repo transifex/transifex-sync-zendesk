@@ -138,7 +138,7 @@ module.exports = function(name, key, api) {
         var existing_locales = _.map(data['translations'], function(t){
           return t['locale'];
         });
-        this.store(factory.key + jqXHR.id + '_locales', existing_locales)
+        this.store(factory.key + jqXHR.id + '_locales', existing_locales);
         io.popSync(factory.key + jqXHR.id);
         this.checkAsyncComplete();
       },
@@ -176,7 +176,7 @@ module.exports = function(name, key, api) {
         */
         var existing_locales = this.store(factory.key + id + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
-          return l == zdLocale; 
+          return l == zdLocale;
         });
         if (checkLocaleExists) {
           this.ajax(M('zd<T>Update'), translationData, id, zdLocale);

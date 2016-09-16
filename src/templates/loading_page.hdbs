@@ -34,9 +34,9 @@
     <!-- Header: Tabs area -->
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
-        <a class="o-tabs__item {{#if page_categories}}is-active{{/if}}" href="javascript:;">Categories</a>
-        <a class="o-tabs__item {{#if page_sections}}is-active{{/if}}" href="javascript:;">Sections</a>
         <a class="o-tabs__item {{#if page_articles}}is-active{{/if}}" href="javascript:;">Articles</a>
+        <a class="o-tabs__item {{#if page_sections}}is-active{{/if}}" href="javascript:;">Sections</a>
+        <a class="o-tabs__item {{#if page_categories}}is-active{{/if}}" href="javascript:;">Categories</a>
       </div>
     </div>
 
@@ -103,7 +103,7 @@
             Alternatively, check your project URL in <a href="https://www.transifex.com/home" class="o-link" target="_blank">Transifex</a> settings.
             {{else}}
             We could not contact Transifex server.<br>
-            <a href="javascript:;" class="o-link js-{{page}} js-refresh">Update data</a> to try again.
+            <a href="javascript:;" class="o-link js-{{page}} js-refresh">Refresh</a> to try again.
             {{/if}}
           {{/if}}
         {{/if}}
@@ -114,7 +114,7 @@
           Your session has expired or you have logged out. Try to login again.
           {{else}}
           We could not contact Zendesk server.<br>
-          <a href="javascript:;" class="o-link js-{{page}} js-refresh">Update data</a> to try again.
+          <a href="javascript:;" class="o-link js-{{page}} js-refresh">Refresh</a> to try again.
           {{/if}}
         {{/if}}
         </div>
