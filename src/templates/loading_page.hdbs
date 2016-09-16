@@ -20,9 +20,11 @@
             </div>
           </div>
 
-          <div class="u-textAlign-right u-display-flex u-alignContent-center u-marginTop-1x">
-            <a href="javascript:;" title="Fetch data from Transifex" class="o-button o-button--fill o-button--form is-disabled">
-              Update Data
+          <div class="u-textAlign-right u-display-flex u-alignItems-center">
+            <a href="javascript:;" title="Fetch data from Transifex" class="o-link u-height-button u-lineHeight-button is-disabled">
+              <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
+                <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
+              </svg>Refresh
             </a>
           </div>
         </div>
