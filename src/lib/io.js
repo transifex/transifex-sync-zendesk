@@ -10,6 +10,7 @@ var SETTINGS = {},
       sortdirection: 'asc',
       perpage: '10',
     },
+    OP = {},
     PAGE_ERROR = '',
     SYNC_STATUS = [];
 
@@ -54,4 +55,18 @@ module.exports = {
   getPageError: function() {
     return PAGE_ERROR;
   },
+
+  opResetAll: function() {
+    OP = {};
+  },
+  opSet: function(key, status) {
+    OP[key] = status;
+  },
+  opGet: function(key) {
+    return OP[key];
+  },
+  opGetAll: function() {
+    return OP;
+  }
+
 };

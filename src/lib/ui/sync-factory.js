@@ -151,6 +151,7 @@ module.exports = function(T, t, api) {
         });
         if (!objects.length) return;
         this[M('start<T>Process')]();
+        io.opResetAll();
         this.loadSyncPage = this[M('ui<T>UpsertComplete')];
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
@@ -269,6 +270,28 @@ module.exports = function(T, t, api) {
       'ui<T>UpsertComplete': function() {
         logger.debug('Upsert complete');
         this[M('end<T>Process')]();
+        var total = 0, failed = 0;
+        _.each(io.opGetAll(), function(status, resourceName) {
+          total++;
+          var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-item="controller"]'));
+          el.addClass('o-status').removeClass('o-interactive-list__item');
+          if (status == 'success') {
+            el.addClass('is-success');
+          }
+          else {
+            failed++;
+            el.addClass('is-error');
+          }
+        }, this);
+        if (failed == 1) {
+          this.notifyError('1 resource could not be uploaded to Transifex');
+        }
+        else if (failed) {
+          this.notifyError(failed + ' resources could not be uploaded to Transifex');
+        }
+        else {
+          this.notifySuccess('You have successfully sent your resources!');
+        }
       },
       'ui<T>PerPage': function(event) {
         if (event) event.preventDefault();
@@ -353,7 +376,9 @@ module.exports = function(T, t, api) {
 
           var el_item = this.$(m('.js-<t>[data-resource="' + resourceName + '"]'));
           el_item.find('[data-status]').addClass('is-hidden');
-          el_item.find('[data-item="controller"]').addClass('o-interactive-list__item').removeClass('o-status is-warning');
+          el_item.find('[data-item="controller"]').
+            addClass('o-interactive-list__item').
+            removeClass('o-status is-warning');
 
           //not uploaded resource
           if (typeof resource === 'number' && !_.contains(projectResources, resourceName)) {
@@ -368,7 +393,9 @@ module.exports = function(T, t, api) {
           else {
             has_error = true;
             el_item.find('[data-status="error"]').removeClass('is-hidden');
-            el_item.find('[data-item="controller"]').removeClass('o-interactive-list__item').addClass('o-status is-warning');
+            el_item.find('[data-item="controller"]').
+              removeClass('o-interactive-list__item').
+              addClass('o-status is-warning js-perma-fail');
           }
         }
         if (has_error) {
@@ -469,11 +496,18 @@ module.exports = function(T, t, api) {
     actionHandlers: {
       'start<T>Process': function() {
         this.processing = true;
+        this.notifyReset();
         this.$(m('.js-<t>.js-refresh')).addClass('is-disabled');
         this.$(m('.js-<t>.js-batch-upload')).addClass('is-disabled');
         this.$(m('.js-<t>.js-batch-download')).addClass('is-disabled');
         this.$(m('.js-<t>.js-checkbox')).prop('disabled', true);
         this.$(m('.js-<t>.js-select-all')).prop('disabled', true);
+        var $ = this.$;
+        this.$(m('.js-<t>[data-resource]')).each(function() {
+          $(this).find('[data-item="controller"]:not(.js-perma-fail)').
+            removeClass('o-status is-success is-error is-warning').
+            addClass('o-interactive-list__item');
+        });
       },
       'end<T>Process': function() {
         this.processing = false;

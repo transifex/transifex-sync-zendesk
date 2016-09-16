@@ -28,6 +28,9 @@ module.exports = {
       this.$('[data-notification="success"], [data-notification="warning"]').addClass('u-display-none');
       this.$('[data-notification="error"]').removeClass('u-display-none').
         find('.js-notification-message').text(message);
+    },
+    notifyReset: function() {
+      this.uiNotificationsClose();
     }
   },
 };

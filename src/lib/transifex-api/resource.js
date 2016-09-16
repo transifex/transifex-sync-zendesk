@@ -22,13 +22,16 @@ var resource = module.exports = {
   password: '',
   events: {
     'txResourceStats.done': 'txResourceStatsDone',
-    'txResourceStats.fail': 'txResourceStatsSyncError',
+    'txResourceStats.fail': 'txResourceStatsError',
+
     'txResource.done': 'txResourceDone',
-    'txResource.fail': 'txResourceSyncError',
+    'txResource.fail': 'txResourceError',
+
     'txInsertResource.done': 'txInsertResourceDone',
-    'txInsertResource.fail': 'txResourceSyncError',
+    'txInsertResource.fail': 'txUpsertResourceError',
+
     'txUpdateResource.done': 'txUpdateResourceDone',
-    'txUpdateResource.fail': 'txResourceSyncError',
+    'txUpdateResource.fail': 'txUpsertResourceError',
   },
   initialize: function() {
     var settings = io.getSettings();
@@ -129,6 +132,14 @@ var resource = module.exports = {
       io.popSync(resource.key + jqXHR.resourceName);
       this.checkAsyncComplete();
     },
+    txResourceStatsError: function(jqXHR, textStatus) {
+      logger.info('Transifex Resource Stats Retrieved with status:', textStatus);
+      io.popSync(resource.key + jqXHR.resourceName);
+      // Save error status instead of resource
+      this.store(resource.key + jqXHR.resourceName, jqXHR.status);
+      this.checkAsyncComplete();
+    },
+
     txResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource retrieved with status:', textStatus);
       this.store(resource.key + jqXHR.resourceName + jqXHR.languageCode,
@@ -136,27 +147,31 @@ var resource = module.exports = {
       io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
       this.checkAsyncComplete();
     },
+    txResourceError: function(jqXHR, textStatus) {
+      logger.info('Transifex Resource Retrieved with status:', textStatus);
+      io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
+      this.store(resource.key + jqXHR.resourceName, jqXHR.status);
+      io.opSet(jqXHR.resourceName, 'fail');
+      this.checkAsyncComplete();
+    },
+
     txInsertResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource inserted with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
+      io.opSet(jqXHR.resourceName, 'success');
       this.checkAsyncComplete();
     },
     txUpdateResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource updated with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
+      io.opSet(jqXHR.resourceName, 'success');
       this.checkAsyncComplete();
     },
-    txResourceStatsSyncError: function(jqXHR, textStatus) {
-      logger.info('Transifex Resource Stats Retrieved with status:', textStatus);
-      io.popSync(resource.key + jqXHR.resourceName);
-      // Save error status instead of resource
-      this.store(resource.key + jqXHR.resourceName, jqXHR.status);
-      this.checkAsyncComplete();
-    },
-    txResourceSyncError: function(jqXHR, textStatus) {
+    txUpsertResourceError: function(jqXHR, textStatus) {
       logger.info('Transifex Resource Retrieved with status:', textStatus);
-      io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
+      io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       this.store(resource.key + jqXHR.resourceName, jqXHR.status);
+      io.opSet(jqXHR.resourceName, 'fail');
       this.checkAsyncComplete();
     },
   },
@@ -198,6 +213,7 @@ var resource = module.exports = {
       var project = this.store(txProject.key);
       var resources = this.getResourceArray(project);
       //check list of resources in the project
+      io.opSet(slug, 'processing');
       if (syncUtil.isStringinArray(slug, resources)) {
         this.ajax('txUpdateResource', content, slug);
       } else {
