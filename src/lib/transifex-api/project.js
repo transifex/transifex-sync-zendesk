@@ -25,6 +25,7 @@ var project = module.exports = {
     var settings = io.getSettings();
 
     logger.info('Convert Project Url to API:', settings.tx_project);
+    project.dashboard_url = settings.tx_project.replace(/\/$/, '') + '/';
     project.url = txutils.convertUrlToApi(settings.tx_project);
 
     logger.info('Validate TxProject API URL:', project.url);

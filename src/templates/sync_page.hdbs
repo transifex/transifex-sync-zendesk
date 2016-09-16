@@ -175,7 +175,7 @@
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-disabled u-fontSize-small" data-status="checking">Checking...</span>
               <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No Resource Yet</span>
-              <a href="{{setting "tx_project"}}{{{this.name}}}/" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank">{{{this.name}}}</a>
+              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank">{{{this.name}}}</a>
               <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Error</span>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
