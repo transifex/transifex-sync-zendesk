@@ -41,14 +41,17 @@ module.exports = function(T, t, api) {
     },
     eventHandlers: {
       'ui<T>SelectAll': function(event) {
+        if (this.processing) return;
         if (this.$(event.target).is(':checked')) {
           this.$(m('.js-<t>.js-checkbox:not(:disabled)')).prop('checked', true);
         }
         else {
           this.$(m('.js-<t>.js-checkbox')).prop('checked', false);
         }
+        this[M('ui<T>UpdateButtons')](event);
       },
       'ui<T>UpdateButtons': function(event) {
+        if (this.processing) return;
         var ready_for_download = this.$(m('.js-<t>.js-checkbox.js-can-download:checked')).length,
             selected = this.$(m('.js-<t>.js-checkbox:checked')),
             selected_count = selected.length,
@@ -81,6 +84,7 @@ module.exports = function(T, t, api) {
       },
       'ui<T>Tab': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
         factory.currentpage = '1';
         var sorting = io.getSorting();
         sorting.sortby = 'title';
@@ -127,6 +131,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         var object_ids = [],
             selected = this.$(m(".js-<t>.js-can-upload:checked"));
         _.each(selected, function(row){
@@ -143,6 +149,9 @@ module.exports = function(T, t, api) {
           }
           return false;
         });
+        if (!objects.length) return;
+        this[M('start<T>Process')]();
+        this.loadSyncPage = this[M('ui<T>UpsertComplete')];
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
@@ -152,13 +161,14 @@ module.exports = function(T, t, api) {
           } else {
             resource_request = common.getTxRequest(entry);
           }
-          this.loadSyncPage = this[M('ui<T>UpsertComplete')];
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }
       },
       'ui<T>BatchDownload': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         var object_ids = [],
             selected = this.$(m(".js-<t>.js-can-download:checked"));
         _.each(selected, function(row){
@@ -197,6 +207,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>Sync': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         var sorting = io.getSorting();
         io.setPageError(null);
         this.asyncGetTxProject();
@@ -212,6 +224,7 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
+      /*
       'ui<T>DownloadCompletedTranslations': function(event) {
         if (event) event.preventDefault();
         var linkId = "#" + event.target.id,
@@ -232,6 +245,8 @@ module.exports = function(T, t, api) {
           }
         }
       },
+      */
+      /*
       'ui<T>Upsert': function(event) {
         if (event) event.preventDefault();
         var linkId = "#" + event.target.id,
@@ -250,12 +265,14 @@ module.exports = function(T, t, api) {
         io.pushSync(txResource.key + txResourceName + 'upsert');
         this.txUpsertResource(resource_request, txResourceName);
       },
+      */
       'ui<T>UpsertComplete': function() {
-        logger.debug('reload TxProject');
-        this.asyncGetTxProject();
+        logger.debug('Upsert complete');
+        this[M('end<T>Process')]();
       },
       'ui<T>PerPage': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
         var sorting = io.getSorting();
         sorting.perpage = this.$(event.target).closest('[perpage]').attr('perpage');
         io.setSorting(sorting);
@@ -274,6 +291,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>SortByUpdated': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         var sorting = io.getSorting();
         if (sorting.sortby == 'updated_at') return;
         sorting.sortby = 'updated_at';
@@ -294,6 +313,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>SortByTitle': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         var sorting = io.getSorting();
         if (sorting.sortby == 'title') return;
         sorting.sortby = 'title';
@@ -384,6 +405,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>GotoPage': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         logger.debug(M('ui<T>GotoPage'));
         var page = this.$(event.target).attr("data-page"),
             sorting = io.getSorting();
@@ -402,6 +425,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>NextPage': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         logger.debug(M('ui<T>NextPage'));
         var page = this.$(event.target).attr("data-current-page"),
             nextPage = parseInt(page, 10) + 1,
@@ -421,6 +446,8 @@ module.exports = function(T, t, api) {
       },
       'ui<T>PrevPage': function(event) {
         if (event) event.preventDefault();
+        if (this.processing) return;
+
         logger.debug(M('ui<T>PrevPage'));
         var page = this.$(event.target).attr("data-current-page"),
             prevPage = parseInt(page, 10) - 1,
@@ -440,6 +467,24 @@ module.exports = function(T, t, api) {
       },
     },
     actionHandlers: {
+      'start<T>Process': function() {
+        this.processing = true;
+        this.$(m('.js-<t>.js-refresh')).addClass('is-disabled');
+        this.$(m('.js-<t>.js-batch-upload')).addClass('is-disabled');
+        this.$(m('.js-<t>.js-batch-download')).addClass('is-disabled');
+        this.$(m('.js-<t>.js-checkbox')).prop('disabled', true);
+        this.$(m('.js-<t>.js-select-all')).prop('disabled', true);
+      },
+      'end<T>Process': function() {
+        this.processing = false;
+        this.$(m('.js-<t>.js-refresh')).removeClass('is-disabled');
+        this.$(m('.js-<t>.js-checkbox')).prop('checked', false);
+        this.$(m('.js-<t>.js-checkbox.js-can-upload')).prop('disabled', false);
+        this.$(m('.js-<t>.js-checkbox.js-can-download')).prop('disabled', false);
+        this.$(m('.js-<t>.js-select-all')).prop('disabled', false).
+          prop('checked', false);
+        this[M('ui<T>UpdateButtons')]();
+      },
       'sync<T>Translations': function() {
         logger.debug(M('sync<T>Translations started'));
         var data = this.store(zdApi.key),
