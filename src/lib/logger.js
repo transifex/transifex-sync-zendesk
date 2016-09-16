@@ -3,6 +3,7 @@
  * @module logger
  */
 
+var enabled = true;
 
 function message() {
   return Array.prototype.join.call(arguments, ' ');
@@ -10,7 +11,7 @@ function message() {
 
 module.exports = {
   info: function() {
-    if (typeof console !== 'undefined')
+    if (enabled && typeof console !== 'undefined')
       console.log('[INFO] ' + message.apply(this, arguments));
   },
   error: function() {
@@ -18,11 +19,11 @@ module.exports = {
       (console.error || console.log)('[ERROR] ' + message.apply(this, arguments));
   },
   warn: function() {
-    if (typeof console !== 'undefined')
+    if (enabled && typeof console !== 'undefined')
       (console.warn || console.log)('[WARN] ' + message.apply(this, arguments));
   },
   debug: function() {
-    if (typeof console !== 'undefined')
+    if (enabled && typeof console !== 'undefined')
       (console.debug || console.log)('[DEBUG] ' + message.apply(this, arguments));
   }
 };

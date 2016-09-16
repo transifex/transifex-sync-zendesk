@@ -58,14 +58,16 @@ module.exports = function(T, t, api) {
             batch_upload = this.$(m('.js-<t>.js-batch-upload')),
             batch_download = this.$(m('.js-<t>.js-batch-download'));
 
+        batch_upload.removeClass('has-spinner');
+        batch_download.removeClass('has-spinner');
         if (selected_count) {
           batch_upload.removeAttr('disabled');
           batch_upload.removeClass('is-disabled');
-          batch_upload.text('Send Resource (' + selected_count + ')');
+          batch_upload.text('Send Resources (' + selected_count + ')');
         } else {
           batch_upload.attr('disabled');
           batch_upload.addClass('is-disabled');
-          batch_upload.text('Send Resource');
+          batch_upload.text('Send Resources');
         }
         if (ready_for_download) {
           batch_download.removeAttr('disabled');
@@ -150,7 +152,7 @@ module.exports = function(T, t, api) {
           return false;
         });
         if (!objects.length) return;
-        this[M('start<T>Process')]();
+        this[M('start<T>Process')]('upload');
         io.opResetAll();
         this.loadSyncPage = this[M('ui<T>UpsertComplete')];
         for (var i = 0; i < objects.length; i++) {
@@ -494,7 +496,7 @@ module.exports = function(T, t, api) {
       },
     },
     actionHandlers: {
-      'start<T>Process': function() {
+      'start<T>Process': function(action) {
         this.processing = true;
         this.notifyReset();
         this.$(m('.js-<t>.js-refresh')).addClass('is-disabled');
@@ -508,6 +510,16 @@ module.exports = function(T, t, api) {
             removeClass('o-status is-success is-error is-warning').
             addClass('o-interactive-list__item');
         });
+        if (action == 'upload') {
+          this.$(m('.js-<t>.js-batch-upload')).
+            addClass('has-spinner').
+            html('<span class="o-spinner o-button__spinner"></span>');
+        }
+        else if (action == 'download') {
+          this.$(m('.js-<t>.js-batch-download')).
+            addClass('has-spinner').
+            html('<span class="o-spinner o-button__spinner"></span>');
+        }
       },
       'end<T>Process': function() {
         this.processing = false;
