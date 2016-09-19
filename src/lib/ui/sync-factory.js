@@ -191,6 +191,10 @@ module.exports = function(T, t, api) {
           }
           return false;
         });
+        this[M('start<T>Process')]('download');
+        io.opResetAll();
+        this.loadSyncPage = this[M('ui<T>DownloadComplete')];
+
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
@@ -294,6 +298,33 @@ module.exports = function(T, t, api) {
         }
         else {
           this.notifySuccess('You have successfully sent your resources!');
+        }
+      },
+      'ui<T>DownloadComplete': function() {
+        logger.debug('Download complete');
+        this[M('end<T>Process')]();
+        var total = 0, failed = 0;
+        _.each(io.opGetAll(), function(status, resourceName) {
+          total++;
+          resourceName = 'HTML-' + m('<t>') + '-' + resourceName;
+          var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-item="controller"]'));
+          el.addClass('o-status').removeClass('o-interactive-list__item');
+          if (status == 'success') {
+            el.addClass('is-success');
+          }
+          else {
+            failed++;
+            el.addClass('is-error');
+          }
+        }, this);
+        if (failed == 1) {
+          this.notifyError('1 resource could not be downloaded from Transifex');
+        }
+        else if (failed) {
+          this.notifyError(failed + ' resources could not be downloaded from Transifex');
+        }
+        else {
+          this.notifySuccess('You have successfully downloaded your resources!');
         }
       },
       'ui<T>PerPage': function(event) {

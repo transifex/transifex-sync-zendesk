@@ -81,20 +81,29 @@ module.exports = function(name, key, api) {
         };
       },
       'zd<T>Insert': function(data, id) {
+        io.pushSync(factory.key + 'download' + id);
         return {
           url: factory.base_url + api + '/' + id +
             '/translations.json',
           type: 'POST',
           data: JSON.stringify(data),
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.id = id;
+          },
           contentType: 'application/json'
         };
       },
       'zd<T>Update': function(data, id, locale) {
+        io.pushSync(factory.key + 'download' + id + locale);
         return {
           url: factory.base_url + api + '/' + id + '/translations/' +
             locale + '.json',
           type: 'PUT',
           data: JSON.stringify(data),
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.id = id;
+            jqxhr.locale = locale;
+          },
           contentType: 'application/json'
         };
       },
@@ -146,10 +155,17 @@ module.exports = function(name, key, api) {
         var existing_locales = this.store(factory.key + jqXHR.id + '_locales');
         existing_locales.push(jqXHR.locale);
         this.store(factory.key + jqXHR.id + '_locales', existing_locales);
+
+        io.popSync(factory.key + 'download' + jqXHR.id);
+        io.opSet( jqXHR.id, textStatus);
         logger.info('Transifex Resource inserted with status:', textStatus);
+        this.checkAsyncComplete();
       },
-      'zd<T>UpdateDone': function(data, textStatus) {
+      'zd<T>UpdateDone': function(data, textStatus, jqXHR) {
+        io.popSync(factory.key + 'download' + jqXHR.id + jqXHR.locale);
+        io.opSet( jqXHR.id, textStatus);
         logger.info('Transifex Resource updated with status:', textStatus);
+        this.checkAsyncComplete();
       },
     },
     actionHandlers: {
