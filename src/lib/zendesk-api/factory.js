@@ -22,6 +22,8 @@ module.exports = function(name, key, api) {
       'zd<T>GetTranslations.done': M('zd<T>GetTranslationsDone'),
       'zd<T>Update.done': M('zd<T>UpdateDone'),
       'zd<T>Insert.done': M('zd<T>InsertDone'),
+      'zd<T>Update.fail': M('zd<T>UpdateFail'),
+      'zd<T>Insert.fail': M('zd<T>InsertFail'),
       'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Full.fail': M('zd<T>SyncError'),
     },
@@ -157,14 +159,26 @@ module.exports = function(name, key, api) {
         this.store(factory.key + jqXHR.id + '_locales', existing_locales);
 
         io.popSync(factory.key + 'download' + jqXHR.id);
-        io.opSet( jqXHR.id, textStatus);
+        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
         logger.info('Transifex Resource inserted with status:', textStatus);
         this.checkAsyncComplete();
       },
       'zd<T>UpdateDone': function(data, textStatus, jqXHR) {
         io.popSync(factory.key + 'download' + jqXHR.id + jqXHR.locale);
-        io.opSet( jqXHR.id, textStatus);
+        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
         logger.info('Transifex Resource updated with status:', textStatus);
+        this.checkAsyncComplete();
+      },
+      'zd<T>InsertFail': function(data, textStatus, jqXHR) {
+        io.popSync(factory.key + 'download' + jqXHR.id);
+        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
+        logger.info('Transifex Resource update failed with status:', textStatus);
+        this.checkAsyncComplete();
+      },
+      'zd<T>UpdateFail': function(data, textStatus, jqXHR) {
+        io.popSync(factory.key + 'download' + jqXHR.id + jqXHR.locale);
+        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
+        logger.info('Transifex Resource update failed with status:', textStatus);
         this.checkAsyncComplete();
       },
     },

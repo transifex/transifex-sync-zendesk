@@ -182,7 +182,7 @@
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small" id="locales-{{{this.name}}}">
-                <span class="u-color-disabled">Checking...</span>
+                <span class="u-color-secondary u-fontSize-small"><span class="u-color-disabled">Checking...</span></span>
               </span>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
