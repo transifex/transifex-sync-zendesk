@@ -416,6 +416,7 @@ module.exports = function(T, t, api) {
             resourceName = '',
             resource = {},
             languageArray = [],
+            sourceLocale = txProject.jsonHandlers.getSourceLocale(this.store(txProject.key)),
             resourceLanguage = {};
         for (var i = 0; i < num; i++) {
           resourceName = data[t][i].resource_name;
@@ -426,7 +427,7 @@ module.exports = function(T, t, api) {
             numLanguages = languageArray.length;
             for (var ii = 0; ii < numLanguages; ii++) {
               resourceLanguage = this.store(txResource.key + resourceName + languageArray[ii]);
-              if (resourceLanguage) {
+              if (resourceLanguage && languageArray[ii] !== sourceLocale) {
                 this.$('#' + resourceName).addClass('js-can-download');
               }
             }
