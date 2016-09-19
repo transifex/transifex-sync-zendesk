@@ -76,6 +76,11 @@ To setup the dev environment:
 make init
 ```
 
+Build source:
+```bash
+make build
+```
+
 Make deploy package:
 ```bash
 make package
