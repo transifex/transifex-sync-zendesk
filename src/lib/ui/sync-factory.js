@@ -308,9 +308,6 @@ module.exports = function(T, t, api) {
           total++;
           var resourceName = 'HTML-' + m('<t>') + '-' + opName.split('_')[0];
           var resourceLoc  = opName.split('_')[1];
-
-          console.log(resourceName)
-          console.log(resourceLoc)
           var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
           //el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status == 'success') {
