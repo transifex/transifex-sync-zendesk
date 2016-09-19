@@ -185,10 +185,12 @@ var resource = module.exports = {
       });
     },
     completedLanguages: function(stats) {
-      var arr = [];
+      var arr = [],
+          zd_enabled = this.store('zd_project_locales');
       _.each(stats, function(value, key) {
         var match = (value['completed'] === "100%");
-        if (match) {
+        var zd_key = syncUtil.txLocaletoZd(key);
+        if (match && zd_enabled.indexOf(zd_key) != -1) {
           arr.push(key);
         }
       });

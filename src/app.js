@@ -5,6 +5,7 @@
     require('zendesk-api/article'),
     require('zendesk-api/category'),
     require('zendesk-api/section'),
+    require('zendesk-api/config'),
     require('ui/sync-articles'),
     require('ui/sync-categories'),
     require('ui/sync-sections'),
