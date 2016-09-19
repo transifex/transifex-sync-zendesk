@@ -4,7 +4,7 @@ var common = require('../common'),
 
 var config = module.exports = {
   // selfies
-  base_url: '/api/v2/help_center/',
+  base_url: '/api/v2/',
   key: 'zd_config',
   events: {
     'activatedLocales.done': 'activatedLocalesDone',
@@ -22,8 +22,12 @@ var config = module.exports = {
   },
   eventHandlers: {
     activatedLocalesDone: function(data, textStatus, jqXHR) {
+      var locales = [];
       logger.info('Activated Locales Retrieved with status:', textStatus);
-      this.store('zd_project_locales', data['locales']);
+      _.map(data['locales'], function(l){
+        locales.push(l['locale'].toLowerCase());
+      });
+      this.store('zd_project_locales', locales);
       io.popSync(config.key);
       this.checkAsyncComplete();
     },
