@@ -214,6 +214,7 @@ module.exports = function(T, t, api) {
 
         var sorting = io.getSorting();
         io.setPageError(null);
+        this.asyncGetActivatedLocales();
         this.asyncGetTxProject();
         this[M('asyncGetZd<T>Full')](
           factory.currentpage, sorting.sortby,
