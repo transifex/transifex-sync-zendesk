@@ -319,7 +319,7 @@ module.exports = function(T, t, api) {
         }, this);
 
 
-        if (failed == 0) {
+        if (failed === 0) {
           this.notifySuccess('Successfully got translations for ' + total + ' articles.');
         } else if (failed == total) {
           this.$('.js-locale-problem')
