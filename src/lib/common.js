@@ -161,7 +161,7 @@ var common = module.exports = {
   addCompletedLocales: function($, name, locales) {
     var linkId = "#" + "locales-" + name;
     if (!(_.isEmpty(locales))) {
-      var tpl = _.template('<span class="u-color-secondary u-fontSize-small" data-locale="<%- loc %>"><%- loc %></span>');
+      var tpl = _.template('<span class="u-color-secondary u-fontSize-small" data-locale="<%= loc.toLowerCase() %>"><%- loc %></span>');
       $(linkId).html(_.map(locales, function(locale) {
         return tpl({loc: locale});
       }).join(', '));

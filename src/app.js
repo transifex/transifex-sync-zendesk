@@ -98,3 +98,19 @@ function txApp(modules) {
     checkAsyncComplete: checkAsyncComplete,
   });
 }
+
+/*
+(function(open) {
+  var fails = [
+    '/api/v2/help_center/articles/206631717/translations/zh-cn.json',
+    '/api/v2/help_center/articles/206631717/translations/es.json',
+    '/api/v2/help_center/articles/227112808/translations/es.json'
+  ];
+
+  XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+    if (_.contains(fails, url)) url = 'derp';
+    // Do some magic
+    open.call(this, method, url, async, user, pass);
+  };
+})(XMLHttpRequest.prototype.open);
+*/

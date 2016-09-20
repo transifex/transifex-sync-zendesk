@@ -169,13 +169,13 @@ module.exports = function(name, key, api) {
         logger.info('Transifex Resource updated with status:', textStatus);
         this.checkAsyncComplete();
       },
-      'zd<T>InsertFail': function(data, textStatus, jqXHR) {
+      'zd<T>InsertFail': function(jqXHR, textStatus) {
         io.popSync(factory.key + 'download' + jqXHR.id);
         io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
         logger.info('Transifex Resource update failed with status:', textStatus);
         this.checkAsyncComplete();
       },
-      'zd<T>UpdateFail': function(data, textStatus, jqXHR) {
+      'zd<T>UpdateFail': function(jqXHR, textStatus) {
         io.popSync(factory.key + 'download' + jqXHR.id + jqXHR.locale);
         io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
         logger.info('Transifex Resource update failed with status:', textStatus);

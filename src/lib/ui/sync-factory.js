@@ -112,7 +112,6 @@ module.exports = function(T, t, api) {
           });
           return;
         }
-
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
           page: t,
@@ -301,32 +300,42 @@ module.exports = function(T, t, api) {
         }
       },
       'ui<T>DownloadComplete': function() {
+        var that = this;
         logger.debug('Download complete');
         this[M('end<T>Process')]();
         var total = 0, failed = 0;
         _.each(io.opGetAll(), function(status, opName) {
           total++;
           var resourceName = 'HTML-' + m('<t>') + '-' + opName.split('_')[0];
-          var resourceLoc  = opName.split('_')[1];
+          var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
           var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
           //el.addClass('o-status').removeClass('o-interactive-list__item');
-          if (status == 'success') {
-            el.addClass('is-success');
-          }
-          else {
+          if (status !== 'success') {
             failed++;
-            el.addClass('is-error');
+            el.removeClass('u-color-secondary').addClass('u-color-error');
           }
         }, this);
-        if (failed == 1) {
-          this.notifyError('1 resource could not be downloaded from Transifex');
+
+        if (failed == 0) return this.notifySuccess('Successfully got translations for ' + total + ' articles.');
+
+        if (failed == total) {
+          this.notifyError('Failed to get translations for ' + failed + ' articles.');
+        } else {
+          if (failed == 1) {
+            this.notifyWarning('Failed to get translations for 1 article.');
+          } else {
+            this.notifyWarning('Failed to get translations for ' + failed + ' articles.');
+          }
         }
-        else if (failed) {
-          this.notifyError(failed + ' resources could not be downloaded from Transifex');
-        }
-        else {
-          this.notifySuccess('You have successfully downloaded your resources!');
-        }
+
+        this.$(m('.js-<t>[data-resource]')).each(function() {
+          var el = that.$(this); // Makes me sad...
+          var n_err = el.find('.u-color-error').length;
+          var n_tot = el.find('[data-locale]').length;
+          if (n_err == 0) return;
+          (n_err == n_tot) ? el.addClass('is-error') : el.addClass('is-warning');
+        });
+
       },
       'ui<T>PerPage': function(event) {
         if (event) event.preventDefault();
