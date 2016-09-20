@@ -14,7 +14,7 @@ var config = module.exports = {
     activatedLocales: function() {
       logger.debug('Retrieving activated locales for account');
       return {
-        url: config.base_url + 'locales.json',
+        url: config.base_url + 'locales/public.json',
         type: 'GET',
         dataType: 'json',
       };
