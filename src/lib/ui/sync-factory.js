@@ -339,7 +339,10 @@ module.exports = function(T, t, api) {
           if (el.find('[data-locale].u-color-systemError').length ||
               el.find('[data-locale].u-color-systemWarning').length) {
             el.addClass('o-status').removeClass('o-interactive-list__item');
-            (failed == total) ? el.addClass('is-error') : el.addClass('is-warning');
+            if (failed == total)
+              el.addClass('is-error');
+            else
+              el.addClass('is-warning');
           }
         });
 
