@@ -99,11 +99,10 @@ function txApp(modules) {
   });
 }
 
-/*
 (function(open) {
   var fails = [
     '/api/v2/help_center/articles/206631717/translations/zh-cn.json',
-    '/api/v2/help_center/articles/206631717/translations/es.json',
+    //'/api/v2/help_center/articles/206631717/translations/es.json',
     '/api/v2/help_center/articles/227112808/translations/es.json'
   ];
 
@@ -113,4 +112,3 @@ function txApp(modules) {
     open.call(this, method, url, async, user, pass);
   };
 })(XMLHttpRequest.prototype.open);
-*/

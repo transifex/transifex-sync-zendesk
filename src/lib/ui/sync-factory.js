@@ -300,6 +300,10 @@ module.exports = function(T, t, api) {
         this[M('end<T>Process')]();
         var resource_prefix = io.getFeature('html-tx-resource') ? 'HTML-' : '';
         var total = 0, failed = 0;
+        //Clean up previous state
+        this.$('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
+        this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning').addClass('o-interactive-list__item');
+
         _.each(io.opGetAll(), function(status, opName) {
           total++;
           var resourceName = 'HTML-' + m('<t>') + '-' + opName.split('_')[0];
@@ -308,28 +312,35 @@ module.exports = function(T, t, api) {
           //el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status !== 'success') {
             failed++;
-            el.removeClass('u-color-secondary').addClass('u-color-error');
+            el.removeClass('u-color-secondary').addClass('u-color-systemProblem');
           }
         }, this);
 
         if (failed == 0) return this.notifySuccess('Successfully got translations for ' + total + ' articles.');
 
         if (failed == total) {
+          this.$('.u-color-systemProblem')
+            .removeClass('u-color-systemProblem')
+            .addClass('u-color-systemError');
           this.notifyError('Failed to get translations for ' + failed + ' articles.');
         } else {
+          this.$('.u-color-systemProblem')
+            .removeClass('u-color-systemProblem')
+            .addClass('u-color-systemWarning');
           if (failed == 1) {
-            this.notifyWarning('Failed to get translations for 1 article.');
+            this.notifyWarning('Failed to get translations for 1 article. Succesfull: ' + (total - failed));
           } else {
-            this.notifyWarning('Failed to get translations for ' + failed + ' articles.');
+            this.notifyWarning('Failed to get translations for ' + failed + ' articles. Succesfull: ' + (total - failed));
           }
         }
 
         this.$(m('.js-<t>[data-resource]')).each(function() {
           var el = that.$(this); // Makes me sad...
-          var n_err = el.find('.u-color-error').length;
-          var n_tot = el.find('[data-locale]').length;
-          if (n_err == 0) return;
-          (n_err == n_tot) ? el.addClass('is-error') : el.addClass('is-warning');
+          if (el.find('[data-locale].u-color-systemError').length ||
+              el.find('[data-locale].u-color-systemWarning').length) {
+            el.addClass('o-status').removeClass('o-interactive-list__item');
+            (failed == total) ? el.addClass('is-error') : el.addClass('is-warning');
+          }
         });
 
       },
