@@ -28,6 +28,9 @@ module.exports = {
   hasFeature: function(feature) {
     return FEATURES[feature] !== undefined;
   },
+  getFeature: function(feature) {
+    return FEATURES[feature];
+  },
 
   pushSync: function(key) {
     SYNC_STATUS.push(key);

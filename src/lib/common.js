@@ -1,26 +1,18 @@
 var zdArticle = require('zendesk-api/article');
 var txResource = require('transifex-api/resource');
 var syncUtil = require('syncUtil');
+var io = require('io');
 
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
   regExpTemplate: "<html><head></head><body><h1>(.*)</h1>(.*)</body></html>",
-  translationObjectFormat: function(format, response, locale) {
-    if (format == 'html-tx-resource') {
+  translationObjectFormat: function(response, locale) {
+    if (io.getFeature('html-tx-resource')) {
       return common.translationObjectHTML(response, locale);
     } else {
       return syncUtil.zdGetTranslationObject(response, locale);
     }
   },
-  /*
-    txRequestFormat: function(config, article) {
-      if (config.isEnabled("tx-resource-html")) {
-        return txRequestHTML(article);
-      } else {
-        return zdArticles.getTxRequest(article);
-      }
-    },
-  */
 
   translationObjectHTML: function(res, l) {
     var gblTemplate = common.gblTemplate;
@@ -41,47 +33,23 @@ var common = module.exports = {
       "translation": o
     };
   },
-  createResourceName: function(zdId, zdObjectType, separator) {
-    return zdObjectType.toLowerCase() + separator + zdId;
+
+  txRequestJSON: function(a) {
+    var req = {
+      name: a.resource_name,
+      slug: a.resource_name,
+      priority: 0,
+      i18n_type: 'KEYVALUEJSON'
+    };
+
+    var o = {};
+    var o1 = syncUtil.addString('name', a.title, o);
+    var o2 = syncUtil.addString('title', a.title, o1);
+    var o3 = syncUtil.addString('body', a.body, o2);
+    var o4 = syncUtil.addContent(req, o3);
+    return o4;
   },
 
-  //todo - refactor me
-  getTxRequest: function(a) { // articles or article
-    var arr = [];
-    var ret = [];
-    if (a.articles instanceof Array) {
-      arr = this.getIdList(a);
-    } else {
-      arr[0] = a.id;
-    }
-
-
-    for (var i = 0; i < arr.length; i++) {
-      var req = {
-        name: common.createResourceName(arr[i], 'articles', '-'),
-        slug: common.createResourceName(arr[i], 'articles', '-'),
-        priority: 0,
-        i18n_type: 'KEYVALUEJSON'
-      };
-
-
-      var o = {};
-      var o1 = syncUtil.addString('name', zdArticle.jsonHandlers.getNameArticles(
-        arr[i], a), o);
-      var o2 = syncUtil.addString('title', zdArticle.jsonHandlers.getTitleArticles(
-        arr[i], a), o1);
-      var o3 = syncUtil.addString('body', zdArticle.jsonHandlers.getBodyArticles(
-        arr[i], a), o2);
-      var o4 = syncUtil.addContent(req, o3);
-      ret[i] = o4;
-    }
-    if (a.articles instanceof Array) {
-      return ret;
-    } else {
-      return ret[0];
-    }
-
-  },
   txRequestHTML: function(article) {
     var gblTemplate = common.gblTemplate;
     var zdArticleContent = _.template(gblTemplate)({
@@ -91,8 +59,8 @@ var common = module.exports = {
     });
 
     var txRequestMade = {
-      name: 'HTML-articles-' + article.id,
-      slug: 'HTML-articles-' + article.id,
+      name: article.resource_name,
+      slug: article.resource_name,
       priority: 0,
       i18n_type: 'HTML',
       content: zdArticleContent
@@ -100,6 +68,13 @@ var common = module.exports = {
     return txRequestMade;
   },
 
+  txRequestFormat: function(article) {
+    if (io.getFeature('html-tx-resource')) {
+      return common.txRequestHTML(article);
+    } else {
+      return common.txRequestJSON(article);
+    }
+  },
 
   // Extract Values via https://github.com/laktek
   // https://github.com/laktek/extract-values

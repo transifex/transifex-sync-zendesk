@@ -106,8 +106,8 @@ module.exports = {
     var r = this.resources.TX_SLUG_FORMAT_PATTERN.test(s);
     return r;
   },
-  zdGetTranslationObject: function(t, l) {
-    var o = _.extend(JSON.parse(t.content), {
+  zdGetTranslationObject: function(content, l) {
+    var o = _.extend(JSON.parse(content), {
       locale: l
     });
     return {

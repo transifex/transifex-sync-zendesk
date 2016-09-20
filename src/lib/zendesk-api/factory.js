@@ -186,24 +186,8 @@ module.exports = function(name, key, api) {
       'zdUpsert<T>Translation': function(resource_data, id, zdLocale) {
         logger.info(M('Upsert <T> with Id:') + id + 'and locale:' + zdLocale);
 
-        /* var localeRegion = zdLocale.split('-');
-         if (localeRegion.length > 1 && localeRegion[0] == localeRegion[1]) {
-           zdLocale = localeRegion[0];
-         }
-         */
-        var translationData;
-        if (io.hasFeature('html-tx-resource')) {
-          translationData = common.translationObjectFormat('html-tx-resource',
-            resource_data, zdLocale);
-        } else {
-          translationData = common.translationObjectFormat('',
-            resource_data, zdLocale);
-        }
-        /*
-        var i = _.findIndex(locales, {
-          id: parseInt(id, 10)
-        });
-        */
+        var translationData = common.translationObjectFormat(resource_data, zdLocale);
+
         var existing_locales = this.store(factory.key + id + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
@@ -239,7 +223,7 @@ module.exports = function(name, key, api) {
       'calcResourceName<T>': function(obj) {
         var ret = obj[api];
         var type = api;
-        if (io.hasFeature('html-tx-resource')) {
+        if (io.getFeature('html-tx-resource')) {
           type = 'HTML-' + type;
         }
         var typeString = type + '-';

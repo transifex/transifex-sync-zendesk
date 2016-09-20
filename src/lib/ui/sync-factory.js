@@ -157,12 +157,7 @@ module.exports = function(T, t, api) {
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
-          resource_request = {};
-          if (io.hasFeature('html-tx-resource')) {
-            resource_request = common.txRequestHTML(entry);
-          } else {
-            resource_request = common.getTxRequest(entry);
-          }
+          resource_request = common.txRequestFormat(entry);
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }
@@ -303,6 +298,7 @@ module.exports = function(T, t, api) {
         var that = this;
         logger.debug('Download complete');
         this[M('end<T>Process')]();
+        var resource_prefix = io.getFeature('html-tx-resource') ? 'HTML-' : '';
         var total = 0, failed = 0;
         _.each(io.opGetAll(), function(status, opName) {
           total++;
