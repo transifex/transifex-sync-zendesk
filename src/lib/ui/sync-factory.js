@@ -285,13 +285,13 @@ module.exports = function(T, t, api) {
           }
         }, this);
         if (failed == 1) {
-          this.notifyError('1 resource could not be uploaded to Transifex');
+          this.notifyError('Successfully sent XX resources to Transifex, 1 resource could not be uploaded.');
         }
         else if (failed) {
-          this.notifyError(failed + ' resources could not be uploaded to Transifex');
+          this.notifyError(failed + ' resources could not be uploaded to Transifex.');
         }
         else {
-          this.notifySuccess('You have successfully sent your resources!');
+          this.notifySuccess('You have successfully sent XX resources!');
         }
       },
       'ui<T>DownloadComplete': function() {
@@ -320,20 +320,20 @@ module.exports = function(T, t, api) {
 
 
         if (failed === 0) {
-          this.notifySuccess('Successfully got translations for ' + total + ' articles.');
+          this.notifySuccess('Successfully got ' + total + ' translations for selected articles.');
         } else if (failed == total) {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
-          this.notifyError('Failed to get translations for ' + failed + ' articles.');
+          this.notifyError('Failed to get all ' + failed + ' translations for selected articles.');
         } else {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemWarning');
           if (failed == 1) {
-            this.notifyWarning('Failed to get translations for 1 article. Succesfull: ' + (total - failed));
+            this.notifyWarning('Successfully got ' + (total - failed) + ' translations, failed to get 1 translation for selected articles.');
           } else {
-            this.notifyWarning('Failed to get translations for ' + failed + ' articles. Succesfull: ' + (total - failed));
+            this.notifyWarning('Successfully got ' + (total - failed) + ' translations, failed to get ' + failed + ' translations for selected articles.');
           }
         }
 
