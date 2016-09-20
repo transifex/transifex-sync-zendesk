@@ -302,30 +302,33 @@ module.exports = function(T, t, api) {
         var total = 0, failed = 0;
         //Clean up previous state
         this.$('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
-        this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning').addClass('o-interactive-list__item');
+        this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
 
         _.each(io.opGetAll(), function(status, opName) {
           total++;
-          var resourceName = 'HTML-' + m('<t>') + '-' + opName.split('_')[0];
+          var resourceName = m('<t>') + '-' + opName.split('_')[0];
           var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
           var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
           //el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status !== 'success') {
             failed++;
-            el.removeClass('u-color-secondary').addClass('u-color-systemProblem');
+            el.removeClass('u-color-secondary').addClass('js-locale-problem');
+          } else {
+            el.addClass('js-locale-ok');
           }
         }, this);
 
-        if (failed === 0) return this.notifySuccess('Successfully got translations for ' + total + ' articles.');
 
-        if (failed == total) {
-          this.$('.u-color-systemProblem')
-            .removeClass('u-color-systemProblem')
+        if (failed == 0) {
+          this.notifySuccess('Successfully got translations for ' + total + ' articles.');
+        } else if (failed == total) {
+          this.$('.js-locale-problem')
+            .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
           this.notifyError('Failed to get translations for ' + failed + ' articles.');
         } else {
-          this.$('.u-color-systemProblem')
-            .removeClass('u-color-systemProblem')
+          this.$('.js-locale-problem')
+            .removeClass('js-locale-problem')
             .addClass('u-color-systemWarning');
           if (failed == 1) {
             this.notifyWarning('Failed to get translations for 1 article. Succesfull: ' + (total - failed));
@@ -336,6 +339,12 @@ module.exports = function(T, t, api) {
 
         this.$(m('.js-<t>[data-resource]')).each(function() {
           var el = that.$(this); // Makes me sad...
+          if (el.find('.js-locale-ok').length) {
+            el.find('.js-locale-ok').removeClass('js-locale-ok');
+            el.addClass('o-status').removeClass('o-interactive-list__item');
+            el.addClass('is-success');
+          }
+
           if (el.find('[data-locale].u-color-systemError').length ||
               el.find('[data-locale].u-color-systemWarning').length) {
             el.addClass('o-status').removeClass('o-interactive-list__item');
