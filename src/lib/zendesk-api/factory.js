@@ -65,13 +65,6 @@ module.exports = function(name, key, api) {
           dataType: 'json'
         };
       },
-      'zd<T>SLTranslations': function() {
-        return {
-          url: factory.base_url + api + '.json?include=translations',
-          type: 'GET',
-          dataType: 'json'
-        };
-      },
       'zd<T>GetTranslations': function(id) {
         return {
           url: factory.base_url + api + '/' + id + '/translations.json',
@@ -237,36 +230,6 @@ module.exports = function(name, key, api) {
         var response = {};
         response[api] = ret;
         return response;
-      },
-      'getName<T>': function(id, a) {
-        if (a[api] instanceof Array) {
-          var i = _.findIndex(a[api], {
-            id: id
-          });
-          return a[api][i]["name"];
-        } else {
-          return a.name;
-        }
-      },
-      'getTitle<T>': function(id, a) {
-        if (a[api] instanceof Array) {
-          var i = _.findIndex(a[api], {
-            id: id
-          });
-          return a[api][i]["title"];
-        } else {
-          return a.title;
-        }
-      },
-      'getBody<T>': function(id, a) {
-        if (a[api] instanceof Array) {
-          var i = _.findIndex(a[api], {
-            id: id
-          });
-          return a[api][i]["body"];
-        } else {
-          return a.body;
-        }
       },
       'checkPagination<T>': function(a) {
         var i = a.page_count;

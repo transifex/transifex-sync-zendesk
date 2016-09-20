@@ -316,7 +316,7 @@ module.exports = function(T, t, api) {
           }
         }, this);
 
-        if (failed == 0) return this.notifySuccess('Successfully got translations for ' + total + ' articles.');
+        if (failed === 0) return this.notifySuccess('Successfully got translations for ' + total + ' articles.');
 
         if (failed == total) {
           this.$('.u-color-systemProblem')

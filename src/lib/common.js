@@ -127,12 +127,6 @@ var common = module.exports = {
     return output;
   },
 
-  activateTxLink: function($, name) {
-    /*
-    var linkId = "#" + "txlink-" + name;
-    $(linkId).removeClass("is-disabled");
-    */
-  },
   addCompletedLocales: function($, name, locales) {
     var linkId = "#" + "locales-" + name;
     if (!(_.isEmpty(locales))) {
@@ -144,6 +138,5 @@ var common = module.exports = {
       $(linkId).text('-');
     }
   },
-
 
 };
