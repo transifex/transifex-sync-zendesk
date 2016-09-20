@@ -281,17 +281,16 @@ module.exports = function(T, t, api) {
           }
           else {
             failed++;
-            el.addClass('is-error');
           }
         }, this);
-        if (failed == 1) {
-          this.notifyError('Successfully sent ' + (total - failed) + ' resources to Transifex, 1 resource could not be uploaded.');
-        }
-        else if (failed) {
-          this.notifyError(failed + ' resources could not be uploaded to Transifex.');
-        }
-        else {
-          this.notifySuccess('You have successfully sent ' + total + ' resources!');
+        if (failed === 0) {
+          this.notifySuccess( total + ' resources sent successfully.');
+        } else if (failed == total) {
+          this.notifyError('All ' + failed + ' resources could not be uploaded to Transifex.');
+          this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-error');
+        } else {
+          this.notifyWarning('Successfully sent ' + (total - failed) + ' resources to Transifex, ' + failed + ' resources could not be uploaded.');
+          this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-warning');
         }
       },
       'ui<T>DownloadComplete': function() {
