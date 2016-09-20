@@ -285,13 +285,13 @@ module.exports = function(T, t, api) {
           }
         }, this);
         if (failed == 1) {
-          this.notifyError('Successfully sent XX resources to Transifex, 1 resource could not be uploaded.');
+          this.notifyError('Successfully sent ' + (total - failed) + ' resources to Transifex, 1 resource could not be uploaded.');
         }
         else if (failed) {
           this.notifyError(failed + ' resources could not be uploaded to Transifex.');
         }
         else {
-          this.notifySuccess('You have successfully sent XX resources!');
+          this.notifySuccess('You have successfully sent ' + total + ' resources!');
         }
       },
       'ui<T>DownloadComplete': function() {
