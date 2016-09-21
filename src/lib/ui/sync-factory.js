@@ -284,12 +284,12 @@ module.exports = function(T, t, api) {
           }
         }, this);
         if (failed === 0) {
-          this.notifySuccess( total + ' resources sent successfully.');
+          this.notifySuccess( total + ' ΧΧΧΧ were successfully uploaded to Transifex.');
         } else if (failed == total) {
-          this.notifyError('All ' + failed + ' resources could not be uploaded to Transifex.');
+          this.notifyError('None of the ' + failed + ' selected XXXX could be uploaded to Transifex.');
           this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-error');
         } else {
-          this.notifyWarning('Successfully sent ' + (total - failed) + ' resources to Transifex, ' + failed + ' resources could not be uploaded.');
+          this.notifyWarning( (total - failed) + ' XXXX were successfully uploaded to Transifex, ' + failed + ' XXXX could not be uploaded.');
           this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-warning');
         }
       },
@@ -319,20 +319,20 @@ module.exports = function(T, t, api) {
 
 
         if (failed === 0) {
-          this.notifySuccess('Successfully got ' + total + ' translations for selected articles.');
+          this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected articles.');
         } else if (failed == total) {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
-          this.notifyError('Failed to get all ' + failed + ' translations for selected articles.');
+          this.notifyError('Translations in ' + failed + ' languages could not be updated for all selected articles.');
         } else {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemWarning');
           if (failed == 1) {
-            this.notifyWarning('Successfully got ' + (total - failed) + ' translations, failed to get 1 translation for selected articles.');
+            this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected articles, 1 language could not be updated.');
           } else {
-            this.notifyWarning('Successfully got ' + (total - failed) + ' translations, failed to get ' + failed + ' translations for selected articles.');
+            this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected articles, ' + failed + ' languages could not be updated.');
           }
         }
 
