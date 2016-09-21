@@ -99,7 +99,6 @@ function txApp(modules) {
   });
 }
 
-/*
 // Fixture for error states
 (function(open) {
   var fails = [
@@ -114,4 +113,3 @@ function txApp(modules) {
     open.call(this, method, url, async, user, pass);
   };
 })(XMLHttpRequest.prototype.open);
-*/

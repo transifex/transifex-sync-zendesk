@@ -284,12 +284,12 @@ module.exports = function(T, t, api) {
           }
         }, this);
         if (failed === 0) {
-          this.notifySuccess( total + ' ΧΧΧΧ were successfully uploaded to Transifex.');
+          this.notifySuccess(m(total + ' <t> were successfully uploaded to Transifex.'));
         } else if (failed == total) {
-          this.notifyError('None of the ' + failed + ' selected XXXX could be uploaded to Transifex.');
+          this.notifyError(m('None of the selected <t> could be uploaded to Transifex.'));
           this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-error');
         } else {
-          this.notifyWarning( (total - failed) + ' XXXX were successfully uploaded to Transifex, ' + failed + ' XXXX could not be uploaded.');
+          this.notifyWarning(m((total - failed) + ' <t> were successfully uploaded to Transifex, ' + failed + ' ' + api + ' could not be uploaded.'));
           this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-warning');
         }
       },
@@ -299,9 +299,6 @@ module.exports = function(T, t, api) {
         this[M('end<T>Process')]();
         var resource_prefix = io.getFeature('html-tx-resource') ? 'HTML-' : '';
         var total = 0, failed = 0;
-        //Clean up previous state
-        this.$('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
-        this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
 
         _.each(io.opGetAll(), function(status, opName) {
           total++;
@@ -319,20 +316,20 @@ module.exports = function(T, t, api) {
 
 
         if (failed === 0) {
-          this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected articles.');
+          this.notifySuccess(m('Translations were successfully updated in ' + total + ' languages for all selected <t>.'));
         } else if (failed == total) {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
-          this.notifyError('Translations in ' + failed + ' languages could not be updated for all selected articles.');
+          this.notifyError(m('Translations in ' + failed + ' languages could not be updated for all selected <t>.'));
         } else {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemWarning');
           if (failed == 1) {
-            this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected articles, 1 language could not be updated.');
+            this.notifyWarning(m('Translations were successfully updated for ' + (total - failed) + ' languages of the selected <t>, 1 language could not be updated.'));
           } else {
-            this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected articles, ' + failed + ' languages could not be updated.');
+            this.notifyWarning(m('Translations were successfully updated for ' + (total - failed) + ' languages of the selected <t>, ' + failed + ' languages could not be updated.'));
           }
         }
 
@@ -580,6 +577,9 @@ module.exports = function(T, t, api) {
             addClass('has-spinner').
             html('<span class="o-spinner o-button__spinner"></span>');
         }
+        //Clean up previous state
+        this.$('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
+        this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
       },
       'end<T>Process': function() {
         this.processing = false;
