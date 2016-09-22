@@ -37,16 +37,12 @@ var project = module.exports = {
     project.password = settings.tx_password;
   },
   requests: {
-    txProject: function(typeString, pageString) {
-      logger.debug('txProject ajax request:', typeString + '||' + pageString);
+    txProject: function() {
+      logger.debug('txProject ajax request');
       return {
         url: project.url + '?details',
         headers: project.headers,
         type: 'GET',
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.page = pageString;
-          jqxhr.type = typeString;
-        },
         xhrFields: {
           withCredentials: true
         },
@@ -68,7 +64,6 @@ var project = module.exports = {
     },
     txProjectSyncError: function(jqXHR, textStatus) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
-      //this.uiErrorPageInit();
       io.popSync(project.key);
       if (jqXHR.status === 404) {
         logger.error('txProjectSyncError:', 'Not found');
@@ -85,10 +80,10 @@ var project = module.exports = {
     },
   },
   actionHandlers: {
-    asyncGetTxProject: function(type, page) {
-      logger.debug('function: [asyncGetTxProject] params: [type]' + type + '|| [page]' + page);
+    asyncGetTxProject: function() {
+      logger.debug('function: [asyncGetTxProject]');
       io.pushSync(project.key);
-      this.ajax('txProject', type, page);
+      this.ajax('txProject');
     },
   },
   jsonHandlers: {
