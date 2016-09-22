@@ -20,8 +20,6 @@ var common = module.exports = {
 
     res = res.replace(new RegExp('\n', 'g'), '');
     var zdPartialArticle = {
-      name: common.extractValues(res.replace(/\\"/g, '"'),
-        gblTemplate).title,
       title: common.extractValues(res.replace(/\\"/g, '"'),
         gblTemplate).title,
       body: res.replace(/\\"/g, '"').match(re)[2],
@@ -43,10 +41,9 @@ var common = module.exports = {
     };
 
     var o = {};
-    var o1 = syncUtil.addString('name', a.title, o);
-    var o2 = syncUtil.addString('title', a.title, o1);
-    var o3 = syncUtil.addString('body', a.body, o2);
-    var o4 = syncUtil.addContent(req, o3);
+    var o1 = syncUtil.addString('title', a.title, o);
+    var o2 = syncUtil.addString('body', a.body, o1);
+    var o3 = syncUtil.addContent(req, o2);
     return o4;
   },
 
