@@ -321,7 +321,7 @@ module.exports = function(T, t, api) {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
-          this.notifyError(m('Translations in ' + failed + ' languages could not be updated for all selected <t>.'));
+          this.notifyError(m('Translations could not be updated for any of the selected <t>.'));
         } else {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
