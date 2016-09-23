@@ -44,7 +44,7 @@ var common = module.exports = {
     var o1 = syncUtil.addString('title', a.title, o);
     var o2 = syncUtil.addString('body', a.body, o1);
     var o3 = syncUtil.addContent(req, o2);
-    return o4;
+    return o3;
   },
 
   txRequestHTML: function(article) {
