@@ -140,7 +140,7 @@
             </label>
             <span class="o-link o-link--muted js-{{page}} js-sortby-title">
               {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
-                <path id="arrow-down-small" class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
+                <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
               </svg>
             </span>
           </div>
@@ -153,7 +153,7 @@
         <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
             Last Activity<svg class="o-icon" viewBox="0 0 16 16">
-              <path class="path1" d="M5.65 6.25l2.3 2.2 2.3-2.3 0.7 0.7-3 3-2.9-2.9 0.6-0.7z"></path>
+              <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
             </svg>
           </span>
         </div>
