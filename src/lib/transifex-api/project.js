@@ -40,7 +40,8 @@ var project = module.exports = {
     txProject: function() {
       logger.debug('txProject ajax request');
       return {
-        url: project.url + '?details',
+        url: project.url,
+        data: {'details': true},
         headers: project.headers,
         type: 'GET',
         cache: false,
