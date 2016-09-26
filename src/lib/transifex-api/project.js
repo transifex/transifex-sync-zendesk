@@ -13,7 +13,7 @@ var project = module.exports = {
   key: 'tx_project',
   url: '',
   headers: {
-    'X-Source-Zendesk': 'v2.0.0'
+    'X-Source-Zendesk': 'ZendeskApp/2.0.0'
   },
   username: '',
   password: '',
