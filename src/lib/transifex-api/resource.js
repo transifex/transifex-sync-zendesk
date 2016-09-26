@@ -50,13 +50,9 @@ var resource = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
         },
-        xhrFields: {
-          withCredentials: true
-        },
         dataType: 'json',
         username: resource.username,
         password: resource.password,
-        cors: true,
         secure: false
       };
     },
@@ -71,13 +67,9 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.languageCode = languageCode;
         },
-        xhrFields: {
-          withCredentials: true
-        },
         dataType: 'json',
         username: resource.username,
         password: resource.password,
-        cors: true,
         secure: false
       };
     },
@@ -91,14 +83,10 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = data.i18n_type;
         },
-        xhrFields: {
-          withCredentials: true
-        },
         username: resource.username,
         password: resource.password,
         data: JSON.stringify(data),
         contentType: 'application/json',
-        cors: true,
         secure: false
       };
     },
@@ -112,15 +100,11 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = data.i18n_type;
         },
-        xhrFields: {
-          withCredentials: true
-        },
         username: resource.username,
         password: resource.password,
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',
-        cors: true,
         secure: false
       };
     },

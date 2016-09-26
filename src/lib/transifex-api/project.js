@@ -43,14 +43,10 @@ var project = module.exports = {
         url: project.url + '?details',
         headers: project.headers,
         type: 'GET',
-        xhrFields: {
-          withCredentials: true
-        },
         cache: false,
         dataType: 'json',
         username: project.username,
         password: project.password,
-        cors: true,
         secure: false
       };
     },
