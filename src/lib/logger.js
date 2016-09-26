@@ -3,7 +3,7 @@
  * @module logger
  */
 
-var enabled = true;
+var enabled = false;
 
 function message() {
   return Array.prototype.join.call(arguments, ' ');
