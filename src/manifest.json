@@ -28,8 +28,8 @@
     },
     {
       "name": "features",
-      "type": "text",
-      "required": true
+      "type": "hidden",
+      "required": false 
     }
     ]
 }

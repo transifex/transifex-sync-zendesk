@@ -31,7 +31,6 @@ function txApp(modules) {
     //parse features
     if (this.settings.features) {
       try {
-        io.setFeatures(JSON.parse(this.settings.features));
         logger.info('Adding features:', this.settings.features);
       }
       catch(err) {

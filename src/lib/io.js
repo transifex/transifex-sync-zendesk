@@ -4,7 +4,7 @@
  */
 
 var SETTINGS = {},
-    FEATURES = {},
+    FEATURES = {'html-tx-resource': true},
     SORTING = {
       sortby: 'title',
       sortdirection: 'asc',
