@@ -87,7 +87,7 @@ var common = module.exports = {
       "\t\r\n]+)" + delimiters[1], "g");
     var tokens = pattern.match(token_regex);
     var pattern_regex = new RegExp(pattern.replace(special_chars_regex,
-      "\\$&").replace(token_regex, "(\.+)"));
+      "\\$&").replace(token_regex, "(\.*)"));
 
     if (lowercase) {
       str = str.toLowerCase();
