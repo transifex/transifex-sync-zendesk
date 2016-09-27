@@ -12,7 +12,8 @@ var SETTINGS = {},
     },
     OP = {},
     PAGE_ERROR = '',
-    SYNC_STATUS = [];
+    SYNC_STATUS = [],
+    RETRIES = {};
 
 module.exports = {
   setSettings: function(settings) {
@@ -50,6 +51,13 @@ module.exports = {
   },
   getSorting: function() {
     return SORTING || {};
+  },
+
+  getRetries: function(key){
+    return RETRIES[key];
+  },
+  setRetries: function(key, value){
+    RETRIES[key] = value;
   },
 
   setPageError: function(error) {
