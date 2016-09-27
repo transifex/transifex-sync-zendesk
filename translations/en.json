@@ -39,12 +39,6 @@
                     "value": "Sync application debug mode switch",
                     "title": "Enter true to turn on app logging"
                 }
-            },
-            "timeout": {
-                "label": {
-                    "value": "Sync application http timout",
-                    "title": "Enter time in millis for http timeout"
-                }
             }
         }
     }

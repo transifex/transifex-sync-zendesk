@@ -9,6 +9,7 @@ init:
 
 build:
 	cp -rf ./src/ ./dist/
+
 run:
 	cd ./dist;cat ../inputs.txt | zat server;
 
@@ -17,5 +18,7 @@ validate:
 
 package:
 	cd ./dist;zat package
+
+buildpack: build package
 
 .PHONY: build
