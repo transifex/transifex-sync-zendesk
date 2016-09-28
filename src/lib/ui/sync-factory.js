@@ -236,6 +236,8 @@ module.exports = function(T, t, api) {
           el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status == 'success') {
             el.addClass('is-success');
+            el.find('[data-status="not_found"]').addClass('is-hidden');
+            el.find('[data-status="found"]').removeClass('is-hidden');
           }
           else {
             failed++;
