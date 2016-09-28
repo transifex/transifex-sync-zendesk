@@ -157,7 +157,7 @@ def _construct_html_content(json_content, zd_type):
 
 
 def _copy_resources(options, resources, target_resources):
-    skipping, failed = [], []
+    skipping, failed = [], {}
     target_resource_slugs = [r['slug'] for r in target_resources]
     old_zd_resources = _filter_zendesk_resources(resources)
 
@@ -169,7 +169,6 @@ def _copy_resources(options, resources, target_resources):
             if not options.update_existing:
                 continue
         else:
-            import ipdb; ipdb.set_trace()
             new_res = _create_new_resource(options, res, new_slug=new_slug)
         stats = _get_resource_stats(options, res['slug'])
         for code, stat in stats.iteritems():
@@ -188,7 +187,6 @@ def _copy_resources(options, resources, target_resources):
 
 
 def migrate_project(options):
-    import ipdb; ipdb.set_trace()
     resources = _get_project_resources(options, options.project_slug)
     target_resources = _get_project_resources(options, options.target_slug)
     _copy_resources(options, resources, target_resources)
