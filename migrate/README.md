@@ -14,4 +14,4 @@ The options that `migrate_resources.py` accepts are:
 * `-p` or `--password`: Transifex password
 * `--source-project-slug`: The project that has the old zendesk resources
 * `--target-project-slug`: The project that the new resources will be created in (if not supplied the `source-project-slug` will be used)
-* `--update-existing`: Re-upload translations for resources that have already been created in the target project e.g. from previous execution of the script
+* `--update-existing`: Re-upload translations for resources that have already been created in the target project e.g. from previous execution of the script. Default value is False.
