@@ -458,7 +458,7 @@ module.exports = function(T, t, api) {
           }
         }
         if (has_error) {
-          this.notifyWarning('Some Transifex resources could not be loaded, you can click the refresh link to retry.');
+          this.notifyWarning('Some Transifex resources could not be loaded. Please refresh to try again.');
         }
         this.$(m('.js-<t>.js-select-all')).prop('disabled', false);
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];
