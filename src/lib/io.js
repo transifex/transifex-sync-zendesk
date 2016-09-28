@@ -54,7 +54,7 @@ module.exports = {
   },
 
   getRetries: function(key){
-    return RETRIES[key];
+    return RETRIES[key] || 0;
   },
   setRetries: function(key, value){
     RETRIES[key] = value;

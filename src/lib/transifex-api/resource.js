@@ -121,7 +121,7 @@ var resource = module.exports = {
       var retries = io.getRetries('txResourceStats' + jqXHR.resourceName);
       if (jqXHR.status == 401 && retries < 2) {
         this.ajax('txResourceStats', jqXHR.resourceName);
-        io.setRetries('txResourceStats' + jqXHR.resourceName, retries+1);
+        io.setRetries('txResourceStats' + jqXHR.resourceName, retries + 1);
       } else {
         io.popSync(resource.key + jqXHR.resourceName);
         // Save error status instead of resource
@@ -142,7 +142,7 @@ var resource = module.exports = {
       var retries = io.getRetries('txResource' + jqXHR.resourceName);
       if (jqXHR.status == 401 && retries < 2) {
         this.ajax('txResource', jqXHR.resourceName);
-        io.setRetries('txResource' + jqXHR.resourceName, retries+1);
+        io.setRetries('txResource' + jqXHR.resourceName, retries + 1);
       } else {
         io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
         this.store(resource.key + jqXHR.resourceName, jqXHR.status);

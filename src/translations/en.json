@@ -2,12 +2,12 @@
   "app": {
     "package": "txsync_zendesk_app",
     "description": {
-        "value": "Translate your Zendesk Help Center",
-        "title": "Translate your Zendesk Help Center"
+      "value": "Translate your Zendesk Help Center",
+      "title": "Translate your Zendesk Help Center"
     },
     "name": {
-        "value": "Transifex Sync",
-        "title": "Transifex Sync"
+      "value": "Transifex Sync",
+      "title": "Transifex Sync"
     },
     "parameters": {
       "tx_username": {
