@@ -6,15 +6,15 @@ var io = require('io');
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
   regExpTemplate: "<html><head></head><body><h1>(.*)</h1>(.*)</body></html>",
-  translationObjectFormat: function(response, locale) {
+  translationObjectFormat: function(response, locale, zd_type) {
     if (io.getFeature('html-tx-resource')) {
-      return common.translationObjectHTML(response, locale);
+      return common.translationObjectHTML(response, locale, zd_type);
     } else {
-      return syncUtil.zdGetTranslationObject(response, locale);
+      return syncUtil.zdGetTranslationObject(response, locale, zd_type);
     }
   },
 
-  translationObjectHTML: function(res, l) {
+  translationObjectHTML: function(res, l, zd_type) {
     var gblTemplate = common.gblTemplate;
     var re = new RegExp(common.regExpTemplate);
 
@@ -24,7 +24,19 @@ var common = module.exports = {
         gblTemplate).title,
       body: res.replace(/\\"/g, '"').match(re)[2],
     };
-    var o = _.extend(zdPartialArticle, {
+    var translationData = zdPartialArticle;
+    if (zd_type == 'categories') {
+      translationData = {
+        name: zdPartialArticle.title,
+        description: zdPartialArticle.body
+      };
+    }
+    if (zd_type == 'sections') {
+      translationData = {
+        name: zdPartialArticle.title,
+      };
+    }
+    var o = _.extend(translationData, {
       locale: l
     });
     return {
@@ -52,7 +64,7 @@ var common = module.exports = {
     var zdArticleContent = _.template(gblTemplate)({
       title: article.title,
       name: article.name,
-      body: article.body,
+      body: article.body || article.description,
     });
 
     var txRequestMade = {

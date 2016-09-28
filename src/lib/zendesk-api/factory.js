@@ -179,7 +179,7 @@ module.exports = function(name, key, api) {
       'zdUpsert<T>Translation': function(resource_data, id, zdLocale) {
         logger.info(M('Upsert <T> with Id:') + id + 'and locale:' + zdLocale);
 
-        var translationData = common.translationObjectFormat(resource_data, zdLocale);
+        var translationData = common.translationObjectFormat(resource_data, zdLocale, key);
 
         var existing_locales = this.store(factory.key + id + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){

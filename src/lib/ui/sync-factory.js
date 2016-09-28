@@ -63,16 +63,16 @@ module.exports = function(T, t, api) {
         if (selected_count) {
           batch_upload.removeAttr('disabled');
           batch_upload.removeClass('is-disabled');
-          batch_upload.text('Send Resources (' + selected_count + ')');
+          batch_upload.text(M('Send <T>') + ' (' + selected_count + ')');
         } else {
           batch_upload.attr('disabled');
           batch_upload.addClass('is-disabled');
-          batch_upload.text('Send Resources');
+          batch_upload.text(M('Send <T>'));
         }
         if (ready_for_download) {
           batch_download.removeAttr('disabled');
           batch_download.removeClass('is-disabled');
-          batch_download.text('Get Translations (' + ready_for_download + ')');
+          batch_download.text('Get Translations' + ' (' + ready_for_download + ')');
         } else {
           batch_download.attr('disabled');
           batch_download.addClass('is-disabled');
@@ -226,48 +226,6 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
-      /*
-      'ui<T>DownloadCompletedTranslations': function(event) {
-        if (event) event.preventDefault();
-        var linkId = "#" + event.target.id,
-            project = this.store(txProject.key),
-            sourceLocale = txProject.getSourceLocale(project),
-            txResourceName = this.$(linkId).attr("data-resource"),
-            zdObjectId = this.$(linkId).attr("data-zd-object-id"),
-            s = this.store(txResource.key + txResourceName),
-            completedLocales = this.completedLanguages(s),
-            zdLocale, translation;
-        for (var i = 0; i < completedLocales.length; i++) { // iterate through list of locales
-          if (sourceLocale !== completedLocales[i]) { // skip the source locale
-            translation = this.store(txResource.key + txResourceName + completedLocales[i]);
-            if (typeof translation.content === 'string') {
-              zdLocale = syncUtil.txLocaletoZd(completedLocales[i]);
-              this[M('zdUpsert<T>Translation')](translation.content, zdObjectId, zdLocale);
-            }
-          }
-        }
-      },
-      */
-      /*
-      'ui<T>Upsert': function(event) {
-        if (event) event.preventDefault();
-        var linkId = "#" + event.target.id,
-            txResourceName = this.$(linkId).attr("data-resource"),
-            zdObjectId = this.$(linkId).attr("data-zd-object-id"),
-            zdObjectType = this.$(linkId).attr("data-zd-object-type"),
-            entries = this.store(zdApi.key),
-            entry = this[M('getSingle<T>')](zdObjectId, entries),
-            resource_request = {};
-        if (io.hasFeature('html-tx-resource')) {
-          resource_request = common.txRequestHTML(entry);
-        } else {
-          resource_request = common.getTxRequest(entry);
-        }
-        this.loadSyncPage = this[M('ui<T>UpsertComplete')];
-        io.pushSync(txResource.key + txResourceName + 'upsert');
-        this.txUpsertResource(resource_request, txResourceName);
-      },
-      */
       'ui<T>UpsertComplete': function() {
         logger.debug('Upsert complete');
         this[M('end<T>Process')]();
@@ -458,7 +416,7 @@ module.exports = function(T, t, api) {
           }
         }
         if (has_error) {
-          this.notifyWarning('Some Transifex resources could not be loaded, you can click the refresh link to retry.');
+          this.notifyWarning('Some Transifex resources could not be loaded. Please refresh to try again.');
         }
         this.$(m('.js-<t>.js-select-all')).prop('disabled', false);
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];

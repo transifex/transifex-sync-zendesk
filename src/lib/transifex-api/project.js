@@ -66,6 +66,10 @@ var project = module.exports = {
         logger.error('txProjectSyncError:', 'Not found');
         io.setPageError('txProject:not_found');
       }
+      else if (jqXHR.status === 401 && io.getRetries('txProject') < 1) {
+        this.ajax('txProject');
+        io.setRetries('txProject', io.getRetries('txProject') + 1);
+      }
       else if (jqXHR.status === 401) {
         logger.error('txProjectSyncError:', 'Login error');
         io.setPageError('txProject:login');
@@ -79,6 +83,7 @@ var project = module.exports = {
   actionHandlers: {
     asyncGetTxProject: function() {
       logger.debug('function: [asyncGetTxProject]');
+      io.setRetries('txProject', 0);
       io.pushSync(project.key);
       this.ajax('txProject');
     },
