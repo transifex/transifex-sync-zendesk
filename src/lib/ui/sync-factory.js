@@ -56,31 +56,27 @@ module.exports = function(T, t, api) {
             selected = this.$(m('.js-<t>.js-checkbox:checked')),
             selected_count = selected.length,
             batch_upload = this.$(m('.js-<t>.js-batch-upload')),
-            batch_download = this.$(m('.js-<t>.js-batch-download')),
-            upload_text = batch_upload.text(),
-            download_text = batch_download.text();
+            batch_download = this.$(m('.js-<t>.js-batch-download'));
 
-        upload_text = upload_text.replace(/\([0-9]+\)/, '').trim();
-        download_text = download_text.replace(/\([0-9]+\)/, '').trim();
         batch_upload.removeClass('has-spinner');
         batch_download.removeClass('has-spinner');
         if (selected_count) {
           batch_upload.removeAttr('disabled');
           batch_upload.removeClass('is-disabled');
-          batch_upload.text(upload_text + ' (' + selected_count + ')');
+          batch_upload.text(M('Send <T>') + ' (' + selected_count + ')');
         } else {
           batch_upload.attr('disabled');
           batch_upload.addClass('is-disabled');
-          batch_upload.text(upload_text);
+          batch_upload.text(M('Send <T>'));
         }
         if (ready_for_download) {
           batch_download.removeAttr('disabled');
           batch_download.removeClass('is-disabled');
-          batch_download.text(download_text + ' (' + ready_for_download + ')');
+          batch_download.text('Get Translations' + ' (' + ready_for_download + ')');
         } else {
           batch_download.attr('disabled');
           batch_download.addClass('is-disabled');
-          batch_download.text(download_text);
+          batch_download.text('Get Translations');
         }
         //update select all
         this.$(m('.js-<t>.js-select-all')).prop(
