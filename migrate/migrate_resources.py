@@ -198,7 +198,7 @@ def main(argv=None):
     """
     if argv is None:
         argv = sys.argv[1:]
-    usage = "usage: %prog [options] command [cmd_options]"
+    usage = "usage: %prog [options] "
     description = "This is the Transifex Sync migration script which allows you"\
                   " to migrate resources from the old to new style of segmentation"\
                   " for resources created through Zendesk.\nIf you'd like to"\
@@ -219,11 +219,11 @@ def main(argv=None):
         default=False, help="Transifex password"
     )
     parser.add_option(
-        "--tx-project-slug", action="store", dest="project_slug", type="string",
+        "--source-project-slug", action="store", dest="project_slug", type="string",
         default=None, help="Transifex project slug associated with zendesk"
     )
     parser.add_option(
-        "--tx-target-slug", action="store", dest="target_slug", type="string",
+        "--target-project-slug", action="store", dest="target_slug", type="string",
         default=None, help="Transifex project the new resources should be created in"
     )
     parser.add_option(
@@ -232,7 +232,7 @@ def main(argv=None):
     )
     (options, args) = parser.parse_args()
     if not (options.username and options.password and options.project_slug):
-        print "Missing arguments"
+        print "Missing arguments. Please supply both your credentials and source project slug."
         sys.exit()
 
     if not options.target_slug:
