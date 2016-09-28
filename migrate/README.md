@@ -5,7 +5,7 @@ This migration script is indented to migrate resources created through the Zende
 in order to run the script from the base folder of this repo run:
 ```bash
 cd migrate
-pip install requirements.txt
+pip install -r requirements.txt
 python migrate_resources.py -u <tx_username> -p <tx_password> --source-project-slug=<some_slug> --target-project-slug=<some_other_slug>
 ```
 
