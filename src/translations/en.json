@@ -1,19 +1,39 @@
 {
   "app": {
-    "package": "hello_world_sample",
-    "name": {
-      "value": "Hello World App",
-      "title": "app name"
-    },
+    "package": "txsync_zendesk_app",
     "description": {
-      "value": "This is the best App ever",
-      "title": "app description"
-    }
-  },
-  "hello": {
-    "main": {
-      "title": "Enter a brief description of your string here",
-      "value": "Hello"
+        "value": "Translate your Zendesk Help Center",
+        "title": "Translate your Zendesk Help Center"
+    },
+    "name": {
+        "value": "Transifex Sync",
+        "title": "Transifex Sync"
+    },
+    "parameters": {
+      "tx_username": {
+        "label": {
+          "value": "Transifex Username",
+          "title": "Enter your Transifex username."
+        }
+      },
+      "tx_password": {
+        "label": {
+          "value": "Transifex Password",
+          "title": "Enter your Transifex password."
+        }
+      },
+      "tx_project": {
+        "label": {
+          "value": "Transifex Project URL",
+          "title": "Enter the Transifex Project URL you wish to export to."
+        }
+      },
+      "features": {
+        "label": {
+          "value": "Sync application feature switch",
+          "title": "Enter the hexidecimal feature switch number"
+        }
+      }
     }
   }
 }
