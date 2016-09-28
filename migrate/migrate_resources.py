@@ -10,6 +10,8 @@ from requests.auth import HTTPBasicAuth
 from requests.exceptions import RequestException
 from optparse import OptionParser
 
+SLUG_REGEX = re.compile('(articles|sections|categories)-[0-9]{8}')
+
 # This block ensures that ^C interrupts are handled quietly.
 try:
     import signal
@@ -93,6 +95,7 @@ def _get_translations(options, resource_slug, language_code):
 
 @handle_exception
 def _create_new_resource(options, old_resource, new_slug):
+    zd_type = SLUG_REGEX.match(old_resource['slug']).group(1)
     json_content = _get_source_content(options, old_resource['slug'])
     url = 'http://www.transifex.com/api/2/project/{}/resources/'.format(
         options.target_slug
@@ -101,7 +104,7 @@ def _create_new_resource(options, old_resource, new_slug):
             'slug': new_slug,
             'priority': 0,
             'i18n_type': 'HTML',
-            'content': _construct_html_content(json_content['content'])}
+            'content': _construct_html_content(json_content['content'], zd_type)}
     return requests.post(
         url, data=json.dumps(data), auth=HTTPBasicAuth(options.username, options.password),
         headers={"Content-Type": "application/json"}
@@ -110,10 +113,11 @@ def _create_new_resource(options, old_resource, new_slug):
 
 def _upload_new_translations(options, old_slug, new_slug, language_code):
     print "Uploading {} translations for {} resource.".format(language_code, new_slug)
+    zd_type = SLUG_REGEX.match(old_slug).group(1)
     json_content = _get_translations(options, old_slug, language_code)
     url = 'http://www.transifex.com/api/2/project/{}/resource/{}/translation/{}/'
     url = url.format(options.target_slug, new_slug, language_code)
-    data = {'content': _construct_html_content(json_content['content'])}
+    data = {'content': _construct_html_content(json_content['content'], zd_type)}
     return requests.put(
         url, data=json.dumps(data), auth=HTTPBasicAuth(options.username, options.password),
         headers={"Content-Type": "application/json"}
@@ -130,20 +134,30 @@ def _get_resource_stats(options, slug):
 
 
 def _filter_zendesk_resources(resources):
-    slug_regex = re.compile('(articles|sections|categories)-[0-9]{8}')
-    return [r for r in resources if slug_regex.match(r['slug']) and
+    return [r for r in resources if SLUG_REGEX.match(r['slug']) and
             r['i18n_type'] == 'KEYVALUEJSON']
 
 
-def _construct_html_content(json_content):
-    html_template = u'<head></body><h1>{title}</h1>{body}</body></head>'
-    content = json.loads(json_content)
-    return html_template.format(**content)
+def _construct_html_content(json_content, zd_type):
+    content_dict = {
+        'title': '',
+        'body': '',
+        'name': '',
+        'description': ''
+    }
+    if zd_type == 'articles':
+        template = u'<head></body><h1>{title}</h1>{body}</body></head>'
+    elif zd_type == 'categories':
+        template = u'<head></body><h1>{name}</h1>{description}</body></head>'
+    else:
+        template = u'<head></body><h1>{name}</h1></body></head>'
+
+    content_dict.update(json.loads(json_content))
+    return template.format(**content_dict)
 
 
 def _copy_resources(options, resources, target_resources):
     skipping, failed = [], []
-    resource_slugs = [r['slug'] for r in resources]
     target_resource_slugs = [r['slug'] for r in target_resources]
     old_zd_resources = _filter_zendesk_resources(resources)
 
@@ -152,7 +166,10 @@ def _copy_resources(options, resources, target_resources):
         if new_slug in target_resource_slugs:
             print "Skipping creation of {} resource. Already exists.".format(res['slug'])
             skipping.append(res['slug'])
+            if not options.update_existing:
+                continue
         else:
+            import ipdb; ipdb.set_trace()
             new_res = _create_new_resource(options, res, new_slug=new_slug)
         stats = _get_resource_stats(options, res['slug'])
         for code, stat in stats.iteritems():
@@ -210,6 +227,10 @@ def main(argv=None):
     parser.add_option(
         "--tx-target-slug", action="store", dest="target_slug", type="string",
         default=None, help="Transifex project the new resources should be created in"
+    )
+    parser.add_option(
+        "--update-existing", action="store_true", dest="update_existing",
+        default=False, help="Update already created resources"
     )
     (options, args) = parser.parse_args()
     if not (options.username and options.password and options.project_slug):
