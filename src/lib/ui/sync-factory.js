@@ -226,48 +226,6 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
-      /*
-      'ui<T>DownloadCompletedTranslations': function(event) {
-        if (event) event.preventDefault();
-        var linkId = "#" + event.target.id,
-            project = this.store(txProject.key),
-            sourceLocale = txProject.getSourceLocale(project),
-            txResourceName = this.$(linkId).attr("data-resource"),
-            zdObjectId = this.$(linkId).attr("data-zd-object-id"),
-            s = this.store(txResource.key + txResourceName),
-            completedLocales = this.completedLanguages(s),
-            zdLocale, translation;
-        for (var i = 0; i < completedLocales.length; i++) { // iterate through list of locales
-          if (sourceLocale !== completedLocales[i]) { // skip the source locale
-            translation = this.store(txResource.key + txResourceName + completedLocales[i]);
-            if (typeof translation.content === 'string') {
-              zdLocale = syncUtil.txLocaletoZd(completedLocales[i]);
-              this[M('zdUpsert<T>Translation')](translation.content, zdObjectId, zdLocale);
-            }
-          }
-        }
-      },
-      */
-      /*
-      'ui<T>Upsert': function(event) {
-        if (event) event.preventDefault();
-        var linkId = "#" + event.target.id,
-            txResourceName = this.$(linkId).attr("data-resource"),
-            zdObjectId = this.$(linkId).attr("data-zd-object-id"),
-            zdObjectType = this.$(linkId).attr("data-zd-object-type"),
-            entries = this.store(zdApi.key),
-            entry = this[M('getSingle<T>')](zdObjectId, entries),
-            resource_request = {};
-        if (io.hasFeature('html-tx-resource')) {
-          resource_request = common.txRequestHTML(entry);
-        } else {
-          resource_request = common.getTxRequest(entry);
-        }
-        this.loadSyncPage = this[M('ui<T>UpsertComplete')];
-        io.pushSync(txResource.key + txResourceName + 'upsert');
-        this.txUpsertResource(resource_request, txResourceName);
-      },
-      */
       'ui<T>UpsertComplete': function() {
         logger.debug('Upsert complete');
         this[M('end<T>Process')]();
