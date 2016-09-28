@@ -48,7 +48,7 @@ var project = module.exports = {
         dataType: 'json',
         username: project.username,
         password: project.password,
-        secure: false
+        secure: true
       };
     },
   },

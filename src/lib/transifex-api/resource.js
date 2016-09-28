@@ -53,7 +53,7 @@ var resource = module.exports = {
         dataType: 'json',
         username: resource.username,
         password: resource.password,
-        secure: false
+        secure: true
       };
     },
     txResource: function(resourceName, languageCode) {
@@ -70,7 +70,7 @@ var resource = module.exports = {
         dataType: 'json',
         username: resource.username,
         password: resource.password,
-        secure: false
+        secure: true
       };
     },
     txInsertResource: function(data, resourceName) {
@@ -87,7 +87,7 @@ var resource = module.exports = {
         password: resource.password,
         data: JSON.stringify(data),
         contentType: 'application/json',
-        secure: false
+        secure: true
       };
     },
     txUpdateResource: function(data, resourceName) {
@@ -105,7 +105,7 @@ var resource = module.exports = {
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',
-        secure: false
+        secure: true
       };
     },
   },
