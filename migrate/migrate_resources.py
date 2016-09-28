@@ -95,6 +95,7 @@ def _get_translations(options, resource_slug, language_code):
 
 @handle_exception
 def _create_new_resource(options, old_resource, new_slug):
+    print "Creating new resource {} for {}.".format(new_slug, old_resource['slug'])
     zd_type = SLUG_REGEX.match(old_resource['slug']).group(1)
     json_content = _get_source_content(options, old_resource['slug'])
     url = 'http://www.transifex.com/api/2/project/{}/resources/'.format(
@@ -183,7 +184,9 @@ def _copy_resources(options, resources, target_resources):
                     failed[new_slug].append(code)
     if failed:
         print "Failed to migrate translations for:\n"
-        '\n'.join(["{}: {}".format(key, ', '.join(value)) for key, value in failed.iteritems()])
+        print '\n'.join(["{}: {}".format(
+            key, ', '.join(value)
+        ) for key, value in failed.iteritems()])
 
 
 def migrate_project(options):
