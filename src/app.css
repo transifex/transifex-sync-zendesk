@@ -181,13 +181,9 @@ span {
 
 /* Utilities */
 
-.u-position-absolute  { position: absolute !important; }
 .u-position-relative  { position: relative !important; }
-.u-position-fixed     { position: fixed !important; }
 
 .u-float-left   { float: left !important; }
-.u-float-right  { float: right !important; }
-.u-clear-both   { clear: both !important; }
 
 .u-clearfix {
   &:before,
@@ -200,301 +196,63 @@ span {
   }
 }
 
-.u-inlineBlock { display: inline-block; }
-
-.u-display-inlineBlock { display: inline-block !important; }
-
-
-.u-block          { display: block; }
-.u-display-block  { display: block !important; }
 .u-display-flex   {
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-  display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
-  display: -ms-flexbox;      /* TWEENER - IE 10 */
-  display: -webkit-flex;     /* NEW - Chrome */
-  display: flex;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 }
 
-.u-force-display-flex   {
-  display: -webkit-box !important;      /* OLD - iOS 6-, Safari 3.1-6 */
-  display: -moz-box !important;         /* OLD - Firefox 19- (buggy but mostly works) */
-  display: -ms-flexbox !important;      /* TWEENER - IE 10 */
-  display: -webkit-flex !important;     /* NEW - Chrome */
-  display: flex !important;             /* NEW, Spec - Opera 12.1, Firefox 20+ */
-}
-
-.u-display-inline  { display: inline; }
-
-/* used as a helper to avoid inline styles for js slide/toggle actions, DO NOT ADD !important */
 .u-display-none    { display: none; }
 
-.u-force-display-block { display: block !important; }
-
-/* added display-none for cases that are needed for a js slide, to work DONT ADD !important */
-*[class^="o-"].u-display-none,
-*[class^="c-"].u-display-none,
-*[class~=" o-"].u-display-none,
-*[class~=" c-"].u-display-none,
-.u-display-none     { display: none; }
-
-.u-overflow-visible { overflow: visible !important; }
-.u-overflow-hidden { overflow: hidden !important; }
-.u-overflow-scroll { overflow: scroll !important; }
-.u-overflow-auto   { overflow: auto !important; }
-
-
-.u-box-form { width: $form-height !important; height: $form-height !important; }
-
-.u-box-button { width: $button-height !important; height: $button-height !important; }
-
-.u-box-1x  { width: $baseline-grid !important;height: $baseline-grid !important; }
-.u-box-2x  { width: $baseline-grid*2 !important;height: $baseline-grid*2 !important; }
-.u-box-3x  { width: $baseline-grid*3 !important;height: $baseline-grid*3 !important; }
-.u-box-4x  { width: $baseline-grid*4 !important;height: $baseline-grid*4 !important; }
-.u-box-5x  { width: $baseline-grid*5 !important;height: $baseline-grid*5 !important; }
-.u-box-6x  { width: $baseline-grid*6 !important;height: $baseline-grid*6 !important; }
 .u-box-7x  { width: $baseline-grid*7 !important;height: $baseline-grid*7 !important; }
-.u-box-8x  { width: $baseline-grid*8 !important;height: $baseline-grid*8 !important; }
-.u-box-9x  { width: $baseline-grid*9 !important;height: $baseline-grid*9 !important; }
-.u-box-10x { width: $baseline-grid*10 !important;height: $baseline-grid*10 !important; }
 
-.u-box-smallHeight { width: $baseline-grid*31 !important;height: $baseline-grid*31 !important; }
-.u-box-midHeight   { width: $baseline-grid*46 !important;height: $baseline-grid*46 !important; }
-.u-box-largeHeight { width: $baseline-grid*62 !important;height: $baseline-grid*62 !important; }
-
-.u-box-10  { width: 10% !important;height: 10% !important; }
-.u-box-20  { width: 20% !important;height: 20% !important; }
-.u-box-30  { width: 30% !important;height: 30% !important; }
-.u-box-40  { width: 40% !important;height: 40% !important; }
-.u-box-50  { width: 50% !important;height: 50% !important; }
-.u-box-60  { width: 60% !important;height: 60% !important; }
-.u-box-70  { width: 70% !important;height: 70% !important; }
-.u-box-80  { width: 80% !important;height: 80% !important; }
-.u-box-90  { width: 90% !important;height: 90% !important; }
 .u-box-100 { width: 100% !important;height: 100% !important; }
 
 .u-height-form { height: $form-height !important; }
 
 .u-height-button { height: $button-height !important; }
 
-.u-height-1x  { height: $baseline-grid !important; }
-.u-height-2x  { height: $baseline-grid*2 !important; }
-.u-height-3x  { height: $baseline-grid*3 !important; }
-.u-height-4x  { height: $baseline-grid*4 !important; }
-.u-height-5x  { height: $baseline-grid*5 !important; }
-.u-height-6x  { height: $baseline-grid*6 !important; }
 .u-height-7x  { height: $baseline-grid*7 !important; }
-.u-height-8x  { height: $baseline-grid*8 !important; }
-.u-height-9x  { height: $baseline-grid*9 !important; }
-.u-height-10x { height: $baseline-grid*10 !important; }
 
-.u-height-smallHeight { height: $baseline-grid*31 !important; }
-.u-height-midHeight   { height: $baseline-grid*46 !important; }
-.u-height-largeHeight { height: $baseline-grid*62 !important; }
-
-.u-height-10  { height: 10% !important; }
-.u-height-20  { height: 20% !important; }
-.u-height-30  { height: 30% !important; }
-.u-height-40  { height: 40% !important; }
-.u-height-50  { height: 50% !important; }
-.u-height-60  { height: 60% !important; }
-.u-height-70  { height: 70% !important; }
-.u-height-80  { height: 80% !important; }
-.u-height-90  { height: 90% !important; }
-.u-height-100 { height: 100% !important; }
-
-.u-height-auto       { height: auto !important; }
-
-.u-minHeight-100    { min-height: 100% !important; }
-
-
-.u-width-1x  { width: $baseline-grid !important; }
-.u-width-2x  { width: $baseline-grid*2 !important; }
-.u-width-3x  { width: $baseline-grid*3 !important; }
-.u-width-4x  { width: $baseline-grid*4 !important; }
-.u-width-5x  { width: $baseline-grid*5 !important; }
-.u-width-6x  { width: $baseline-grid*6 !important; }
 .u-width-7x  { width: $baseline-grid*7 !important; }
-.u-width-8x  { width: $baseline-grid*8 !important; }
-.u-width-9x  { width: $baseline-grid*9 !important; }
-.u-width-10x { width: $baseline-grid*10 !important; }
 
-.u-width-smallWidth { width: $baseline-grid*31 !important; } /* 186px */
-.u-width-midWidth   { width: $baseline-grid*46 !important; } /* 276px */
-.u-width-largeWidth { width: $baseline-grid*62 !important; } /* 372px */
-
-.u-width-10  { width: 10% !important; }
 .u-width-20  { width: 20% !important; }
-.u-width-30  { width: 30% !important; }
 .u-width-40  { width: 40% !important; }
-.u-width-50  { width: 50% !important; }
-.u-width-60  { width: 60% !important; }
-.u-width-70  { width: 70% !important; }
-.u-width-80  { width: 80% !important; }
-.u-width-90  { width: 90% !important; }
 .u-width-100 { width: 100% !important; }
-
-
-.u-width-5        { width: 5% !important; }
-.u-width-15        { width: 15% !important; }
-.u-width-25        { width: 25% !important; }
-.u-width-35        { width: 35% !important; }
-.u-width-45        { width: 45% !important; }
-
-.u-width-4of12     { width: 33.33333333% !important; }
-.u-width-8of12     { width: 66.66666667% !important; }
-
-.u-minWidth-auto   { min-width: auto !important; }
 
 .is-hidden { display: none !important; }
 
 /* -- Color utilities -- */
-.u-backgroundColor-brand      { background-color: $brand-color !important; }
-.u-backgroundColor-white      { background-color: $white-color !important; }
-.u-backgroundColor-whiteFaded { background-color: fade-out( $white-color, $fade-once-percentage) !important; }
-.u-backgroundColor-main       { background-color: $background-main-color !important; }
-.u-backgroundColor-black      { background-color: $black-color !important; }
-.u-backgroundColor-data       { background-color: $background-data-color !important; }
-.u-backgroundColor-muted      { background-color: $background-muted-color !important; }
 .u-backgroundColor-active     { background-color: $background-active-color !important; }
-.u-backgroundColor-systemSuccess { background-color: $status-success-color !important; }
-.u-backgroundColor-systemError   { background-color: $status-error-color !important; }
-.u-backgroundColor-systemWarning { background-color: $status-warning-color !important; }
-.u-backgroundColor-systemInfo    { background-color: $status-information-color !important; }
-.u-backgroundColor-cta           { background-color: $action-CTA-color !important; }
-.u-backgroundColor-secondaryNav { background-color: $secondaryNavigation-background-color !important; }
-.u-backgroundColor-secondaryNav-highlight { background-color: $secondaryNavigation-background-highlight-color !important; }
-.u-backgroundColor-notification { background-color: $secondary-notification-color !important; }
-.u-backgroundColor-issue        { background-color: $secondary-issue-color !important; }
-.u-backgroundColor-graphBack     { background-color: $background-graph-back !important; }
-.u-backgroundColor-graphBase     { background-color: $background-graph-base !important; }
-.u-backgroundColor-graphExtend   { background-color: $background-graph-extend !important; }
-.u-backgroundColor-lightfadeWhite { background-color: fade-out( $white-color, $fade-once-percentage ) !important;}
-.u-backgroundColor-fadedWhite     { background-color: fade-out( $white-color, $fade-twice-percentage ) !important;}
-.u-backgroundColor-fadedBlack     { background-color: fade-out( $black-color, $fade-twice-percentage ) !important;}
-.u-backgroundColor-fadedBlackDark { background-color: fade-out( $black-color, 0.65 ) !important;}
 
-.u-color-brand      { color: $brand-color !important; }
-.u-color-white      { color: $white-color !important; }
-.u-color-black      { color: $black-color !important; }
 .u-color-primary    { color: $text-primary-color !important; }
 .u-color-secondary  { color: $text-secondary-color !important; }
-.u-color-important  { color: $text-important-color !important; }
 .u-color-disabled   { color: $text-disabled-color !important; }
-.u-color-divider    { color: $divider-color !important; }
-.u-color-notification  { color: $secondary-notification-color !important; }
-.u-color-issue { color: $secondary-issue-color !important; }
-.u-color-systemSuccess { color: $status-success-color !important; }
-.u-color-systemError   { color: $status-error-color !important; }
-.u-color-systemWarning { color: $status-warning-color !important; }
-.u-color-systemInfo    { color: $status-information-color !important; }
-.u-color-graphBase     { color: $background-graph-base !important; }
-.u-color-graphExtend   { color: $background-graph-extend !important; }
 
 /* -- Border utilities -- */
-.u-border-none       { border: none !important; }
-.u-borderTop-none    { border-top: none !important; }
-.u-borderBottom-none { border-bottom: none !important; }
-.u-borderLeft-none   { border-left: none !important; }
-.u-borderRight-none  { border-right: none !important; }
-.u-border-divider       { border: 1px solid $divider-color !important; }
-.u-borderTop-divider    { border-top: 1px solid $divider-color !important; }
+
 .u-borderBottom-divider { border-bottom: 1px solid $divider-color !important; }
-.u-borderVertical-divider {
-  border-top: 1px solid $divider-color !important;
-  border-bottom: 1px solid $divider-color !important;
-}
-.u-borderLeft-divider   { border-left: 1px solid $divider-color !important; }
-.u-borderRight-divider  { border-right: 1px solid $divider-color !important; }
-.u-borderHorizontal-divider {
-  border-left: 1px solid $divider-color !important;
-  border-right: 1px solid $divider-color !important;
-}
-
-.u-borderRadius-default { border-radius: $default-border-radius;-moz-border-radius: $default-border-radius;-webkit-border-radius: $default-border-radius; }
-.u-borderTopRadius-default { border-radius: $default-border-radius $default-border-radius 0 0;-moz-border-radius: $default-border-radius $default-border-radius 0 0;-webkit-border-radius: $default-border-radius $default-border-radius 0 0; }
-.u-borderBottomRadius-default { border-radius: 0 0 $default-border-radius $default-border-radius;-moz-border-radius: 0 0 $default-border-radius $default-border-radius;-webkit-border-radius: 0 0 $default-border-radius $default-border-radius; }
-.u-borderRadius-form { border-radius:  $form-border-radius;-moz-border-radius:  $form-border-radius;-webkit-border-radius:  $form-border-radius; }
-.u-borderTopRadius-form { border-radius: $form-border-radius $form-border-radius 0 0;-moz-border-radius: $form-border-radius $form-border-radius 0 0;-webkit-border-radius: $form-border-radius $form-border-radius 0 0; }
-.u-borderBottomRadius-form { border-radius: 0 0 $form-border-radius $default-border-radius;-moz-border-radius: 0 0 $form-border-radius $default-border-radius;-webkit-border-radius: 0 0 $form-border-radius $default-border-radius; }
-.u-borderRadius-1x { border-radius:  $baseline-grid ;-moz-border-radius:  $baseline-grid ;-webkit-border-radius:  $baseline-grid ; }
-.u-borderTopRadius-1x { border-radius: $baseline-grid $baseline-grid 0 0;-moz-border-radius: $baseline-grid $baseline-grid 0 0;-webkit-border-radius: $baseline-grid $baseline-grid 0 0; }
-.u-borderBottomRadius-1x { border-radius: 0 0 $baseline-grid $baseline-grid;-moz-border-radius: 0 0 $baseline-grid $baseline-grid;-webkit-border-radius: 0 0 $baseline-grid $baseline-grid; }
-.u-borderRadius-round   { border-radius: 50%;-moz-border-radius: 50%;-webkit-border-radius: 50%; }
-
-.u-border-solid    { border-style: solid !important; }
-.u-border-dashed   { border-style: dashed !important; }
-.u-border-dotted   { border-style: dotted !important; }
 
 /* -- Typography utilities -- */
 
-.u-whitespace-pre { white-space: pre !important; }
-
-.u-textAlign-left { text-align: left !important; }
 .u-textAlign-right { text-align: right !important; }
 .u-textAlign-center { text-align: center !important; }
-.u-textAlign-right { text-align: right !important; }
 
-.u-fontWeight-thin      { font-weight: 100 !important; }  // TODO: replace with variable
-.u-fontWeight-regular   { font-weight: 400 !important; }  // TODO: replace with variable
-.u-fontWeight-semibold  { font-weight: 600 !important; }  // TODO: replace with variable
-
-.u-textDecoration-linethrough     { text-decoration: line-through !important; }
-.u-textDecoration-underline { text-decoration: underline !important; }
-
-.u-fontStyle-italic         { font-style: italic !important; }
-
-.u-textTransform-uppercase  { text-transform: uppercase !important;}
-.u-textTransform-none       { text-transform: none !important;}
-
-.u-fontSize-tiny          { font-size: $tiny-font-size !important; }
 .u-fontSize-small         { font-size: $small-font-size !important; }
-.u-fontSize-default       { font-size: $default-font-size !important; } // TODO: get rid of this in favor of normal
 .u-fontSize-normal        { font-size: $default-font-size !important; }
-.u-fontSize-default-plus  { font-size: $default-plus-font-size !important; }
 .u-fontSize-large         { font-size: $large-font-size !important; }
 .u-fontSize-big           { font-size: $big-font-size !important; }
-.u-fontSize-bigger        { font-size: $bigger-font-size !important; }
-.u-fontSize-enormous      { font-size: $enormous-font-size !important; }
-.u-fontSize-enormous-plus { font-size: $enormous-plus-font-size !important; }
-.u-fontSize-huge          { font-size: $huge-font-size !important; }
-.u-fontSize-gargantuan    { font-size: $gargantuan-font-size !important; }
 
-.u-lineHeight-2x  { line-height: $baseline-grid*2 !important; }
 .u-lineHeight-3x  { line-height: $baseline-grid*3 !important; }
 .u-lineHeight-4x  { line-height: $baseline-grid*4 !important; }
-.u-lineHeight-5x  { line-height: $baseline-grid*5 !important; }
 .u-lineHeight-6x  { line-height: $baseline-grid*6 !important; }
 .u-lineHeight-7x  { line-height: $baseline-grid*7 !important; }
-.u-lineHeight-8x  { line-height: $baseline-grid*8 !important; }
-.u-lineHeight-9x  { line-height: $baseline-grid*8 !important; }
-.u-lineHeight-10x  { line-height: $baseline-grid*8 !important; }
 .u-lineHeight-form    { line-height: $form-height !important; }
 .u-lineHeight-button  { line-height: $button-height !important; }
-.u-lineHeight-1em { line-height: 1em !important; }
-
-.u-verticalAlign-middle { vertical-align: middle !important; }
-.u-verticalAlign-textTop { vertical-align: text-top !important; }
-.u-verticalAlign-bottom  { vertical-align: bottom !important; }
-
-.u-wordBreak-breakAll   { word-break: break-all; }
 
 /* -- Element spacing utilities -- */
-
-.u-marginTop-none     { margin-top: 0 !important; }
-.u-marginHorizontal-none   { margin-top: 0; margin-bottom: 0 !important; }
-.u-margin-none          { margin: 0 !important; }
-.u-marginTop-none       { margin-top: 0 !important; }
-.u-marginBottom-none     { margin-bottom: 0 !important; }
-.u-marginVertical-none{ margin-top: 0 !important; margin-bottom: 0 !important; }
-
-.u-marginLeft-0_5x  { margin-left: $baseline-grid*0.5 !important; }
-.u-marginRight-0_5x { margin-right: $baseline-grid*0.5 !important; }
-.u-marginHorizontal-0_5x { margin-left: $baseline-grid*0.5 !important; margin-right: $baseline-grid*0.5 !important; }
-.u-marginTop-0_5x  { margin-top: $baseline-grid*0.5 !important; }
-.u-marginBottom-0_5x { margin-bottom: $baseline-grid*0.5 !important; }
-.u-marginVertical-0_5x { margin-top: $baseline-grid*0.5 !important; margin-bottom: $baseline-grid*0.5 !important; }
-.u-margin-0_5x { margin: $baseline-grid*0.5 !important; }
 
 .u-marginLeft-1x  { margin-left: $baseline-grid !important; }
 .u-marginRight-1x { margin-right: $baseline-grid !important; }
@@ -510,107 +268,11 @@ span {
 .u-marginBottom-2x { margin-bottom: $baseline-grid*2 !important; }
 .u-marginVertical-2x { margin-top: $baseline-grid*2 !important; margin-bottom: $baseline-grid*2 !important; }
 .u-margin-2x { margin: $baseline-grid*2 !important; }
-.u-marginLeft-3x  { margin-left: $baseline-grid*3 !important; }
-.u-marginRight-3x { margin-right: $baseline-grid*3 !important; }
-.u-marginHorizontal-3x { margin-left: $baseline-grid*3 !important; margin-right: $baseline-grid*3 !important; }
-.u-marginTop-3x  { margin-top: $baseline-grid*3 !important; }
+
 .u-marginBottom-3x { margin-bottom: $baseline-grid*3 !important; }
-.u-marginVertical-3x { margin-top: $baseline-grid*3 !important; margin-bottom: $baseline-grid*3 !important; }
-.u-margin-3x { margin: $baseline-grid*3 !important; }
-.u-marginLeft-4x  { margin-left: $baseline-grid*4 !important; }
-.u-marginRight-4x { margin-right: $baseline-grid*4 !important; }
-.u-marginHorizontal-4x { margin-left: $baseline-grid*4 !important; margin-right: $baseline-grid*4 !important; }
-.u-marginTop-4x  { margin-top: $baseline-grid*4 !important; }
+
 .u-marginBottom-4x { margin-bottom: $baseline-grid*4 !important; }
-.u-marginVertical-4x { margin-top: $baseline-grid*4 !important; margin-bottom: $baseline-grid*4 !important; }
-.u-margin-4x { margin: $baseline-grid*4 !important; }
-.u-marginLeft-5x  { margin-left: $baseline-grid*5 !important; }
-.u-marginRight-5x { margin-right: $baseline-grid*5 !important; }
-.u-marginHorizontal-5x { margin-left: $baseline-grid*5 !important; margin-right: $baseline-grid*5 !important; }
-.u-marginTop-5x  { margin-top: $baseline-grid*5 !important; }
-.u-marginBottom-5x { margin-bottom: $baseline-grid*5 !important; }
-.u-marginVertical-5x { margin-top: $baseline-grid*5 !important; margin-bottom: $baseline-grid*5 !important; }
-.u-margin-5x { margin: $baseline-grid*5 !important; }
-.u-marginLeft-6x  { margin-left: $baseline-grid*6 !important; }
-.u-marginRight-6x { margin-right: $baseline-grid*6 !important; }
-.u-marginHorizontal-6x { margin-left: $baseline-grid*6 !important; margin-right: $baseline-grid*6 !important; }
-.u-marginTop-6x  { margin-top: $baseline-grid*6 !important; }
-.u-marginBottom-6x { margin-bottom: $baseline-grid*6 !important; }
-.u-marginVertical-6x { margin-top: $baseline-grid*6 !important; margin-bottom: $baseline-grid*6 !important; }
-.u-margin-6x { margin: $baseline-grid*6 !important; }
-.u-marginLeft-7x  { margin-left: $baseline-grid*7 !important; }
-.u-marginRight-7x { margin-right: $baseline-grid*7 !important; }
-.u-marginHorizontal-7x { margin-left: $baseline-grid*7 !important; margin-right: $baseline-grid*7 !important; }
-.u-marginTop-7x  { margin-top: $baseline-grid*7 !important; }
-.u-marginBottom-7x { margin-bottom: $baseline-grid*7 !important; }
-.u-marginVertical-7x { margin-top: $baseline-grid*7 !important; margin-bottom: $baseline-grid*7 !important; }
-.u-margin-7x { margin: $baseline-grid*7 !important; }
-.u-marginLeft-8x  { margin-left: $baseline-grid*8 !important; }
-.u-marginRight-8x { margin-right: $baseline-grid*8 !important; }
-.u-marginHorizontal-8x { margin-left: $baseline-grid*8 !important; margin-right: $baseline-grid*8 !important; }
-.u-marginTop-8x  { margin-top: $baseline-grid*8 !important; }
-.u-marginBottom-8x { margin-bottom: $baseline-grid*8 !important; }
-.u-marginVertical-8x { margin-top: $baseline-grid*8 !important; margin-bottom: $baseline-grid*8 !important; }
-.u-margin-8x { margin: $baseline-grid*8 !important; }
-.u-marginLeft-9x  { margin-left: $baseline-grid*9 !important; }
-.u-marginRight-9x { margin-right: $baseline-grid*9 !important; }
-.u-marginHorizontal-9x { margin-left: $baseline-grid*9 !important; margin-right: $baseline-grid*9 !important; }
-.u-marginTop-9x  { margin-top: $baseline-grid*9 !important; }
-.u-marginBottom-9x { margin-bottom: $baseline-grid*9 !important; }
-.u-marginVertical-9x { margin-top: $baseline-grid*9 !important; margin-bottom: $baseline-grid*9 !important; }
-.u-margin-9x { margin: $baseline-grid*9 !important; }
-.u-marginLeft-10x  { margin-left: $baseline-grid*10 !important; }
-.u-marginRight-10x { margin-right: $baseline-grid*10 !important; }
-.u-marginHorizontal-10x { margin-left: $baseline-grid*10 !important; margin-right: $baseline-grid*10 !important; }
-.u-marginTop-10x  { margin-top: $baseline-grid*10 !important; }
-.u-marginBottom-10x { margin-bottom: $baseline-grid*10 !important; }
-.u-marginVertical-10x { margin-top: $baseline-grid*10 !important; margin-bottom: $baseline-grid*10 !important; }
-.u-margin-10x { margin: $baseline-grid*10 !important; }
 
-.u-marginLeft-gutter  { margin-left: $gutter-width !important; }
-.u-marginRight-gutter { margin-right: $gutter-width !important; }
-.u-marginHorizontal-gutter { margin-left: $gutter-width !important; margin-right: $gutter-width !important; }
-.u-marginTop-gutter  { margin-top: $gutter-width !important; }
-.u-marginBottom-gutter { margin-bottom: $gutter-width !important; }
-.u-marginVertical-gutter { margin-top: $gutter-width !important; margin-bottom: $gutter-width !important; }
-.u-margin-gutter { margin: $gutter-width !important; }
-
-.u-marginLeft-halfGutter  { margin-left: $gutter-width*0.5 !important; }
-.u-marginRight-halfGutter { margin-right: $gutter-width*0.5 !important; }
-.u-marginHorizontal-halfGutter { margin-left: $gutter-width*0.5 !important; margin-right: $gutter-width*0.5 !important; }
-.u-marginTop-halfGutter  { margin-top: $gutter-width*0.5 !important; }
-.u-marginBottom-halfGutter { margin-bottom: $gutter-width*0.5 !important; }
-.u-marginVertical-halfGutter { margin-top: $gutter-width*0.5 !important; margin-bottom: $gutter-width*0.5 !important; }
-.u-margin-halfGutter { margin: $gutter-width*0.5 !important; }
-
-.u-marginLeft-form  { margin-left: $form-paddingHorizontal !important; }
-.u-marginRight-form { margin-right: $form-paddingHorizontal !important; }
-.u-marginHorizontal-form { margin-left: $form-paddingHorizontal !important; margin-right: $form-paddingHorizontal !important; }
-.u-marginTop-form  { margin-top: $form-paddingHorizontal !important; }
-.u-marginBottom-form { margin-bottom: $form-paddingHorizontal !important; }
-.u-marginVertical-form { margin-top: $form-paddingHorizontal !important; margin-bottom: $form-paddingHorizontal !important; }
-.u-margin-form { margin: $form-paddingHorizontal !important; }
-
-.u-marginHorizontal-auto { margin-left: auto !important; margin-right: auto !important; }
-
-.u-padding-none        { padding: 0 !important; }
-.u-paddingTop-none     { padding-top: 0 !important; }
-.u-paddingBottom-none  { padding-bottom: 0 !important; }
-.u-paddingVertical-none{ padding-top: 0 !important;padding-bottom: 0 !important; }
-.u-paddingLeft-none     { padding-left: 0 !important; }
-.u-paddingRight-none  { padding-right: 0 !important; }
-.u-paddingHorizontal-none{ padding-left: 0 !important;padding-right: 0 !important; }
-
-.u-paddingLeft-half   { padding-left: $baseline-grid*0.5 !important; }
-.u-paddingRight-half  { padding-right: $baseline-grid*0.5 !important; }
-
-.u-paddingLeft-0_5x  { padding-left: $baseline-grid*0.5 !important; }
-.u-paddingRight-0_5x { padding-right: $baseline-grid*0.5 !important; }
-.u-paddingHorizontal-0_5x { padding-left: $baseline-grid*0.5 !important; padding-right: $baseline-grid*0.5 !important; }
-.u-paddingTop-0_5x  { padding-top: $baseline-grid*0.5 !important; }
-.u-paddingBottom-0_5x { padding-bottom: $baseline-grid*0.5 !important; }
-.u-paddingVertical-0_5x { padding-top: $baseline-grid*0.5 !important; padding-bottom: $baseline-grid*0.5 !important; }
-.u-padding-0_5x { padding: $baseline-grid*0.5 !important; }
 
 .u-paddingLeft-1x  { padding-left: $baseline-grid !important; }
 .u-paddingRight-1x { padding-right: $baseline-grid !important; }
@@ -640,49 +302,6 @@ span {
 .u-paddingBottom-4x { padding-bottom: $baseline-grid*4 !important; }
 .u-paddingVertical-4x { padding-top: $baseline-grid*4 !important; padding-bottom: $baseline-grid*4 !important; }
 .u-padding-4x { padding: $baseline-grid*4 !important; }
-.u-paddingLeft-5x  { padding-left: $baseline-grid*5 !important; }
-.u-paddingRight-5x { padding-right: $baseline-grid*5 !important; }
-.u-paddingHorizontal-5x { padding-left: $baseline-grid*5 !important; padding-right: $baseline-grid*5 !important; }
-.u-paddingTop-5x  { padding-top: $baseline-grid*5 !important; }
-.u-paddingBottom-5x { padding-bottom: $baseline-grid*5 !important; }
-.u-paddingVertical-5x { padding-top: $baseline-grid*5 !important; padding-bottom: $baseline-grid*5 !important; }
-.u-padding-5x { padding: $baseline-grid*5 !important; }
-.u-paddingLeft-6x  { padding-left: $baseline-grid*6 !important; }
-.u-paddingRight-6x { padding-right: $baseline-grid*6 !important; }
-.u-paddingHorizontal-6x { padding-left: $baseline-grid*6 !important; padding-right: $baseline-grid*6 !important; }
-.u-paddingTop-6x  { padding-top: $baseline-grid*6 !important; }
-.u-paddingBottom-6x { padding-bottom: $baseline-grid*6 !important; }
-.u-paddingVertical-6x { padding-top: $baseline-grid*6 !important; padding-bottom: $baseline-grid*6 !important; }
-.u-padding-6x { padding: $baseline-grid*6 !important; }
-.u-paddingLeft-7x  { padding-left: $baseline-grid*7 !important; }
-.u-paddingRight-7x { padding-right: $baseline-grid*7 !important; }
-.u-paddingHorizontal-7x { padding-left: $baseline-grid*7 !important; padding-right: $baseline-grid*7 !important; }
-.u-paddingTop-7x  { padding-top: $baseline-grid*7 !important; }
-.u-paddingBottom-7x { padding-bottom: $baseline-grid*7 !important; }
-.u-paddingVertical-7x { padding-top: $baseline-grid*7 !important; padding-bottom: $baseline-grid*7 !important; }
-.u-padding-7x { padding: $baseline-grid*7 !important; }
-.u-paddingLeft-8x  { padding-left: $baseline-grid*8 !important; }
-.u-paddingRight-8x { padding-right: $baseline-grid*8 !important; }
-.u-paddingHorizontal-8x { padding-left: $baseline-grid*8 !important; padding-right: $baseline-grid*8 !important; }
-.u-paddingTop-8x  { padding-top: $baseline-grid*8 !important; }
-.u-paddingBottom-8x { padding-bottom: $baseline-grid*8 !important; }
-.u-paddingVertical-8x { padding-top: $baseline-grid*8 !important; padding-bottom: $baseline-grid*8 !important; }
-.u-padding-8x { padding: $baseline-grid*8 !important; }
-.u-paddingLeft-9x  { padding-left: $baseline-grid*9 !important; }
-.u-paddingRight-9x { padding-right: $baseline-grid*9 !important; }
-.u-paddingHorizontal-9x { padding-left: $baseline-grid*9 !important; padding-right: $baseline-grid*9 !important; }
-.u-paddingTop-9x  { padding-top: $baseline-grid*9 !important; }
-.u-paddingBottom-9x { padding-bottom: $baseline-grid*9 !important; }
-.u-paddingVertical-9x { padding-top: $baseline-grid*9 !important; padding-bottom: $baseline-grid*9 !important; }
-.u-padding-9x { padding: $baseline-grid*9 !important; }
-.u-paddingLeft-10x  { padding-left: $baseline-grid*10 !important; }
-.u-paddingRight-10x { padding-right: $baseline-grid*10 !important; }
-.u-paddingHorizontal-10x { padding-left: $baseline-grid*10 !important; padding-right: $baseline-grid*10 !important; }
-.u-paddingTop-10x  { padding-top: $baseline-grid*10 !important; }
-.u-paddingBottom-10x { padding-bottom: $baseline-grid*10 !important; }
-.u-paddingVertical-10x { padding-top: $baseline-grid*10 !important; padding-bottom: $baseline-grid*10 !important; }
-.u-padding-10x { padding: $baseline-grid*10 !important; }
-
 
 .u-paddingLeft-gutter  { padding-left: $gutter-width !important; }
 .u-paddingRight-gutter { padding-right: $gutter-width !important; }
@@ -692,22 +311,6 @@ span {
 .u-paddingVertical-gutter { padding-top: $gutter-width !important; padding-bottom: $gutter-width !important; }
 .u-padding-gutter { padding: $gutter-width !important; }
 
-.u-paddingLeft-halfGutter  { padding-left: $gutter-width/2 !important; }
-.u-paddingRight-halfGutter { padding-right: $gutter-width/2 !important; }
-.u-paddingHorizontal-halfGutter { padding-left: $gutter-width/2 !important; padding-right: $gutter-width/2 !important; }
-.u-paddingTop-halfGutter  { padding-top: $gutter-width/2 !important; }
-.u-paddingBottom-halfGutter { padding-bottom: $gutter-width/2 !important; }
-.u-paddingVertical-halfGutter { padding-top: $gutter-width/2 !important; padding-bottom: $gutter-width/2 !important; }
-.u-padding-halfGutter { padding: $gutter-width/2 !important; }
-
-.u-paddingLeft-form  { padding-left: $form-height !important; }
-.u-paddingRight-form { padding-right: $form-height !important; }
-.u-paddingHorizontal-form { padding-left: $form-height !important; padding-right: $form-height !important; }
-.u-paddingTop-form  { padding-top: $form-height !important; }
-.u-paddingBottom-form { padding-bottom: $form-height !important; }
-.u-paddingVertical-form { padding-top: $form-height !important; padding-bottom: $form-height !important; }
-.u-padding-form { padding: $form-height !important; }
-
 /* -- Flexbox utilities -- */
 
 .u-flexDirection-column { flex-direction: column !important; }
@@ -716,41 +319,11 @@ span {
 .u-justifyContent-center { justify-content: center !important; }
 
 .u-alignItems-center { align-items: center !important; }
-.u-alignItems-baseline { align-items: baseline !important; }
-.u-alignItems-bottom { align-items: flex-end !important; }
-
-.u-alignSelf-center { align-self: center !important; }
-.u-alignSelf-baseline { align-self: baseline !important; }
-
-.u-alignContent-stretch { align-content: stretch !important; }
 
 .u-flexGrow-1 {
   flex: 1 0 0;
   -webkit-flex: 1 0 0;
 }
-
-.u-flexGrow-1Auto {
-  flex: 1 0 auto;
-  -webkit-flex: 1 0 auto;
-}
-
-.u-flexShrink-1_80 {
-  flex: 0 1 80%;
-  -webkit-flex: 0 1 80%;
-}
-
-.u-flexExpand { margin: auto !important; }
-.u-flexExpand-left { margin-left: auto !important; }
-.u-flexExpand-right { margin-right: auto !important; }
-
-.u-flexWrap { flex-wrap: wrap; }
-.u-flexNowrap { flex-wrap: nowrap; }
-
-/* -- Box shadow utilities -- */
-
-.u-boxShadow-outerModal   { box-shadow: 0 0 4px fade-out( $black-color, 0.1 ) !important;-moz-box-shadow: 0 0 4px fade-out( $black-color, 0.1 ) !important;-webkit-box-shadow: 0 0 4px fade-out( $black-color, 0.1 ) !important; }
-.u-boxShadow-bottom       { box-shadow: 0 4px 4px fade-out( $black-color, 0.1 ) !important;-moz-box-shadow: 0 4px 4px fade-out( $black-color, 0.1 ) !important;-webkit-box-shadow: 0 4px 4px fade-out( $black-color, 0.1 ) !important; }
-.u-boxShadow-Lite         { box-shadow: 0 0 4px fade-out( $black-color, $fade-twice-percentage ) !important;-moz-box-shadow: 0 0 4px fade-out( $black-color, $fade-twice-percentage ) !important;-webkit-box-shadow: 0 0 4px fade-out( $black-color, $fade-twice-percentage ) !important; }
 
 /* Objects */
 
@@ -800,24 +373,6 @@ span {
 
   outline: 0;
 
-  &__svgFill {
-    fill: $action-CTA-color;
-  }
-
-  // changed, probably will delete this when pass to SVGs
-  &--icon {
-    &:empty:not(input) {
-      padding: 0;
-      min-width: $block-height;
-      line-height: $block-height*1-1px; // fix for border
-      &:before {
-        margin: 0;
-        font-size: $large-font-size;
-        line-height: inherit;
-      }
-    }
-  }
-
   &.is-hover,
   &:hover {
     text-decoration: none;
@@ -825,9 +380,6 @@ span {
     border-color: $action-CTA-hover-color;
     background-color: fade-out( $action-CTA-hover-color , 1 - $active-element-fade-once );
 
-    .o-button__svgFill {
-      fill: $action-CTA-hover-color;
-    }
   }
 
   &.is-active,
@@ -836,10 +388,6 @@ span {
     color: $action-CTA-clicked-color;
     border-color: $action-CTA-clicked-color;
     background-color: fade-out( $action-CTA-clicked-color ,1 - $active-element-fade-once );
-
-    .o-button__svgFill {
-      fill: lighten( $action-CTA-color, $lightness-twice-percentage );
-    }
 
     &:hover {
       border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
@@ -867,19 +415,6 @@ span {
  }
 
 
-  // Modifier
-  //================================
-
-  &--fullwidth {
-    display: block; // caution revisit!!
-    width: 100%;
-    max-width: 100%;
-  }
-
-  &--autowidth {
-    min-width: 0;
-    max-width: none;
-  }
 
   &--form {
     height: $form-height; // input height
@@ -891,146 +426,6 @@ span {
         margin-top: $form-height*0.2-1px;
         width: $form-height*0.6;
         height: $form-height*0.6;
-      }
-    }
-  }
-
-  &--fill {
-    background-color: $action-CTA-color;
-    color: $white-color;
-    .o-button__svgFill {
-      fill: $white-color;
-    }
-
-    &.is-hover,
-    &:hover {
-      background-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage );
-      border-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage );
-      color: $white-color;
-      .o-button__svgFill {
-        fill: $white-color;
-      }
-    }
-
-    &.is-active,
-    &:active {
-      background-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
-      border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
-      color: $white-color;
-      .o-button__svgFill {
-        fill: $white-color;
-      }
-    }
-
-  }
-
-  // System buttons
-  //================================
-
-  &--success {
-    border-color: $status-success-color;
-    background-color: $status-success-color;
-
-    color: $white-color;
-
-    &.is-hover,
-    &:hover,
-    &.is-focus,
-    &:hover {
-      border-color: lighten( $status-success-color, 1 - $lightness-once-percentage );
-      background-color: lighten( $status-success-color, 1 - $lightness-once-percentage );
-      color: $white-color;
-    }
-
-    &.is-active,
-    &:active {
-      border-color: lighten( $status-success-color, 1 - $lightness-twice-percentage );
-      background-color: lighten( $status-success-color, 1 - $lightness-twice-percentage );
-      color: $white-color;
-      &:hover {
-        border-color: lighten( $status-success-color, 1 - $lightness-twice-percentage );
-        color: $white-color;
-      }
-    }
-  }
-
-  &--error {
-    border-color: $status-error-color;
-    background-color: $status-error-color;
-
-    color: $white-color;
-
-    &.is-hover,
-    &:hover,
-    &.is-focus,
-    &:hover {
-      border-color: lighten( $status-error-color, 1 - $lightness-once-percentage );
-      background-color: lighten( $status-error-color, 1 - $lightness-once-percentage );
-      color: $white-color;
-    }
-
-    &.is-active,
-    &:active {
-      border-color: lighten( $status-error-color, 1 - $lightness-twice-percentage );
-      background-color: lighten( $status-error-color, 1 - $lightness-twice-percentage );
-      color: $white-color;
-      &:hover {
-        border-color: lighten( $status-error-color, 1 - $lightness-twice-percentage );
-        color: $white-color;
-      }
-    }
-  }
-
-  &--warning {
-    border-color: $status-warning-color;
-    background-color: $status-warning-color;
-
-    color: $white-color;
-
-    &.is-hover,
-    &:hover,
-    &.is-focus,
-    &:hover {
-      border-color: lighten( $status-warning-color, 1 - $lightness-once-percentage );
-      background-color: lighten( $status-warning-color, 1 - $lightness-once-percentage );
-      color: $white-color;
-    }
-
-    &.is-active,
-    &:active {
-      border-color: lighten( $status-warning-color, 1 - $lightness-twice-percentage );
-      background-color: lighten( $status-warning-color, 1 - $lightness-twice-percentage );
-      color: $white-color;
-      &:hover {
-        border-color: lighten( $status-warning-color, 1 - $lightness-twice-percentage );
-        color: $white-color;
-      }
-    }
-  }
-
-  &--info {
-    border-color: $status-information-color;
-    background-color: $status-information-color;
-
-    color: $white-color;
-
-    &.is-hover,
-    &:hover,
-    &.is-focus,
-    &:hover {
-      border-color: lighten( $status-information-color, 1 - $lightness-once-percentage );
-      background-color: lighten( $status-information-color, 1 - $lightness-once-percentage );
-      color: $white-color;
-    }
-
-    &.is-active,
-    &:active {
-      border-color: lighten( $status-information-color, 1 - $lightness-twice-percentage );
-      background-color: lighten( $status-information-color, 1 - $lightness-twice-percentage );
-      color: $white-color;
-      &:hover {
-        border-color: lighten( $status-information-color, 1 - $lightness-twice-percentage );
-        color: $white-color;
       }
     }
   }
@@ -1114,79 +509,6 @@ span {
     }
   }
 
-  &--brand {
-    color: $brand-color;
-    &:hover,
-    &.is-hover {
-      color: lighten( $brand-color, $lightness-once-percentage );
-    }
-
-    &:active {
-      color: lighten( $brand-color, $lightness-twice-percentage );
-    }
-
-    &.is-active {
-      color: $brand-color;
-    }
-  }
-
-  &--brand-muted {
-    color: $link-muted-color;
-    &:hover,
-    &.is-hover {
-      color: lighten( $brand-color, $lightness-once-percentage );
-    }
-
-    &:active {
-      color: lighten( $brand-color, $lightness-twice-percentage );
-    }
-
-    &.is-active {
-      color: $brand-color;
-    }
-  }
-
-  &--block {
-    display: block;
-    &:hover,
-    &.is-hover {
-      text-decoration: none;
-    }
-  }
-
-  &--button {
-    &:hover,
-    &.is-hover {
-      background-color: fade-out( lighten( $action-CTA-color, $lightness-once-percentage ) ,$active-element-fade-once );
-    }
-    &:active,
-    &.is-active {
-      background-color: fade-out( lighten( $action-CTA-color, $lightness-twice-percentage ) ,$active-element-fade-once );
-    }
-  }
-
-  &--onColor {
-    &:hover,
-    &.is-hover,
-    &:active,
-    &.is-active {
-      color: $link-active-color !important;
-    }
-  }
-
-
-  &--lite {
-    &:not(:hover):not(.is-hover):not(:active):not(.is-active) {
-      color: $action-disabled-color !important;
-    }
-  }
-
-  &--lite-onMuted {
-    &:not(:hover):not(.is-hover):not(:active):not(.is-active) {
-      color: $action-disabled-onMuted-color !important;
-    }
-  }
-
   &:disabled,
   &.is-disabled {
     color: $link-disabled-color;
@@ -1240,32 +562,6 @@ span {
     clear: both;
   }
 
-  &--bullets {
-    .o-list__item {
-      position: relative;
-      padding-left: $baseline-grid*3;
-
-      &:before {
-        content: '';
-        position: absolute;
-        display: block;
-
-        top: 0.5em;
-        left: 0;
-        margin-top: -0.15em;
-
-        width: 0.3em;
-        padding-top: 0.3em;
-        height: 0;
-
-        border-radius: 50%;
-        -moz-border-radius: 50%;
-        -webkit-border-radius: 50%;
-
-        background-color: $text-primary-color;
-      }
-    }
-  }
 
   &__item {
     display: block;
@@ -1550,18 +846,6 @@ span {
   top: 0.14em;
 	fill: currentColor;
   vertical-align: inherit;
-
-  &-lite {
-    display: inline-block;
-  	width: 1em;
-  	height: 1em;
-  	fill: currentColor;
-    vertical-align: inherit;
-  }
-
-  &--middle {
-    vertical-align: middle;
-  }
 }
 
 
@@ -1647,7 +931,6 @@ span {
 
   &--small { width: $baseline-grid*3; height: $baseline-grid*3; margin: 0;}
 
-  &--light { border-color: $white-color; }
 }
 
 
@@ -1753,33 +1036,6 @@ span {
     -webkit-transition: max-width .15s, margin .15s, opacity .15s, 0.15s text-indent;
   }
 
-  &-visible {
-    opacity: 0;
-    visibility: hidden;
-
-    transition: opacity .15s;
-    -moz-transition: opacity .15s;
-    -webkit-transition: opacity .15s;
-
-    &.is-active {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
-
-  &-hovertoggle {
-
-    &:not(:hover) {
-      .o-interactive-hovertoggle__show { display: none; }
-    }
-
-    &:hover {
-      .o-interactive-hovertoggle__hide { display: none; }
-    }
-
-  }
-
-
   &-list--highlight {
 
     .o-interactive-list__item {
@@ -1854,21 +1110,6 @@ span {
 .o-scrollable {
   overflow: auto;
 
-  &--minHeight {
-    max-height: $baseline-grid*23 !important;
-  }
-
-  &--smallHeight {
-    max-height: $baseline-grid*31 !important;
-  }
-
-  &--midHeight {
-    max-height: $baseline-grid*46 !important;
-  }
-
-  &--largeHeight {
-    max-height: $baseline-grid*62 !important;
-  }
 }
 
 
@@ -1898,22 +1139,6 @@ span {
     }
     &:after {
       clear: both;
-    }
-  }
-
-  &__action {
-    &.is-disabled,
-    &[disabled] {
-
-      border-color: $action-disabled-onMuted-color !important;
-      color: $action-disabled-onMuted-text-color !important;
-
-      &:hover,
-      &:hover:active,
-      &:active {
-        border-color: $action-disabled-onMuted-color !important;
-        color: $action-disabled-onMuted-text-color !important;
-      }
     }
   }
 }
@@ -1999,21 +1224,14 @@ span {
     margin-bottom: $baseline-grid*2;
   }
 
-  &--info { border-color: $status-information-color; }
-  &--info .c-system-message__symbol { fill: $status-information-color; }
-  &--info .c-system-message__title  { color: $status-information-color; }
-
   &--success { border-color: $status-success-color; }
   &--success .c-system-message__symbol { fill: $status-success-color; }
-  &--success .c-system-message__title  { color: $status-success-color; }
 
   &--warning { border-color: $status-warning-color; }
   &--warning .c-system-message__symbol { fill: $status-warning-color; }
-  &--warning .c-system-message__title  { color: $status-warning-color; }
 
   &--error { border-color: $status-error-color; }
   &--error .c-system-message__symbol { fill: $status-error-color; }
-  &--error .c-system-message__title  { color: $status-error-color; }
 
   &__content {
     position: relative;
@@ -2028,19 +1246,6 @@ span {
 
     margin-top: 0;
     margin-right: $gutter-width/2;
-  }
-
-  &__title {
-    font-size: $large-font-size;
-    line-height: $baseline-grid*4;
-    margin-bottom: $baseline-grid;
-  }
-
-  &__button {
-    $button-height: $top-navigation-bar-height - 4*$baseline-grid;
-
-    font-size: $small-font-size;
-    line-height: $button-height;
   }
 
   &__close {
