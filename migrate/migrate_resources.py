@@ -85,7 +85,7 @@ def _get_source_content(options, resource_slug):
 
 @handle_exception
 def _get_translations(options, resource_slug, language_code):
-    url = 'http://www.transifex.com/api/2/project/{}/resource/{}/translation/{}'.format(
+    url = 'http://www.transifex.com/api/2/project/{}/resource/{}/translation/{}?mode=onlytranslated'.format(
         options.project_slug, resource_slug, language_code
     )
     return requests.get(
