@@ -393,6 +393,9 @@ module.exports = function(T, t, api) {
           var tx_completed = this.completedLanguages(resource);
           common.addCompletedLocales(this.$, resourceName, tx_completed);
 
+          if (tx_completed.length) {
+            this.$('#' + resourceName).prop('disabled', false).addClass('js-can-download');
+          }
           var el_item = this.$(m('.js-<t>[data-resource="' + resourceName + '"]'));
           el_item.find('[data-status]').addClass('is-hidden');
           el_item.find('[data-item="controller"]').
