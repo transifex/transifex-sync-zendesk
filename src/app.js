@@ -71,7 +71,8 @@ function txApp(modules) {
     app = {};
 
   //load modules
-  _.each(modules, function(mod) {
+  for (var i=0; i < modules.length; i++) {
+    var mod = modules[i];
     if (mod.events) {
       events = _.extend(events, mod.events);
     }
@@ -87,7 +88,7 @@ function txApp(modules) {
     if (mod.jsonHandlers) {
       app = _.extend(app, mod.jsonHandlers);
     }
-  }, this);
+  }
 
   return _.extend(app, {
     events: events,
