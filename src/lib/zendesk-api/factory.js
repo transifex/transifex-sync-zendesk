@@ -232,42 +232,10 @@ module.exports = function(name, key, api) {
         response[api] = ret;
         return response;
       },
-      'checkPagination<T>': function(a) {
-        var i = a.page_count;
-        if (typeof i === 'string') {
-          i = parseInt(i, 10);
-        }
-        if (typeof i === 'number') {
-          if (i > 1) {
-            return true;
-          }
-        }
-        return false;
-      },
-      'getPages<T>': function(a) {
-        var i = a.page_count;
-        return _.range(1, i + 1);
-      },
-      'getCurrentPage<T>': function(a) {
-        var i = a.page;
-        return i;
-      },
-      'isFewer<T>': function(a, i) {
-        if (i > 1) {
-          return true;
-        }
-        return false;
-      },
-      'isMore<T>': function(a, i) {
-        if (a.page_count > i) {
-          return true;
-        }
-        return false;
-      },
     },
   };
 
-  _.each(['events', 'requests', 'eventHandlers', 'actionHandlers', 'jsonHandlers'], function(entry) {
+  _.each(['events', 'requests', 'eventHandlers', 'actionHandlers', 'helpers'], function(entry) {
     var object = factory[entry];
     _.each(object, function(value, key) {
       delete object[key];

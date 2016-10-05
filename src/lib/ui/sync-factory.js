@@ -188,7 +188,7 @@ module.exports = function(T, t, api) {
           object_ids.push(this.$(row).attr('id'));
         });
         var project = this.store(txProject.key),
-            sourceLocale = txProject.jsonHandlers.getSourceLocale(project),
+            sourceLocale = this.getSourceLocale(project),
             data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
             entry, resource, txResourceName, completedLocales,
@@ -665,16 +665,16 @@ module.exports = function(T, t, api) {
           });
           ret.push(d);
         }
-        var paginationVisible = this[M('checkPagination<T>')](data);
+        var paginationVisible = this.checkPagination(data);
         if (paginationVisible) {
-          var currentPage = this[M('getCurrentPage<T>')](data);
+          var currentPage = this.getCurrentPage(data);
           factory.currentpage = currentPage;
           ret = _.extend(ret, {
-            page_prev_enabled: this[M('isFewer<T>')](data, currentPage),
-            page_next_enabled: this[M('isMore<T>')](data, currentPage),
-            current_page: this[M('getCurrentPage<T>')](data),
+            page_prev_enabled: this.isFewer(data, currentPage),
+            page_next_enabled: this.isMore(data, currentPage),
+            current_page: this.getCurrentPage(data),
             pagination_visible: paginationVisible,
-            pages: this[M('getPages<T>')](data)
+            pages: this.getPages(data)
           });
         }
         return ret;

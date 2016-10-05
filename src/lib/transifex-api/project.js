@@ -87,7 +87,7 @@ var project = module.exports = {
       this.ajax('txProject');
     },
   },
-  jsonHandlers: {
+  helpers: {
     getResourceArray: function(p) {
       var result = [];
       var r = p.resources;
