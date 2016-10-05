@@ -1,4 +1,4 @@
-module.exports = {
+var pagination = module.exports = {
   helpers: {
     checkPagination: function(a) {
       var i = a.page_count;
@@ -33,4 +33,4 @@ module.exports = {
       return false;
     },
   }
-}
+};

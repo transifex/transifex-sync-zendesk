@@ -204,16 +204,15 @@ module.exports = function(name, key, api) {
         io.pushSync(factory.key);
         this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
       },
-    },
-    jsonHandlers: {
-      'getSingle<T>': function(id, a) {
-        if (typeof id == 'string' || id instanceof String)
-          id = parseInt(id, 10);
-        var i = _.findIndex(a[api], {
-          id: id
-        });
-        return a[api][i];
+      'get<T>ForTranslation': function(entry){
+        // apply any required transformation before passing it to template
+        return {
+          resource_name: entry.resource_name,
+          body: entry.body || entry.description
+        };
       },
+    },
+    helpers: {
       'calcResourceName<T>': function(obj) {
         var ret = obj[api];
         var type = api;

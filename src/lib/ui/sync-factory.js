@@ -173,7 +173,7 @@ module.exports = function(T, t, api) {
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
-          resource_request = common.txRequestFormat(entry);
+          resource_request = common.txRequestFormat(M('get<T>ForTranslation')(entry));
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }
@@ -655,7 +655,7 @@ module.exports = function(T, t, api) {
           }, {
             zd_object_updated: zd_object_updated
           }, {
-            zd_outdated: false
+            zd_outdated: e.outdated || false
           }, {
             tx_resource_url: tx_resource_url
           }, {

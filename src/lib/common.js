@@ -44,35 +44,31 @@ var common = module.exports = {
     };
   },
 
-  txRequestJSON: function(a) {
+  txRequestJSON: function(entry) {
     var req = {
-      name: a.resource_name,
-      slug: a.resource_name,
+      name: entry.resource_name,
+      slug: entry.resource_name,
       priority: 0,
       i18n_type: 'KEYVALUEJSON'
     };
 
     var o = {};
-    var o1 = syncUtil.addString('title', a.title, o);
-    var o2 = syncUtil.addString('body', a.body, o1);
+    var o1 = syncUtil.addString('title', entry.title, o);
+    var o2 = syncUtil.addString('body', entry.body, o1);
     var o3 = syncUtil.addContent(req, o2);
     return o3;
   },
 
-  txRequestHTML: function(article) {
+  txRequestHTML: function(entry) {
     var gblTemplate = common.gblTemplate;
-    var zdArticleContent = _.template(gblTemplate)({
-      title: article.title,
-      name: article.name,
-      body: article.body || article.description,
-    });
+    var zdEntryContent = _.template(gblTemplate)(entry);
 
     var txRequestMade = {
-      name: article.resource_name,
-      slug: article.resource_name,
+      name: entry.resource_name,
+      slug: entry.resource_name,
       priority: 0,
       i18n_type: 'HTML',
-      content: zdArticleContent
+      content: zdEntryContent
     };
     return txRequestMade;
   },
