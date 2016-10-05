@@ -56,7 +56,7 @@
         {{#if page_dynamic_content}}
         <a class="o-tabs__item is-active" href="#">Dynamic Content</a>
         {{else}}
-        <a tab="dynamic_content" class="o-tabs__item" href="#">Dynamic Content</a>
+        <a tab="items" class="o-tabs__item" href="#">Dynamic Content</a>
         {{/if}}
       </div>
     </div>

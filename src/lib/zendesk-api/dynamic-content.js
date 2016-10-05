@@ -52,7 +52,9 @@ var dynamic_content = module.exports = {
         resource_name: entry.resource_name,
         body: _.filter(entry.variants, function(v){
           return v.default;
-        }).content
+        })[0].content,
+        title: '',
+        name: '',
       };
     },
   },

@@ -106,7 +106,7 @@ module.exports = function(T, t, api) {
             page_articles: t == 'articles',
             page_categories: t == 'categories',
             page_sections: t == 'sections',
-            page_dynamic_content: t == 'dynamic_content',
+            page_dynamic_content: t == 'items',
             error: true,
             login_error: io.getPageError().split(':')[1] === 'login',
             locale_error: io.getPageError().split(':')[1] === 'locale',
@@ -133,7 +133,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
           dataset: pageData,
         });
 
@@ -173,7 +173,7 @@ module.exports = function(T, t, api) {
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
-          resource_request = common.txRequestFormat(M('get<T>ForTranslation')(entry));
+          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry));
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }
@@ -237,7 +237,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
@@ -343,7 +343,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
@@ -366,7 +366,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
@@ -388,7 +388,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
@@ -487,7 +487,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
@@ -509,7 +509,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
@@ -531,7 +531,7 @@ module.exports = function(T, t, api) {
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic_content',
+          page_dynamic_content: t == 'items',
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
