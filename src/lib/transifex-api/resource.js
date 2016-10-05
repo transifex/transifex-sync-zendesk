@@ -175,7 +175,11 @@ var resource = module.exports = {
     },
     completedLanguages: function(stats) {
       var arr = [],
-          zd_enabled = this.store('zd_project_locales');
+          zd_enabled = [],
+          locales = this.store('zd_project_locales');
+      _.map(locales['locales'], function(l){
+        zd_enabled.push(l['locale'].toLowerCase());
+      });
       _.each(stats, function(value, key) {
         var match = (value['completed'] === "100%");
         var zd_key = syncUtil.txLocaletoZd(key);
