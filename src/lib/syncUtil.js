@@ -26,6 +26,13 @@ module.exports = {
     return l.toLowerCase().replace('_', '-');
   },
 
+  mapLocaleToId: function(locale, locales_list) {
+    // returns the id for the given locale
+    return _.filter(locales_list, function(l){
+      return l['locale'] === locale;
+    })[0].id;
+  },
+
   isStringinArray: function(s, arr) {
     return (_.some(arr, function(i) {
       return i == s;

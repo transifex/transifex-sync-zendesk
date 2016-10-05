@@ -74,6 +74,9 @@
           {{#if page_categories}}
           Send Categories
           {{/if}}
+          {{#if page_dynamic_content}}
+          Send Dynamic Content
+          {{/if}}
         </a>
         <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled js-{{page}} js-batch-download">
           Get Translations

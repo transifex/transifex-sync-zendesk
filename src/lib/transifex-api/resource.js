@@ -177,7 +177,7 @@ var resource = module.exports = {
       var arr = [],
           zd_enabled = [],
           locales = this.store('zd_project_locales');
-      _.map(locales['locales'], function(l){
+      _.map(locales, function(l){
         zd_enabled.push(l['locale'].toLowerCase());
       });
       _.each(stats, function(value, key) {
