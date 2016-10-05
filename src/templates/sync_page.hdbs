@@ -53,6 +53,11 @@
         <a tab="categories" class="o-tabs__item" href="#">Categories</a>
         {{/if}}
 
+        {{#if page_dynamic_content}}
+        <a class="o-tabs__item is-active" href="#">Dynamic Content</a>
+        {{else}}
+        <a tab="dynamic_content" class="o-tabs__item" href="#">Dynamic Content</a>
+        {{/if}}
       </div>
     </div>
 
@@ -139,7 +144,7 @@
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted js-{{page}} js-sortby-title">
-              {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
+              {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}{{#if page_dynamic_content}}Dynamic Content{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
                 <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
               </svg>
             </span>
