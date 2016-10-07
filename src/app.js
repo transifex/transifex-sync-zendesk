@@ -45,7 +45,7 @@ function txApp(modules) {
 
     // Do Async!!!!
     // Queue async calls and set callback page init
-    this.uiArticlesTab();
+    this.uiLoadConf();
   }
 
   // Check for completion of asynchronous operation
