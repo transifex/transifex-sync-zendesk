@@ -107,8 +107,12 @@
             We were unable to find the Transifex project (<a href="{{setting "tx_project"}}" class="o-link">{{setting "tx_project"}}</a>) associated with Transifex Sync.<br>
             Please make sure the project URL in the Transifex <a href="/agent/admin/apps/manage" class="o-link">App Configuration</a> is correct.
             {{else}}
-            We could not reach the Transifex servers.<br>
-            Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+              {{#if locale_error}}
+              Source language of Transifex project does not match the default language of your Zendesk Account.
+              {{else}}
+              We could not reach the Transifex servers.<br>
+              Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+              {{/if}}
             {{/if}}
           {{/if}}
         {{/if}}

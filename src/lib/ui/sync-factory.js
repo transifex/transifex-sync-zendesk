@@ -95,6 +95,21 @@ module.exports = function(T, t, api) {
       'ui<T>Tab': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
+        if (io.getPageError()) {
+          this.switchTo('loading_page', {
+            page: t,
+            page_articles: t == 'articles',
+            page_categories: t == 'categories',
+            page_sections: t == 'sections',
+            error: true,
+            login_error: io.getPageError().split(':')[1] === 'login',
+            locale_error: io.getPageError().split(':')[1] === 'locale',
+            project_error: io.getPageError().split(':')[1] === 'not_found',
+            transifex_error: io.getPageError().split(':')[0] === 'txProject',
+            zendesk_error: io.getPageError().split(':')[0] === 'zdSync',
+          });
+          return;
+        }
         factory.currentpage = '1';
         var sorting = io.getSorting();
         sorting.sortby = 'title';
@@ -106,20 +121,6 @@ module.exports = function(T, t, api) {
         if (event) event.preventDefault();
         logger.debug(M('ui<T>Init'));
 
-        if (io.getPageError()) {
-          this.switchTo('loading_page', {
-            page: t,
-            page_articles: t == 'articles',
-            page_categories: t == 'categories',
-            page_sections: t == 'sections',
-            error: true,
-            login_error: io.getPageError().split(':')[1] === 'login',
-            project_error: io.getPageError().split(':')[1] === 'not_found',
-            transifex_error: io.getPageError().split(':')[0] === 'txProject',
-            zendesk_error: io.getPageError().split(':')[0] === 'zdSync',
-          });
-          return;
-        }
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
           page: t,

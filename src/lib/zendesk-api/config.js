@@ -9,8 +9,8 @@ var config = module.exports = {
   events: {
     'activatedLocales.done': 'activatedLocalesDone',
     'activatedLocales.fail': 'activatedLocalesFail',
-    'currentLocale.done': 'currentLocaleDone',
-    'currentLocale.fail': 'currentLocaleFail',
+    'defaultLocale.done': 'defaultLocaleDone',
+    'defaultLocale.fail': 'defaultLocaleFail',
   },
   requests: {
     activatedLocales: function() {
@@ -21,10 +21,10 @@ var config = module.exports = {
         dataType: 'json',
       };
     },
-    currentLocale: function() {
+    defaultLocale: function() {
       logger.debug('Retrieving activated locales for account');
       return {
-        url: config.base_url + 'locales/current.json',
+        url: config.base_url + 'locales.json',
         type: 'GET',
         dataType: 'json',
       };
@@ -41,15 +41,18 @@ var config = module.exports = {
       io.popSync(config.key + 'activated');
       this.checkAsyncComplete();
     },
-    currentLocaleDone: function(data, textStatus, jqXHR) {
+    defaultLocaleDone: function(data, textStatus, jqXHR) {
       logger.info('Activated Locales Retrieved with status:', textStatus);
-      this.store('current_locale', data.locale.locale.toLowerCase());
-      io.popSync(config.key + 'current');
+      var locale = _.find(data['locales'], function(l){
+        return l.default;
+      });
+      this.store('default_locale', locale.locale.toLowerCase());
+      io.popSync(config.key + 'default');
       this.checkAsyncComplete();
     },
-    currentLocaleFail: function(jqXHR, textStatus) {
+    defaultLocaleFail: function(jqXHR, textStatus) {
       logger.info('Locales Retrieved with status:', textStatus);
-      io.popSync(config.key + 'current');
+      io.popSync(config.key + 'default');
       io.setPageError('zdLocales');
       this.checkAsyncComplete();
     },
@@ -66,8 +69,8 @@ var config = module.exports = {
       this.ajax('activatedLocales');
     },
     asyncGetCurrentLocale: function() {
-      io.pushSync(config.key + 'current');
-      this.ajax('currentLocale');
+      io.pushSync(config.key + 'default');
+      this.ajax('defaultLocale');
     },
   }
 };

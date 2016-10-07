@@ -29,7 +29,7 @@ module.exports = function(name, key, api) {
     },
     requests: {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
-        var locale = this.store('current_locale');
+        var locale = this.store('default_locale');
         var numberperpageString = "";
         if (numperpage) {
           numberperpageString = "?per_page=" + numperpage;
