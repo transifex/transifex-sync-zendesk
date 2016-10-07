@@ -29,6 +29,7 @@ module.exports = function(name, key, api) {
     },
     requests: {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
+        var locale = this.store('current_locale');
         var numberperpageString = "";
         if (numperpage) {
           numberperpageString = "?per_page=" + numperpage;
@@ -59,7 +60,7 @@ module.exports = function(name, key, api) {
           sortdirectionString = '&sort_order=' + sortdirection;
         }
         return {
-          url: factory.base_url + 'en-us/' + api + '.json' + numberperpageString +
+          url: factory.base_url + locale + '/' +  api + '.json' + numberperpageString +
             pageString + sortbyString + sortdirectionString,
           type: 'GET',
           dataType: 'json'

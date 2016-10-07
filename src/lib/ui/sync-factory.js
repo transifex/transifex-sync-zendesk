@@ -40,6 +40,14 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
     },
     eventHandlers: {
+      'uiLoadConf': function(event) {
+        if (event) event.preventDefault();
+        if (this.processing) return;
+        this.loadSyncPage = this.uiArticlesTab;
+        this.asyncGetActivatedLocales();
+        this.asyncGetCurrentLocale();
+        this.asyncGetTxProject();
+      },
       'ui<T>SelectAll': function(event) {
         if (this.processing) return;
         if (this.$(event.target).is(':checked')) {
@@ -212,8 +220,6 @@ module.exports = function(T, t, api) {
 
         var sorting = io.getSorting();
         io.setPageError(null);
-        this.asyncGetActivatedLocales();
-        this.asyncGetTxProject();
         this[M('asyncGetZd<T>Full')](
           factory.currentpage, sorting.sortby,
           sorting.sortdirection, sorting.perpage
