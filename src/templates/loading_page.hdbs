@@ -108,7 +108,7 @@
             Please make sure the project URL in the Transifex <a href="/agent/admin/apps/manage" class="o-link">App Configuration</a> is correct.
             {{else}}
               {{#if locale_error}}
-              Source language of Transifex project does not match the default language of your Zendesk Account.
+              The source language of your Transifex project does not match the default language of your Zendesk account.
               {{else}}
               We could not reach the Transifex servers.<br>
               Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
