@@ -3,107 +3,89 @@
  * @module transifex-api/project
  */
 
+var logger = require('../logger'),
+    io = require('../io'),
+    txutils = require('../txUtil');
+
 var project = module.exports = {
   // selfies
   name: 'zendesk-test',
   key: 'tx_project',
-  url: 'http://www.transifex.com/api/2/project/testproject/',
+  url: '',
   headers: {
-    'source-zendesk': 'v1.2.3'
+    'X-Source-Zendesk': 'ZendeskApp/2.0.0'
   },
-  username: 'testuser',
-  password: 'testpass',
-  timeout: 6000,
-  logging: true,
-  TX_PROJECT_API_URL_REPLACE: "http://www.transifex.com/api/2/project/[PROJECT_SLUG]/",
-  TX_PROJECT_API_URL_PATTERN: /(http:\/\/www.transifex.com\/api\/2\/project\/(.*)\/)/,
-  TX_PROJECT_URL_PATTERN: /https:\/\/www.transifex.com\/(.*)\/(.*)\//,
-  convertUrlToApi: function(u) {
-    if (project.isValidUrl(u)) {
-      var m = project.TX_PROJECT_URL_PATTERN.exec(u);
-      var p = "";
-      if (m !== null && m.length > 0) {
-        p = m[2]; //TODO make this more explicit that we are mapping the url path
-      }
-      var r = project.TX_PROJECT_API_URL_REPLACE.replace("[PROJECT_SLUG]",
-        p);
-      if (project.isValidAPIUrl(r)) {
-        return r;
-      }
-    }
-    return false;
-  },
-  isValidAPIUrl: function(u) {
-    var r = project.TX_PROJECT_API_URL_PATTERN.test(u);
-    return r;
-
-  },
-  isValidUrl: function(u) {
-    var r = this.TX_PROJECT_URL_PATTERN.test(u);
-    return r;
-
-  },
-
+  username: '',
+  password: '',
   events: {
     'txProject.done': 'txProjectDone',
     'txProject.fail': 'txProjectSyncError'
   },
+  initialize: function() {
+    var settings = io.getSettings();
+
+    logger.info('Convert Project Url to API:', settings.tx_project);
+    project.dashboard_url = settings.tx_project.replace(/\/$/, '') + '/';
+    project.url = txutils.convertUrlToApi(settings.tx_project);
+
+    logger.info('Validate TxProject API URL:', project.url);
+    if (!txutils.isValidAPIUrl(project.url)) {
+      logger.error('API URL is invalid');
+    }
+
+    project.username = settings.tx_username;
+    project.password = settings.tx_password;
+  },
   requests: {
-    txProject: function(typeString, pageString) {
-      if (project.logging) {
-        console.log('txProject ajax request:' + typeString + '||' +
-          pageString);
-      }
+    txProject: function() {
+      logger.debug('txProject ajax request');
       return {
-        url: project.url + '?details',
+        url: project.url,
+        data: {'details': true},
         headers: project.headers,
         type: 'GET',
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.page = pageString;
-          jqxhr.type = typeString;
-        },
+        cache: false,
         dataType: 'json',
         username: project.username,
         password: project.password,
-        timeout: 2000,
-        secure: false
+        secure: true
       };
     },
   },
   eventHandlers: {
     txProjectDone: function(data, textStatus, jqXHR) {
-      if (project.logging) {
-        console.log('Transifex Project Retrieved with status:' + textStatus);
-      }
+      logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
-      this.syncStatus = _.without(this.syncStatus, project.key);
+      io.popSync(project.key);
       this.checkAsyncComplete();
     },
     txProjectSyncError: function(jqXHR, textStatus) {
-      if (project.logging) {
-        console.log('Transifex Project Retrieved with status:' + textStatus);
+      logger.info('Transifex Project Retrieved with status:', textStatus);
+      io.popSync(project.key);
+      if (jqXHR.status === 404) {
+        logger.error('txProjectSyncError:', 'Not found');
+        io.setPageError('txProject:not_found');
       }
-      //this.uiErrorPageInit();
-      this.syncStatus = _.without(this.syncStatus, project.key);
+      else if (jqXHR.status === 401 && io.getRetries('txProject') < 1) {
+        this.ajax('txProject');
+        io.setRetries('txProject', io.getRetries('txProject') + 1);
+      }
+      else if (jqXHR.status === 401) {
+        logger.error('txProjectSyncError:', 'Login error');
+        io.setPageError('txProject:login');
+      }
+      else {
+        io.setPageError('txProject');
+      }
       this.checkAsyncComplete();
-      if (jqXHR.status === 401) {
-        console.log('login error');
-        //this.updateMessage("txLogin", "error");
-      }
     },
   },
   actionHandlers: {
-    asyncGetTxProject: function(type, page) {
-      if (project.logging) {
-        console.log('function: [asyncGetTxProject] params: [type]' + type +
-          '|| [page]' + page);
-      }
-      this.syncStatus.push(project.key);
-      var that = this;
-      setTimeout(
-        function() {
-          that.ajax('txProject', type, page);
-        }, project.timeout);
+    asyncGetTxProject: function() {
+      logger.debug('function: [asyncGetTxProject]');
+      io.setRetries('txProject', 0);
+      io.pushSync(project.key);
+      this.ajax('txProject');
     },
   },
   jsonHandlers: {

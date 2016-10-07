@@ -2,13 +2,14 @@
   "name": "Transifex Sync",
   "author": {
     "name": "Transifex",
-    "email": "support@transifex.com"
+    "email": "support@transifex.com",
+    "url": "https://www.transifex.com/integrations/"
   },
   "defaultLocale": "en",
   "private": false,
   "location": "nav_bar",
-  "domainWhitelist": "www.transifex.com",
-  "version": "1.1.4",
+  "domainWhitelist": ["www.transifex.com"],
+  "version": "2.0.0",
   "frameworkVersion": "1.0",
   "parameters": [
     {
@@ -28,8 +29,8 @@
     },
     {
       "name": "features",
-      "type": "text",
-      "required": true
+      "type": "hidden",
+      "required": false 
     }
-    ]
+  ]
 }

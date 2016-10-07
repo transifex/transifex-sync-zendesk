@@ -1,3 +1,140 @@
-<div class="spinner">
-  <span class="txh3 plain">Syncing{{spinner "dotted"}}</span>
+<div class="u-display-flex u-flexDirection-column u-box-100">
+
+  <div class="u-position-relative">
+    <!-- Header: Info area -->
+    <div class="c-infoarea">
+      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
+        <div class="u-display-flex">
+
+          <div class="u-width-7x u-marginRight-2x">
+            <div class="o-initials-logo u-box-7x u-lineHeight-7x u-fontSize-big">
+              tx
+            </div>
+          </div>
+
+          <div class="u-flexGrow-1 u-color-primary">
+            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
+            <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
+            <div class=" u-color-disabled">
+              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
+            </div>
+          </div>
+
+          <div class="u-textAlign-right u-display-flex u-alignItems-center">
+            <a href="#" title="Fetch data from Transifex" class="o-link u-height-button u-lineHeight-button is-disabled">
+              <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
+                <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
+              </svg>Refresh
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header: Tabs area -->
+    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
+        <a class="o-tabs__item {{#if page_articles}}is-active{{/if}}" href="#">Articles</a>
+        <a class="o-tabs__item {{#if page_sections}}is-active{{/if}}" href="#">Sections</a>
+        <a class="o-tabs__item {{#if page_categories}}is-active{{/if}}" href="#">Categories</a>
+      </div>
+    </div>
+
+    <!-- Header: Search-filters -->
+    <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-3x">
+      <div class="u-flexGrow-1 u-height-form u-paddingRight-3x">
+        <a href="#" title="Upload Zendesk content to Transifex" class="o-button o-button--form is-disabled u-marginRight-2x">
+          {{#if page_categories}}
+          Send Categories
+          {{/if}}
+          {{#if page_sections}}
+          Send Sections
+          {{/if}}
+          {{#if page_articles}}
+          Send Articles
+          {{/if}}
+        </a>
+        <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled">
+          Get Translations
+        </a>
+      </div>
+      <div class="u-height-form u-lineHeight-form u-fontSize-small">
+        <span class="u-color-disabled">Per page:</span>
+        <a perpage="10" href="#" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
+        <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x">25</a>
+        <a perpage="50" href="#" class="o-link o-link--muted u-marginLeft-1x">50</a>
+      </div>
+    </div>
+
+    <!-- Header: List header -->
+    <div class="u-paddingHorizontal-gutter">
+      <div class="u-position u-clearfix u-lineHeight-button u-backgroundColor-active">
+        &nbsp;
+      </div>
+    </div>
+
+  </div>
+
+  <div class="u-flexGrow-1">
+
+    <div class="u-box-100 u-display-flex u-alignItems-center u-justifyContent-center">
+
+      {{#if error}}
+      <div class="c-emptystate u-paddingTop-2x">
+        <svg class="c-emptystate__symbol" viewBox="0 0 16 16">
+          <path class="path1" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8c4.4 0 8-3.6 8-8s-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4-2.9 6.4-6.4 6.4z"></path>
+          <path class="path2" d="M7.2 4.6h1.6v4.1h-1.6v-4.1z"></path>
+          <path class="path3" d="M8.8 10.9c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
+        </svg>
+        <div class="c-emptystate__title">
+          {{#if page_categories}}
+          Failed to fetch categories
+          {{/if}}
+          {{#if page_sections}}
+          Failed to fetch sections
+          {{/if}}
+          {{#if page_articles}}
+          Failed to fetch articles
+          {{/if}}
+        </div>
+        <div class="c-emptystate__description">
+        {{#if transifex_error}}
+          {{#if login_error}}
+          The Transifex username and password associated with Transifex Sync seem to be invalid.<br>
+          Please make sure this information is correct in your <a href="/agent/admin/apps/manage" class="o-link">App Configuration settings</a>.
+          {{else}}
+            {{#if project_error}}
+            We were unable to find the Transifex project (<a href="{{setting "tx_project"}}" class="o-link">{{setting "tx_project"}}</a>) associated with Transifex Sync.<br>
+            Please make sure the project URL in the Transifex <a href="/agent/admin/apps/manage" class="o-link">App Configuration</a> is correct.
+            {{else}}
+            We could not reach the Transifex servers.<br>
+            Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+            {{/if}}
+          {{/if}}
+        {{/if}}
+
+        {{#if zendesk_error}}
+          {{#if login_error}}
+          We were unable to authenticate your Zendesk account.<br>
+          Please try logging in to Zendesk again.
+          {{else}}
+          We could not reach the Zendesk servers.<br>
+          Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+          {{/if}}
+        {{/if}}
+        </div>
+      </div>
+      {{else}}
+      <div class="u-textAlign-center u-paddingBottom-3x">
+        <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
+          Checking Transifex for updates
+        </div>
+        <div class="o-spinner"></div>
+      </div>
+      {{/if}}
+
+    </div>
+
+  </div>
+
 </div>

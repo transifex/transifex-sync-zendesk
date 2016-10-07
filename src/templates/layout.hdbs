@@ -1,6 +1,1 @@
-<header>
-  <span class="logo"/>
-  <h3 class="txh3 underlined">Transifex Sync</h3>
-  <p><span class="txsubh3">Translate Help Center content using Transifex</span></p>
-</header>
-<section data-main />
+<section data-main class="main-data"/>

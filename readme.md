@@ -31,7 +31,7 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
 ├── assets                // marketing images
 ├── bin
 │   └── repl.js           // interactive ES6 cli environment
-├── dist                  // FUTURE: final app built by webpack 
+├── dist                  // FUTURE: final app built by webpack
 ├── docs                  // FUTURE: Planning docs
 ├── gulpfile.js           // Gulp targets for testing
 ├── inputs.txt            // Preconfigured settings for testing
@@ -60,7 +60,7 @@ Code will be versioned in devel but will be marked as 'pre-release' until it is 
     └── en.json           // i18n for zendesk app
 ```
 
-    
+
 ## Running the code (Legacy)
 
 Note: I am moving away from maintaining a separate makefile, and instead using an interactive repl
@@ -119,9 +119,7 @@ The application uses a separate set of dependencies loaded in app.js.  The ones 
 - sync-project.hdbs - This displays the Transifex project information
 - sync-resource - This displays meta information about each Transifex resource
 - sync-resource-language - This displays the content from each Transifex resource
-- sync_page_articles.hdbs - This is the primary page for managing Help Center articles
-- sync_page_sections.hdbs - This is the primary page for managing Help Center sections
-- sync_page_categories.hdbs - This is the primary page for managing Help Center categories
+- sync_page.hdbs - This is the primary page for managing Help Center articles/sections/categories
 - layout.hdbs - This has global tags for the app, it's part of the Zd framework
 - loading_page.hdbs - This is a spinner page that displays during syncing
 - error_page.hdbs - This page is displayed when app or ajax errors occur
@@ -138,5 +136,3 @@ console.log(this.featureConfig('html-tx-resource'));
 
 A list of features:
 - html-tx-resource - Enables the app to save Transifex resources as HTML instead of JSON.  Resources save this way will have a different resource name in Transifex (ie 'HTML-article-123456' instead of 'article-123456').
-
-
