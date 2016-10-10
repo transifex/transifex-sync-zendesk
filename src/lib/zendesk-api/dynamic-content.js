@@ -48,6 +48,9 @@ var dynamic_content = module.exports = {
             pageString + sortbyString + sortdirectionString,
         type: 'GET',
         dataType: 'json',
+        beforeSend: function(jqxhr, settings) {
+          jqxhr.per_page = numperpage;
+        },
       };
     },
     variantsInsert: function(data, id, locales) {
@@ -86,6 +89,10 @@ var dynamic_content = module.exports = {
         _.each(data.items, function(entry) {
           entry.title = entry.name;
         });
+      }
+      data.page_count = 1;
+      if (data.count > jqXHR.per_page) {
+        data.page_count = Math.ceil(data.count / jqXHR.per_page);
       }
       this.store(dynamic_content.key, data);
       io.popSync(dynamic_content.key);
