@@ -223,7 +223,9 @@ module.exports = function(name, key, api) {
         // apply any required transformation before passing it to template
         return {
           resource_name: entry.resource_name,
-          body: entry.body || entry.description
+          body: entry.body || entry.description,
+          name: entry.name,
+          title: entry.title || entry.name,
         };
       },
     },

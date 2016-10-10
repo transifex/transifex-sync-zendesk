@@ -10,13 +10,14 @@ var dynamic_content = module.exports = {
   base_url: '/api/v2/dynamic_content/',
   key: 'zd_dynamic_content',
   api: 'items',
+  label: 'dynamic',
   events: {
     'dynamicContentItems.done': 'dynamicContentItemsDone',
     'dynamicContentItems.fail': 'dynamicContentItemsFail',
     'variantsInsert.done': 'variantsInsertDone',
-    'variantsInsert.fail': 'variantsFail',
+    'variantsInsert.fail': 'variantsInsertFail',
     'variantsUpdate.done': 'variantsUpdateDone',
-    'variantsUpdate.fail': 'variantsFail',
+    'variantsUpdate.fail': 'variantsUpdateFail',
   },
   requests: {
     dynamicContentItems: function() {
@@ -28,7 +29,7 @@ var dynamic_content = module.exports = {
       };
     },
     variantsInsert: function(data, id) {
-      io.pushSync(dynamic_content.key + 'insert' + id);
+      io.pushSync(dynamic_content.key + id + 'insert');
       return {
         url: dynamic_content.base_url + 'items/' + id + '/variants/create_many.json',
         type: 'POST',
@@ -40,7 +41,7 @@ var dynamic_content = module.exports = {
       };
     },
     variantsUpdate: function(data, id) {
-      io.pushSync(dynamic_content.key + 'update' + id);
+      io.pushSync(dynamic_content.key + id + 'update');
       return {
         url: dynamic_content.base_url + 'items/' + id + '/variants/update_many.json',
         type: 'PUT',
@@ -73,14 +74,13 @@ var dynamic_content = module.exports = {
       this.checkAsyncComplete();
     },
     variantsInsertDone: function(data, textStatus, jqXHR) {
-      var locales = [];
       logger.info('DC variants inserted with status:', textStatus);
-      //map name to title
-      io.popSync(dynamic_content.key + 'insert' + jqXHR.id);
+      io.popSync(dynamic_content.key + jqXHR.id + 'insert');
+      io.opSet(jqXHR.resourceName, textStatus);
+      this.asyncGetZdDynamicContentFull();
       this.checkAsyncComplete();
     },
     variantsUpdateDone: function(data, textStatus, jqXHR) {
-      var locales = [];
       logger.info('DC variants updated with status:', textStatus);
       //map name to title
       if (data) {
@@ -88,7 +88,8 @@ var dynamic_content = module.exports = {
           entry.title = entry.name;
         });
       }
-      io.popSync(dynamic_content.key + 'update' + jqXHR.id);
+      io.popSync(dynamic_content.key + jqXHR.id + 'update');
+      io.opSet(jqXHR.resourceName, textStatus);
       this.checkAsyncComplete();
     },
   },
@@ -144,14 +145,15 @@ var dynamic_content = module.exports = {
         name: '',
       };
     },
-    asyncGetZdDynamicContentTranslations: function(id) {
+    asyncGetZdDynamicContentTranslations: function(entry_id){
+      // not required for dynamic content
       return;
     },
   },
   helpers: {
     calcResourceNameDynamicContent: function(obj) {
       var ret = obj[dynamic_content.api],
-          type = dynamic_content.api,
+          type = dynamic_content.label,
           response = {};
       if (io.getFeature('html-tx-resource')) {
         type = 'HTML-' + type;
@@ -164,7 +166,7 @@ var dynamic_content = module.exports = {
           resource_name: typeString + ret[i].id
         });
       }
-      response[dynamic_content.api] = ret;
+      response[dynamic_content.label] = ret;
       return response;
     },
   }

@@ -28,9 +28,9 @@ module.exports = {
 
   mapLocaleToId: function(locale, locales_list) {
     // returns the id for the given locale
-    return _.filter(locales_list, function(l){
-      return l['locale'] === locale;
-    })[0].id;
+    return _.find(locales_list, function(l){
+      return l['locale'].toLowerCase() == locale;
+    }).id;
   },
 
   isStringinArray: function(s, arr) {
