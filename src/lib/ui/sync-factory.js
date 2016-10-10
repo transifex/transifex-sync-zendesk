@@ -71,11 +71,11 @@ module.exports = function(T, t, api) {
         if (selected_count) {
           batch_upload.removeAttr('disabled');
           batch_upload.removeClass('is-disabled');
-          batch_upload.text(M('Send <T>') + ' (' + selected_count + ')');
+          batch_upload.text(this.original_upload_text + ' (' + selected_count + ')');
         } else {
           batch_upload.attr('disabled');
           batch_upload.addClass('is-disabled');
-          batch_upload.text(M('Send <T>'));
+          batch_upload.text(this.original_upload_text);
         }
         if (ready_for_download) {
           batch_download.removeAttr('disabled');
@@ -142,6 +142,7 @@ module.exports = function(T, t, api) {
         this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
         this.$('.js-goto-page[data-page="' + factory.currentpage + '"]').addClass('is-active');
 
+        this.original_upload_text = this.$(m('.js-<t>.js-batch-upload')).text();
         this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
