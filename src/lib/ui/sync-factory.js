@@ -623,8 +623,12 @@ module.exports = function(T, t, api) {
           e = entries[t][i];
           s = this.store(txResource.key + e.resource_name);
           tx_completed = this.completedLanguages(s);
-          zd_object_url = "https://" + subdomain + ".zendesk.com/hc/" + e.source_locale +
-            "/" + type + "/" + e.id;
+          if (t == "dynamic"){
+            zd_object_url = "https://" + subdomain + ".zendesk.com/agent/admin/dynamic_content/";
+          } else {
+            zd_object_url = "https://" + subdomain + ".zendesk.com/hc/" + e.source_locale +
+              "/" + type + "/" + e.id;
+          }
           tx_resource_url = txProject.dashboard_url.replace(/\/$/, '') + '/' + e.resource_name;
           zd_object_updated = moment(e.updated_at).format(
             'MMM D YYYY h:mma');
