@@ -13,7 +13,8 @@ var SETTINGS = {},
     OP = {},
     PAGE_ERROR = '',
     SYNC_STATUS = [],
-    RETRIES = {};
+    RETRIES = {},
+    ZD_LOCALES = {};
 
 module.exports = {
   setSettings: function(settings) {
@@ -78,6 +79,21 @@ module.exports = {
   },
   opGetAll: function() {
     return OP;
-  }
-
+  },
+  getLocales: function() {
+    return ZD_LOCALES;
+  },
+  setLocales: function(locales) {
+    ZD_LOCALES = locales;
+  },
+  getLocaleFromId: function(id) {
+    return _.find(ZD_LOCALES, function(l){
+      return l['id'] === id;
+    })['locale'];
+  },
+  getIdFromLocale: function(locale) {
+    return _.find(ZD_LOCALES, function(l){
+      return l['locale'].toLowerCase() == locale;
+    })['id'];
+  },
 };

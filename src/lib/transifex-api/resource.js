@@ -176,7 +176,7 @@ var resource = module.exports = {
     completedLanguages: function(stats) {
       var arr = [],
           zd_enabled = [],
-          locales = this.store('zd_project_locales');
+          locales = io.getLocales();
       _.map(locales, function(l){
         zd_enabled.push(l['locale'].toLowerCase());
       });

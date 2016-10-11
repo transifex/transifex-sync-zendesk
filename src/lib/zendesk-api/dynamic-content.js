@@ -82,12 +82,17 @@ var dynamic_content = module.exports = {
   },
   eventHandlers: {
     dynamicContentItemsDone: function(data, textStatus, jqXHR) {
-      var locales = [];
+      var that = this,
+          existing_locales;
       logger.info('Dynamic content retrieved with status:', textStatus);
       //map name to title
       if (data) {
         _.each(data.items, function(entry) {
           entry.title = entry.name;
+          existing_locales = _.map(entry.variants, function(v){
+            return io.getLocaleFromId(v.locale_id);
+          });
+          that.store(dynamic_content.key + entry.id + '_locales', existing_locales);
         });
       }
       data.page_count = 1;
@@ -107,20 +112,32 @@ var dynamic_content = module.exports = {
     variantsInsertDone: function(data, textStatus, jqXHR) {
       logger.info('DC variants inserted with status:', textStatus);
       io.popSync(dynamic_content.key + jqXHR.id + 'insert');
+      var existing_locales = this.store(dynamic_content.key + jqXHR.id + '_locales');
+      _.each(jqXHR.locales, function(locale){
+        io.opSet(jqXHR.id + '_' + locale, textStatus);
+        existing_locales.push(locale);
+      });
+      this.store(dynamic_content.key + jqXHR.id + '_locales', existing_locales);
+      this.checkAsyncComplete();
+    },
+    variantsInsertFail: function(data, textStatus, jqXHR) {
+      logger.info('DC variants inserted with status:', textStatus);
+      io.popSync(dynamic_content.key + jqXHR.id + 'insert');
       _.each(jqXHR.locales, function(locale){
         io.opSet(jqXHR.id + '_' + locale, textStatus);
       });
-      this.asyncGetZdDynamicContentFull();
       this.checkAsyncComplete();
     },
     variantsUpdateDone: function(data, textStatus, jqXHR) {
       logger.info('DC variants updated with status:', textStatus);
-      //map name to title
-      if (data) {
-        _.each(data.items, function(entry) {
-          entry.title = entry.name;
-        });
-      }
+      io.popSync(dynamic_content.key + jqXHR.id + 'update');
+      _.each(jqXHR.locales, function(locale){
+        io.opSet(jqXHR.id + '_' + locale, textStatus);
+      });
+      this.checkAsyncComplete();
+    },
+    variantsUpdateFail: function(data, textStatus, jqXHR) {
+      logger.info('DC variants inserted with status:', textStatus);
       io.popSync(dynamic_content.key + jqXHR.id + 'update');
       _.each(jqXHR.locales, function(locale){
         io.opSet(jqXHR.id + '_' + locale, textStatus);
@@ -139,7 +156,7 @@ var dynamic_content = module.exports = {
           resource = this.store(txResource.key + entry.resource_name),
           tx_completed = this.completedLanguages(resource),
           sourceLocale = this.getSourceLocale(project),
-          locales_list = this.store('zd_project_locales');
+          locales_list = io.getLocales();
 
       for (var i = 0; i < tx_completed.length; i++) {
         if (sourceLocale !== tx_completed[i]) { // skip the source locale
@@ -149,13 +166,13 @@ var dynamic_content = module.exports = {
           if (syncUtil.isStringinArray(zd_locale, existing_locales)){
             existing.push({
               content: translation_data.translation.body,
-              locale_id: syncUtil.mapLocaleToId(zd_locale, locales_list),
+              locale_id: io.getIdFromLocale(zd_locale),
             });
             to_update.push(zd_locale);
           } else {
             new_trans.push({
               content: translation_data.translation.body,
-              locale_id: syncUtil.mapLocaleToId(zd_locale, locales_list),
+              locale_id: io.getIdFromLocale(zd_locale),
             });
             to_insert.push(zd_locale);
           }

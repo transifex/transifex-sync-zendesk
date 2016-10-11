@@ -3,6 +3,7 @@
  * @module syncUtil
  */
 
+var io = require('io');
 
 module.exports = {
   resources: {
@@ -24,13 +25,6 @@ module.exports = {
 
   txLocaletoZd: function(l) {
     return l.toLowerCase().replace('_', '-');
-  },
-
-  mapLocaleToId: function(locale, locales_list) {
-    // returns the id for the given locale
-    return _.find(locales_list, function(l){
-      return l['locale'].toLowerCase() == locale;
-    }).id;
   },
 
   isStringinArray: function(s, arr) {
