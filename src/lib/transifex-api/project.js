@@ -55,10 +55,6 @@ var project = module.exports = {
   eventHandlers: {
     txProjectDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
-      var default_locale = this.store('default_locale').split('-')[0];
-      if (data.source_language_code.split('-')[0] !== default_locale){
-        io.setPageError('txProject:locale');
-      }
       this.store(project.key, data);
       io.popSync(project.key);
       this.checkAsyncComplete();

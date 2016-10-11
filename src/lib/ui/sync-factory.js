@@ -95,6 +95,11 @@ module.exports = function(T, t, api) {
       'ui<T>Tab': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
+        var default_locale = this.store('default_locale').split('-')[0],
+            project_locale = this.store(txProject.key).source_language_code.split('_')[0];
+        if (project_locale !== default_locale){
+          io.setPageError('txProject:locale');
+        }
         if (io.getPageError()) {
           this.switchTo('loading_page', {
             page: t,
