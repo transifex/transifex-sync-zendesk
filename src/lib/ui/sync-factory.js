@@ -259,14 +259,15 @@ module.exports = function(T, t, api) {
             failed++;
           }
         }, this);
+        var content_type = t == 'dynamic' ? 'dynamic content items' : m('<t>');
         if (failed === 0) {
-          this.notifySuccess(m(total + ' <t> were successfully uploaded to Transifex.'));
+          this.notifySuccess(total + ' ' + content_type + '  were successfully uploaded to Transifex.');
         } else if (failed == total) {
-          this.notifyError(m('None of the selected <t> could be uploaded to Transifex.'));
-          this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-error');
+          this.notifyError('None of the selected ' + content_type + ' could be uploaded to Transifex.');
+          this.$('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-error');
         } else {
-          this.notifyWarning(m((total - failed) + ' <t> were successfully uploaded to Transifex, ' + failed + ' ' + api + ' could not be uploaded.'));
-          this.$(m('[data-resource] .o-status[data-item="controller"]:not(.is-success)')).addClass('is-warning');
+          this.notifyWarning((total - failed) + ' ' + content_type + ' were successfully uploaded to Transifex, ' + failed + ' ' + api + ' could not be uploaded.');
+          this.$('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-warning');
         }
       },
       'ui<T>DownloadComplete': function() {
@@ -281,7 +282,6 @@ module.exports = function(T, t, api) {
           var resourceName = m('<t>') + '-' + opName.split('_')[0];
           var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
           var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
-          //el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status !== 'success') {
             failed++;
             el.removeClass('u-color-secondary').addClass('js-locale-problem');
@@ -290,22 +290,22 @@ module.exports = function(T, t, api) {
           }
         }, this);
 
-
+        var content_type = t == 'dynamic' ? 'dynamic content items' : m('<t>');
         if (failed === 0) {
-          this.notifySuccess(m('Translations were successfully updated in ' + total + ' languages for all selected <t>.'));
+          this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected ' + content_type + ' .');
         } else if (failed == total) {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
-          this.notifyError(m('Translations could not be updated for any of the selected <t>.'));
+          this.notifyError('Translations could not be updated for any of the selected ' + content_type + ' .');
         } else {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemWarning');
           if (failed == 1) {
-            this.notifyWarning(m('Translations were successfully updated for ' + (total - failed) + ' languages of the selected <t>, 1 language could not be updated.'));
+            this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected ' + content_type + ', 1 language could not be updated.');
           } else {
-            this.notifyWarning(m('Translations were successfully updated for ' + (total - failed) + ' languages of the selected <t>, ' + failed + ' languages could not be updated.'));
+            this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected ' + content_type + ', ' + failed + ' languages could not be updated.');
           }
         }
 
