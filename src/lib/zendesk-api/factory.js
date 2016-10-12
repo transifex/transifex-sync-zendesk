@@ -6,10 +6,7 @@
 
 var common = require('../common'),
     io = require('../io'),
-    logger = require('../logger'),
-    syncUtil = require('../syncUtil'),
-    txProject = require('transifex-api/project'),
-    txResource = require('transifex-api/resource');
+    logger = require('../logger');
 
 // e.g. name=Articles, key=article, api=articles
 module.exports = function(name, key, api) {
@@ -180,31 +177,19 @@ module.exports = function(name, key, api) {
       },
     },
     actionHandlers: {
-      'zdUpsert<T>Translations': function(entry) {
-        logger.info(M('Upsert <T> with Id:') + entry.id);
-        var translation_data, zd_locale,
-            project = this.store(txProject.key),
-            existing_locales = this.store(factory.key + entry.id + '_locales'),
-            resource = this.store(txResource.key + entry.resource_name),
-            tx_completed = this.completedLanguages(resource),
-            sourceLocale = this.getSourceLocale(project);
+      'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
+        logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
 
-        for (var i = 0; i < tx_completed.length; i++) { // iterate through list of locales
-          if (sourceLocale !== tx_completed[i]) { // skip the source locale
-            translation_data = this.store(
-              txResource.key + entry.resource_name + tx_completed[i]
-            );
-            zd_locale = syncUtil.txLocaletoZd(tx_completed[i]);
-            translation_data = common.translationObjectFormat(
-              translation_data.content, zd_locale, factory.key
-            );
+        var translationData = common.translationObjectFormat(resource_data, zdLocale, key);
 
-            if (syncUtil.isStringinArray(zd_locale, existing_locales)) {
-              this.ajax(M('zd<T>Update'), translation_data, entry.id, zd_locale);
-            } else {
-              this.ajax(M('zd<T>Insert'), translation_data, entry.id);
-            }
-          }
+        var existing_locales = this.store(factory.key + entry.id + '_locales');
+        var checkLocaleExists = _.any(existing_locales, function(l){
+          return l == zdLocale;
+        });
+        if (checkLocaleExists) {
+          this.ajax(M('zd<T>Update'), translationData, entry.id, zdLocale);
+        } else {
+          this.ajax(M('zd<T>Insert'), translationData, entry.id);
         }
       },
       'asyncGetZd<T>Translations': function(id) {

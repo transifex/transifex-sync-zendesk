@@ -182,15 +182,18 @@ module.exports = function(T, t, api) {
       'ui<T>BatchDownload': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
-        var object_ids = [],
-            selected = this.$(m(".js-<t>.js-can-download:checked")),
-            data = this.store(zdApi.key),
-            obj = this[M('calcResourceName<T>')](data),
-            entry;
 
+        var object_ids = [],
+            selected = this.$(m(".js-<t>.js-can-download:checked"));
         _.each(selected, function(row){
           object_ids.push(this.$(row).attr('id'));
         });
+        var project = this.store(txProject.key),
+            sourceLocale = this.getSourceLocale(project),
+            data = this.store(zdApi.key),
+            obj = this[M('calcResourceName<T>')](data),
+            entry, resource, txResourceName, completedLocales,
+            zdLocale, translation;
 
         var objects = _.filter(obj[m('<t>')], function(o){
           for (var i = 0; i < object_ids.length; i++) {
@@ -205,7 +208,19 @@ module.exports = function(T, t, api) {
 
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
-          this[M('zdUpsert<T>Translations')](entry);
+          txResourceName = entry.resource_name;
+          resource = this.store(txResource.key + txResourceName);
+          completedLocales = this.completedLanguages(resource);
+
+          for (var ii = 0; ii < completedLocales.length; ii++) { // iterate through list of locales
+            if (sourceLocale !== completedLocales[ii]) { // skip the source locale
+              translation = this.store(txResource.key + txResourceName + completedLocales[ii]);
+              if (typeof translation.content === 'string') {
+                zdLocale = syncUtil.txLocaletoZd(completedLocales[ii]);
+                this[M('zdUpsert<T>Translation')](translation.content, entry, zdLocale);
+              }
+            }
+          }
         }
       },
       'ui<T>Sync': function(event) {

@@ -14,10 +14,10 @@ var dynamic_content = module.exports = {
   events: {
     'dynamicContentItems.done': 'dynamicContentItemsDone',
     'dynamicContentItems.fail': 'dynamicContentItemsFail',
-    'variantsInsert.done': 'variantsInsertDone',
-    'variantsInsert.fail': 'variantsInsertFail',
-    'variantsUpdate.done': 'variantsUpdateDone',
-    'variantsUpdate.fail': 'variantsUpdateFail',
+    'variantInsert.done': 'variantInsertDone',
+    'variantInsert.fail': 'variantInsertFail',
+    'variantUpdate.done': 'variantUpdateDone',
+    'variantUpdate.fail': 'variantUpdateFail',
   },
   requests: {
     dynamicContentItems: function(page, sortby, sortdirection, numperpage) {
@@ -53,28 +53,28 @@ var dynamic_content = module.exports = {
         },
       };
     },
-    variantsInsert: function(data, id, locales) {
-      io.pushSync(dynamic_content.key + id + 'insert');
+    variantInsert: function(data, id, locale) {
+      io.pushSync(dynamic_content.key + id + 'insert' + locale);
       return {
-        url: dynamic_content.base_url + 'items/' + id + '/variants/create_many.json',
+        url: dynamic_content.base_url + 'items/' + id + '/variants.json',
         type: 'POST',
         data: JSON.stringify(data),
         beforeSend: function(jqxhr, settings) {
           jqxhr.id = id;
-          jqxhr.locales = locales;
+          jqxhr.locale = locale;
         },
         contentType: 'application/json'
       };
     },
-    variantsUpdate: function(data, id, locales) {
-      io.pushSync(dynamic_content.key + id + 'update');
+    variantUpdate: function(data, id, locale, variant_id) {
+      io.pushSync(dynamic_content.key + id + 'update' + locale);
       return {
-        url: dynamic_content.base_url + 'items/' + id + '/variants/update_many.json',
+        url: dynamic_content.base_url + 'items/' + id + '/variants/' + variant_id + '.json',
         type: 'PUT',
         data: JSON.stringify(data),
         beforeSend: function(jqxhr, settings) {
           jqxhr.id = id;
-          jqxhr.locales = locales;
+          jqxhr.locale = locale;
         },
         contentType: 'application/json'
       };
@@ -90,7 +90,7 @@ var dynamic_content = module.exports = {
         _.each(data.items, function(entry) {
           entry.title = entry.name;
           existing_locales = _.map(entry.variants, function(v){
-            return io.getLocaleFromId(v.locale_id);
+            return io.getLocaleFromId(v.locale_id).toLowerCase();
           });
           that.store(dynamic_content.key + entry.id + '_locales', existing_locales);
         });
@@ -109,80 +109,55 @@ var dynamic_content = module.exports = {
       io.setPageError('dynamicContent');
       this.checkAsyncComplete();
     },
-    variantsInsertDone: function(data, textStatus, jqXHR) {
+    variantInsertDone: function(data, textStatus, jqXHR) {
       logger.info('DC variants inserted with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'insert');
+      io.popSync(dynamic_content.key + jqXHR.id + 'insert' + jqXHR.locale);
       var existing_locales = this.store(dynamic_content.key + jqXHR.id + '_locales');
-      _.each(jqXHR.locales, function(locale){
-        io.opSet(jqXHR.id + '_' + locale, textStatus);
-        existing_locales.push(locale);
-      });
+      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
+      existing_locales.push(jqXHR.locale);
       this.store(dynamic_content.key + jqXHR.id + '_locales', existing_locales);
       this.checkAsyncComplete();
     },
-    variantsInsertFail: function(data, textStatus, jqXHR) {
-      logger.info('DC variants inserted with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'insert');
-      _.each(jqXHR.locales, function(locale){
-        io.opSet(jqXHR.id + '_' + locale, textStatus);
-      });
+    variantInsertFail: function(data, textStatus, jqXHR) {
+      logger.info('DC variant inserted with status:', textStatus);
+      io.popSync(dynamic_content.key + jqXHR.id + 'insert' + jqXHR.locale);
+      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
       this.checkAsyncComplete();
     },
-    variantsUpdateDone: function(data, textStatus, jqXHR) {
-      logger.info('DC variants updated with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'update');
-      _.each(jqXHR.locales, function(locale){
-        io.opSet(jqXHR.id + '_' + locale, textStatus);
-      });
+    variantUpdateDone: function(data, textStatus, jqXHR) {
+      logger.info('DC variant updated with status:', textStatus);
+      io.popSync(dynamic_content.key + jqXHR.id + 'update' + jqXHR.locale);
+      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
       this.checkAsyncComplete();
     },
-    variantsUpdateFail: function(data, textStatus, jqXHR) {
-      logger.info('DC variants inserted with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'update');
-      _.each(jqXHR.locales, function(locale){
-        io.opSet(jqXHR.id + '_' + locale, textStatus);
-      });
+    variantUpdateFail: function(data, textStatus, jqXHR) {
+      logger.info('DC variant inserted with status:', textStatus);
+      io.popSync(dynamic_content.key + jqXHR.id + 'update' + jqXHR.locale);
+      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
       this.checkAsyncComplete();
     },
   },
   actionHandlers: {
-    zdUpsertDynamicContentTranslations: function(entry) {
-      logger.info('Upsert Dynamic Content with Id:' + entry.id);
-      var new_trans = [], existing = [],
-          to_update = [], to_insert = [],
-          translation_data, zd_locale,
-          project = this.store(txProject.key),
-          existing_locales = this.store(dynamic_content.key + entry.id + '_locales'),
-          resource = this.store(txResource.key + entry.resource_name),
-          tx_completed = this.completedLanguages(resource),
-          sourceLocale = this.getSourceLocale(project),
-          locales_list = io.getLocales();
+    zdUpsertDynamicContentTranslation: function(resource_data, entry, zd_locale) {
+      logger.info('Upsert Dynamic Content with Id:' + entry.id + 'and locale:' + zd_locale);
 
-      for (var i = 0; i < tx_completed.length; i++) {
-        if (sourceLocale !== tx_completed[i]) { // skip the source locale
-          translation_data = this.store(txResource.key + entry.resource_name + tx_completed[i]);
-          translation_data = common.translationObjectFormat(translation_data.content);
-          zd_locale = syncUtil.txLocaletoZd(tx_completed[i]);
-          if (syncUtil.isStringinArray(zd_locale, existing_locales)){
-            existing.push({
-              content: translation_data.translation.body,
-              locale_id: io.getIdFromLocale(zd_locale),
-            });
-            to_update.push(zd_locale);
-          } else {
-            new_trans.push({
-              content: translation_data.translation.body,
-              locale_id: io.getIdFromLocale(zd_locale),
-            });
-            to_insert.push(zd_locale);
-          }
+      var data, variant, locale_id,
+          translation_data = common.translationObjectFormat(resource_data, zd_locale),
+          existing_locales = this.store(dynamic_content.key + entry.id + '_locales');
+      locale_id = io.getIdFromLocale(zd_locale);
+      data = {
+        variant: {
+          content: translation_data.translation.body,
+          locale_id: locale_id
         }
-      }
-      if (new_trans.length) {
-        this.ajax('variantsInsert', {'variants': new_trans}, entry.id, to_insert);
-      }
-      if (existing.length) {
-        this.ajax('variantsUpdate', {'variants': existing}, entry.id, to_update);
+      };
+      if (_.contains(existing_locales, zd_locale)) {
+        variant = _.find(entry.variants, function(v){
+          return v.locale_id == locale_id;
+        });
+        this.ajax('variantUpdate', data, entry.id, zd_locale, variant.id);
+      } else {
+        this.ajax('variantInsert', data, entry.id, zd_locale);
       }
     },
 
