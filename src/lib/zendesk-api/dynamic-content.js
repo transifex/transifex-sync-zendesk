@@ -142,7 +142,7 @@ var dynamic_content = module.exports = {
       logger.info('Upsert Dynamic Content with Id:' + entry.id + 'and locale:' + zd_locale);
 
       var data, variant, locale_id,
-          translation_data = common.translationObjectFormat(resource_data, zd_locale),
+          translation_data = common.translationObjectFormat(this.$, resource_data, zd_locale),
           existing_locales = this.store(dynamic_content.key + entry.id + '_locales');
       locale_id = io.getIdFromLocale(zd_locale);
       data = {
