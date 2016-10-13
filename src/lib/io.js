@@ -14,7 +14,8 @@ var SETTINGS = {},
     PAGE_ERROR = '',
     SYNC_STATUS = [],
     RETRIES = {},
-    ZD_LOCALES = {};
+    ZD_LOCALES = {},
+    RESOURCE_ARRAY = [];
 
 module.exports = {
   setSettings: function(settings) {
@@ -95,5 +96,14 @@ module.exports = {
     return _.find(ZD_LOCALES, function(l){
       return l['locale'].toLowerCase() == locale;
     })['id'];
+  },
+  getResourceArray: function() {
+    return RESOURCE_ARRAY;
+  },
+  setResourceArray: function(arr) {
+    RESOURCE_ARRAY = arr;
+  },
+  pushResource: function(slug) {
+    RESOURCE_ARRAY.push(slug);
   },
 };

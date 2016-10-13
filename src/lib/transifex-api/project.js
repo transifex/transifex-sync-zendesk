@@ -55,6 +55,10 @@ var project = module.exports = {
     txProjectDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
+      var resource_array = _.map(data.resources, function(resource) {
+        return resource.slug;
+      });
+      io.setResourceArray(resource_array);
       io.popSync(project.key);
       this.checkAsyncComplete();
     },
@@ -88,16 +92,6 @@ var project = module.exports = {
     },
   },
   helpers: {
-    getResourceArray: function(p) {
-      var result = [];
-      var r = p.resources;
-      if (_.isArray(r)) {
-        _.each(r, function(i) {
-          result.push(i.slug);
-        });
-      }
-      return result;
-    },
     getSourceLocale: function(p) {
       return p.source_language_code;
     },

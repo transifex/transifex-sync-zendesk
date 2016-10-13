@@ -148,6 +148,7 @@ var resource = module.exports = {
       logger.info('Transifex Resource inserted with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       io.opSet(jqXHR.resourceName, 'success');
+      io.pushResource(jqXHR.resourceName);
       this.checkAsyncComplete();
     },
     txUpdateResourceDone: function(data, textStatus, jqXHR) {
@@ -206,7 +207,7 @@ var resource = module.exports = {
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);
       var project = this.store(txProject.key);
-      var resources = this.getResourceArray(project);
+      var resources = io.getResourceArray();
       //check list of resources in the project
       io.opSet(slug, 'processing');
       if (syncUtil.isStringinArray(slug, resources)) {
