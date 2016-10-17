@@ -166,14 +166,6 @@ var resource = module.exports = {
     },
   },
   actionHandlers: {
-    displayResource: function(resourceName) {
-      this.asyncGetTxResourceStats(resourceName);
-      var pageData = this.store(resource.key + resourceName);
-      pageData = [pageData];
-      this.switchTo('sync_resource_status', {
-        dataset: pageData,
-      });
-    },
     completedLanguages: function(stats) {
       var arr = [],
           zd_enabled = [],
@@ -191,19 +183,6 @@ var resource = module.exports = {
 
       return arr;
     },
-    displayResourceLanguage: function(resourceName, languageCode) {
-      this.asyncGetTxResource(resourceName, languageCode);
-      var pageData = this.store(resource.key + resourceName + languageCode);
-      pageData = _.extend(pageData, {
-        'name': resourceName,
-        'language_code': languageCode
-      });
-      pageData = [pageData];
-      this.switchTo('sync_resource_language_status', {
-        dataset: pageData,
-      });
-    },
-
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);
       var project = this.store(txProject.key);
