@@ -177,8 +177,11 @@ def _copy_resources(options, resources, target_resources):
                 try:
                     r = _upload_new_translations(options, res['slug'], new_slug, code)
                     r.raise_for_status()
-                except RequestException:
-                    print "Error: {}".format(r.content)
+                except (RequestException, ValueError) as e:
+                    msg = r.content
+                    if isinstance(e, ValueError):
+                        msg = "Couldn't decode json content"
+                    print "Error: {}".format(msg)
                     if new_slug not in failed.keys():
                         failed[new_slug] = []
                     failed[new_slug].append(code)
