@@ -399,7 +399,8 @@ module.exports = function(T, t, api) {
             num = data[t].length,
             resourceName, resource, has_error = false,
             projectData = this.store('tx_project'),
-            projectResources = [];
+            projectResources = [],
+            completion;
 
         if (projectData && projectData.resources) {
           projectResources = _.map(projectData.resources, function(entry) {
@@ -428,6 +429,13 @@ module.exports = function(T, t, api) {
           }
           //normal
           else if (typeof resource !== 'number') {
+            completion = this.resourceCompletedPercentage(resource);
+            if (completion == 100) {
+              el_item.find('[data-status="completed"]').removeClass('is-hidden');
+            } else {
+              el_item.find('.js-trans-percentage').text(completion);
+              el_item.find('[data-status="in_translation"]').removeClass('is-hidden');
+            }
             this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="found"]').removeClass('is-hidden');
           }

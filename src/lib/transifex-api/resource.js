@@ -234,4 +234,20 @@ var resource = module.exports = {
       this.txUpsertResource(data, name);
     },
   },
+  helpers: {
+    resourceCompletedPercentage: function(resource_stats) {
+      var sum = 0, locale_count = 0,
+          supported_locales = this.store('zd_project_locales');
+      supported_locales = _.map(supported_locales, function(l){
+        return l['locale'].toLowerCase();
+      });
+      _.each(resource_stats, function(stat, code) {
+        if (_.contains(supported_locales, syncUtil.txLocaletoZd(code))) {
+          sum += parseInt(stat.completed.split('%')[0]);
+          locale_count += 1;
+        }
+      });
+      return Math.ceil(sum / locale_count);
+    },
+  },
 };

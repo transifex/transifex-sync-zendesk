@@ -154,17 +154,19 @@
           </div>
         </div>
 
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
-
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Completed Languages</div>
-
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
+        <div class="u-width-10 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
             Last Activity<svg class="o-icon" viewBox="0 0 16 16">
               <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
             </svg>
           </span>
         </div>
+
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
+
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Completed Languages</div>
+
+        <div class="u-width-10 u-paddingHorizontal-1x u-textAlign-center u-float-left">Resource Status</div>
 
       </div>
     </div>
@@ -190,9 +192,16 @@
                 </div>
               </div>
             </div>
+            <div class="o-text-ellipsis u-width-10 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small">
+                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
+                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
+                </svg>{{{this.zd_object_updated}}}
+              </span>
+            </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-disabled u-fontSize-small" data-status="checking">Checking...</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No resource yet</span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">-</span>
               <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank">{{{this.name}}}</a>
               <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Error</span>
             </div>
@@ -201,12 +210,11 @@
                 <span class="u-color-secondary u-fontSize-small"><span class="u-color-disabled">Checking...</span></span>
               </span>
             </div>
-            <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-secondary u-fontSize-small">
-                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
-                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
-                </svg>{{{this.zd_object_updated}}}
-              </span>
+            <div class="o-text-ellipsis u-width-10 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small" data-status="checking"><span class="u-color-disabled">Checking...</span></span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="completed">100% Translated</span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No resource yet</span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage"></span>%</span>
             </div>
           </div>
         </div>
