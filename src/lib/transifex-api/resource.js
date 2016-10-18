@@ -39,6 +39,7 @@ var resource = module.exports = {
     resource.password = settings.tx_password;
     resource.url = txutils.convertUrlToApi(settings.tx_project) + 'resource/';
     resource.inserturl = txutils.convertUrlToApi(settings.tx_project) + 'resources/';
+    resource.headers['Authorization'] = 'Basic ' + btoa(resource.username + ':' + resource.password);
   },
   requests: {
     txResourceStats: function(resourceName) {
@@ -51,9 +52,7 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
         },
         dataType: 'json',
-        username: resource.username,
-        password: resource.password,
-        secure: true
+        cors: true
       };
     },
     txResource: function(resourceName, languageCode) {
@@ -68,9 +67,7 @@ var resource = module.exports = {
           jqxhr.languageCode = languageCode;
         },
         dataType: 'json',
-        username: resource.username,
-        password: resource.password,
-        secure: true
+        cors: true
       };
     },
     txInsertResource: function(data, resourceName) {
@@ -83,11 +80,9 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = data.i18n_type;
         },
-        username: resource.username,
-        password: resource.password,
         data: JSON.stringify(data),
         contentType: 'application/json',
-        secure: true
+        cors: true
       };
     },
     txUpdateResource: function(data, resourceName) {
@@ -100,12 +95,10 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = data.i18n_type;
         },
-        username: resource.username,
-        password: resource.password,
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',
-        secure: true
+        cors: true
       };
     },
   },

@@ -35,6 +35,7 @@ var project = module.exports = {
 
     project.username = settings.tx_username;
     project.password = settings.tx_password;
+    project.headers['Authorization'] = 'Basic ' + btoa(project.username + ':' + project.password);
   },
   requests: {
     txProject: function() {
@@ -46,9 +47,7 @@ var project = module.exports = {
         type: 'GET',
         cache: false,
         dataType: 'json',
-        username: project.username,
-        password: project.password,
-        secure: true
+        cors: true
       };
     },
   },
