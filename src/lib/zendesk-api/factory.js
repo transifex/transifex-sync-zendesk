@@ -26,6 +26,8 @@ module.exports = function(name, key, api) {
       'zd<T>Insert.fail': M('zd<T>InsertFail'),
       'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Full.fail': M('zd<T>SyncError'),
+      'zd<T>Search.done': M('zd<T>SearchDone'),
+
     },
     requests: {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
@@ -62,6 +64,13 @@ module.exports = function(name, key, api) {
         return {
           url: factory.base_url + locale + '/' +  api + '.json' + numberperpageString +
             pageString + sortbyString + sortdirectionString,
+          type: 'GET',
+          dataType: 'json'
+        };
+      },
+      'zd<T>Search': function(search_query){
+        return {
+          url: factory.base_url + 'articles/search.json?query=' + search_query,
           type: 'GET',
           dataType: 'json'
         };
@@ -175,6 +184,14 @@ module.exports = function(name, key, api) {
         logger.info('Transifex Resource update failed with status:', textStatus);
         this.checkAsyncComplete();
       },
+      'zd<T>SearchDone': function(data, textStatus) {
+        logger.info(M('Zendesk Search <T> retrieved with status:'), textStatus);
+        var formatted_data = {'articles': data['results']}
+        this.store(factory.key, formatted_data);
+        logger.debug('done, removing key');
+        io.popSync(factory.key);
+        this.checkAsyncComplete();
+      },
     },
     actionHandlers: {
       'zdUpsert<T>Translation': function(resource_data, id, zdLocale) {
@@ -203,6 +220,12 @@ module.exports = function(name, key, api) {
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
         this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
+      },
+      'asyncSearchZd<T>Full': function(search_query) {
+        logger.debug(M('function: [asyncSearchZd<T>Full] params: [search_query]') +
+          search_query);
+        io.pushSync(factory.key);
+        this.ajax(M('zd<T>Search'), search_query);
       },
     },
     jsonHandlers: {
