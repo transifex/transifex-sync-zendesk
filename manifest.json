@@ -1,0 +1,36 @@
+{
+  "name": "Transifex Sync",
+  "author": {
+    "name": "Transifex",
+    "email": "support@transifex.com",
+    "url": "https://www.transifex.com/integrations/"
+  },
+  "defaultLocale": "en",
+  "private": false,
+  "location": "nav_bar",
+  "domainWhitelist": ["www.transifex.com"],
+  "version": "2.0.0",
+  "frameworkVersion": "1.0",
+  "parameters": [
+    {
+      "name": "tx_username",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "tx_password",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "tx_project",
+      "type": "text",
+      "required": true
+    },
+    {
+      "name": "features",
+      "type": "hidden",
+      "required": false
+    }
+  ]
+}
