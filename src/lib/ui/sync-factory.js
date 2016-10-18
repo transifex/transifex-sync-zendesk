@@ -146,6 +146,7 @@ module.exports = function(T, t, api) {
         this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
+        this.$('[data-toggle="tooltip"]').tooltip();
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
@@ -668,7 +669,7 @@ module.exports = function(T, t, api) {
           }, {
             zd_object_updated: zd_object_updated
           }, {
-            zd_outdated: e.outdated || false
+            zd_outdated: t == 'dynamic' ? e.outdated : false
           }, {
             tx_resource_url: tx_resource_url
           }, {

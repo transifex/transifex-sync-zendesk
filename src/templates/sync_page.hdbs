@@ -194,9 +194,16 @@
             </div>
             <div class="o-text-ellipsis u-width-10 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small">
+              {{#if this.zd_outdated}}
+                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
+                  <path class="path1" data-toggle="tooltip" title="Outdated!" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
+                </svg>
+                {{else}}
                 <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
                   <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
-                </svg>{{{this.zd_object_updated}}}
+                </svg>
+                {{/if}}
+                {{{this.zd_object_updated}}}
               </span>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
