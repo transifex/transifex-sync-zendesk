@@ -186,7 +186,7 @@ module.exports = function(name, key, api) {
       },
       'zd<T>SearchDone': function(data, textStatus) {
         logger.info(M('Zendesk Search <T> retrieved with status:'), textStatus);
-        var formatted_data = {'articles': data['results']}
+        var formatted_data = {'articles': data['results']};
         this.store(factory.key, formatted_data);
         logger.debug('done, removing key');
         io.popSync(factory.key);
