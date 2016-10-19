@@ -38,8 +38,38 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-refresh': M('ui<T>Sync'),
       'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
+      'click .js-<t>.js-clear-search': M('ui<T>ClearSearch'),
+      'keypress .js-<t>.js-search': M('ui<T>Search')
     },
     eventHandlers: {
+      'ui<T>Search': function(event) {
+        if (this.processing) return;
+        var code = event.which || event.keyCode;
+        if (code == 13){
+          event.preventDefault();
+          var search_query = this.$(m('.js-<t>.js-search :input')).val();
+          if(search_query == '') return;
+          var sorting = io.getSorting();
+          this.store("search_query", search_query);
+          this[M('asyncGetZd<T>Full')](
+            factory.currentpage, sorting.sortby,
+            sorting.sortdirection, sorting.perpage
+          );
+          this.loadSyncPage = this[M('ui<T>Init')];
+        }
+      },
+      'ui<T>ClearSearch': function(event) {
+        if (event) event.preventDefault();
+        if (this.processing) return;
+        this.store("search_query", '');
+        var sorting = io.getSorting();
+        this[M('asyncGetZd<T>Full')](
+            factory.currentpage, sorting.sortby,
+            sorting.sortdirection, sorting.perpage
+          );
+        this.loadSyncPage = this[M('ui<T>Init')];
+      },
+
       'uiLoadConf': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
@@ -126,6 +156,7 @@ module.exports = function(T, t, api) {
         if (event) event.preventDefault();
         logger.debug(M('ui<T>Init'));
 
+        var search_query = this.store("search_query");
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
           page: t,
@@ -133,8 +164,10 @@ module.exports = function(T, t, api) {
           page_categories: t == 'categories',
           page_sections: t == 'sections',
           dataset: pageData,
+          search_term: search_query,
         });
 
+        this[M('handleSearch<T>')]();
         var sorting = io.getSorting();
         this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
         this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
@@ -669,6 +702,19 @@ module.exports = function(T, t, api) {
           });
         }
         return ret;
+      },
+      'handleSearch<T>': function(){
+        if (t != 'articles') {
+          this.$('.js-search').addClass("u-display-none");
+        }
+        search_query = this.store("search_query");
+        this.$(m('.js-<t>.js-search :input')).val(search_query);
+        if(search_query != ''){
+          this.$('.js-clear-search').removeClass("u-display-none");
+        }
+        else{
+          this.$('.js-clear-search').addClass("u-display-none");
+        }
       }
     }
   };

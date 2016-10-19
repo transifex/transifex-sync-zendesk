@@ -217,6 +217,7 @@ span {
 .u-height-7x  { height: $baseline-grid*7 !important; }
 
 .u-width-7x  { width: $baseline-grid*7 !important; }
+.u-width-midWidth { width: $baseline-grid*46 !important; }
 
 .u-width-20  { width: 20% !important; }
 .u-width-40  { width: 40% !important; }
@@ -231,6 +232,7 @@ span {
 .u-color-secondary  { color: $text-secondary-color !important; }
 .u-color-disabled   { color: $text-disabled-color !important; }
 
+.u-fill-disabled   { fill: $text-disabled-color !important; }
 /* -- Border utilities -- */
 
 .u-borderBottom-divider { border-bottom: 1px solid $divider-color !important; }
@@ -263,7 +265,6 @@ span {
 .u-margin-1x { margin: $baseline-grid !important; }
 .u-marginLeft-2x  { margin-left: $baseline-grid*2 !important; }
 .u-marginRight-2x { margin-right: $baseline-grid*2 !important; }
-.u-marginHorizontal-2x { margin-left: $baseline-grid*2 !important; margin-right: $baseline-grid*2 !important; }
 .u-marginTop-2x  { margin-top: $baseline-grid*2 !important; }
 .u-marginBottom-2x { margin-bottom: $baseline-grid*2 !important; }
 .u-marginVertical-2x { margin-top: $baseline-grid*2 !important; margin-bottom: $baseline-grid*2 !important; }
@@ -271,6 +272,7 @@ span {
 
 .u-marginBottom-3x { margin-bottom: $baseline-grid*3 !important; }
 
+.u-marginHorizontal-4x { margin-left: $baseline-grid*4 !important; margin-right: $baseline-grid*4 !important; }
 .u-marginBottom-4x { margin-bottom: $baseline-grid*4 !important; }
 
 
@@ -771,6 +773,136 @@ span {
     padding-left: $form-font-size + $form-paddingHorizontal;
   }
 }
+
+/* -- Textinput object -- */
+
+.o-textinput {
+
+  width: 100%;
+  height: $form-height;
+
+  padding-top: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-bottom: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-left: $form-paddingHorizontal;
+  padding-left: $form-paddingHorizontal;
+  padding-right: $form-paddingHorizontal;
+
+  font-size: $form-font-size;
+  line-height: $form-multiline-height;
+  background-color: $form-background-color;
+
+  border: 1px solid $form-border-color;
+  border-radius: $form-border-radius;
+  -moz-border-radius: $form-border-radius;
+  -webkit-border-radius: $form-border-radius;
+
+  &::-webkit-input-placeholder{ color: $form-placeholder-color; }
+  &:-moz-placeholder          { color: $form-placeholder-color; }
+  &::-moz-placeholder         { color: $form-placeholder-color; }
+  &:-ms-input-placeholder     { color: $form-placeholder-color; }
+
+  &:hover,
+  &:focus,
+  &.is-focus {
+    border-color: $form-focus-border-color;
+  }
+
+  &[disabled],
+  &.is-disabled {
+    border-color: $form-disabled-border-color;
+    color: $form-placeholder-color;
+  }
+
+  // added when there is an input error
+  &.has-error { border-color: $status-error-color; }
+}
+
+/* -- Input with icon -- */
+.o-inputwith-icon {
+  position: relative;
+  width: 100%;
+  height: $form-height;
+
+  &--hasaction {
+    .o-inputwith-icon__input {
+      padding-right: $form-height;
+    }
+  }
+
+  // TODO: move all --muted in textinput.less
+  &--muted {
+    .o-inputwith-icon__input {
+      transition: border-color 0.15s, background-color 0.15s;
+      -moz-transition: border-color 0.15s, background-color 0.15s;
+      -webkit-transition: border-color 0.15s, background-color 0.15s;
+    }
+    .o-inputwith-icon__input:not(:focus) {
+      background-color: fade-out( $divider-color, 1 - $fade-once-percentage );
+      border-color:  fade-out( $divider-color, 1 - $fade-once-percentage );
+    }
+
+    .o-inputwith-icon__input:not(:focus):hover {
+      border-color:  $form-border-color;
+    }
+
+    .o-inputwith-icon__input.is-focus {
+      background-color: $form-background-color;
+      border-color: $form-border-color;
+    }
+
+    .o-inputwith-icon__input.is-focus:hover {
+      border-color: $form-focus-border-color;
+    }
+  }
+
+  &__input {
+    display: block;
+    padding-left: $form-height;
+  }
+
+  &__symbol {
+    position: absolute;
+    display: block;
+    width: $form-height*1 - 4*$baseline-grid;
+    height: $form-height*1 - 4*$baseline-grid;
+
+    top: 2*$baseline-grid;
+    left: 2*$baseline-grid;
+
+    color: $form-disabled-text-color;
+
+    z-index: $zindex1;
+  }
+
+  &__action {
+    position: absolute;
+    display: block;
+
+    width: $form-height*1-3*$baseline-grid;
+    height: $form-height*1-3*$baseline-grid;
+    line-height: $form-height*1-3*$baseline-grid;
+
+    top: $baseline-grid*1.5;
+    right: $baseline-grid*1.5;
+
+    padding: $baseline-grid*0.5;
+
+    opacity: 0.4;
+
+    z-index: $zindex1;
+
+    &:hover,
+    &.is-hover {
+      opacity: 0.8;
+    }
+
+    &:disabled,
+    &.is-disabled {
+      opacity: 0.4;
+    }
+  }
+}
+
 
 /* -- Tabs object -- */
 .o-tabs {
