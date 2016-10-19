@@ -232,6 +232,8 @@ span {
 .u-color-secondary  { color: $text-secondary-color !important; }
 .u-color-disabled   { color: $text-disabled-color !important; }
 
+.u-fill-disabled   { fill: $text-disabled-color !important; }
+
 /* -- Border utilities -- */
 
 .u-borderBottom-divider { border-bottom: 1px solid $divider-color !important; }
@@ -264,7 +266,6 @@ span {
 .u-margin-1x { margin: $baseline-grid !important; }
 .u-marginLeft-2x  { margin-left: $baseline-grid*2 !important; }
 .u-marginRight-2x { margin-right: $baseline-grid*2 !important; }
-.u-marginHorizontal-2x { margin-left: $baseline-grid*2 !important; margin-right: $baseline-grid*2 !important; }
 .u-marginTop-2x  { margin-top: $baseline-grid*2 !important; }
 .u-marginBottom-2x { margin-bottom: $baseline-grid*2 !important; }
 .u-marginVertical-2x { margin-top: $baseline-grid*2 !important; margin-bottom: $baseline-grid*2 !important; }
@@ -272,6 +273,7 @@ span {
 
 .u-marginBottom-3x { margin-bottom: $baseline-grid*3 !important; }
 
+.u-marginHorizontal-4x { margin-left: $baseline-grid*4 !important; margin-right: $baseline-grid*4 !important; }
 .u-marginBottom-4x { margin-bottom: $baseline-grid*4 !important; }
 
 

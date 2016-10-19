@@ -58,7 +58,7 @@
           Get Translations
         </a>
       </div>
-      <div class="o-inputwith-icon o-inputwith-icon--muted u-width-midWidth u-marginHorizontal-2x js-{{page}} js-search">
+      <div class="o-inputwith-icon o-inputwith-icon--muted u-width-midWidth u-marginHorizontal-4x js-{{page}} js-search">
         <svg viewBox="0 0 16 16" class="o-inputwith-icon__symbol">
           <path class="o-icon" d="M11.429 10.057h-0.686l-0.229-0.114c0.914-1.143 1.371-2.4 1.371-3.886 0.114-3.429-2.629-6.057-5.943-6.057s-5.943 2.629-5.943 5.943 2.629 5.943 5.943 5.943c1.486 0 2.857-0.571 3.886-1.371l0.229 0.229v0.686l4.571 4.571 1.371-1.371-4.571-4.571zM5.943 10.057c-2.4 0-4.114-1.829-4.114-4.114s1.829-4.114 4.114-4.114 4.114 1.829 4.114 4.114-1.829 4.114-4.114 4.114z"></path>
         </svg>
