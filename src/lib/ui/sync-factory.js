@@ -172,6 +172,7 @@ module.exports = function(T, t, api) {
         this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
         this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
         this.$('.js-goto-page[data-page="' + factory.currentpage + '"]').addClass('is-active');
+
         this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
