@@ -39,7 +39,7 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'keypress .js-<t>.js-search': M('ui<T>Search'),
-      'click .js-<t>.js-clear-search': M('ui<T>Sync'),
+      'click .js-<t>.js-clear-search': M('ui<T>ClearSearch'),
     },
     eventHandlers: {
       'ui<T>Search': function(event) {
@@ -49,11 +49,27 @@ module.exports = function(T, t, api) {
           event.preventDefault();
           var search_query = this.$(m('.js-<t>.js-search :input')).val();
           if(search_query == '') return;
-          this[M('asyncSearchZd<T>Full')](search_query);
+          var sorting = io.getSorting();
           this.store("search_query", search_query);
+          this[M('asyncGetZd<T>Full')](
+            factory.currentpage, sorting.sortby,
+            sorting.sortdirection, sorting.perpage
+          );
           this.loadSyncPage = this[M('ui<T>Init')];
         }
       },
+      'ui<T>ClearSearch': function(event) {
+        if (event) event.preventDefault();
+        if (this.processing) return;
+        this.store("search_query", '');
+        var sorting = io.getSorting();
+        this[M('asyncGetZd<T>Full')](
+            factory.currentpage, sorting.sortby,
+            sorting.sortdirection, sorting.perpage
+          );
+        this.loadSyncPage = this[M('ui<T>Init')];
+      },
+
       'uiLoadConf': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
@@ -140,7 +156,7 @@ module.exports = function(T, t, api) {
       'ui<T>Init': function(event) {
         if (event) event.preventDefault();
         logger.debug(M('ui<T>Init'));
-
+        var search_query = this.store("search_query");
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
           page: t,
@@ -149,6 +165,7 @@ module.exports = function(T, t, api) {
           page_sections: t == 'sections',
           page_dynamic_content: t == 'dynamic',
           dataset: pageData,
+          search_term: search_query,
         });
         this[M('handleSearch<T>')]();
         var sorting = io.getSorting();
@@ -723,7 +740,6 @@ module.exports = function(T, t, api) {
         this.$(m('.js-<t>.js-search :input')).val(search_query);
         if(search_query != ''){
           this.$('.js-clear-search').removeClass("u-display-none");
-          this.store("search_query", '');
         }
         else{
           this.$('.js-clear-search').addClass("u-display-none");
