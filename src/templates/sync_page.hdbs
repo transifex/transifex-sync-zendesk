@@ -156,7 +156,7 @@
 
         <div class="u-width-10 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
-            Last Activity<svg class="o-icon" viewBox="0 0 16 16">
+            Article Last Activity<svg class="o-icon" viewBox="0 0 16 16">
               <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
             </svg>
           </span>
@@ -180,7 +180,7 @@
     {{#each dataset}}
       <div class="o-list__item js-{{../page}}" data-resource="{{this.name}}">
         <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider" data-item="controller">
-          <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
+          <div class="u-display-flex u-lineHeight-button u-height-button">
             <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x">
               <div class="u-display-flex u-width-100">
                 <label class="o-checkbox-controller u-marginRight-2x" for="{{{this.name}}}">
@@ -217,11 +217,12 @@
                 <span class="u-color-secondary u-fontSize-small"><span class="u-color-disabled">Checking...</span></span>
               </span>
             </div>
-            <div class="o-text-ellipsis u-width-10 u-paddingHorizontal-1x u-textAlign-center">
+            <div class="o-text-ellipsis u-flexGrow-1 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small" data-status="checking"><span class="u-color-disabled">Checking...</span></span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="completed">100% Translated</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No resource yet</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage"></span>%</span>
+              <span class="o-badge u-backgroundColor-success is-hidden" data-status="completed">Ready for use</span>
+              <span class="o-badge is-hidden" data-status="not_found">No resource yet</span>
+              <span class="o-badge u-backgroundColor-graphBase is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage"></span>%</span>
+              <span class="u-fontSize-small is-hidden" data-status="error">-</span>
             </div>
           </div>
         </div>

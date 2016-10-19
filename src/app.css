@@ -226,6 +226,8 @@ span {
 
 /* -- Color utilities -- */
 .u-backgroundColor-active     { background-color: $background-active-color !important; }
+.u-backgroundColor-success    { background-color: $status-success-color !important; }
+.u-backgroundColor-graphBase  { background-color: $background-graph-base !important; }
 
 .u-color-primary    { color: $text-primary-color !important; }
 .u-color-secondary  { color: $text-secondary-color !important; }
@@ -848,6 +850,37 @@ span {
   vertical-align: inherit;
 }
 
+
+/* -- Badge -- */
+
+.o-badge {
+  display: inline-block;
+  padding-left: $baseline-grid/2;
+  padding-right: $baseline-grid/2;
+  min-width: $baseline-grid*6;
+
+  line-height: $baseline-grid*3;
+  font-size: $tiny-font-size;
+  font-weight: $thin-text-weight;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none !important;
+  text-indent: 0;
+
+  color: $white-color !important;
+  background-color: $text-disabled-color;
+
+  border-radius: $baseline-grid/2;
+  -moz-border-radius: $baseline-grid/2;
+  -webkit-border-radius: $baseline-grid/2;
+
+  &--over {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: $zindex1;
+  }
+}
 
 /* -- Pagination -- */
 
