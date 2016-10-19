@@ -78,14 +78,14 @@
         <svg viewBox="0 0 16 16" class="o-inputwith-icon__symbol">
           <path class="o-icon" d="M11.429 10.057h-0.686l-0.229-0.114c0.914-1.143 1.371-2.4 1.371-3.886 0.114-3.429-2.629-6.057-5.943-6.057s-5.943 2.629-5.943 5.943 2.629 5.943 5.943 5.943c1.486 0 2.857-0.571 3.886-1.371l0.229 0.229v0.686l4.571 4.571 1.371-1.371-4.571-4.571zM5.943 10.057c-2.4 0-4.114-1.829-4.114-4.114s1.829-4.114 4.114-4.114 4.114 1.829 4.114 4.114-1.829 4.114-4.114 4.114z"></path>
         </svg>
-        <input type="text" class="o-inputwith-icon__input o-textinput" placeholder="Search.."/>
+        <input type="text" class="o-inputwith-icon__input o-textinput" placeholder="Search by article title or content"/>
         <a href="#" class="o-inputwith-icon__action js-{{page}} js-clear-search u-display-none">
           <svg viewBox="0 0 16 16" class="u-box-2x u-fill-disabled">
             <path d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"/>
           </svg>
         </a>
       </div>
-      <div class="u-height-form u-lineHeight-form u-fontSize-small">
+      <div class="u-height-form u-lineHeight-form u-fontSize-small js-{{page}} js-per-page">
         <span class="u-color-disabled">Per page:</span>
         <a perpage="10" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">10</a>
         <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">25</a>
@@ -233,10 +233,10 @@
               c0.5,0,1,0,1.5,0.1v-4.9c0,0,0,0,0,0C47.8,20.8,47.7,20.5,47.5,20.2z M36,19.8v-7.4l7.4,7.4H36z"></path>
           </svg>
           <div class="c-emptystate__title">
-            We couldn't find what you were looking for
+            No results were found for "{{search_term}}"
           </div>
           <div class="c-emptystate__description">
-            Please check your spelling or search with another term.
+            Please check your spelling or search for another term.
           </div>
         </div>
       </div>
