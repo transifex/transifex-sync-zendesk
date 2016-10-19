@@ -233,7 +233,6 @@ span {
 .u-color-disabled   { color: $text-disabled-color !important; }
 
 .u-fill-disabled   { fill: $text-disabled-color !important; }
-
 /* -- Border utilities -- */
 
 .u-borderBottom-divider { border-bottom: 1px solid $divider-color !important; }

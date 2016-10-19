@@ -155,6 +155,7 @@ module.exports = function(T, t, api) {
       'ui<T>Init': function(event) {
         if (event) event.preventDefault();
         logger.debug(M('ui<T>Init'));
+
         var search_query = this.store("search_query");
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
@@ -165,6 +166,7 @@ module.exports = function(T, t, api) {
           dataset: pageData,
           search_term: search_query,
         });
+
         this[M('handleSearch<T>')]();
         var sorting = io.getSorting();
         this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
@@ -713,7 +715,6 @@ module.exports = function(T, t, api) {
           this.$('.js-clear-search').addClass("u-display-none");
         }
       }
-
     }
   };
 
