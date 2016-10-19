@@ -27,7 +27,6 @@ module.exports = function(name, key, api) {
       'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Full.fail': M('zd<T>SyncError'),
       'zd<T>Search.done': M('zd<T>SearchDone'),
-
     },
     requests: {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
