@@ -38,7 +38,6 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-refresh': M('ui<T>Sync'),
       'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
-      'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'click .js-<t>.js-reset': M('ui<T>Tab'),
       'keypress .js-<t>.js-search': M('ui<T>Search')
     },
@@ -157,6 +156,9 @@ module.exports = function(T, t, api) {
         this.$(m('.js-<t>.js-search :input')).val(search_query);
         this.store("search_query", '');
 
+        if (t != 'articles') {
+          this.$('.js-search').addClass("u-display-none");
+        }
         var sorting = io.getSorting();
         this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
         this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
@@ -644,12 +646,13 @@ module.exports = function(T, t, api) {
             limit = entries[t].length,
             ret = [],
             d, e, s,
+            subdomain = this.currentAccount().subdomain(),
             tx_completed, zd_object_url, tx_resource_url, zd_object_updated;
         for (var i = 0; i < limit; i++) {
           e = entries[t][i];
           s = this.store(txResource.key + e.resource_name);
           tx_completed = this.completedLanguages(s);
-          zd_object_url = "https://txtest.zendesk.com/hc/" + e.source_locale +
+          zd_object_url = "https://" + subdomain + ".zendesk.com/hc/" + e.source_locale +
             "/" + type + "/" + e.id;
           tx_resource_url = txProject.dashboard_url.replace(/\/$/, '') + '/' + e.resource_name;
           zd_object_updated = moment(e.updated_at).format(
