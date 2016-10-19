@@ -39,6 +39,8 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'keypress .js-<t>.js-search': M('ui<T>Search'),
+      'click .js-<t>.js-reset': M('ui<T>Tab'),
+>>>>>>> Implementing Search feature
     },
     eventHandlers: {
       'ui<T>Search': function(event) {
@@ -47,23 +49,10 @@ module.exports = function(T, t, api) {
         if (code == 13){
           event.preventDefault();
           var search_query = this.$(m('.js-<t>.js-search :input')).val();
+          if(search_query == '') return;
           this[M('asyncSearchZd<T>Full')](search_query);
-          var pageData = this[M('buildSyncPage<T>Data')]();
-          this.switchTo('sync_page', {
-            page: t,
-            page_articles: t == 'articles',
-            page_categories: t == 'categories',
-            page_sections: t == 'sections',
-            dataset: pageData,
-          });
-          this.$(m('.js-<t>.js-search :input')).val(search_query);
-          var sorting = io.getSorting();
-          this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
-          this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
-          this.$('.js-goto-page[data-page="' + factory.currentpage + '"]').addClass('is-active');
-          this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
-          this[M('syncResourceStats<T>')]();
-          this[M('sync<T>Translations')]();
+          this.store("search_query", search_query);
+          this.loadSyncPage = this[M('ui<T>Init')];
         }
       },
       'uiLoadConf': function(event) {
@@ -162,10 +151,14 @@ module.exports = function(T, t, api) {
           page_dynamic_content: t == 'dynamic',
           dataset: pageData,
         });
-
+        //Search implementation
         if (t != 'articles') {
           this.$('.js-search').addClass("u-display-none");
         }
+        search_query = this.store("search_query");
+        this.$(m('.js-<t>.js-search :input')).val(search_query);
+        this.store("search_query", '');
+
         var sorting = io.getSorting();
         this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
         this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
