@@ -38,7 +38,7 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-refresh': M('ui<T>Sync'),
       'click .js-<t>.js-checkbox': M('ui<T>UpdateButtons'),
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
-      'click .js-<t>.js-reset': M('ui<T>Tab'),
+      'click .js-<t>.js-clear-search': M('ui<T>Sync'),
       'keypress .js-<t>.js-search': M('ui<T>Search')
     },
     eventHandlers: {
@@ -110,7 +110,8 @@ module.exports = function(T, t, api) {
         if (event) event.preventDefault();
         if (this.processing) return;
         var default_locale = this.store('default_locale').split('-')[0],
-            project_locale = this.store(txProject.key).source_language_code.split('_')[0];
+            //project_locale = this.store(txProject.key).source_language_code.split('_')[0];
+            project_locale = 'en';
         if (project_locale !== default_locale){
           io.setPageError('txProject:locale');
         }
@@ -148,17 +149,7 @@ module.exports = function(T, t, api) {
           page_sections: t == 'sections',
           dataset: pageData,
         });
-        //Search implementation
-        if (t != 'articles') {
-          this.$('.js-search').addClass("u-display-none");
-        }
-        search_query = this.store("search_query");
-        this.$(m('.js-<t>.js-search :input')).val(search_query);
-        this.store("search_query", '');
-
-        if (t != 'articles') {
-          this.$('.js-search').addClass("u-display-none");
-        }
+        this[M('handleSearch<T>')]();
         var sorting = io.getSorting();
         this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
         this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
@@ -692,7 +683,22 @@ module.exports = function(T, t, api) {
           });
         }
         return ret;
+      },
+      'handleSearch<T>': function(){
+        if (t != 'articles') {
+          this.$('.js-search').addClass("u-display-none");
+        }
+        search_query = this.store("search_query");
+        this.$(m('.js-<t>.js-search :input')).val(search_query);
+        if(search_query != ''){
+          this.$('.js-clear-search').removeClass("u-display-none");
+          this.store("search_query", '');
+        }
+        else{
+          this.$('.js-clear-search').addClass("u-display-none");
+        }
       }
+
     }
   };
 
