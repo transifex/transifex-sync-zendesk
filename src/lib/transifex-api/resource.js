@@ -148,6 +148,7 @@ var resource = module.exports = {
       logger.info('Transifex Resource inserted with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       io.opSet(jqXHR.resourceName, 'success');
+      io.pushResource(jqXHR.resourceName);
       this.checkAsyncComplete();
     },
     txUpdateResourceDone: function(data, textStatus, jqXHR) {
@@ -175,7 +176,11 @@ var resource = module.exports = {
     },
     completedLanguages: function(stats) {
       var arr = [],
-          zd_enabled = this.store('zd_project_locales');
+          zd_enabled = [],
+          locales = io.getLocales();
+      _.map(locales, function(l){
+        zd_enabled.push(l['locale'].toLowerCase());
+      });
       _.each(stats, function(value, key) {
         var match = (value['completed'] === "100%");
         var zd_key = syncUtil.txLocaletoZd(key);
@@ -202,7 +207,7 @@ var resource = module.exports = {
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);
       var project = this.store(txProject.key);
-      var resources = this.getResourceArray(project);
+      var resources = io.getResourceArray();
       //check list of resources in the project
       io.opSet(slug, 'processing');
       if (syncUtil.isStringinArray(slug, resources)) {

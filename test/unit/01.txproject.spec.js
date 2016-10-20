@@ -1,5 +1,6 @@
 import txProject from '../../src/lib/transifex-api/project.js';
 import txUtil from '../../src/lib/txUtil.js';
+import io from '../../src/lib/io.js';
 import {
   install
 }
@@ -15,13 +16,15 @@ describe('A function getResourceArray', () => {
     testJson = mockProjectJsonResponse();
   })
   it('should exist ', () => {
-    expect(jsonHandlers.getResourceArray).to.not.be.undefined;
+    expect(io.getResourceArray).to.not.be.undefined;
   });
-  it('should return an array ', () => {
-    expect(jsonHandlers.getResourceArray(testJson)).to.be.a('array')
+  it('should return an object ', () => {
+    io.setResourceArray(testJson);
+    expect(io.getResourceArray()).to.be.a('object')
   });
   it('should have a count of 3 ', () => {
-    expect(jsonHandlers.getResourceArray(testJson).length).to.be.equal(3)
+    io.setResourceArray(testJson);
+    expect(io.getResourceArray().resources.length).to.be.equal(3)
   });
   /* A
   it('each item should contain "slug" ', () => {
@@ -42,10 +45,10 @@ describe('A function getSourceLocale', () => {
     testJson = mockProjectJsonResponse();
   })
   it('should exist ', () => {
-    expect(jsonHandlers.getSourceLocale).to.not.be.undefined;
+    expect(txProject.helpers.getSourceLocale).to.not.be.undefined;
   });
   it('should return a string ', () => {
-    expect(jsonHandlers.getSourceLocale(testJson)).to.be.a('string')
+    expect(txProject.helpers.getSourceLocale(testJson)).to.equal('en')
   });
 });
 
@@ -55,10 +58,11 @@ describe('A function getLocales', () => {
     testJson = mockProjectJsonResponse();
   })
   it('should exist ', () => {
-    expect(jsonHandlers.getLocales).to.not.be.undefined;
+    expect(io.getLocales).to.not.be.undefined;
   });
-  it('should return a array ', () => {
-    expect(jsonHandlers.getLocales(testJson)).to.be.a('array')
+  it('should return an object ', () => {
+    io.setLocales(testJson);
+    expect(io.getLocales(testJson)).to.be.a('object')
   });
 });
 

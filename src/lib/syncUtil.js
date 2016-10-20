@@ -3,6 +3,7 @@
  * @module syncUtil
  */
 
+var io = require('io');
 
 module.exports = {
   resources: {

@@ -177,19 +177,19 @@ module.exports = function(name, key, api) {
       },
     },
     actionHandlers: {
-      'zdUpsert<T>Translation': function(resource_data, id, zdLocale) {
-        logger.info(M('Upsert <T> with Id:') + id + 'and locale:' + zdLocale);
+      'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
+        logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
 
-        var translationData = common.translationObjectFormat(resource_data, zdLocale, key);
+        var translationData = common.translationObjectFormat(this.$, resource_data, zdLocale, key);
 
-        var existing_locales = this.store(factory.key + id + '_locales');
+        var existing_locales = this.store(factory.key + entry.id + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
         });
         if (checkLocaleExists) {
-          this.ajax(M('zd<T>Update'), translationData, id, zdLocale);
+          this.ajax(M('zd<T>Update'), translationData, entry.id, zdLocale);
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, id);
+          this.ajax(M('zd<T>Insert'), translationData, entry.id);
         }
       },
       'asyncGetZd<T>Translations': function(id) {
@@ -204,16 +204,17 @@ module.exports = function(name, key, api) {
         io.pushSync(factory.key);
         this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
       },
-    },
-    jsonHandlers: {
-      'getSingle<T>': function(id, a) {
-        if (typeof id == 'string' || id instanceof String)
-          id = parseInt(id, 10);
-        var i = _.findIndex(a[api], {
-          id: id
-        });
-        return a[api][i];
+      'get<T>ForTranslation': function(entry){
+        // apply any required transformation before passing it to template
+        return {
+          resource_name: entry.resource_name,
+          body: entry.body || entry.description,
+          name: entry.name,
+          title: entry.title || entry.name,
+        };
       },
+    },
+    helpers: {
       'calcResourceName<T>': function(obj) {
         var ret = obj[api];
         var type = api;
@@ -232,42 +233,10 @@ module.exports = function(name, key, api) {
         response[api] = ret;
         return response;
       },
-      'checkPagination<T>': function(a) {
-        var i = a.page_count;
-        if (typeof i === 'string') {
-          i = parseInt(i, 10);
-        }
-        if (typeof i === 'number') {
-          if (i > 1) {
-            return true;
-          }
-        }
-        return false;
-      },
-      'getPages<T>': function(a) {
-        var i = a.page_count;
-        return _.range(1, i + 1);
-      },
-      'getCurrentPage<T>': function(a) {
-        var i = a.page;
-        return i;
-      },
-      'isFewer<T>': function(a, i) {
-        if (i > 1) {
-          return true;
-        }
-        return false;
-      },
-      'isMore<T>': function(a, i) {
-        if (a.page_count > i) {
-          return true;
-        }
-        return false;
-      },
     },
   };
 
-  _.each(['events', 'requests', 'eventHandlers', 'actionHandlers', 'jsonHandlers'], function(entry) {
+  _.each(['events', 'requests', 'eventHandlers', 'actionHandlers', 'helpers'], function(entry) {
     var object = factory[entry];
     _.each(object, function(value, key) {
       delete object[key];

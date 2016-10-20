@@ -32,12 +32,8 @@ var config = module.exports = {
   },
   eventHandlers: {
     activatedLocalesDone: function(data, textStatus, jqXHR) {
-      var locales = [];
       logger.info('Activated Locales Retrieved with status:', textStatus);
-      _.map(data['locales'], function(l){
-        locales.push(l['locale'].toLowerCase());
-      });
-      this.store('zd_project_locales', locales);
+      io.setLocales(data.locales);
       io.popSync(config.key + 'activated');
       this.checkAsyncComplete();
     },

@@ -5,10 +5,13 @@
     require('zendesk-api/article'),
     require('zendesk-api/category'),
     require('zendesk-api/section'),
+    require('zendesk-api/dynamic-content'),
     require('zendesk-api/config'),
+    require('zendesk-api/pagination'),
     require('ui/sync-articles'),
     require('ui/sync-categories'),
     require('ui/sync-sections'),
+    require('ui/sync-dynamic-content'),
     require('ui/notifications'),
   ]);
 }());
@@ -85,8 +88,8 @@ function txApp(modules) {
     if (mod.actionHandlers) {
       app = _.extend(app, mod.actionHandlers);
     }
-    if (mod.jsonHandlers) {
-      app = _.extend(app, mod.jsonHandlers);
+    if (mod.helpers) {
+      app = _.extend(app, mod.helpers);
     }
   }
 

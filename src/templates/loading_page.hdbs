@@ -37,6 +37,7 @@
         <a class="o-tabs__item {{#if page_articles}}is-active{{/if}}" href="#">Articles</a>
         <a class="o-tabs__item {{#if page_sections}}is-active{{/if}}" href="#">Sections</a>
         <a class="o-tabs__item {{#if page_categories}}is-active{{/if}}" href="#">Categories</a>
+        <a class="o-tabs__item {{#if page_dynamic_content}}is-active{{/if}}" href="#">Dynamic Content</a>
       </div>
     </div>
 
@@ -52,6 +53,9 @@
           {{/if}}
           {{#if page_articles}}
           Send Articles
+          {{/if}}
+          {{#if page_dynamic_content}}
+          Send Dynamic Content 
           {{/if}}
         </a>
         <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled">
