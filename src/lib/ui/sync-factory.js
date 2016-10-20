@@ -175,7 +175,7 @@ module.exports = function(T, t, api) {
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
-          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry));
+          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry), M('<T>'));
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }

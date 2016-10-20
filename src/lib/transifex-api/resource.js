@@ -216,7 +216,7 @@ var resource = module.exports = {
   helpers: {
     resourceCompletedPercentage: function(resource_stats) {
       var sum = 0, locale_count = 0,
-          supported_locales = this.store('zd_project_locales');
+          supported_locales = io.getLocales();
       supported_locales = _.map(supported_locales, function(l){
         return l['locale'].toLowerCase();
       });
