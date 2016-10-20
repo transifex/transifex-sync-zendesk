@@ -400,13 +400,14 @@ module.exports = function(T, t, api) {
             num = data[t].length,
             resourceName, resource, has_error = false,
             projectData = this.store('tx_project'),
-            projectResources = [],
-            completion;
+            projectResources = {},
+            completion, resource_slugs;
 
         if (projectData && projectData.resources) {
-          projectResources = _.map(projectData.resources, function(entry) {
-            return entry.slug;
+          _.each(projectData.resources, function(entry) {
+            projectResources[entry.slug] = entry.name;
           });
+          resource_slugs = _.keys(projectResources);
         }
         for (var i = 0; i < num; i++) {
           resourceName = data[t][i].resource_name;
@@ -424,7 +425,7 @@ module.exports = function(T, t, api) {
             removeClass('o-status is-warning');
 
           //not uploaded resource
-          if (typeof resource === 'number' && !_.contains(projectResources, resourceName)) {
+          if (typeof resource === 'number' && !_.contains(resource_slugs, resourceName)) {
             this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="not_found"]').removeClass('is-hidden');
           }
@@ -439,6 +440,7 @@ module.exports = function(T, t, api) {
             }
             this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="found"]').removeClass('is-hidden');
+            el_item.find('[data-status="found"]').attr('data-original-title', projectResources[resourceName]);
           }
           else {
             has_error = true;
