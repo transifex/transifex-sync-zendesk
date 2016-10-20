@@ -47,7 +47,7 @@ var common = module.exports = {
 
   txRequestJSON: function(entry, key) {
     var req = {
-      name: '[' + key + '] ' + entry.title,
+      name: '[' + key + '] ' + entry.name,
       slug: entry.resource_name,
       priority: 0,
       i18n_type: 'KEYVALUEJSON'
@@ -65,7 +65,7 @@ var common = module.exports = {
     var zdEntryContent = _.template(gblTemplate)(entry);
 
     var txRequestMade = {
-      name: '[' + key + '] ' + entry.title,
+      name: '[' + key + '] ' + entry.name,
       slug: entry.resource_name,
       priority: 0,
       i18n_type: 'HTML',
