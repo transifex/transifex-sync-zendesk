@@ -218,8 +218,9 @@ span {
 
 .u-width-7x  { width: $baseline-grid*7 !important; }
 
+.u-width-15  { width: 15% !important; }
 .u-width-20  { width: 20% !important; }
-.u-width-40  { width: 40% !important; }
+.u-width-30  { width: 30% !important; }
 .u-width-100 { width: 100% !important; }
 
 .is-hidden { display: none !important; }
