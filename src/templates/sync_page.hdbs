@@ -188,15 +188,17 @@
                   <div class="o-checkbox__label"></div>
                 </label>
                 <div class="o-text-ellipsis u-flexGrow-1">
-                  <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
+                  {{{this.title_string}}}
                 </div>
               </div>
             </div>
             <div class="o-text-ellipsis u-width-10 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small">
               {{#if this.zd_outdated}}
-                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
-                  <path class="path1" data-toggle="tooltip" title="Outdated!" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
+                <svg data-toggle="tooltip" title="Outdated!" class="o-icon u-marginRight-1x u-fill-systemWarning" viewBox="0 0 16 16">
+                <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
+                 <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
+                  <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
                 </svg>
                 {{else}}
                 <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
@@ -207,10 +209,10 @@
               </span>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-disabled u-fontSize-small" data-status="checking">Checking...</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">-</span>
-              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank">{{{this.name}}}</a>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Error</span>
+              <a class="o-link u-fontSize-small" target="_blank" href="{{{this.zd_object_url}}}">
+              {{#if ../page_articles}}Article{{/if}}{{#if ../page_categories}}Category{{/if}}{{#if ../page_sections}}Section{{/if}}{{#if ../page_dynamic_content}}Dynamic Content{{/if}}</a> | 
+              <span class="u-color-disabled u-fontSize-small" data-status="not_found">Resource</span>
+              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank" data-toggle="tooltip" title="Resource name">Resource</a>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span id="locales-{{{this.name}}}">
@@ -219,7 +221,7 @@
             </div>
             <div class="o-text-ellipsis u-flexGrow-1 u-paddingHorizontal-1x u-textAlign-center">
               <span class="u-color-secondary u-fontSize-small" data-status="checking"><span class="u-color-disabled">Checking...</span></span>
-              <span class="o-badge u-backgroundColor-success is-hidden" data-status="completed">Ready for use</span>
+              <span class="o-badge u-backgroundColor-success is-hidden" data-status="completed">100% translated</span>
               <span class="o-badge is-hidden" data-status="not_found">No resource yet</span>
               <span class="o-badge u-backgroundColor-graphBase is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage"></span>%</span>
               <span class="u-fontSize-small is-hidden" data-status="error">-</span>

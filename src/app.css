@@ -233,6 +233,7 @@ span {
 .u-color-secondary  { color: $text-secondary-color !important; }
 .u-color-disabled   { color: $text-disabled-color !important; }
 
+.u-fill-systemWarning { fill: $status-warning-color !important; }
 /* -- Border utilities -- */
 
 .u-borderBottom-divider { border-bottom: 1px solid $divider-color !important; }
