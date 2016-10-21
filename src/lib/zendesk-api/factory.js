@@ -198,7 +198,7 @@ module.exports = function(name, key, api) {
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
-        if(search_query !== undefined){
+        if(search_query){
           this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
         }
         else{
