@@ -275,7 +275,7 @@
             No content was found in your Help Center
           </div>
           <div class="c-emptystate__description">
-            Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first
+            Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first.
           </div>
           {{/if}}
         </div>
