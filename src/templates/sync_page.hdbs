@@ -226,7 +226,7 @@
               <span class="u-color-secondary u-fontSize-small" data-status="checking"><span class="u-color-disabled">Checking...</span></span>
               <span class="o-badge u-backgroundColor-success is-hidden" data-status="completed">100% translated</span>
               <span class="o-badge is-hidden" data-status="not_found">No resource yet</span>
-              <span class="o-badge u-backgroundColor-graphBase is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage"></span>%</span>
+              <span class="o-badge u-backgroundColor-graphBase is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage">0</span>%</span>
               <span class="u-fontSize-small is-hidden" data-status="error">-</span>
             </div>
           </div>

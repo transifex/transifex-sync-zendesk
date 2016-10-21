@@ -260,6 +260,7 @@ module.exports = function(T, t, api) {
             el.addClass('is-success');
             el.find('[data-status="not_found"]').addClass('is-hidden');
             el.find('[data-status="found"]').removeClass('is-hidden');
+            el.find('[data-status="in_translation"]').removeClass('is-hidden');
           }
           else {
             failed++;
