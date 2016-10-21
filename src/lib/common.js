@@ -45,12 +45,13 @@ var common = module.exports = {
     };
   },
 
-  txRequestJSON: function(entry, key) {
+  txRequestJSON: function(entry, category) {
     var req = {
-      name: '[' + key + '] ' + entry.name,
+      name: entry.name,
       slug: entry.resource_name,
       priority: 0,
-      i18n_type: 'KEYVALUEJSON'
+      i18n_type: 'KEYVALUEJSON',
+      category: category,
     };
 
     var o = {};
@@ -60,25 +61,26 @@ var common = module.exports = {
     return o3;
   },
 
-  txRequestHTML: function(entry, key) {
+  txRequestHTML: function(entry, category) {
     var gblTemplate = common.gblTemplate;
     var zdEntryContent = _.template(gblTemplate)(entry);
 
     var txRequestMade = {
-      name: '[' + key + '] ' + entry.name,
+      name: entry.name,
       slug: entry.resource_name,
       priority: 0,
       i18n_type: 'HTML',
-      content: zdEntryContent
+      category: category,
+      content: zdEntryContent,
     };
     return txRequestMade;
   },
 
-  txRequestFormat: function(entry, key) {
+  txRequestFormat: function(entry, category) {
     if (io.getFeature('html-tx-resource')) {
-      return common.txRequestHTML(entry, key);
+      return common.txRequestHTML(entry, category);
     } else {
-      return common.txRequestJSON(entry, key);
+      return common.txRequestJSON(entry, category);
     }
   },
 

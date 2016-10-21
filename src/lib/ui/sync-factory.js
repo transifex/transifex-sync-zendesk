@@ -159,7 +159,12 @@ module.exports = function(T, t, api) {
         });
         var data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
-            entry, resource_request, txResourceName;
+            entry, resource_request, txResourceName, category;
+
+        if (api == 'dynamic-content')
+          category = 'Dynamic';
+        else
+          category = api[0].toUpperCase() + api.slice(1);
 
         var objects = _.filter(obj[m('<t>')], function(o){
           for (var i = 0; i < object_ids.length; i++) {
@@ -175,7 +180,7 @@ module.exports = function(T, t, api) {
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
-          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry), M('<T>'));
+          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry), category);
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }
