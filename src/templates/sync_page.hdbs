@@ -140,25 +140,21 @@
     <div class="u-paddingHorizontal-gutter">
       <div class="u-position u-clearfix u-lineHeight-button u-backgroundColor-active">
 
-        <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
+        <div class="u-width-30 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
           <div class="u-display-flex">
             <label class="o-checkbox-controller u-marginRight-2x" for="all_page">
               <input type="checkbox" class="o-checkbox o-checkbox--bare js-{{page}} js-select-all" disabled="disabled" name="all_page" id="all_page"/>
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted js-{{page}} js-sortby-title">
-              {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}{{#if page_dynamic_content}}Dynamic Content{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
+              {{#if page_articles}}Article Title{{/if}}{{#if page_categories}}Category Title{{/if}}{{#if page_sections}}Section Title{{/if}}{{#if page_dynamic_content}}Dynamic Content{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
                 <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
               </svg>
             </span>
           </div>
         </div>
 
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
-
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Completed Languages</div>
-
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
             Last Activity<svg class="o-icon" viewBox="0 0 16 16">
               <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
@@ -166,47 +162,72 @@
           </span>
         </div>
 
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Links</div>
+
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Completed Languages</div>
+
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">Resource Status</div>
+
       </div>
     </div>
 
   </div>
 
-  <div class="u-flexGrow-1 o-scrollable">
+  <div class="o-scrollable u-flexGrow-1 u-paddingHorizontal-gutter">
 
     <!-- articles list -->
-    <div class="o-list o-interactive-list--highlight u-paddingHorizontal-gutter u-marginBottom-4x">
+    <div class="o-list o-interactive-list--highlight u-marginBottom-4x">
     {{#each dataset}}
       <div class="o-list__item js-{{../page}}" data-resource="{{this.name}}">
         <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider" data-item="controller">
-          <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
-            <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x">
+          <div class="u-display-flex u-lineHeight-button u-height-button">
+            <div class="u-width-30 u-paddingLeft-gutter u-paddingRight-1x">
               <div class="u-display-flex u-width-100">
                 <label class="o-checkbox-controller u-marginRight-2x" for="{{{this.name}}}">
                   <input type="checkbox" class="o-checkbox o-checkbox--bare js-{{../page}} js-checkbox" disabled="disabled" name="{{{this.name}}}" id="{{this.name}}"/>
                   <div class="o-checkbox__label"></div>
                 </label>
                 <div class="o-text-ellipsis u-flexGrow-1">
-                  <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
+                  {{{this.title_string}}}
                 </div>
               </div>
             </div>
+            <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-left">
+              <span class="u-color-secondary u-fontSize-small">
+              {{#if this.zd_outdated}}
+                <span data-toggle="tooltip" title="This dynamic content item has been updated since it was last sent to Transifex.">
+                  <svg class="o-icon u-marginRight-1x u-fill-systemWarning" viewBox="0 0 16 16">
+                    <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
+                    <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
+                    <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
+                  </svg>
+                </span>
+                {{else}}
+                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
+                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
+                </svg>
+                {{/if}}
+                {{{this.zd_object_updated}}}
+              </span>
+            </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-disabled u-fontSize-small" data-status="checking">Checking...</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No resource yet</span>
-              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank">{{{this.name}}}</a>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Error</span>
+              <a class="o-link u-fontSize-small" target="_blank" href="{{{this.zd_object_url}}}">
+              {{#if ../page_articles}}Article{{/if}}{{#if ../page_categories}}Category{{/if}}{{#if ../page_sections}}Section{{/if}}{{#if ../page_dynamic_content}}Dynamic Content{{/if}}</a> |
+              <span class="u-color-disabled u-fontSize-small" data-status="not_found">Resource</span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Resource</span>
+              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank" data-toggle="tooltip" title="Resource name">Resource</a>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span id="locales-{{{this.name}}}">
                 <span class="u-color-secondary u-fontSize-small"><span class="u-color-disabled">Checking...</span></span>
               </span>
             </div>
-            <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-secondary u-fontSize-small">
-                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
-                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
-                </svg>{{{this.zd_object_updated}}}
-              </span>
+            <div class="o-text-ellipsis u-flexGrow-1 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small" data-status="checking"><span class="u-color-disabled">Checking...</span></span>
+              <span class="o-badge u-backgroundColor-success is-hidden" data-status="completed">All translated - 100%</span>
+              <span class="o-badge is-hidden" data-status="not_found">No resource yet</span>
+              <span class="o-badge u-backgroundColor-graphExtend is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage">0</span>%</span>
+              <span class="u-fontSize-small is-hidden" data-status="error">-</span>
             </div>
           </div>
         </div>

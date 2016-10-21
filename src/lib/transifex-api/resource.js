@@ -166,14 +166,6 @@ var resource = module.exports = {
     },
   },
   actionHandlers: {
-    displayResource: function(resourceName) {
-      this.asyncGetTxResourceStats(resourceName);
-      var pageData = this.store(resource.key + resourceName);
-      pageData = [pageData];
-      this.switchTo('sync_resource_status', {
-        dataset: pageData,
-      });
-    },
     completedLanguages: function(stats) {
       var arr = [],
           zd_enabled = [],
@@ -191,19 +183,6 @@ var resource = module.exports = {
 
       return arr;
     },
-    displayResourceLanguage: function(resourceName, languageCode) {
-      this.asyncGetTxResource(resourceName, languageCode);
-      var pageData = this.store(resource.key + resourceName + languageCode);
-      pageData = _.extend(pageData, {
-        'name': resourceName,
-        'language_code': languageCode
-      });
-      pageData = [pageData];
-      this.switchTo('sync_resource_language_status', {
-        dataset: pageData,
-      });
-    },
-
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);
       var project = this.store(txProject.key);
@@ -232,6 +211,22 @@ var resource = module.exports = {
       io.pushSync(resource.key + name + 'upsert');
       io.setRetries('txResource' + name, 0);
       this.txUpsertResource(data, name);
+    },
+  },
+  helpers: {
+    resourceCompletedPercentage: function(resource_stats) {
+      var sum = 0, locale_count = 0,
+          supported_locales = io.getLocales();
+      supported_locales = _.map(supported_locales, function(l){
+        return l['locale'].toLowerCase();
+      });
+      _.each(resource_stats, function(stat, code) {
+        if (_.contains(supported_locales, syncUtil.txLocaletoZd(code))) {
+          sum += parseInt(stat.completed.split('%')[0]);
+          locale_count += 1;
+        }
+      });
+      return Math.ceil(sum / locale_count);
     },
   },
 };

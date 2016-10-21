@@ -146,6 +146,7 @@ module.exports = function(T, t, api) {
         this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
+        this.$('[data-toggle="tooltip"]').tooltip();
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
@@ -158,7 +159,12 @@ module.exports = function(T, t, api) {
         });
         var data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
-            entry, resource_request, txResourceName;
+            entry, resource_request, txResourceName, category;
+
+        if (api == 'dynamic-content')
+          category = 'Dynamic';
+        else
+          category = api[0].toUpperCase() + api.slice(1);
 
         var objects = _.filter(obj[m('<t>')], function(o){
           for (var i = 0; i < object_ids.length; i++) {
@@ -174,7 +180,7 @@ module.exports = function(T, t, api) {
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
-          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry));
+          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry), category);
           io.pushSync(txResource.key + txResourceName + 'upsert');
           this.txUpsertResource(resource_request, txResourceName);
         }
@@ -254,6 +260,7 @@ module.exports = function(T, t, api) {
             el.addClass('is-success');
             el.find('[data-status="not_found"]').addClass('is-hidden');
             el.find('[data-status="found"]').removeClass('is-hidden');
+            el.find('[data-status="in_translation"]').removeClass('is-hidden');
           }
           else {
             failed++;
@@ -399,12 +406,14 @@ module.exports = function(T, t, api) {
             num = data[t].length,
             resourceName, resource, has_error = false,
             projectData = this.store('tx_project'),
-            projectResources = [];
+            projectResources = {},
+            completion, resource_slugs;
 
         if (projectData && projectData.resources) {
-          projectResources = _.map(projectData.resources, function(entry) {
-            return entry.slug;
+          _.each(projectData.resources, function(entry) {
+            projectResources[entry.slug] = entry.name;
           });
+          resource_slugs = _.keys(projectResources);
         }
         for (var i = 0; i < num; i++) {
           resourceName = data[t][i].resource_name;
@@ -422,14 +431,22 @@ module.exports = function(T, t, api) {
             removeClass('o-status is-warning');
 
           //not uploaded resource
-          if (typeof resource === 'number' && !_.contains(projectResources, resourceName)) {
+          if (typeof resource === 'number' && !_.contains(resource_slugs, resourceName)) {
             this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="not_found"]').removeClass('is-hidden');
           }
           //normal
           else if (typeof resource !== 'number') {
+            completion = this.resourceCompletedPercentage(resource);
+            if (completion == 100) {
+              el_item.find('[data-status="completed"]').removeClass('is-hidden');
+            } else {
+              el_item.find('.js-trans-percentage').text(completion);
+              el_item.find('[data-status="in_translation"]').removeClass('is-hidden');
+            }
             this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="found"]').removeClass('is-hidden');
+            el_item.find('[data-status="found"]').attr('data-original-title', projectResources[resourceName]);
           }
           else {
             has_error = true;
@@ -660,7 +677,7 @@ module.exports = function(T, t, api) {
           }, {
             zd_object_updated: zd_object_updated
           }, {
-            zd_outdated: e.outdated || false
+            zd_outdated: t == 'dynamic' ? e.outdated : false
           }, {
             tx_resource_url: tx_resource_url
           }, {

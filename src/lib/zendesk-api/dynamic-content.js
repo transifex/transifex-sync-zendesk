@@ -172,7 +172,7 @@ var dynamic_content = module.exports = {
           return v.default;
         })[0].content,
         title: '',
-        name: '',
+        name: entry.name,
       };
     },
     asyncGetZdDynamicContentTranslations: function(entry_id){
