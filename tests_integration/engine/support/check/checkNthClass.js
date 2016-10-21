@@ -1,12 +1,11 @@
 // /^I expect that element "$string" (has|does not have) the class "$string"$/
-var css2xpath = require('../css2xpath.js');
-
 
 module.exports = function (elem, falseCase, className, done) {
     falseCase = (falseCase === 'does not have') ? true : false;
-
     this.browser
-        .getAttribute(css2xpath(elem), 'className')
+        .elements(elem)
+        .then(function(elements) {return elements[0];})
+        .getAttribute('className')
         .then(function (classes) {
             classes = classes.split(' ');
 

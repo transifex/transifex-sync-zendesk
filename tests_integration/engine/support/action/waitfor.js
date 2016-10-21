@@ -1,3 +1,5 @@
+var css2xpath = require('../css2xpath.js');
+
 module.exports = function (elem, obsolete, ms, isWaitingOnSpecificState, falseState, state) {
     var command = 'waitForExist',
         done = arguments[arguments.length - 1];
@@ -16,6 +18,6 @@ module.exports = function (elem, obsolete, ms, isWaitingOnSpecificState, falseSt
     falseState = (falseState) ? true : false;
 
     ms = parseInt(ms, 10) || 3000;
-    this.browser[command](elem, ms, falseState)
+    this.browser[command](css2xpath(elem), ms, falseState)
         .call(done);
 };

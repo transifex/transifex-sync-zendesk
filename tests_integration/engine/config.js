@@ -56,7 +56,7 @@ exports.config = {
      * - baseUrl: sets base url for `Given I open the site "/some/url.html"`
      */
     env: {
-      baseUrl: 'https://txtest.zendesk.com/agent/apps/local-app?zat=true'
+      baseUrl: 'https://txtest2.zendesk.com/agent/apps/local-app?zat=true'
     },
 
     /**

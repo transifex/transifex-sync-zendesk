@@ -1,6 +1,8 @@
 /**
  * check content for specific element or input field
  */
+var css2xpath = require('../css2xpath.js');
+
 
 module.exports = function (type, element, falseCase, origText, done) {
     var command = (type !== 'inputfield') ? 'getText' : 'getValue';
@@ -13,7 +15,7 @@ module.exports = function (type, element, falseCase, origText, done) {
         falseCase = !falseCase;
     }
 
-    this.browser[command](element)
+    this.browser[command](css2xpath(element))
         .then(function (text) {
             if (falseCase) {
                 origText.should.not.equal(text);

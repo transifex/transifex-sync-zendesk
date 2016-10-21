@@ -4,6 +4,9 @@
 
 module.exports = function () {
     this
+        .when(/^I click "$string"$/,
+            require('../support/action/jq'))
+
         .when(/^I (click|doubleclick) on the (link|button|element) "$string"$/,
             require('../support/action/clickElement'))
 

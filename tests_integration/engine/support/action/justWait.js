@@ -3,5 +3,5 @@ module.exports = function (done) {
   setTimeout(function() {
     that.browser
       .call(done);
-  }, 1000);
+  }, 1200);
 };

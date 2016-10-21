@@ -70,6 +70,9 @@ module.exports = function (dict) {
         .then(/^I expect that element "$string" (has|does not have) the class "$string"$/,
             require('../support/check/checkClass'))
 
+        .then(/^I expect that the first element of "$string" (has|does not have) the class "$string"$/,
+            require('../support/check/checkNthClass'))
+
         .then(/^I expect a new (window|tab) has( not)* been opened$/,
             require('../support/check/checkNewWindow'))
 
