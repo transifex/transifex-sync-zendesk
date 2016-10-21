@@ -32,7 +32,7 @@ module.exports = function(name, key, api) {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
         var locale = this.store('default_locale');
         var parameters = this[M('getEndPointParameter<T>')](
-          page, sortby, sortdirection, numperpage)
+          page, sortby, sortdirection, numperpage);
 
         return {
             url: factory.base_url + locale + '/' +  api + '.json?' + parameters['numberperpageString'] +
@@ -41,9 +41,9 @@ module.exports = function(name, key, api) {
             dataType: 'json'
           };
       },
-      'zd<T>Search': function(page, sortby, sortdirection, numperpage) {
+      'zd<T>Search': function(page, sortby, sortdirection, numperpage, search_query) {
         var parameters = this[M('getEndPointParameter<T>')](
-          page, sortby, sortdirection, numperpage)
+          page, sortby, sortdirection, numperpage);
 
         return {
             url: factory.base_url + 'articles/search.json?query=' + search_query +
@@ -193,14 +193,13 @@ module.exports = function(name, key, api) {
         io.pushSync(factory.key + id);
         this.ajax(M('zd<T>GetTranslations'), id);
       },
-      'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage) {
+      'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage, search_query) {
         logger.debug(M('function: [asyncGetZd<T>Full] params: [page]') +
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
-        search_query = this.store("search_query");
-        if(key == 'article' && search_query != '' ){
-          this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage);
+        if(search_query !== undefined){
+          this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
         }
         else{
           this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
@@ -248,7 +247,7 @@ module.exports = function(name, key, api) {
           sortdirectionString = '&sort_order=' + sortdirection;
         }
         return {'numberperpageString': numberperpageString, 'pageString':pageString,
-                'sortbyString': sortbyString, 'sortdirectionString': sortdirectionString}
+                'sortbyString': sortbyString, 'sortdirectionString': sortdirectionString};
       },
       'calcResourceName<T>': function(obj) {
         var ret = obj[api];

@@ -15,7 +15,8 @@ var SETTINGS = {},
     SYNC_STATUS = [],
     RETRIES = {},
     ZD_LOCALES = {},
-    RESOURCE_ARRAY = [];
+    RESOURCE_ARRAY = [],
+    QUERY = '';
 
 module.exports = {
   setSettings: function(settings) {
@@ -105,5 +106,11 @@ module.exports = {
   },
   pushResource: function(slug) {
     RESOURCE_ARRAY.push(slug);
+  },
+  getQuery: function() {
+    return QUERY;
+  },
+  setQuery: function(q) {
+    QUERY = q;
   },
 };
