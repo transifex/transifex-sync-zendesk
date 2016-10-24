@@ -23,10 +23,16 @@ var project = module.exports = {
   },
   initialize: function() {
     var settings = io.getSettings();
+    var url = settings.tx_project;
 
     logger.info('Convert Project Url to API:', settings.tx_project);
-    project.dashboard_url = settings.tx_project.replace(/\/$/, '') + '/';
-    project.url = txutils.convertUrlToApi(settings.tx_project);
+    if (!url.endsWith('/'))
+      url = url + '/';
+    if (url.endsWith('dashboard/'))
+      url = url.replace('dashboard/', '');
+
+    project.url = txutils.convertUrlToApi(url);
+    project.dashboard_url = url;
 
     logger.info('Validate TxProject API URL:', project.url);
     if (!txutils.isValidAPIUrl(project.url)) {
