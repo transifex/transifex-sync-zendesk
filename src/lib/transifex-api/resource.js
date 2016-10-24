@@ -37,8 +37,8 @@ var resource = module.exports = {
     var settings = io.getSettings();
     resource.username = settings.tx_username;
     resource.password = settings.tx_password;
-    resource.url = txutils.convertUrlToApi(settings.tx_project) + 'resource/';
-    resource.inserturl = txutils.convertUrlToApi(settings.tx_project) + 'resources/';
+    resource.url = txProject.url + 'resource/';
+    resource.inserturl = txProject.url + 'resources/';
     resource.headers['Authorization'] = 'Basic ' + btoa(resource.username + ':' + resource.password);
   },
   requests: {

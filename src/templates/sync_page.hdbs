@@ -82,7 +82,20 @@
           Get Translations
         </a>
       </div>
-      <div class="u-height-form u-lineHeight-form u-fontSize-small">
+      {{#if page_articles}}
+      <div class="o-inputwith-icon o-inputwith-icon--hasaction o-inputwith-icon--muted u-width-midWidth u-marginHorizontal-4x  js-{{page}} js-search">
+        <svg viewBox="0 0 16 16" class="o-inputwith-icon__symbol">
+          <path class="o-icon" d="M11.429 10.057h-0.686l-0.229-0.114c0.914-1.143 1.371-2.4 1.371-3.886 0.114-3.429-2.629-6.057-5.943-6.057s-5.943 2.629-5.943 5.943 2.629 5.943 5.943 5.943c1.486 0 2.857-0.571 3.886-1.371l0.229 0.229v0.686l4.571 4.571 1.371-1.371-4.571-4.571zM5.943 10.057c-2.4 0-4.114-1.829-4.114-4.114s1.829-4.114 4.114-4.114 4.114 1.829 4.114 4.114-1.829 4.114-4.114 4.114z"></path>
+        </svg>
+        <input type="text" class="o-inputwith-icon__input o-textinput" placeholder="Search by article title or content" value="{{{search_term}}}"/>
+        <a href="#" class="o-inputwith-icon__action js-{{page}} js-clear-search {{#unless search_term}}u-display-none{{/unless}}">
+          <svg viewBox="0 0 16 16" class="u-box-2x u-fill-disabled">
+            <path d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"/>
+          </svg>
+        </a>
+      </div>
+      {{/if}}
+      <div class="u-height-form u-lineHeight-form u-fontSize-small js-{{page}} js-per-page">
         <span class="u-color-disabled">Per page:</span>
         <a perpage="10" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">10</a>
         <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">25</a>
@@ -230,6 +243,41 @@
               <span class="u-fontSize-small is-hidden" data-status="error">-</span>
             </div>
           </div>
+        </div>
+      </div>
+    {{else}}
+      <div class="u-paddingTop-gutter">
+        <div class="c-emptystate u-paddingTop-2x">
+          <svg class="c-emptystate__symbol" width="71px" height="65px" viewBox="0 0 71 65">
+            <rect x="13.1" y="19.9" width="15.8" height="2.6"></rect>
+            <path d="M40.4,27.4v-0.8H13.1v2.6h24.7C38.6,28.4,39.4,27.8,40.4,27.4z"></path>
+            <path d="M13.1,33v2.6h20.5c0.3-0.9,0.6-1.7,1.1-2.6H13.1z"></path>
+            <path d="M13.1,39.4v2.6h20.2c-0.2-0.8-0.3-1.7-0.3-2.6H13.1z"></path>
+            <path d="M13.1,45.8v2.6h23.6c-0.7-0.8-1.4-1.6-1.9-2.6H13.1z"></path>
+            <rect x="13.1" y="52.2" class="st0" width="27.3" height="2.6"></rect>
+            <path d="M46.5,46.5c-4.1,0-7.2-3.1-7.2-7.2s3.1-7.2,7.2-7.2s7.2,3.1,7.2,7.2S50.6,46.5,46.5,46.5z M56.2,46.5H55
+              l-0.5-0.2c1.7-1.9,2.4-4.1,2.4-6.8c0.2-6-4.6-10.6-10.4-10.6c-5.8,0-10.4,4.6-10.4,10.4s4.6,10.4,10.4,10.4c2.7,0,5.1-1,6.8-2.4
+              l0.5,0.5v1.2l8,8l2.4-2.4L56.2,46.5z"></path>
+            <path d="M47.5,20.2L35.7,8.4c-0.1-0.1-0.1-0.1-0.2-0.2c0,0,0,0-0.1,0c0,0-0.1-0.1-0.2-0.1c0,0-0.1,0-0.1,0c0,0-0.1,0-0.2,0
+              c-0.1,0-0.2,0-0.3,0H6.9C6.2,8,5.6,8.6,5.6,9.3v51.3c0,0.7,0.6,1.3,1.3,1.3h39.7c0.7,0,1.3-0.6,1.3-1.3v-8.2
+              c-0.5,0.1-1,0.1-1.5,0.1c-0.4,0-0.7,0-1,0v6.9H8.2V10.6h25.3v10.5c0,0.7,0.6,1.3,1.3,1.3h10.5V26c0.3,0,0.7,0,1,0
+              c0.5,0,1,0,1.5,0.1v-4.9c0,0,0,0,0,0C47.8,20.8,47.7,20.5,47.5,20.2z M36,19.8v-7.4l7.4,7.4H36z"></path>
+          </svg>
+          {{#if search_term}}
+          <div class="c-emptystate__title">
+            No results were found for "{{search_term}}"
+          </div>
+          <div class="c-emptystate__description">
+            Please check your spelling or search for another term.
+          </div>
+          {{else}}
+          <div class="c-emptystate__title">
+            No content was found in your Help Center
+          </div>
+          <div class="c-emptystate__description">
+            Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first.
+          </div>
+          {{/if}}
         </div>
       </div>
     {{/each}}

@@ -26,45 +26,32 @@ module.exports = function(name, key, api) {
       'zd<T>Insert.fail': M('zd<T>InsertFail'),
       'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Full.fail': M('zd<T>SyncError'),
+      'zd<T>Search.done': M('zd<T>SearchDone'),
     },
     requests: {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
         var locale = this.store('default_locale');
-        var numberperpageString = "";
-        if (numperpage) {
-          numberperpageString = "?per_page=" + numperpage;
-        } else {
-          numberperpageString = "?per_page=10";
-        }
+        var parameters = this[M('getEndPointParameter<T>')](
+          page, sortby, sortdirection, numperpage);
 
-        var pageString = "";
-        if (page) {
-          pageString = '&page=' + page;
-        }
-
-        var sortbyString = "";
-        if (sortby) {
-          //sections and categories sort by position instead of title
-          if (sortby == 'title' && key != 'article') {
-            sortby = 'position';
-          }
-          sortbyString = '&sort_by=' + sortby;
-        }
-
-        var sortdirectionString = "";
-        if (sortdirection) {
-          //sections and categories should invert direction
-          if (sortby == 'title' && key != 'article') {
-            sortdirectionString = (sortdirectionString == 'asc')?'desc':'asc';
-          }
-          sortdirectionString = '&sort_order=' + sortdirection;
-        }
         return {
-          url: factory.base_url + locale + '/' +  api + '.json' + numberperpageString +
-            pageString + sortbyString + sortdirectionString,
-          type: 'GET',
-          dataType: 'json'
-        };
+            url: factory.base_url + locale + '/' +  api + '.json?' + parameters['numberperpageString'] +
+              parameters['pageString'] + parameters['sortbyString'] + parameters['sortdirectionString'],
+            type: 'GET',
+            dataType: 'json'
+          };
+      },
+      'zd<T>Search': function(page, sortby, sortdirection, numperpage, search_query) {
+        var parameters = this[M('getEndPointParameter<T>')](
+          page, sortby, sortdirection, numperpage);
+
+        return {
+            url: factory.base_url + 'articles/search.json?query=' + search_query +
+            '&' + parameters['numberperpageString'] + parameters['pageString'] +
+            parameters['sortbyString'] + parameters['sortdirectionString'],
+            type: 'GET',
+            dataType: 'json'
+          };
       },
       'zd<T>GetTranslations': function(id) {
         return {
@@ -175,6 +162,15 @@ module.exports = function(name, key, api) {
         logger.info('Transifex Resource update failed with status:', textStatus);
         this.checkAsyncComplete();
       },
+      'zd<T>SearchDone': function(data, textStatus) {
+        logger.info(M('Zendesk Search <T> retrieved with status:'), textStatus);
+        data['articles'] = data['results'];
+        delete data['results'];
+        this.store(factory.key, data);
+        logger.debug('done, removing key');
+        io.popSync(factory.key);
+        this.checkAsyncComplete();
+      },
     },
     actionHandlers: {
       'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
@@ -197,12 +193,17 @@ module.exports = function(name, key, api) {
         io.pushSync(factory.key + id);
         this.ajax(M('zd<T>GetTranslations'), id);
       },
-      'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage) {
+      'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage, search_query) {
         logger.debug(M('function: [asyncGetZd<T>Full] params: [page]') +
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
-        this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
+        if(search_query){
+          this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
+        }
+        else{
+          this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
+        }
       },
       'get<T>ForTranslation': function(entry){
         // apply any required transformation before passing it to template
@@ -215,6 +216,39 @@ module.exports = function(name, key, api) {
       },
     },
     helpers: {
+      'getEndPointParameter<T>': function(page, sortby, sortdirection, numperpage){
+        var numberperpageString = "";
+        if (numperpage) {
+          numberperpageString = "per_page=" + numperpage;
+        } else {
+          numberperpageString = "per_page=10";
+        }
+
+        var pageString = "";
+        if (page) {
+          pageString = '&page=' + page;
+        }
+
+        var sortbyString = "";
+        if (sortby) {
+          //sections and categories sort by position instead of title
+          if (sortby == 'title' && key != 'article') {
+            sortby = 'position';
+          }
+          sortbyString = '&sort_by=' + sortby;
+        }
+
+        var sortdirectionString = "";
+        if (sortdirection) {
+          //sections and categories should invert direction
+          if (sortby == 'title' && key != 'article') {
+            sortdirectionString = (sortdirectionString == 'asc')?'desc':'asc';
+          }
+          sortdirectionString = '&sort_order=' + sortdirection;
+        }
+        return {'numberperpageString': numberperpageString, 'pageString':pageString,
+                'sortbyString': sortbyString, 'sortdirectionString': sortdirectionString};
+      },
       'calcResourceName<T>': function(obj) {
         var ret = obj[api];
         var type = api;
