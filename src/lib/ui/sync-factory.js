@@ -292,12 +292,14 @@ module.exports = function(T, t, api) {
         _.each(io.opGetAll(), function(status, resourceName) {
           total++;
           var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-item="controller"]'));
+          var is_new = !(el.find('[data-status="not_found"]').hasClass('is-hidden'));
           el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status == 'success') {
             el.addClass('is-success');
             el.find('[data-status="not_found"]').addClass('is-hidden');
             el.find('[data-status="found"]').removeClass('is-hidden');
-            el.find('[data-status="in_translation"]').removeClass('is-hidden');
+            if (is_new)
+              el.find('[data-status="in_translation"]').removeClass('is-hidden');
           }
           else {
             failed++;
