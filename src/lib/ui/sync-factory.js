@@ -54,7 +54,10 @@ module.exports = function(T, t, api) {
         }
         if (code == 13){
           event.preventDefault();
-          if(search_query === '') return;
+          if(search_query == io.getQuery() || search_query === '') return;
+          if(io.getQuery !== search_query){
+            factory.currentpage = '1';
+          }
           var sorting = io.getSorting();
           io.setQuery(search_query);
           this[M('asyncGetZd<T>Full')](
