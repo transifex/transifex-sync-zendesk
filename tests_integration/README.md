@@ -1,10 +1,7 @@
 Yadda - Webdriver Integration Testing
 ====================
 
-Boilerplate project to run WebdriverIO tests with Cucumber syntax forked from [cucumber-boilerplate](https://github.com/webdriverio/cucumber-boilerplate). It is based on a framework called [yadda](https://github.com/acuminous/yadda) and brings **true** [BDD](http://en.wikipedia.org/wiki/Behavior-driven_development)
-to JavaScript and WebdriverIO. Instead of writing complicated test code that only devs can understand,
-Cucumber maps an ordinary language to code and allows to start with the test process in the early stages
-of your product development.  
+Boilerplate project to run WebdriverIO tests with Cucumber syntax forked from [cucumber-boilerplate](https://github.com/webdriverio/cucumber-boilerplate). It is based on a framework called [yadda](https://github.com/acuminous/yadda).
 
 # How to run the test
 
@@ -14,10 +11,16 @@ of your product development.
 npm install
 ```
 
-[start the selenium & local webserver]
+[install selenium-standalone]
+```sh
+npm install -g selenium-standalone
+selenium-standalone install
+```
+
+[start selenium]
 
 ```sh
-$ npm run-script server
+selenium-standalone start
 ```
 
 To run your tests just call the testFeature.js file:
