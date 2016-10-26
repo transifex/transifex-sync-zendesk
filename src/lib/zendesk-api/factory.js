@@ -26,44 +26,32 @@ module.exports = function(name, key, api) {
       'zd<T>Insert.fail': M('zd<T>InsertFail'),
       'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Full.fail': M('zd<T>SyncError'),
+      'zd<T>Search.done': M('zd<T>SearchDone'),
     },
     requests: {
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
-        var numberperpageString = "";
-        if (numperpage) {
-          numberperpageString = "?per_page=" + numperpage;
-        } else {
-          numberperpageString = "?per_page=10";
-        }
+        var locale = this.store('default_locale');
+        var parameters = this[M('getEndPointParameter<T>')](
+          page, sortby, sortdirection, numperpage);
 
-        var pageString = "";
-        if (page) {
-          pageString = '&page=' + page;
-        }
-
-        var sortbyString = "";
-        if (sortby) {
-          //sections and categories sort by position instead of title
-          if (sortby == 'title' && key != 'article') {
-            sortby = 'position';
-          }
-          sortbyString = '&sort_by=' + sortby;
-        }
-
-        var sortdirectionString = "";
-        if (sortdirection) {
-          //sections and categories should invert direction
-          if (sortby == 'title' && key != 'article') {
-            sortdirectionString = (sortdirectionString == 'asc')?'desc':'asc';
-          }
-          sortdirectionString = '&sort_order=' + sortdirection;
-        }
         return {
-          url: factory.base_url + 'en-us/' + api + '.json' + numberperpageString +
-            pageString + sortbyString + sortdirectionString,
-          type: 'GET',
-          dataType: 'json'
-        };
+            url: factory.base_url + locale + '/' +  api + '.json?' + parameters['numberperpageString'] +
+              parameters['pageString'] + parameters['sortbyString'] + parameters['sortdirectionString'],
+            type: 'GET',
+            dataType: 'json'
+          };
+      },
+      'zd<T>Search': function(page, sortby, sortdirection, numperpage, search_query) {
+        var parameters = this[M('getEndPointParameter<T>')](
+          page, sortby, sortdirection, numperpage);
+
+        return {
+            url: factory.base_url + 'articles/search.json?query=' + search_query +
+            '&' + parameters['numberperpageString'] + parameters['pageString'] +
+            parameters['sortbyString'] + parameters['sortdirectionString'],
+            type: 'GET',
+            dataType: 'json'
+          };
       },
       'zd<T>GetTranslations': function(id) {
         return {
@@ -174,21 +162,30 @@ module.exports = function(name, key, api) {
         logger.info('Transifex Resource update failed with status:', textStatus);
         this.checkAsyncComplete();
       },
+      'zd<T>SearchDone': function(data, textStatus) {
+        logger.info(M('Zendesk Search <T> retrieved with status:'), textStatus);
+        data['articles'] = data['results'];
+        delete data['results'];
+        this.store(factory.key, data);
+        logger.debug('done, removing key');
+        io.popSync(factory.key);
+        this.checkAsyncComplete();
+      },
     },
     actionHandlers: {
-      'zdUpsert<T>Translation': function(resource_data, id, zdLocale) {
-        logger.info(M('Upsert <T> with Id:') + id + 'and locale:' + zdLocale);
+      'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
+        logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
 
-        var translationData = common.translationObjectFormat(resource_data, zdLocale, key);
+        var translationData = common.translationObjectFormat(this.$, resource_data, zdLocale, key);
 
-        var existing_locales = this.store(factory.key + id + '_locales');
+        var existing_locales = this.store(factory.key + entry.id + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
         });
         if (checkLocaleExists) {
-          this.ajax(M('zd<T>Update'), translationData, id, zdLocale);
+          this.ajax(M('zd<T>Update'), translationData, entry.id, zdLocale);
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, id);
+          this.ajax(M('zd<T>Insert'), translationData, entry.id);
         }
       },
       'asyncGetZd<T>Translations': function(id) {
@@ -196,22 +193,61 @@ module.exports = function(name, key, api) {
         io.pushSync(factory.key + id);
         this.ajax(M('zd<T>GetTranslations'), id);
       },
-      'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage) {
+      'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage, search_query) {
         logger.debug(M('function: [asyncGetZd<T>Full] params: [page]') +
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
-        this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
+        if(search_query){
+          this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
+        }
+        else{
+          this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
+        }
+      },
+      'get<T>ForTranslation': function(entry){
+        // apply any required transformation before passing it to template
+        return {
+          resource_name: entry.resource_name,
+          body: entry.body || entry.description,
+          name: entry.name,
+          title: entry.title || entry.name,
+        };
       },
     },
-    jsonHandlers: {
-      'getSingle<T>': function(id, a) {
-        if (typeof id == 'string' || id instanceof String)
-          id = parseInt(id, 10);
-        var i = _.findIndex(a[api], {
-          id: id
-        });
-        return a[api][i];
+    helpers: {
+      'getEndPointParameter<T>': function(page, sortby, sortdirection, numperpage){
+        var numberperpageString = "";
+        if (numperpage) {
+          numberperpageString = "per_page=" + numperpage;
+        } else {
+          numberperpageString = "per_page=10";
+        }
+
+        var pageString = "";
+        if (page) {
+          pageString = '&page=' + page;
+        }
+
+        var sortbyString = "";
+        if (sortby) {
+          //sections and categories sort by position instead of title
+          if (sortby == 'title' && key != 'article') {
+            sortby = 'position';
+          }
+          sortbyString = '&sort_by=' + sortby;
+        }
+
+        var sortdirectionString = "";
+        if (sortdirection) {
+          //sections and categories should invert direction
+          if (sortby == 'title' && key != 'article') {
+            sortdirectionString = (sortdirectionString == 'asc')?'desc':'asc';
+          }
+          sortdirectionString = '&sort_order=' + sortdirection;
+        }
+        return {'numberperpageString': numberperpageString, 'pageString':pageString,
+                'sortbyString': sortbyString, 'sortdirectionString': sortdirectionString};
       },
       'calcResourceName<T>': function(obj) {
         var ret = obj[api];
@@ -231,42 +267,10 @@ module.exports = function(name, key, api) {
         response[api] = ret;
         return response;
       },
-      'checkPagination<T>': function(a) {
-        var i = a.page_count;
-        if (typeof i === 'string') {
-          i = parseInt(i, 10);
-        }
-        if (typeof i === 'number') {
-          if (i > 1) {
-            return true;
-          }
-        }
-        return false;
-      },
-      'getPages<T>': function(a) {
-        var i = a.page_count;
-        return _.range(1, i + 1);
-      },
-      'getCurrentPage<T>': function(a) {
-        var i = a.page;
-        return i;
-      },
-      'isFewer<T>': function(a, i) {
-        if (i > 1) {
-          return true;
-        }
-        return false;
-      },
-      'isMore<T>': function(a, i) {
-        if (a.page_count > i) {
-          return true;
-        }
-        return false;
-      },
     },
   };
 
-  _.each(['events', 'requests', 'eventHandlers', 'actionHandlers', 'jsonHandlers'], function(entry) {
+  _.each(['events', 'requests', 'eventHandlers', 'actionHandlers', 'helpers'], function(entry) {
     var object = factory[entry];
     _.each(object, function(value, key) {
       delete object[key];

@@ -13,7 +13,7 @@ var project = module.exports = {
   key: 'tx_project',
   url: '',
   headers: {
-    'X-Source-Zendesk': 'ZendeskApp/2.0.0'
+    'X-Source-Zendesk': 'ZendeskApp/2.1.0'
   },
   username: '',
   password: '',
@@ -23,10 +23,16 @@ var project = module.exports = {
   },
   initialize: function() {
     var settings = io.getSettings();
+    var url = settings.tx_project;
 
     logger.info('Convert Project Url to API:', settings.tx_project);
-    project.dashboard_url = settings.tx_project.replace(/\/$/, '') + '/';
-    project.url = txutils.convertUrlToApi(settings.tx_project);
+    if (!url.endsWith('/'))
+      url = url + '/';
+    if (url.endsWith('dashboard/'))
+      url = url.replace('dashboard/', '');
+
+    project.url = txutils.convertUrlToApi(url);
+    project.dashboard_url = url;
 
     logger.info('Validate TxProject API URL:', project.url);
     if (!txutils.isValidAPIUrl(project.url)) {
@@ -35,6 +41,7 @@ var project = module.exports = {
 
     project.username = settings.tx_username;
     project.password = settings.tx_password;
+    project.headers['Authorization'] = 'Basic ' + btoa(project.username + ':' + project.password);
   },
   requests: {
     txProject: function() {
@@ -46,9 +53,7 @@ var project = module.exports = {
         type: 'GET',
         cache: false,
         dataType: 'json',
-        username: project.username,
-        password: project.password,
-        secure: true
+        cors: true
       };
     },
   },
@@ -56,6 +61,10 @@ var project = module.exports = {
     txProjectDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
+      var resource_array = _.map(data.resources, function(resource) {
+        return resource.slug;
+      });
+      io.setResourceArray(resource_array);
       io.popSync(project.key);
       this.checkAsyncComplete();
     },
@@ -88,17 +97,7 @@ var project = module.exports = {
       this.ajax('txProject');
     },
   },
-  jsonHandlers: {
-    getResourceArray: function(p) {
-      var result = [];
-      var r = p.resources;
-      if (_.isArray(r)) {
-        _.each(r, function(i) {
-          result.push(i.slug);
-        });
-      }
-      return result;
-    },
+  helpers: {
     getSourceLocale: function(p) {
       return p.source_language_code;
     },

@@ -53,6 +53,11 @@
         <a tab="categories" class="o-tabs__item" href="#">Categories</a>
         {{/if}}
 
+        {{#if page_dynamic_content}}
+        <a class="o-tabs__item is-active" href="#">Dynamic Content</a>
+        {{else}}
+        <a tab="dynamic" class="o-tabs__item" href="#">Dynamic Content</a>
+        {{/if}}
       </div>
     </div>
 
@@ -69,12 +74,28 @@
           {{#if page_categories}}
           Send Categories
           {{/if}}
+          {{#if page_dynamic_content}}
+          Send Dynamic Content
+          {{/if}}
         </a>
         <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled js-{{page}} js-batch-download">
           Get Translations
         </a>
       </div>
-      <div class="u-height-form u-lineHeight-form u-fontSize-small">
+      {{#if page_articles}}
+      <div class="o-inputwith-icon o-inputwith-icon--hasaction o-inputwith-icon--muted u-width-midWidth u-marginHorizontal-4x  js-{{page}} js-search">
+        <svg viewBox="0 0 16 16" class="o-inputwith-icon__symbol">
+          <path class="o-icon" d="M11.429 10.057h-0.686l-0.229-0.114c0.914-1.143 1.371-2.4 1.371-3.886 0.114-3.429-2.629-6.057-5.943-6.057s-5.943 2.629-5.943 5.943 2.629 5.943 5.943 5.943c1.486 0 2.857-0.571 3.886-1.371l0.229 0.229v0.686l4.571 4.571 1.371-1.371-4.571-4.571zM5.943 10.057c-2.4 0-4.114-1.829-4.114-4.114s1.829-4.114 4.114-4.114 4.114 1.829 4.114 4.114-1.829 4.114-4.114 4.114z"></path>
+        </svg>
+        <input type="text" class="o-inputwith-icon__input o-textinput" placeholder="Search by article title or content" value="{{{search_term}}}"/>
+        <a href="#" class="o-inputwith-icon__action js-{{page}} js-clear-search {{#unless search_term}}u-display-none{{/unless}}">
+          <svg viewBox="0 0 16 16" class="u-box-2x u-fill-disabled">
+            <path d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"/>
+          </svg>
+        </a>
+      </div>
+      {{/if}}
+      <div class="u-height-form u-lineHeight-form u-fontSize-small js-{{page}} js-per-page">
         <span class="u-color-disabled">Per page:</span>
         <a perpage="10" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">10</a>
         <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">25</a>
@@ -132,25 +153,21 @@
     <div class="u-paddingHorizontal-gutter">
       <div class="u-position u-clearfix u-lineHeight-button u-backgroundColor-active">
 
-        <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
+        <div class="u-width-30 u-paddingLeft-gutter u-paddingRight-1x u-float-left">
           <div class="u-display-flex">
             <label class="o-checkbox-controller u-marginRight-2x" for="all_page">
               <input type="checkbox" class="o-checkbox o-checkbox--bare js-{{page}} js-select-all" disabled="disabled" name="all_page" id="all_page"/>
               <div class="o-checkbox__label"></div>
             </label>
             <span class="o-link o-link--muted js-{{page}} js-sortby-title">
-              {{#if page_articles}}Article{{/if}}{{#if page_categories}}Category{{/if}}{{#if page_sections}}Section{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
+              {{#if page_articles}}Article Title{{/if}}{{#if page_categories}}Category Title{{/if}}{{#if page_sections}}Section Title{{/if}}{{#if page_dynamic_content}}Dynamic Content{{/if}}<svg class="o-icon" viewBox="0 0 16 16">
                 <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
               </svg>
             </span>
           </div>
         </div>
 
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Transifex Resource</div>
-
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Completed Languages</div>
-
-        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">
           <span class="o-link o-link--muted js-{{page}} js-sortby-updated_at">
             Last Activity<svg class="o-icon" viewBox="0 0 16 16">
               <path class="path1" d="M5.65 9.75l2.3-2.2 2.3 2.3 0.7-0.7-3-3-2.9 2.9 0.6 0.7z"></path>
@@ -158,49 +175,109 @@
           </span>
         </div>
 
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Links</div>
+
+        <div class="u-width-20 u-paddingHorizontal-1x u-textAlign-center u-float-left">Completed Languages</div>
+
+        <div class="u-width-15 u-paddingHorizontal-1x u-textAlign-center u-float-left">Resource Status</div>
+
       </div>
     </div>
 
   </div>
 
-  <div class="u-flexGrow-1 o-scrollable">
+  <div class="o-scrollable u-flexGrow-1 u-paddingHorizontal-gutter">
 
     <!-- articles list -->
-    <div class="o-list o-interactive-list--highlight u-paddingHorizontal-gutter u-marginBottom-4x">
+    <div class="o-list o-interactive-list--highlight u-marginBottom-4x">
     {{#each dataset}}
       <div class="o-list__item js-{{../page}}" data-resource="{{this.name}}">
         <div class="o-interactive-list__item u-paddingVertical-2x u-borderBottom-divider" data-item="controller">
-          <div class="u-display-flex u-justifyContent-center u-flexDirection-row u-lineHeight-button u-height-button">
-            <div class="u-width-40 u-paddingLeft-gutter u-paddingRight-1x">
+          <div class="u-display-flex u-lineHeight-button u-height-button">
+            <div class="u-width-30 u-paddingLeft-gutter u-paddingRight-1x">
               <div class="u-display-flex u-width-100">
                 <label class="o-checkbox-controller u-marginRight-2x" for="{{{this.name}}}">
                   <input type="checkbox" class="o-checkbox o-checkbox--bare js-{{../page}} js-checkbox" disabled="disabled" name="{{{this.name}}}" id="{{this.name}}"/>
                   <div class="o-checkbox__label"></div>
                 </label>
                 <div class="o-text-ellipsis u-flexGrow-1">
-                  <a class="o-link" target="_blank" href="{{{this.zd_object_url}}}">{{{this.title_string}}}</a>
+                  {{{this.title_string}}}
                 </div>
               </div>
             </div>
+            <div class="o-text-ellipsis u-width-15 u-paddingHorizontal-1x u-textAlign-left">
+              <span class="u-color-secondary u-fontSize-small">
+              {{#if this.zd_outdated}}
+                <span data-toggle="tooltip" title="This dynamic content item has been updated since it was last sent to Transifex.">
+                  <svg class="o-icon u-marginRight-1x u-fill-systemWarning" viewBox="0 0 16 16">
+                    <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
+                    <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
+                    <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
+                  </svg>
+                </span>
+                {{else}}
+                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
+                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
+                </svg>
+                {{/if}}
+                {{{this.zd_object_updated}}}
+              </span>
+            </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-disabled u-fontSize-small" data-status="checking">Checking...</span>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="not_found">No resource yet</span>
-              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank">{{{this.name}}}</a>
-              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Error</span>
+              <a class="o-link u-fontSize-small" target="_blank" href="{{{this.zd_object_url}}}">
+              {{#if ../page_articles}}Article{{/if}}{{#if ../page_categories}}Category{{/if}}{{#if ../page_sections}}Section{{/if}}{{#if ../page_dynamic_content}}Dynamic Content{{/if}}</a> |
+              <span class="u-color-disabled u-fontSize-small" data-status="not_found">Resource</span>
+              <span class="u-color-disabled u-fontSize-small is-hidden" data-status="error">Resource</span>
+              <a href="{{{this.tx_resource_url}}}" class="o-link u-fontSize-small is-hidden" data-status="found" target="_blank" data-toggle="tooltip" title="Resource name">Resource</a>
             </div>
             <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
               <span id="locales-{{{this.name}}}">
                 <span class="u-color-secondary u-fontSize-small"><span class="u-color-disabled">Checking...</span></span>
               </span>
             </div>
-            <div class="o-text-ellipsis u-width-20 u-paddingHorizontal-1x u-textAlign-center">
-              <span class="u-color-secondary u-fontSize-small">
-                <svg class="o-icon u-marginRight-1x" viewBox="0 0 16 16">
-                  <path class="path1" d="M8 0.020q3.316 0 5.658 2.342t2.342 5.639-2.342 5.639-5.658 2.342-5.658-2.342-2.342-5.639 2.342-5.639 5.658-2.342zM8 14.407q2.641 0 4.515-1.873t1.873-4.534-1.873-4.534-4.515-1.873-4.515 1.873-1.873 4.534 1.873 4.534 4.515 1.873zM8.393 3.991v4.196l3.597 2.136-0.599 1.012-4.196-2.548v-4.796h1.199z"></path>
-                </svg>{{{this.zd_object_updated}}}
-              </span>
+            <div class="o-text-ellipsis u-flexGrow-1 u-paddingHorizontal-1x u-textAlign-center">
+              <span class="u-color-secondary u-fontSize-small" data-status="checking"><span class="u-color-disabled">Checking...</span></span>
+              <span class="o-badge u-backgroundColor-success is-hidden" data-status="completed">All translated - 100%</span>
+              <span class="o-badge is-hidden" data-status="not_found">No resource yet</span>
+              <span class="o-badge u-backgroundColor-graphExtend is-hidden" data-status="in_translation">In Translation - <span class="js-trans-percentage">0</span>%</span>
+              <span class="u-fontSize-small is-hidden" data-status="error">-</span>
             </div>
           </div>
+        </div>
+      </div>
+    {{else}}
+      <div class="u-paddingTop-gutter">
+        <div class="c-emptystate u-paddingTop-2x">
+          <svg class="c-emptystate__symbol" width="71px" height="65px" viewBox="0 0 71 65">
+            <rect x="13.1" y="19.9" width="15.8" height="2.6"></rect>
+            <path d="M40.4,27.4v-0.8H13.1v2.6h24.7C38.6,28.4,39.4,27.8,40.4,27.4z"></path>
+            <path d="M13.1,33v2.6h20.5c0.3-0.9,0.6-1.7,1.1-2.6H13.1z"></path>
+            <path d="M13.1,39.4v2.6h20.2c-0.2-0.8-0.3-1.7-0.3-2.6H13.1z"></path>
+            <path d="M13.1,45.8v2.6h23.6c-0.7-0.8-1.4-1.6-1.9-2.6H13.1z"></path>
+            <rect x="13.1" y="52.2" class="st0" width="27.3" height="2.6"></rect>
+            <path d="M46.5,46.5c-4.1,0-7.2-3.1-7.2-7.2s3.1-7.2,7.2-7.2s7.2,3.1,7.2,7.2S50.6,46.5,46.5,46.5z M56.2,46.5H55
+              l-0.5-0.2c1.7-1.9,2.4-4.1,2.4-6.8c0.2-6-4.6-10.6-10.4-10.6c-5.8,0-10.4,4.6-10.4,10.4s4.6,10.4,10.4,10.4c2.7,0,5.1-1,6.8-2.4
+              l0.5,0.5v1.2l8,8l2.4-2.4L56.2,46.5z"></path>
+            <path d="M47.5,20.2L35.7,8.4c-0.1-0.1-0.1-0.1-0.2-0.2c0,0,0,0-0.1,0c0,0-0.1-0.1-0.2-0.1c0,0-0.1,0-0.1,0c0,0-0.1,0-0.2,0
+              c-0.1,0-0.2,0-0.3,0H6.9C6.2,8,5.6,8.6,5.6,9.3v51.3c0,0.7,0.6,1.3,1.3,1.3h39.7c0.7,0,1.3-0.6,1.3-1.3v-8.2
+              c-0.5,0.1-1,0.1-1.5,0.1c-0.4,0-0.7,0-1,0v6.9H8.2V10.6h25.3v10.5c0,0.7,0.6,1.3,1.3,1.3h10.5V26c0.3,0,0.7,0,1,0
+              c0.5,0,1,0,1.5,0.1v-4.9c0,0,0,0,0,0C47.8,20.8,47.7,20.5,47.5,20.2z M36,19.8v-7.4l7.4,7.4H36z"></path>
+          </svg>
+          {{#if search_term}}
+          <div class="c-emptystate__title">
+            No results were found for "{{search_term}}"
+          </div>
+          <div class="c-emptystate__description">
+            Please check your spelling or search for another term.
+          </div>
+          {{else}}
+          <div class="c-emptystate__title">
+            No content was found in your Help Center
+          </div>
+          <div class="c-emptystate__description">
+            Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first.
+          </div>
+          {{/if}}
         </div>
       </div>
     {{/each}}

@@ -5,24 +5,25 @@ var io = require('io');
 
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
-  regExpTemplate: "<html><head></head><body><h1>(.*)</h1>(.*)</body></html>",
-  translationObjectFormat: function(response, locale, zd_type) {
+  translationObjectFormat: function($, response, locale, zd_type) {
     if (io.getFeature('html-tx-resource')) {
-      return common.translationObjectHTML(response, locale, zd_type);
+      return common.translationObjectHTML($, response, locale, zd_type);
     } else {
       return syncUtil.zdGetTranslationObject(response, locale, zd_type);
     }
   },
 
-  translationObjectHTML: function(res, l, zd_type) {
-    var gblTemplate = common.gblTemplate;
-    var re = new RegExp(common.regExpTemplate);
-
-    res = res.replace(new RegExp('\n', 'g'), '');
+  translationObjectHTML: function($, res, l, zd_type) {
+    var el = $('<div></div>'),
+        title, body;
+    el.html(res);
+    title = el.find('h1').first().text();
+    el.find('h1').first().remove();
+    body = el.html().trim();
+    el.remove();
     var zdPartialArticle = {
-      title: common.extractValues(res.replace(/\\"/g, '"'),
-        gblTemplate).title,
-      body: res.replace(/\\"/g, '"').match(re)[2],
+      title: title,
+      body: body
     };
     var translationData = zdPartialArticle;
     if (zd_type == 'categories') {
@@ -44,96 +45,43 @@ var common = module.exports = {
     };
   },
 
-  txRequestJSON: function(a) {
+  txRequestJSON: function(entry, category) {
     var req = {
-      name: a.resource_name,
-      slug: a.resource_name,
+      name: entry.name,
+      slug: entry.resource_name,
       priority: 0,
-      i18n_type: 'KEYVALUEJSON'
+      i18n_type: 'KEYVALUEJSON',
+      category: category,
     };
 
     var o = {};
-    var o1 = syncUtil.addString('title', a.title, o);
-    var o2 = syncUtil.addString('body', a.body, o1);
+    var o1 = syncUtil.addString('title', entry.title, o);
+    var o2 = syncUtil.addString('body', entry.body, o1);
     var o3 = syncUtil.addContent(req, o2);
     return o3;
   },
 
-  txRequestHTML: function(article) {
+  txRequestHTML: function(entry, category) {
     var gblTemplate = common.gblTemplate;
-    var zdArticleContent = _.template(gblTemplate)({
-      title: article.title,
-      name: article.name,
-      body: article.body || article.description,
-    });
+    var zdEntryContent = _.template(gblTemplate)(entry);
 
     var txRequestMade = {
-      name: article.resource_name,
-      slug: article.resource_name,
+      name: entry.name,
+      slug: entry.resource_name,
       priority: 0,
       i18n_type: 'HTML',
-      content: zdArticleContent
+      category: category,
+      content: zdEntryContent,
     };
     return txRequestMade;
   },
 
-  txRequestFormat: function(article) {
+  txRequestFormat: function(entry, category) {
     if (io.getFeature('html-tx-resource')) {
-      return common.txRequestHTML(article);
+      return common.txRequestHTML(entry, category);
     } else {
-      return common.txRequestJSON(article);
+      return common.txRequestJSON(entry, category);
     }
-  },
-
-  // Extract Values via https://github.com/laktek
-  // https://github.com/laktek/extract-values
-
-  extractValues: function(str, pattern, options) {
-    options = options || {};
-    var delimiters = options.delimiters || ["<%=", "%>"];
-    var lowercase = options.lowercase;
-    var whitespace = options.whitespace;
-
-    var special_chars_regex = /[\\\^\$\*\+\.\?\(\)]/g;
-    var token_regex = new RegExp(delimiters[0] + "([^" + delimiters.join("") +
-      "\t\r\n]+)" + delimiters[1], "g");
-    var tokens = pattern.match(token_regex);
-    var pattern_regex = new RegExp(pattern.replace(special_chars_regex,
-      "\\$&").replace(token_regex, "(\.*)"));
-
-    if (lowercase) {
-      str = str.toLowerCase();
-    }
-
-    if (whitespace) {
-      str = str.replace(/\s+/g, function(match) {
-        var whitespace_str = "";
-        for (var i = 0; i < whitespace; i++) {
-          whitespace_str = whitespace_str + match.charAt(0);
-        }
-        return whitespace_str;
-      });
-    }
-
-    var matches = str.match(pattern_regex);
-
-    if (!matches) {
-      return null;
-    }
-
-    // Allow exact string matches to return an empty object instead of null
-    if (!tokens) {
-      return (str === pattern) ? {} : null;
-    }
-
-    matches = matches.splice(1);
-    var output = {};
-    for (var i = 0; i < tokens.length; i++) {
-      output[tokens[i].replace(new RegExp(delimiters[0] + "|" + delimiters[
-        1], "g"), "").trim()] = matches[i];
-    }
-
-    return output;
   },
 
   addCompletedLocales: function($, name, locales) {

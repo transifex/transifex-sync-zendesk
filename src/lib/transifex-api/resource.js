@@ -16,7 +16,7 @@ var resource = module.exports = {
   url: '',
   inserturl: '',
   headers: {
-    'X-Source-Zendesk': 'v2.0.0'
+    'X-Source-Zendesk': 'ZendeskApp/2.1.0'
   },
   username: '',
   password: '',
@@ -37,8 +37,9 @@ var resource = module.exports = {
     var settings = io.getSettings();
     resource.username = settings.tx_username;
     resource.password = settings.tx_password;
-    resource.url = txutils.convertUrlToApi(settings.tx_project) + 'resource/';
-    resource.inserturl = txutils.convertUrlToApi(settings.tx_project) + 'resources/';
+    resource.url = txProject.url + 'resource/';
+    resource.inserturl = txProject.url + 'resources/';
+    resource.headers['Authorization'] = 'Basic ' + btoa(resource.username + ':' + resource.password);
   },
   requests: {
     txResourceStats: function(resourceName) {
@@ -51,9 +52,7 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
         },
         dataType: 'json',
-        username: resource.username,
-        password: resource.password,
-        secure: true
+        cors: true
       };
     },
     txResource: function(resourceName, languageCode) {
@@ -68,9 +67,7 @@ var resource = module.exports = {
           jqxhr.languageCode = languageCode;
         },
         dataType: 'json',
-        username: resource.username,
-        password: resource.password,
-        secure: true
+        cors: true
       };
     },
     txInsertResource: function(data, resourceName) {
@@ -83,11 +80,9 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = data.i18n_type;
         },
-        username: resource.username,
-        password: resource.password,
         data: JSON.stringify(data),
         contentType: 'application/json',
-        secure: true
+        cors: true
       };
     },
     txUpdateResource: function(data, resourceName) {
@@ -100,12 +95,10 @@ var resource = module.exports = {
           jqxhr.resourceName = resourceName;
           jqxhr.type = data.i18n_type;
         },
-        username: resource.username,
-        password: resource.password,
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',
-        secure: true
+        cors: true
       };
     },
   },
@@ -155,6 +148,7 @@ var resource = module.exports = {
       logger.info('Transifex Resource inserted with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       io.opSet(jqXHR.resourceName, 'success');
+      io.pushResource(jqXHR.resourceName);
       this.checkAsyncComplete();
     },
     txUpdateResourceDone: function(data, textStatus, jqXHR) {
@@ -172,17 +166,13 @@ var resource = module.exports = {
     },
   },
   actionHandlers: {
-    displayResource: function(resourceName) {
-      this.asyncGetTxResourceStats(resourceName);
-      var pageData = this.store(resource.key + resourceName);
-      pageData = [pageData];
-      this.switchTo('sync_resource_status', {
-        dataset: pageData,
-      });
-    },
     completedLanguages: function(stats) {
       var arr = [],
-          zd_enabled = this.store('zd_project_locales');
+          zd_enabled = [],
+          locales = io.getLocales();
+      _.map(locales, function(l){
+        zd_enabled.push(l['locale'].toLowerCase());
+      });
       _.each(stats, function(value, key) {
         var match = (value['completed'] === "100%");
         var zd_key = syncUtil.txLocaletoZd(key);
@@ -193,23 +183,10 @@ var resource = module.exports = {
 
       return arr;
     },
-    displayResourceLanguage: function(resourceName, languageCode) {
-      this.asyncGetTxResource(resourceName, languageCode);
-      var pageData = this.store(resource.key + resourceName + languageCode);
-      pageData = _.extend(pageData, {
-        'name': resourceName,
-        'language_code': languageCode
-      });
-      pageData = [pageData];
-      this.switchTo('sync_resource_language_status', {
-        dataset: pageData,
-      });
-    },
-
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);
       var project = this.store(txProject.key);
-      var resources = this.getResourceArray(project);
+      var resources = io.getResourceArray();
       //check list of resources in the project
       io.opSet(slug, 'processing');
       if (syncUtil.isStringinArray(slug, resources)) {
@@ -234,6 +211,22 @@ var resource = module.exports = {
       io.pushSync(resource.key + name + 'upsert');
       io.setRetries('txResource' + name, 0);
       this.txUpsertResource(data, name);
+    },
+  },
+  helpers: {
+    resourceCompletedPercentage: function(resource_stats) {
+      var sum = 0, locale_count = 0,
+          supported_locales = io.getLocales();
+      supported_locales = _.map(supported_locales, function(l){
+        return l['locale'].toLowerCase();
+      });
+      _.each(resource_stats, function(stat, code) {
+        if (_.contains(supported_locales, syncUtil.txLocaletoZd(code))) {
+          sum += parseInt(stat.completed.split('%')[0]);
+          locale_count += 1;
+        }
+      });
+      return Math.ceil(sum / locale_count);
     },
   },
 };

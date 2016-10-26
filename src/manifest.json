@@ -8,8 +8,7 @@
   "defaultLocale": "en",
   "private": false,
   "location": "nav_bar",
-  "domainWhitelist": ["www.transifex.com"],
-  "version": "2.0.0",
+  "version": "2.1.0",
   "frameworkVersion": "1.0",
   "parameters": [
     {
