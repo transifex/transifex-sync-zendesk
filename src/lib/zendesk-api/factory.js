@@ -63,7 +63,7 @@ module.exports = function(name, key, api) {
           contentType: 'application/json'
         };
       },
-      'zd<T>Insert': function(data, id) {
+      'zd<T>Insert': function(data, id, locale) {
         io.pushSync(factory.key + 'download' + id);
         return {
           url: factory.base_url + api + '/' + id +
@@ -72,6 +72,8 @@ module.exports = function(name, key, api) {
           data: JSON.stringify(data),
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
+            jqxhr.locale = locale;
+
           },
           contentType: 'application/json'
         };
@@ -135,9 +137,10 @@ module.exports = function(name, key, api) {
         this.checkAsyncComplete();
       },
       'zd<T>InsertDone': function(data, textStatus, jqXHR) {
-        var existing_locales = this.store(factory.key + jqXHR.id + '_locales');
+        var key = factory.key + jqXHR.id + '_locales';
+        var existing_locales = this.store(key);
         existing_locales.push(jqXHR.locale);
-        this.store(factory.key + jqXHR.id + '_locales', existing_locales);
+        this.store(key, existing_locales);
 
         io.popSync(factory.key + 'download' + jqXHR.id);
         io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
@@ -185,7 +188,7 @@ module.exports = function(name, key, api) {
         if (checkLocaleExists) {
           this.ajax(M('zd<T>Update'), translationData, entry.id, zdLocale);
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, entry.id);
+          this.ajax(M('zd<T>Insert'), translationData, entry.id, zdLocale);
         }
       },
       'asyncGetZd<T>Translations': function(id) {
