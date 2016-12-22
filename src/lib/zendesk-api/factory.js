@@ -16,7 +16,7 @@ module.exports = function(name, key, api) {
   //basics
   var factory = {
     key: 'zd_' + key,
-    base_url: '/api/v2/help_center/',
+    base_url: 'https://txtestbrand2.zendesk.com/api/v2/help_center/',
     events: {
       'zd<T>Full.done': M('zd<T>Done'),
       'zd<T>GetTranslations.done': M('zd<T>GetTranslationsDone'),
@@ -38,6 +38,7 @@ module.exports = function(name, key, api) {
             url: factory.base_url + locale + '/' +  api + '.json?' + parameters['numberperpageString'] +
               parameters['pageString'] + parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
+            cors: true,
             dataType: 'json'
           };
       },
@@ -50,6 +51,7 @@ module.exports = function(name, key, api) {
             '&' + parameters['numberperpageString'] + parameters['pageString'] +
             parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
+            cors: true,
             dataType: 'json'
           };
       },
@@ -57,13 +59,15 @@ module.exports = function(name, key, api) {
         return {
           url: factory.base_url + api + '/' + id + '/translations.json',
           type: 'GET',
+          cors: true,
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
           },
           contentType: 'application/json'
         };
       },
-      'zd<T>Insert': function(data, id, locale) {
+      'zd<T>Insert': function(data, id) {
+        var that = this;
         io.pushSync(factory.key + 'download' + id);
         return {
           url: factory.base_url + api + '/' + id +
@@ -73,12 +77,12 @@ module.exports = function(name, key, api) {
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
             jqxhr.locale = locale;
-
           },
           contentType: 'application/json'
         };
       },
       'zd<T>Update': function(data, id, locale) {
+        var that = this;
         io.pushSync(factory.key + 'download' + id + locale);
         return {
           url: factory.base_url + api + '/' + id + '/translations/' +
@@ -88,6 +92,7 @@ module.exports = function(name, key, api) {
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
             jqxhr.locale = locale;
+            jqxhr.setRequestHeader('Authorization', that.ba);
           },
           contentType: 'application/json'
         };
