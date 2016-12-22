@@ -27,8 +27,18 @@ module.exports = function(name, key, api) {
       'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Full.fail': M('zd<T>SyncError'),
       'zd<T>Search.done': M('zd<T>SearchDone'),
+      'zdGetBrands.done': 'zdGetBrandsDone',
+      'zdGetBrands.fail': 'zdGetBrandsError',
     },
     requests: {
+      'zdGetBrands': function() {
+        return {
+            url: factory.base_url  + 'brands.json',
+            type: 'GET',
+            cors: true,
+            dataType: 'json'
+          };
+      },
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
         var locale = this.store('default_locale');
         var parameters = this[M('getEndPointParameter<T>')](
@@ -99,6 +109,15 @@ module.exports = function(name, key, api) {
       },
     },
     eventHandlers: {
+      'zdGetBrandsDone': function(data, textStatus) {
+        console.log(data);
+        io.popSync('brands');
+
+      },
+      'zdGetBrandsError': function(jqXHR, textStatus) {
+        logger.info('Brands not retrieved: ', textStatus);
+        io.popSync('brands');
+      },
       'zd<T>Done': function(data, textStatus) {
         logger.info(M('Zendesk <T> retrieved with status:'), textStatus);
         //map category/section name to title
@@ -181,6 +200,10 @@ module.exports = function(name, key, api) {
       },
     },
     actionHandlers: {
+      'zdGetBrands': function() {
+        io.pushSync('brands');
+        this.ajax('zdGetBrands');
+      },
       'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
         logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
 

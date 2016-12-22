@@ -26,7 +26,6 @@ function txApp(modules) {
     //set settings to be accessible from everywhere
     this.settings.basic_auth = 'Basic ' + btoa(this.currentUser().email() + '/token:' + this.settings.zd_api_key);
     io.setSettings(this.settings);
-    console.log(this.settings)
     this.store(
       'page_title',
       txutils.extractOrgFromUrl(this.settings.tx_project).project_slug || 'Zendesk'
@@ -47,6 +46,8 @@ function txApp(modules) {
       if (mod.initialize) mod.initialize();
     }, this);
 
+
+    this.zdGetBrands();
     // Do Async!!!!
     // Queue async calls and set callback page init
     this.uiLoadConf();
