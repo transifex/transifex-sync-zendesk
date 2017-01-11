@@ -61,6 +61,15 @@
       </div>
     </div>
 
+    <!-- Header: Brand selection area -->
+    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x js-{{page}}-brand">
+      {{#each brands}}
+        <a data-brand={{id}} class="o-tabs__item" href="#">{{name}}</a>
+      {{/each}}
+      </div>
+    </div>
+
     <!-- Header: Search-filters -->
     <div class="u-display-flex u-width-100 u-paddingHorizontal-gutter u-paddingVertical-3x">
       <div class="u-flexGrow-1 u-height-form u-paddingRight-3x">

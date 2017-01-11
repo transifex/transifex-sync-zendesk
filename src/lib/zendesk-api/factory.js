@@ -16,7 +16,7 @@ module.exports = function(name, key, api) {
   //basics
   var factory = {
     key: 'zd_' + key,
-    base_url: 'https://txtestbrand2.zendesk.com/api/v2/help_center/',
+    base_url: '/api/v2/help_center/',
     events: {
       'zd<T>Full.done': M('zd<T>Done'),
       'zd<T>GetTranslations.done': M('zd<T>GetTranslationsDone'),
@@ -33,7 +33,7 @@ module.exports = function(name, key, api) {
     requests: {
       'zdGetBrands': function() {
         return {
-            url: factory.base_url  + 'brands.json',
+            url: factory.base_url.substr(0,8) + 'brands.json',
             type: 'GET',
             cors: true,
             dataType: 'json'
@@ -110,13 +110,14 @@ module.exports = function(name, key, api) {
     },
     eventHandlers: {
       'zdGetBrandsDone': function(data, textStatus) {
-        console.log(data);
+        this.store('brands', data);
         io.popSync('brands');
-
+        this.checkAsyncComplete();
       },
       'zdGetBrandsError': function(jqXHR, textStatus) {
         logger.info('Brands not retrieved: ', textStatus);
         io.popSync('brands');
+        this.checkAsyncComplete();
       },
       'zd<T>Done': function(data, textStatus) {
         logger.info(M('Zendesk <T> retrieved with status:'), textStatus);

@@ -40,6 +40,7 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'keyup .js-<t>.js-search': M('ui<T>Search'),
       'click .js-<t>.js-clear-search': M('ui<T>Tab'),
+      'click .js-<t>-brand [data-brand]': M('ui<T>BrandTab'),
     },
     eventHandlers: {
       'ui<T>Search': function(event) {
@@ -174,6 +175,7 @@ module.exports = function(T, t, api) {
           page_sections: t == 'sections',
           page_dynamic_content: t == 'dynamic',
           dataset: pageData,
+          brands: this.buildBrandsData(),
           search_term: search_query,
         });
 
@@ -599,6 +601,22 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
+      'ui<T>BrandTab': function(event) {
+        if (event) event.preventDefault();
+        var brand = this.$(event.target).data('brand');
+        if (this.processing || !brand) return;
+        console.log(brand)
+        this.store('selected_brand', brand);
+        this.switchTo('loading_page', {
+          page: t,
+          page_articles: t == 'articles',
+          page_categories: t == 'categories',
+          page_sections: t == 'sections',
+          page_dynamic_content: t == 'dynamic',
+          query_term: io.getQuery(),
+        });
+        this.loadSyncPage = this[M('ui<T>Init')];
+      },
     },
     actionHandlers: {
       'start<T>Process': function(action) {
@@ -688,6 +706,9 @@ module.exports = function(T, t, api) {
             }
           }
         }
+      },
+      'buildBrandsData': function() {
+        return this.store('brands').brands;
       },
       'buildSyncPage<T>Data': function() {
         var data = this.store(zdApi.key),
