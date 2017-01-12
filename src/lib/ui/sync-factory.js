@@ -604,9 +604,14 @@ module.exports = function(T, t, api) {
       'ui<T>BrandTab': function(event) {
         if (event) event.preventDefault();
         var brand = this.$(event.target).data('brand');
+        var sorting = io.getSorting();
+        var query = io.getQuery();
         if (this.processing || !brand) return;
-        console.log(brand)
-        this.store('selected_brand', brand);
+        this.selected_brand = brand;
+        this[M('asyncGetZd<T>Full')](
+          factory.currentpage, sorting.sortby,
+          sorting.sortdirection, sorting.perpage, query
+        );
         this.switchTo('loading_page', {
           page: t,
           page_articles: t == 'articles',
@@ -708,7 +713,16 @@ module.exports = function(T, t, api) {
         }
       },
       'buildBrandsData': function() {
-        return this.store('brands').brands;
+        var brands = this.store('brands').brands;
+        if (!this.selected_brand) {
+          this.selected_brand = _.findWhere(brands, {default: true}).id;
+        }
+        return _.chain(brands)
+          //.filter(datum => !datum.default) //Filter out default brand
+          .map(datum => _.extend(datum, {
+            selected: datum.id == this.selected_brand
+          }))
+          .value();
       },
       'buildSyncPage<T>Data': function() {
         var data = this.store(zdApi.key),

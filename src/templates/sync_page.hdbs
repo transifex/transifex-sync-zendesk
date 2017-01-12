@@ -65,7 +65,11 @@
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x js-{{page}}-brand">
       {{#each brands}}
+        {{#if selected}}
+        <a data-brand={{id}} class="o-tabs__item is-active" href="#">{{name}}</a>
+        {{else}}
         <a data-brand={{id}} class="o-tabs__item" href="#">{{name}}</a>
+        {{/if}}
       {{/each}}
       </div>
     </div>
