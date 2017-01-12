@@ -33,7 +33,7 @@ module.exports = function(name, key, api) {
     requests: {
       'zdGetBrands': function() {
         return {
-            url: factory.base_url.substr(0,8) + 'brands.json',
+            url: this.base_url.substr(0,8) + 'brands.json',
             type: 'GET',
             cors: true,
             dataType: 'json'
@@ -45,7 +45,7 @@ module.exports = function(name, key, api) {
           page, sortby, sortdirection, numperpage);
 
         return {
-            url: factory.base_url + locale + '/' +  api + '.json?' + parameters['numberperpageString'] +
+            url: this.base_url + locale + '/' +  api + '.json?' + parameters['numberperpageString'] +
               parameters['pageString'] + parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
             cors: true,
@@ -57,7 +57,7 @@ module.exports = function(name, key, api) {
           page, sortby, sortdirection, numperpage);
 
         return {
-            url: factory.base_url + 'articles/search.json?query=' + search_query +
+            url: this.base_url + 'articles/search.json?query=' + search_query +
             '&' + parameters['numberperpageString'] + parameters['pageString'] +
             parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
@@ -67,7 +67,7 @@ module.exports = function(name, key, api) {
       },
       'zd<T>GetTranslations': function(id) {
         return {
-          url: factory.base_url + api + '/' + id + '/translations.json',
+          url: this.base_url + api + '/' + id + '/translations.json',
           type: 'GET',
           cors: true,
           beforeSend: function(jqxhr, settings) {
@@ -80,7 +80,7 @@ module.exports = function(name, key, api) {
         var that = this;
         io.pushSync(factory.key + 'download' + id);
         return {
-          url: factory.base_url + api + '/' + id +
+          url: this.base_url + api + '/' + id +
             '/translations.json',
           type: 'POST',
           data: JSON.stringify(data),
@@ -95,7 +95,7 @@ module.exports = function(name, key, api) {
         var that = this;
         io.pushSync(factory.key + 'download' + id + locale);
         return {
-          url: factory.base_url + api + '/' + id + '/translations/' +
+          url: this.base_url + api + '/' + id + '/translations/' +
             locale + '.json',
           type: 'PUT',
           data: JSON.stringify(data),
@@ -110,12 +110,13 @@ module.exports = function(name, key, api) {
     },
     eventHandlers: {
       'zdGetBrandsDone': function(data, textStatus) {
-        this.store('brands', data);
+        this.store('brands', data.brands);
         io.popSync('brands');
         this.checkAsyncComplete();
       },
       'zdGetBrandsError': function(jqXHR, textStatus) {
         logger.info('Brands not retrieved: ', textStatus);
+        this.store('brands', []);
         io.popSync('brands');
         this.checkAsyncComplete();
       },
@@ -230,6 +231,8 @@ module.exports = function(name, key, api) {
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
+        console.log(this.base_url)
+
         if(search_query){
           this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
         }

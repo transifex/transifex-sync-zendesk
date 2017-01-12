@@ -94,6 +94,8 @@ function txApp(modules) {
       app = _.extend(app, mod.helpers);
     }
   }
+  app.base_url = '/api/v2/help_center/';
+
 
   app =  _.extend(app, {
     events: events,

@@ -603,15 +603,21 @@ module.exports = function(T, t, api) {
       },
       'ui<T>BrandTab': function(event) {
         if (event) event.preventDefault();
-        var brand = this.$(event.target).data('brand');
+        var brand = parseInt(this.$(event.target).data('brand'));
+        var brands = this.store('brands');
         var sorting = io.getSorting();
         var query = io.getQuery();
         if (this.processing || !brand) return;
-        this.selected_brand = brand;
+
+        this.selected_brand = _.findWhere(brands, {id: brand});
+        var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';
+        this.base_url = burl + '/api/v2/help_center/';
+
         this[M('asyncGetZd<T>Full')](
           factory.currentpage, sorting.sortby,
           sorting.sortdirection, sorting.perpage, query
         );
+
         this.switchTo('loading_page', {
           page: t,
           page_articles: t == 'articles',
@@ -713,14 +719,14 @@ module.exports = function(T, t, api) {
         }
       },
       'buildBrandsData': function() {
-        var brands = this.store('brands').brands;
+        var brands = this.store('brands');
         if (!this.selected_brand) {
-          this.selected_brand = _.findWhere(brands, {default: true}).id;
+          this.selected_brand = _.findWhere(brands, {default: true});
         }
         return _.chain(brands)
           //.filter(datum => !datum.default) //Filter out default brand
           .map(datum => _.extend(datum, {
-            selected: datum.id == this.selected_brand
+            selected: datum.id == this.selected_brand.id
           }))
           .value();
       },
