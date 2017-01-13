@@ -95,7 +95,7 @@ function txApp(modules) {
     }
   }
   app.base_url = '/api/v2/help_center/';
-
+  app.tx_proxy_url = 'http://tx.loc:8000/api/v2/zendesk_proxy';
 
   app =  _.extend(app, {
     events: events,

@@ -79,33 +79,71 @@ module.exports = function(name, key, api) {
       'zd<T>Insert': function(data, id) {
         var that = this;
         io.pushSync(factory.key + 'download' + id);
-        return {
-          url: this.base_url + api + '/' + id +
-            '/translations.json',
-          type: 'POST',
-          data: JSON.stringify(data),
-          beforeSend: function(jqxhr, settings) {
-            jqxhr.id = id;
-            jqxhr.locale = locale;
-          },
-          contentType: 'application/json'
-        };
+        if (!this.selected_brand || this.selected_brand.default) {
+          return {
+            url: this.base_url + api + '/' + id +
+              '/translations.json',
+            type: 'POST',
+            data: JSON.stringify(data),
+            beforeSend: function(jqxhr, settings) {
+              jqxhr.id = id;
+              jqxhr.setRequestHeader('Authorization', that.ba);
+            },
+            contentType: 'application/json'
+          };
+        } else { // Pass it through Transifex Proxy
+          return {
+            url: this.tx_proxy_url,
+            type: 'POST',
+            cors: true,
+            data: JSON.stringify(_.extend(
+              data, {
+                zendesk_url: that.selected_brand.brand_url,
+                username: this.currentUser().email(),
+                token: this.settings.zd_api_key,
+              })
+            ),
+            beforeSend: function(jqxhr, settings) {
+              jqxhr.id = id;
+            },
+            contentType: 'application/json'
+          };
+        }
       },
       'zd<T>Update': function(data, id, locale) {
         var that = this;
         io.pushSync(factory.key + 'download' + id + locale);
-        return {
-          url: this.base_url + api + '/' + id + '/translations/' +
-            locale + '.json',
-          type: 'PUT',
-          data: JSON.stringify(data),
-          beforeSend: function(jqxhr, settings) {
-            jqxhr.id = id;
-            jqxhr.locale = locale;
-            jqxhr.setRequestHeader('Authorization', that.ba);
-          },
-          contentType: 'application/json'
-        };
+        if (!this.selected_brand || this.selected_brand.default) {
+          return {
+            url: this.base_url + api + '/' + id + '/translations/' +
+              locale + '.json',
+            type: 'PUT',
+            data: JSON.stringify(data),
+            beforeSend: function(jqxhr, settings) {
+              jqxhr.id = id;
+              jqxhr.locale = locale;
+              jqxhr.setRequestHeader('Authorization', that.ba);
+            },
+            contentType: 'application/json'
+          };
+        } else { // Pass it through Transifex Proxy
+          return {
+            url: this.tx_proxy_url,
+            type: 'PUT',
+            cors: true,
+            data: JSON.stringify(_.extend(
+              data, {
+                zendesk_url: that.selected_brand.brand_url,
+                username: this.currentUser().email(),
+                token: this.settings.zd_api_key,
+              })
+            ),
+            beforeSend: function(jqxhr, settings) {
+              jqxhr.id = id;
+            },
+            contentType: 'application/json'
+          };
+        }
       },
     },
     eventHandlers: {
