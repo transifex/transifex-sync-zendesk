@@ -98,7 +98,8 @@ module.exports = function(name, key, api) {
             cors: true,
             data: JSON.stringify(_.extend(
               data, {
-                zendesk_url: that.selected_brand.brand_url,
+                zendesk_url: this.base_url +  api + '/' + id +
+                  '/translations.json',
                 username: this.currentUser().email(),
                 token: this.settings.zd_api_key,
               })
@@ -130,10 +131,10 @@ module.exports = function(name, key, api) {
           return {
             url: this.tx_proxy_url,
             type: 'PUT',
-            cors: true,
             data: JSON.stringify(_.extend(
               data, {
-                zendesk_url: that.selected_brand.brand_url,
+                zendesk_url: this.base_url + api + '/' + id +
+                  '/translations.json',
                 username: this.currentUser().email(),
                 token: this.settings.zd_api_key,
               })
@@ -269,7 +270,6 @@ module.exports = function(name, key, api) {
           page + '[sortby]' + sortby + '[sortdirection]' + sortdirection +
           '[numperpage]' + numperpage);
         io.pushSync(factory.key);
-        console.log(this.base_url)
 
         if(search_query){
           this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
