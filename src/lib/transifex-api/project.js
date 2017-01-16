@@ -19,7 +19,9 @@ var project = module.exports = {
   password: '',
   events: {
     'txProject.done': 'txProjectDone',
-    'txProject.fail': 'txProjectSyncError'
+    'txProject.fail': 'txProjectSyncError',
+    'txProjectExists.done': 'txProjectExistsDone',
+    'txProjectExists.fail': 'txProjectExistsError',
   },
   initialize: function() {
     var settings = io.getSettings();
@@ -56,8 +58,32 @@ var project = module.exports = {
         cors: true
       };
     },
+    txProjectExists: function(project_slug) {
+      logger.debug('txProjectExists ajax request');
+      return {
+        url: `https://transifex.com/api/2/project/${project_slug}`,
+        headers: project.headers,
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        beforeSend: function(jqxhr, settings) {
+          jqxhr.slug = project_slug;
+        },
+        cors: true
+      };
+    },
   },
   eventHandlers: {
+    txProjectExistsDone: function(data, textStatus, jqXHR) {
+      logger.info('Transifex Project Retrieved with status:', textStatus);
+      io.popSync('check_exists_' + data.slug);
+      this.checkAsyncComplete();
+    },
+    txProjectExistsError: function(data, textStatus, jqXHR) {
+      logger.error('Transifex Project not exists:', textStatus);
+      io.popSync('check_exists_' + data.slug);
+      this.checkAsyncComplete();
+    },
     txProjectDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
@@ -99,6 +125,11 @@ var project = module.exports = {
       io.setRetries('txProject', 0);
       io.pushSync(project.key);
       this.ajax('txProject');
+    },
+    asyncCheckTxProjectExists: function(slug) {
+      logger.debug('function: [asyncGetTxProject]');
+      io.pushSync('check_exists_' + slug);
+      this.ajax('txProjectExists', slug);
     },
   },
   helpers: {

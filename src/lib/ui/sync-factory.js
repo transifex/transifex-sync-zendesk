@@ -190,6 +190,22 @@ module.exports = function(T, t, api) {
         this[M('sync<T>Translations')]();
         this.$('[data-toggle="tooltip"]').tooltip();
       },
+      'ui<T>ChangeBrand': function(event) {
+        if (event) event.preventDefault();
+        logger.debug(M('ui<T>Init'));
+        var search_query = io.getQuery();
+        var pageData = this[M('buildSyncPage<T>Data')]();
+        this.switchTo('create_project_for_brand', {
+          page: t,
+          page_articles: t == 'articles',
+          page_categories: t == 'categories',
+          page_sections: t == 'sections',
+          page_dynamic_content: t == 'dynamic',
+          dataset: pageData,
+          brands: this.buildBrandsData(),
+          search_term: search_query,
+        });
+      },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
@@ -612,11 +628,7 @@ module.exports = function(T, t, api) {
         this.selected_brand = _.findWhere(brands, {id: brand});
         var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';
         this.base_url = burl + '/api/v2/help_center/';
-
-        this[M('asyncGetZd<T>Full')](
-          factory.currentpage, sorting.sortby,
-          sorting.sortdirection, sorting.perpage, query
-        );
+        this.asyncCheckTxProjectExists(this.selected_brand.subdomain);
 
         this.switchTo('loading_page', {
           page: t,
@@ -626,7 +638,7 @@ module.exports = function(T, t, api) {
           page_dynamic_content: t == 'dynamic',
           query_term: io.getQuery(),
         });
-        this.loadSyncPage = this[M('ui<T>Init')];
+        this.loadSyncPage = this[M('ui<T>ChangeBrand')];
       },
     },
     actionHandlers: {
