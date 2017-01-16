@@ -73,7 +73,7 @@
       {{/each}}
       </div>
     </div>
-    
+
     <!-- System messages/notifications -->
     <div class="u-paddingHorizontal-gutter js-notifications">
 
@@ -116,6 +116,15 @@
             <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
           </svg>
         </a>
+      </div>
+
+      <!-- Header: List header -->
+      <div class="u-paddingHorizontal-gutter u-paddingTop-2x">
+        <div class="u-position u-clearfix">
+          <h1>We could not find a matching project in Transifex, should we create one?</h1>
+          <a href="#" title="create a new project" class="o-button o-button--form js-{{page}} js-create-project">
+            Yes, please
+          </a>
       </div>
 
     </div>

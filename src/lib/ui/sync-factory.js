@@ -40,6 +40,7 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'keyup .js-<t>.js-search': M('ui<T>Search'),
       'click .js-<t>.js-clear-search': M('ui<T>Tab'),
+      'click .js-<t>.js-create-project': M('ui<T>CreateProject'),
       'click .js-<t>-brand [data-brand]': M('ui<T>BrandTab'),
     },
     eventHandlers: {
@@ -189,22 +190,6 @@ module.exports = function(T, t, api) {
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
         this.$('[data-toggle="tooltip"]').tooltip();
-      },
-      'ui<T>ChangeBrand': function(event) {
-        if (event) event.preventDefault();
-        logger.debug(M('ui<T>Init'));
-        var search_query = io.getQuery();
-        var pageData = this[M('buildSyncPage<T>Data')]();
-        this.switchTo('create_project_for_brand', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          dataset: pageData,
-          brands: this.buildBrandsData(),
-          search_term: search_query,
-        });
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
@@ -639,6 +624,49 @@ module.exports = function(T, t, api) {
           query_term: io.getQuery(),
         });
         this.loadSyncPage = this[M('ui<T>ChangeBrand')];
+      },
+      'ui<T>ChangeBrand': function(event) {
+        if (event) event.preventDefault();
+        var search_query = io.getQuery();
+        var pageData = this[M('buildSyncPage<T>Data')]();
+        this.switchTo(
+          (this.store('project_exists')) ? 'sync_page' : 'create_project',
+          {
+            page: t,
+            page_articles: t == 'articles',
+            page_categories: t == 'categories',
+            page_sections: t == 'sections',
+            page_dynamic_content: t == 'dynamic',
+            dataset: pageData,
+            brands: this.buildBrandsData(),
+            search_term: search_query,
+          }
+        );
+      },
+      'ui<T>CreateProject': function(event) {
+        if (event) event.preventDefault();
+        logger.debug(M('ui<T>CreateProject'));
+        var search_query = io.getQuery();
+        var pageData = this[M('buildSyncPage<T>Data')]();
+
+        var target_locale = this.store('default_locale');
+        var split_locale = target_locale.split('-');
+        if (split_locale.length > 1) {
+          split_locale[1] = split_locale[1].toUpperCase();
+          target_locale = split_locale.join('_');
+        }
+        this.asyncCreateTxProject( this.selected_brand.subdomain, target_locale );
+        this.switchTo('loading_page', {
+          page: t,
+          page_articles: t == 'articles',
+          page_categories: t == 'categories',
+          page_sections: t == 'sections',
+          page_dynamic_content: t == 'dynamic',
+          dataset: pageData,
+          brands: this.buildBrandsData(),
+          search_term: search_query,
+        });
+        this.loadSyncPage = this[M('ui<T>Init')];
       },
     },
     actionHandlers: {
