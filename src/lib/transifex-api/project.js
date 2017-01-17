@@ -74,12 +74,10 @@ var project = module.exports = {
         cors: true
       };
     },
-    txProjectCreate: function(project_slug, locale) {
+    txProjectCreate: function(selected_brand, locale) {
       logger.debug('txProjectCreate ajax request');
-
       var settings = io.getSettings();
       var url = settings.tx_project;
-
       return {
         url: `https://www.transifex.com/api/2/projects`,
         headers: project.headers,
@@ -87,15 +85,15 @@ var project = module.exports = {
         cache: false,
         contentType: 'application/json',
         data: JSON.stringify({
-          name: project_slug,
-          slug: project_slug,
+          name: selected_brand.name,
+          slug: selected_brand.subdomain,
           organization: txutils.extractOrgFromUrl(url).organization_slug,
           private: true,
-          description: 'Transifex project for brand with domain ',
+          description: `Zendesk brand - ${selected_brand.name}`,
           source_language_code: locale
         }),
         beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = project_slug;
+          jqxhr.slug = selected_brand.subdomain;
         },
         cors: true
       };
@@ -103,13 +101,11 @@ var project = module.exports = {
   },
   eventHandlers: {
     txProjectExistsDone: function(data, textStatus, jqXHR) {
-      logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store('project_exists', true);
       io.popSync('check_exists_' + data.slug);
       this.checkAsyncComplete();
     },
     txProjectExistsError: function(data, textStatus, jqXHR) {
-      logger.error('Transifex Project not exists:', textStatus);
       this.store('project_exists', false);
       io.popSync('check_exists_' + data.slug);
       this.checkAsyncComplete();
@@ -156,8 +152,6 @@ var project = module.exports = {
       io.popSync('create_project_' + jqXHR.slug);
       this.checkAsyncComplete();
     },
-
-
   },
   actionHandlers: {
     asyncGetTxProject: function() {
@@ -171,10 +165,10 @@ var project = module.exports = {
       io.pushSync('check_exists_' + slug);
       this.ajax('txProjectExists', slug);
     },
-    asyncCreateTxProject: function(slug, locale) {
+    asyncCreateTxProject: function(selected_brand, locale) {
       logger.debug('function: [asyncCreateTxProject]');
-      io.pushSync('create_project_' + slug);
-      this.ajax('txProjectCreate', slug, locale);
+      io.pushSync('create_project_' + selected_brand.subdomain);
+      this.ajax('txProjectCreate', selected_brand, locale);
     },
   },
   helpers: {
