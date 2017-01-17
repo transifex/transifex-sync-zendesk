@@ -169,14 +169,15 @@ var resource = module.exports = {
     completedLanguages: function(stats) {
       var arr = [],
           zd_enabled = [],
-          locales = io.getLocales();
+          locales = io.getLocales(),
+          default_locale = this.store('default_locale');
       _.map(locales, function(l){
         zd_enabled.push(l['locale'].toLowerCase());
       });
       _.each(stats, function(value, key) {
         var match = (value['completed'] === "100%");
         var zd_key = syncUtil.txLocaletoZd(key);
-        if (match && zd_enabled.indexOf(zd_key) != -1) {
+        if (match && zd_enabled.indexOf(zd_key) != -1 && zd_key !== default_locale) {
           arr.push(key);
         }
       });
