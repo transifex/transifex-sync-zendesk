@@ -30,6 +30,10 @@ function txApp(modules) {
       'page_title',
       txutils.extractOrgFromUrl(this.settings.tx_project).project_slug || 'Zendesk'
     );
+    
+    this.organization = txutils.extractOrgFromUrl(
+      this.settings.tx_project
+    ).organization_slug;
 
     //parse features
     if (this.settings.features) {
@@ -96,6 +100,8 @@ function txApp(modules) {
   }
   app.base_url = '/api/v2/help_center/';
   app.tx_proxy_url = 'http://tx.loc:8000/api/v2/zendesk_proxy';
+  app.tx = 'https://www.transifex.com';
+
 
   app =  _.extend(app, {
     events: events,

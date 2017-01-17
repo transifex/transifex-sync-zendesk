@@ -87,13 +87,12 @@ module.exports = function(name, key, api) {
             data: JSON.stringify(data),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
-              jqxhr.setRequestHeader('Authorization', that.ba);
             },
             contentType: 'application/json'
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx_proxy_url,
+            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/${id}/upsert_zendesk/`,
             type: 'POST',
             cors: true,
             data: JSON.stringify(_.extend(
@@ -123,14 +122,14 @@ module.exports = function(name, key, api) {
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
               jqxhr.locale = locale;
-              jqxhr.setRequestHeader('Authorization', that.ba);
             },
             contentType: 'application/json'
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx_proxy_url,
+            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/${id}/upsert_zendesk/`,
             type: 'PUT',
+            cors: true,
             data: JSON.stringify(_.extend(
               data, {
                 zendesk_url: this.base_url + api + '/' + id +
@@ -141,6 +140,7 @@ module.exports = function(name, key, api) {
             ),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
+              jqxhr.locale = locale;
             },
             contentType: 'application/json'
           };
