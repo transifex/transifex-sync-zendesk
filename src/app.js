@@ -26,14 +26,11 @@ function txApp(modules) {
     //set settings to be accessible from everywhere
     this.settings.basic_auth = 'Basic ' + btoa(this.currentUser().email() + '/token:' + this.settings.zd_api_key);
     io.setSettings(this.settings);
-    this.store(
-      'page_title',
-      txutils.extractOrgFromUrl(this.settings.tx_project).project_slug || 'Zendesk'
-    );
-    
-    this.organization = txutils.extractOrgFromUrl(
-      this.settings.tx_project
-    ).organization_slug;
+
+    var ex = txutils.extractOrgFromUrl(this.settings.tx_project);
+    this.store('page_title', ex.project_slug || 'Zendesk');
+    this.organization = ex.organization_slug;
+    this.tx = ex.tx;
 
     //parse features
     if (this.settings.features) {
@@ -99,9 +96,6 @@ function txApp(modules) {
     }
   }
   app.base_url = '/api/v2/help_center/';
-  app.tx_proxy_url = 'http://tx.loc:8000/api/v2/zendesk_proxy';
-  app.tx = 'https://www.transifex.com';
-
 
   app =  _.extend(app, {
     events: events,

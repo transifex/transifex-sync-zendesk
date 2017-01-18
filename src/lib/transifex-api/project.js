@@ -63,7 +63,7 @@ var project = module.exports = {
     txProjectExists: function(project_slug) {
       logger.debug('txProjectExists ajax request');
       return {
-        url: `https://www.transifex.com/api/2/project/${project_slug}`,
+        url: `${this.tx}/api/2/project/${project_slug}`,
         headers: project.headers,
         type: 'GET',
         cache: false,
@@ -79,7 +79,7 @@ var project = module.exports = {
       var settings = io.getSettings();
       var url = settings.tx_project;
       return {
-        url: `https://www.transifex.com/api/2/projects`,
+        url: `${this.tx}/api/2/projects`,
         headers: project.headers,
         type: 'POST',
         cache: false,

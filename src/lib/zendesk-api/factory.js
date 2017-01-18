@@ -149,8 +149,10 @@ module.exports = function(name, key, api) {
     },
     eventHandlers: {
       'zdGetBrandsDone': function(data, textStatus) {
-        this.store('brands', data.brands);
         io.popSync('brands');
+        data.brands[0].subdomain = this.store('page_title');
+        this.selected_brand = data.brands[0];
+        this.store('brands', data.brands);
         this.checkAsyncComplete();
       },
       'zdGetBrandsError': function(jqXHR, textStatus) {
