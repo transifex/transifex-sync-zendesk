@@ -24,7 +24,10 @@ module.exports = {
   },
 
   txLocaletoZd: function(l) {
-    return l.toLowerCase().replace('_', '-');
+    l = l.toLowerCase().replace('_', '-');
+    // match TX locale 'en' always to ZD 'en-us'
+    if (l === 'en') l = 'en-us';
+    return l;
   },
 
   isStringinArray: function(s, arr) {
