@@ -82,6 +82,7 @@ module.exports = function(T, t, api) {
         if (event) event.preventDefault();
         if (this.processing) return;
         this.loadSyncPage = this.uiArticlesTab;
+        this.zdGetBrands();
         this.asyncGetActivatedLocales();
         this.asyncGetCurrentLocale();
         this.asyncGetTxProject();

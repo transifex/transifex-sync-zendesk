@@ -24,6 +24,8 @@ var project = module.exports = {
     'txProjectExists.fail': 'txProjectExistsError',
     'txProjectCreate.done': 'txProjectCreateDone',
     'txProjectCreate.fail': 'txProjectCreateError',
+    'txProjectAddLanguage.done': 'txProjectAddLanguageDone',
+    'txProjectAddLanguage.fail': 'txProjectAddLanguageFail',
   },
   initialize: function() {
     var settings = io.getSettings();
@@ -77,7 +79,6 @@ var project = module.exports = {
     txProjectCreate: function(selected_brand, locale) {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
-      var url = settings.tx_project;
       return {
         url: `${this.tx}/api/2/projects`,
         headers: project.headers,
@@ -94,6 +95,26 @@ var project = module.exports = {
         }),
         beforeSend: function(jqxhr, settings) {
           jqxhr.slug = selected_brand.subdomain;
+        },
+        cors: true
+      };
+    },
+    txProjectAddLanguage: function(selected_brand, language_code) {
+      logger.debug('txProjectCreate ajax request');
+      var settings = io.getSettings();
+      return {
+        url: `${this.tx}/api/2/project/${selected_brand.subdomain}/languages`,
+        headers: project.headers,
+        type: 'POST',
+        cache: false,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          language_code,
+          coordinators: [settings.tx_username]
+        }),
+        beforeSend: function(jqxhr, settings) {
+          jqxhr.slug = selected_brand.subdomain;
+          jqxhr.language_code = language_code;
         },
         cors: true
       };
@@ -152,6 +173,14 @@ var project = module.exports = {
       io.popSync('create_project_' + jqXHR.slug);
       this.checkAsyncComplete();
     },
+    txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
+      io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
+      this.checkAsyncComplete();
+    },
+    txProjectAddLanguageFail: function(jqXHR, textStatus) {
+      io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
+      this.checkAsyncComplete();
+    },
   },
   actionHandlers: {
     asyncGetTxProject: function() {
@@ -169,6 +198,11 @@ var project = module.exports = {
       logger.debug('function: [asyncCreateTxProject]');
       io.pushSync('create_project_' + selected_brand.subdomain);
       this.ajax('txProjectCreate', selected_brand, locale);
+    },
+    asyncAddLanguage: function(selected_brand, locale) {
+      logger.debug('function: [asyncAddLanguage]');
+      io.pushSync(`add_language_${selected_brand.subdomain}_${locale}`);
+      this.ajax('txProjectAddLanguage', selected_brand, locale);
     },
   },
   helpers: {

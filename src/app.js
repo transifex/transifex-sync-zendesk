@@ -48,7 +48,6 @@ function txApp(modules) {
     }, this);
 
 
-    this.zdGetBrands();
     // Do Async!!!!
     // Queue async calls and set callback page init
     this.uiLoadConf();
