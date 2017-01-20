@@ -28,6 +28,7 @@ function txApp(modules) {
     io.setSettings(this.settings);
 
     var ex = txutils.extractOrgFromUrl(this.settings.tx_project);
+    console.log(ex)
     this.store('page_title', ex.project_slug || 'Zendesk');
     this.organization = ex.organization_slug;
     this.tx = ex.tx;

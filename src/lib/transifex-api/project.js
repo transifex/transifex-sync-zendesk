@@ -5,6 +5,7 @@
 
 var logger = require('../logger'),
     io = require('../io'),
+    syncUtil = require('../syncUtil'),
     txutils = require('../txUtil');
 
 var project = module.exports = {
@@ -88,7 +89,7 @@ var project = module.exports = {
         data: JSON.stringify({
           name: selected_brand.name,
           slug: selected_brand.subdomain,
-          organization: txutils.extractOrgFromUrl(url).organization_slug,
+          organization: this.organization,
           private: true,
           description: `Zendesk brand - ${selected_brand.name}`,
           source_language_code: locale
@@ -99,11 +100,11 @@ var project = module.exports = {
         cors: true
       };
     },
-    txProjectAddLanguage: function(selected_brand, language_code) {
+    txProjectAddLanguage: function(project_slug, language_code) {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
       return {
-        url: `${this.tx}/api/2/project/${selected_brand.subdomain}/languages`,
+        url: `${this.tx}/api/2/project/${project_slug}/languages`,
         headers: project.headers,
         type: 'POST',
         cache: false,
@@ -113,7 +114,7 @@ var project = module.exports = {
           coordinators: [settings.tx_username]
         }),
         beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = selected_brand.subdomain;
+          jqxhr.slug = project_slug;
           jqxhr.language_code = language_code;
         },
         cors: true
@@ -167,6 +168,11 @@ var project = module.exports = {
     },
     txProjectCreateDone: function(data, textStatus, jqXHR) {
       io.popSync('create_project_' + jqXHR.slug);
+      _.map(this.store('project_locales'), (locale) => {
+        locale = syncUtil.zdLocaletoTx(locale);
+        io.pushSync(`add_language_${jqXHR.slug}_${locale}`);
+        this.ajax('txProjectAddLanguage', jqXHR.slug, locale);
+      });
       this.checkAsyncComplete();
     },
     txProjectCreateError: function(jqXHR, textStatus) {

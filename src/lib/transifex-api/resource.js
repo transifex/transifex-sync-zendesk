@@ -58,7 +58,7 @@ var resource = module.exports = {
     txResource: function(resourceName, languageCode) {
       logger.debug('txResource ajax request:', resourceName + '||' + languageCode);
       return {
-        url: `${this.tx}/api/2/project/${this.selected_brand.subdomain}/resource/${resourceName}/${languageCode}/`,
+        url: `${this.tx}/api/2/project/${this.selected_brand.subdomain}/resource/${resourceName}/translation/${languageCode}/`,
         type: 'GET',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
