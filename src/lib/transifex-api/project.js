@@ -54,7 +54,7 @@ var project = module.exports = {
     txProject: function() {
       logger.debug('txProject ajax request');
       return {
-        url: project.url,
+        url: `${this.tx}/api/2/project/${this.selected_brand.subdomain}`,
         data: {'details': true},
         headers: project.headers,
         type: 'GET',
@@ -68,6 +68,7 @@ var project = module.exports = {
       return {
         url: `${this.tx}/api/2/project/${project_slug}`,
         headers: project.headers,
+        data: {'details': true},
         type: 'GET',
         cache: false,
         dataType: 'json',
@@ -125,6 +126,10 @@ var project = module.exports = {
     txProjectExistsDone: function(data, textStatus, jqXHR) {
       this.store('project_exists', true);
       io.popSync('check_exists_' + data.slug);
+      var resource_array = _.map(data.resources, function(resource) {
+        return resource.slug;
+      });
+      io.setResourceArray(resource_array);
       this.checkAsyncComplete();
     },
     txProjectExistsError: function(data, textStatus, jqXHR) {

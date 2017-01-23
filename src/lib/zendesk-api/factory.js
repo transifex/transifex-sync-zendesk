@@ -92,17 +92,16 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/${id}/upsert_zendesk/`,
+            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/HTML-${api}-${id}/upsert_zendesk/`,
             type: 'POST',
             cors: true,
-            data: JSON.stringify(_.extend(
-              data, {
-                zendesk_url: this.base_url +  api + '/' + id +
-                  '/translations.json',
-                username: this.currentUser().email(),
-                token: this.settings.zd_api_key,
-              })
-            ),
+            data: JSON.stringify({
+              translations_json: data,
+              zendesk_url: this.base_url + api + '/' + id +
+                '/translations.json',
+              username: this.currentUser().email(),
+              token: this.settings.zd_api_key,
+            }),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
             },
@@ -127,17 +126,16 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/${id}/upsert_zendesk/`,
-            type: 'PUT',
+            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/HTML-${api}-${id}/upsert_zendesk/`,
+            type: 'POST',
             cors: true,
-            data: JSON.stringify(_.extend(
-              data, {
-                zendesk_url: this.base_url + api + '/' + id +
-                  '/translations.json',
-                username: this.currentUser().email(),
-                token: this.settings.zd_api_key,
-              })
-            ),
+            data: JSON.stringify({
+              translations_json: data,
+              zendesk_url: this.base_url + api + '/' + id +
+                '/translations.json',
+              username: this.currentUser().email(),
+              token: this.settings.zd_api_key,
+            }),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
               jqxhr.locale = locale;
