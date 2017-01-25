@@ -91,6 +91,7 @@ var common = module.exports = {
       $(linkId).html(_.map(locales, function(locale) {
         return tpl({loc: locale});
       }).join(', '));
+      $(linkId).attr('title', locales.join(', '));
     } else {
       $(linkId).text('-');
     }
