@@ -23,11 +23,20 @@ module.exports = {
     return c;
   },
 
-  txLocaletoZd: function(l) {
+  txLocaletoZd: function(l, zd_locales) {
     l = l.toLowerCase().replace('_', '-');
+    if (_.contains(zd_locales, l))
+      return l;
     // match TX locale 'en' always to ZD 'en-us'
-    if (l === 'en') l = 'en-us';
-    return l;
+    if (l === 'en') {
+      l = 'en-us';
+      return l;
+    }
+    // match de_DE like codes to de
+    l = l.split('_');
+    if (l[0] == l[1] && _.contains(zd_locales, l[0]))
+      return l;
+    return null;
   },
 
   isStringinArray: function(s, arr) {
