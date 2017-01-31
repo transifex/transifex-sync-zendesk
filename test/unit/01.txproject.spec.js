@@ -55,14 +55,14 @@ describe('A function getSourceLocale', () => {
 describe('A function getLocales', () => {
   let testJson
   before(function() {
-    testJson = mockProjectJsonResponse();
+    testJson = mockZDLocalesJsonResponse();
   })
   it('should exist ', () => {
     expect(io.getLocales).to.not.be.undefined;
   });
-  it('should return an object ', () => {
+  it('should return an array', () => {
     io.setLocales(testJson);
-    expect(io.getLocales(testJson)).to.be.a('object')
+    expect(io.getLocales()).to.be.a('Array')
   });
 });
 
@@ -160,4 +160,30 @@ function mockProjectJsonResponse() {
     },],
     name: 'txtest',
   };
+}
+
+function mockZDLocalesJsonResponse() {
+  return [{
+    'url':'https://txtest.zendesk.com/api/v2/locales/en-US.json',
+    'id':1,
+    'locale':'en-US',
+    'name':'English',
+    'native_name':'English',
+    'presentation_name':'English',
+    'rtl':false,
+    'created_at':null,
+    'updated_at':'2017-01-27T23:03:43Z',
+    'default':true
+  }, {
+    'url':'https://txtest.zendesk.com/api/v2/locales/es.json',
+    'id':2,
+    'locale':'es',
+    'name':'Español',
+    'native_name':'español',
+    'presentation_name':'Spanish - español',
+    'rtl':false,
+    'created_at':'2009-02-07T15:08:57Z',
+    'updated_at':'2017-01-27T23:37:02Z',
+    'default':false
+  }];
 }

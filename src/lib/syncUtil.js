@@ -3,8 +3,6 @@
  * @module syncUtil
  */
 
-var io = require('io');
-
 module.exports = {
   resources: {
     PATTERN: /[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+/,
