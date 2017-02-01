@@ -44,10 +44,10 @@ module.exports = {
       return l;
 
     // match de_DE like codes to de
-    if (l.indexOf('_') !== -1) {
-      l = l.split('_');
+    if (l.indexOf('-') !== -1) {
+      l = l.split('-');
       if (l[0] == l[1] && _.contains(zd_locales, l[0]))
-        return l;
+        return l[0];
     }
     return null;
   },
