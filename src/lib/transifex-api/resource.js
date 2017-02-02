@@ -217,12 +217,13 @@ var resource = module.exports = {
   helpers: {
     resourceCompletedPercentage: function(resource_stats) {
       var sum = 0, locale_count = 0,
-          supported_locales = io.getLocales();
-      supported_locales = _.map(supported_locales, function(l){
+      default_locale = this.store('default_locale'),
+      supported_locales = _.map(io.getLocales(), function(l){
         return l['locale'].toLowerCase();
       });
       _.each(resource_stats, function(stat, code) {
-        if (_.contains(supported_locales, syncUtil.txLocaletoZd(code))) {
+        if (_.contains(supported_locales, syncUtil.txLocaletoZd(code)) &&
+            syncUtil.txLocaletoZd(code) !== default_locale) {
           sum += parseInt(stat.completed.split('%')[0]);
           locale_count += 1;
         }
