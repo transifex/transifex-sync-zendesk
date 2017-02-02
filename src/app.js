@@ -21,7 +21,6 @@ var logger = require('logger'),
     txutils = require('txUtil');
 
 function txApp(modules) {
-
   // App was activated
   function appActivated() {
     //set settings to be accessible from everywhere
@@ -93,11 +92,13 @@ function txApp(modules) {
     }
   }
 
-  return _.extend(app, {
+  app =  _.extend(app, {
     events: events,
     requests: requests,
     appActivated: appActivated,
     appWillDestroy: appWillDestroy,
     checkAsyncComplete: checkAsyncComplete,
   });
+  return app;
+
 }

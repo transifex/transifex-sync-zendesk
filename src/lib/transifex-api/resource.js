@@ -212,10 +212,12 @@ var resource = module.exports = {
   },
   helpers: {
     resourceCompletedPercentage: function(resource_stats) {
-      var sum = 0, locale_count = 0,
-          locales = io.getLocales();
+      var sum = 0, locale_count = 0, zd_locale,
+          locales = io.getLocales(),
+          default_locale = this.store('default_locale');
       _.each(resource_stats, function(stat, code) {
-        if (syncUtil.txLocaletoZd(code, locales) !== null) {
+        zd_locale = syncUtil.txLocaletoZd(code, locales);
+        if ( zd_locale !== null && zd_locale !== default_locale ) {
           sum += parseInt(stat.completed.split('%')[0]);
           locale_count += 1;
         }
