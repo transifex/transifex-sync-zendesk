@@ -206,11 +206,7 @@ module.exports = function(T, t, api) {
           category = api[0].toUpperCase() + api.slice(1);
 
         var objects = _.filter(obj[m('<t>')], function(o){
-          for (var i = 0; i < object_ids.length; i++) {
-            if (o.resource_name == object_ids[i])
-              return true;
-          }
-          return false;
+          return object_ids.indexOf(o.resource_name) !== -1;
         });
         if (!objects.length) return;
         this[M('start<T>Process')]('upload');
@@ -238,19 +234,16 @@ module.exports = function(T, t, api) {
             data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
             entry, resource, txResourceName, completedLocales,
-            zdLocale, translation;
+            zdLocale, translation, zd_locales;
 
         var objects = _.filter(obj[m('<t>')], function(o){
-          for (var i = 0; i < object_ids.length; i++) {
-            if (o.resource_name == object_ids[i])
-              return true;
-          }
-          return false;
+          return object_ids.indexOf(o.resource_name) !== -1;
         });
         this[M('start<T>Process')]('download');
         io.opResetAll();
         this.loadSyncPage = this[M('ui<T>DownloadComplete')];
 
+        zd_locales = io.getLocales();
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
@@ -258,12 +251,10 @@ module.exports = function(T, t, api) {
           completedLocales = this.completedLanguages(resource);
 
           for (var ii = 0; ii < completedLocales.length; ii++) { // iterate through list of locales
-            if (sourceLocale !== completedLocales[ii]) { // skip the source locale
-              translation = this.store(txResource.key + txResourceName + completedLocales[ii]);
-              if (typeof translation.content === 'string') {
-                zdLocale = syncUtil.txLocaletoZd(completedLocales[ii]);
-                this[M('zdUpsert<T>Translation')](translation.content, entry, zdLocale);
-              }
+            translation = this.store(txResource.key + txResourceName + completedLocales[ii]);
+            if (typeof translation.content === 'string') {
+              zdLocale = syncUtil.txLocaletoZd(completedLocales[ii], zd_locales);
+              this[M('zdUpsert<T>Translation')](translation.content, entry, zdLocale);
             }
           }
         }

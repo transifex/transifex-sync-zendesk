@@ -168,16 +168,12 @@ var resource = module.exports = {
   actionHandlers: {
     completedLanguages: function(stats) {
       var arr = [],
-          zd_enabled = [],
           locales = io.getLocales(),
           default_locale = this.store('default_locale');
-      _.map(locales, function(l){
-        zd_enabled.push(l['locale'].toLowerCase());
-      });
       _.each(stats, function(value, key) {
         var match = (value['completed'] === "100%");
-        var zd_key = syncUtil.txLocaletoZd(key);
-        if (match && zd_enabled.indexOf(zd_key) != -1 && zd_key !== default_locale) {
+        var zd_key = syncUtil.txLocaletoZd(key, locales);
+        if (match && zd_key && zd_key !== default_locale) {
           arr.push(key);
         }
       });
@@ -217,12 +213,9 @@ var resource = module.exports = {
   helpers: {
     resourceCompletedPercentage: function(resource_stats) {
       var sum = 0, locale_count = 0,
-          supported_locales = io.getLocales();
-      supported_locales = _.map(supported_locales, function(l){
-        return l['locale'].toLowerCase();
-      });
+          locales = io.getLocales();
       _.each(resource_stats, function(stat, code) {
-        if (_.contains(supported_locales, syncUtil.txLocaletoZd(code))) {
+        if (syncUtil.txLocaletoZd(code, locales) !== null) {
           sum += parseInt(stat.completed.split('%')[0]);
           locale_count += 1;
         }
