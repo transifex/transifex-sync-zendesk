@@ -222,6 +222,7 @@ span {
 .u-width-15  { width: 15% !important; }
 .u-width-20  { width: 20% !important; }
 .u-width-30  { width: 30% !important; }
+.u-width-70  { width: 70% !important; }
 .u-width-100 { width: 100% !important; }
 
 .is-hidden { display: none !important; }
@@ -420,6 +421,26 @@ span {
    }
  }
 
+ &--fill {
+    background-color: $action-CTA-color;
+    color: $white-color;
+
+    &.is-hover,
+    &:hover {
+      background-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage);
+      border-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage);
+      color: $white-color;
+    }
+
+    &.is-active,
+    &:active {
+      background-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage);
+      border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage);
+      color: $white-color;
+    }
+
+  }
+
 
 
   &--form {
@@ -572,6 +593,14 @@ span {
   &__item {
     display: block;
   }
+}
+
+/* -- Label object -- */
+.o-label {
+  font-size: $form-label-font-size;
+  line-height: $form-label-line-height;
+
+  color: $form-label-color;
 }
 
 /* -- Checkbox object -- */
@@ -907,6 +936,43 @@ span {
   }
 }
 
+/* -- Select object -- */
+.o-select {
+  $dropdown-max-height: $form-height*6.5;
+
+  position: relative;
+
+  width: 100%;
+  height: $form-height;
+  overflow: visible;
+
+  padding-top: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-bottom: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-left: $form-paddingHorizontal;
+  padding-left: $form-paddingHorizontal;
+  padding-right: $form-paddingHorizontal;
+
+  font-size: $form-font-size;
+  line-height: $form-multiline-height;
+  background-color: $form-background-color;
+
+  border: 1px solid $form-border-color;
+  border-radius: $form-border-radius;
+  -moz-border-radius: $form-border-radius;
+  -webkit-border-radius: $form-border-radius;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:hover,
+  &:focus {
+    outline: none;
+  }
+}
 
 /* -- Tabs object -- */
 .o-tabs {

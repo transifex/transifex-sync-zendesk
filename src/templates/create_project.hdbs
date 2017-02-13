@@ -13,10 +13,9 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
-            <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
-            <div class=" u-color-disabled">
-              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
+            <div class="u-fontSize-big u-lineHeight-4x u-marginTop-1x">Localize a Brand</div>
+            <div class="u-fontSize-small u-color-disabled">
+              Manage localization of your brand by creating a project in Transifex
             </div>
           </div>
 
@@ -32,7 +31,7 @@
     </div>
 
     <!-- Header: Tabs area -->
-    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+    {{!-- <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
 
         {{#if page_articles}}
@@ -59,10 +58,10 @@
         <a tab="dynamic" class="o-tabs__item" href="#">Dynamic Content</a>
         {{/if}}
       </div>
-    </div>
+    </div> --}}
 
     <!-- Header: Brand selection area -->
-    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
+    {{!-- <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
       <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x js-{{page}}-brand">
       {{#each brands}}
         {{#if selected}}
@@ -72,7 +71,7 @@
         {{/if}}
       {{/each}}
       </div>
-    </div>
+    </div> --}}
 
     <!-- System messages/notifications -->
     <div class="u-paddingHorizontal-gutter js-notifications">
@@ -117,16 +116,66 @@
           </svg>
         </a>
       </div>
-
-      <!-- Header: List header -->
-      <div class="u-paddingHorizontal-gutter u-paddingTop-2x">
-        <div class="u-position u-clearfix">
-          <h1>We could not find a matching project in Transifex, should we create one?</h1>
-          <a href="#" title="create a new project" class="o-button o-button--form js-{{page}} js-create-project">
-            Yes, please
-          </a>
-      </div>
-
     </div>
   </div>
+
+  <!-- Header: List header -->
+  <div class="o-scrollable u-flexGrow-1 u-paddingHorizontal-gutter u-paddingTop-2x">
+    <div class="u-position u-clearfix">
+
+      <div class="u-width-70 u-paddingTop-4x u-paddingBottom-4x">
+
+        <div class="u-fontSize-large u-lineHeight-4x u-marginBottom-2x">Localization project information</div>
+
+        <select class="o-select u-marginBottom-4x">
+          <option>Brand 1</option>
+          <option>Brand 2</option>
+          <option>Brand 3</option>
+          <option>Brand 4</option>
+        </select>
+
+        <label class="o-label">Transifex project name</label>
+        <input type="text" class="o-textinput u-marginBottom-4x" placeholder="Start by choosing a brand"/>
+
+        <div class="u-fontSize-large u-lineHeight-4x u-marginTop-2x u-marginBottom-1x">Localization Languages</div>
+
+        <p class="u-fontSize-normal u-lineHeight-3x u-color-disabled u-marginBottom-4x">
+          The Transifex project for the brand's localization will include the languages listed below. You can change the localization languages by visiting the created project in Transifex.
+        </p>
+
+        <div class="u-display-flex u-marginBottom-4x">
+          <div class="u-flexGrow-1">
+            <label class="o-label">Default language <span class="u-color-secondary">(Source language)</span></label>
+            <input type="text" class="o-textinput u-marginBottom-2x" disabled="disabled" placeholder="Please choose a brand"/>
+          </div>
+          <div class="u-paddingHorizontal-gutter">
+            <label class="o-label">&nbsp;</label>
+            <div class="u-color-disabled u-lineHeight-form">to</div>
+          </div>
+          <div class="u-flexGrow-1">
+            <label class="o-label">Additional languages <span class="u-color-secondary">(Target languages)</span></label>
+            <div class="u-color-disabled u-lineHeight-form">
+              Please choose a brand to see the list of available languages
+            </div>
+            <div class="o-list u-color-secondary u-display-none">
+              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Language 1</div>
+              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Language 2</div>
+              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Big Language 3</div>
+              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Bigger Language 4</div>
+              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Biggestest Language 5</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="u-marginTop-2x u-clearfix">
+          <a href="#" title="create a new project" class="o-button o-button--fill o-button--form u-marginRight-2x u-float-left js-{{page}} js-create-project">
+            Create Transifex project
+          </a>
+
+          <a href="#" title="Go back to Transifex Sync Home" class="o-link u-lineHeight-form u-paddingHorizontal-2x u-float-left">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
