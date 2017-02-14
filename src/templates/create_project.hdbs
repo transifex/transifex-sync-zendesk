@@ -13,19 +13,12 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-big u-lineHeight-4x u-marginTop-1x">Localize a Brand</div>
-            <div class="u-fontSize-small u-color-disabled">
-              Manage localization of your brand by creating a project in Transifex
+            <div class="u-fontSize-big u-lineHeight-4x u-marginTop-1x">Add a brand for translation</div>
+            <div class="u-fontSize-small u-color-muted">
+              Create a new project in Transifex to translate another brand in Zendesk
             </div>
           </div>
 
-          <div class="u-textAlign-right u-display-flex u-alignItems-center">
-            <a href="#" title="Fetch data from Transifex" class="o-link u-height-button u-lineHeight-button js-{{page}} js-refresh">
-              <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
-                <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
-              </svg>Refresh
-            </a>
-          </div>
         </div>
       </div>
     </div>
@@ -125,7 +118,7 @@
 
       <div class="u-width-70 u-paddingTop-4x u-paddingBottom-4x">
 
-        <div class="u-fontSize-large u-lineHeight-4x u-marginBottom-2x">Localization project information</div>
+        <div class="u-fontSize-large u-lineHeight-4x u-marginBottom-2x">Select the brand you want to translate</div>
 
         <select class="o-select u-marginBottom-4x">
           <option>Brand 1</option>
@@ -134,30 +127,26 @@
           <option>Brand 4</option>
         </select>
 
-        <label class="o-label">Transifex project name</label>
-        <input type="text" class="o-textinput u-marginBottom-4x" placeholder="Start by choosing a brand"/>
+        <div class="u-fontSize-large u-lineHeight-4x u-marginTop-2x u-marginBottom-1x">Project details</div>
 
-        <div class="u-fontSize-large u-lineHeight-4x u-marginTop-2x u-marginBottom-1x">Localization Languages</div>
-
-        <p class="u-fontSize-normal u-lineHeight-3x u-color-disabled u-marginBottom-4x">
-          The Transifex project for the brand's localization will include the languages listed below. You can change the localization languages by visiting the created project in Transifex.
-        </p>
+        <label class="o-label" for="project_name">Transifex project name</label>
+        <input name="project_name" type="text" class="o-textinput u-marginBottom-4x" placeholder="Start by choosing a brand"/>
 
         <div class="u-display-flex u-marginBottom-4x">
           <div class="u-flexGrow-1">
-            <label class="o-label">Default language <span class="u-color-secondary">(Source language)</span></label>
-            <input type="text" class="o-textinput u-marginBottom-2x" disabled="disabled" placeholder="Please choose a brand"/>
+            <label class="o-label" for="source_lang">Default language <span class="u-color-secondary">(Source language)</span></label>
+            <input name="source_lang" type="text" class="o-textinput u-marginBottom-2x" disabled="disabled" placeholder="Please choose a brand"/>
           </div>
           <div class="u-paddingHorizontal-gutter">
             <label class="o-label">&nbsp;</label>
             <div class="u-color-disabled u-lineHeight-form">to</div>
           </div>
           <div class="u-flexGrow-1">
-            <label class="o-label">Additional languages <span class="u-color-secondary">(Target languages)</span></label>
-            <div class="u-color-disabled u-lineHeight-form">
+            <div class="o-label">Additional languages <span class="u-color-secondary">(Target languages, you can change that later)</span></div>
+            <div class="u-color-disabled u-lineHeight-form u-display-none">
               Please choose a brand to see the list of available languages
             </div>
-            <div class="o-list u-color-secondary u-display-none">
+            <div class="o-list u-color-secondary">
               <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Language 1</div>
               <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Language 2</div>
               <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Big Language 3</div>

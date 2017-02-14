@@ -218,6 +218,7 @@ span {
 
 .u-width-7x  { width: $baseline-grid*7 !important; }
 .u-width-midWidth { width: $baseline-grid*46 !important; }
+.u-maxWidth-midWidth { max-width: $baseline-grid*46 !important; }
 
 .u-width-15  { width: 15% !important; }
 .u-width-20  { width: 20% !important; }
@@ -235,11 +236,13 @@ span {
 .u-color-primary    { color: $text-primary-color !important; }
 .u-color-secondary  { color: $text-secondary-color !important; }
 .u-color-disabled   { color: $text-disabled-color !important; }
+.u-color-muted      { color: $text-muted-color !important; }
 
 .u-fill-systemWarning { fill: $status-warning-color !important; }
 .u-fill-disabled   { fill: $text-disabled-color !important; }
 /* -- Border utilities -- */
 
+.u-borderTop-divider { border-top: 1px solid $divider-color !important; }
 .u-borderBottom-divider { border-bottom: 1px solid $divider-color !important; }
 
 /* -- Typography utilities -- */
@@ -280,7 +283,7 @@ span {
 .u-marginHorizontal-4x { margin-left: $baseline-grid*4 !important; margin-right: $baseline-grid*4 !important; }
 .u-marginBottom-4x { margin-bottom: $baseline-grid*4 !important; }
 
-
+.u-paddingBottom-none { padding-bottom: 0 !important; }
 .u-paddingLeft-1x  { padding-left: $baseline-grid !important; }
 .u-paddingRight-1x { padding-right: $baseline-grid !important; }
 .u-paddingHorizontal-1x { padding-left: $baseline-grid !important; padding-right: $baseline-grid !important; }

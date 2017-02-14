@@ -20,20 +20,44 @@
             </div>
           </div>
 
-          <div class="u-textAlign-right u-display-flex u-alignItems-center">
-            <a href="#" title="Fetch data from Transifex" class="o-link u-height-button u-lineHeight-button js-{{page}} js-refresh">
-              <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
-                <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
-              </svg>Refresh
-            </a>
+          <div class="u-display-flex u-alignItems-center">
+            <!-- Brand selection area -->
+            <div class="dropdown">
+              <a class="o-button dropdown-toggle" data-toggle="dropdown" href="#">
+                Select Brand<svg viewBox="0 0 16 16" width="100%" height="100%" class="o-icon u-marginLeft-1x">
+                <path class="path1" d="M14.171 2.971l-6.171 6.286-6.171-6.171-1.829 1.943 8 8 8-8-1.829-2.057z"></path>
+                </svg>
+              </a>
+              <ul class="dropdown-menu u-maxWidth-midWidth o-interactive-list--highlight u-paddingBottom-none js-{{page}}-brand"
+                style="left: auto; right: 0;"
+                role="menu" aria-labelledby="dLabel">
+                {{#each brands}}
+                  {{#if selected}}
+                <li class="o-interactive-list__row is-active u-position-relative"><b class="u-padding-2x o-text-ellipsis u-color-primary">{{name}}</b></li>
+                  {{else}}
+                <li class="o-interactive-list__row"><a data-brand={{id}} class="o-link o-text-ellipsis u-padding-2x" href="#">{{name}}</a></li>
+                  {{/if}}
+                {{/each}}
+                <li class="u-borderTop-divider">
+                  <a href="#" class="o-link u-padding-2x">
+                    <svg viewBox="0 0 16 16" width="100%" height="100%" class="o-icon u-marginRight-1x">
+                      <path class="path1" d="M7.4 7.4h-3.5v1.4h3.5v3.2h1.3v-3.2h3.3v-1.4h-3.3v-3.5h-1.3v3.5z"></path>
+                      <path class="path2" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 14.7c-3.7 0-6.7-3-6.7-6.7s3-6.7 6.7-6.7 6.7 3 6.7 6.7-3 6.7-6.7 6.7z"></path>
+                    </svg>Add brand to translation
+                  </a>
+                </li>
+              </ul>
+            </div>
+
           </div>
+
         </div>
       </div>
     </div>
 
     <!-- Header: Tabs area -->
     <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
-      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
+      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x u-clearfix">
 
         {{#if page_articles}}
         <a class="o-tabs__item is-active" href="#">Articles</a>
@@ -58,19 +82,12 @@
         {{else}}
         <a tab="dynamic" class="o-tabs__item" href="#">Dynamic Content</a>
         {{/if}}
-      </div>
-    </div>
 
-    <!-- Header: Brand selection area -->
-    <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
-      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x js-{{page}}-brand">
-      {{#each brands}}
-        {{#if selected}}
-        <a data-brand={{id}} class="o-tabs__item is-active" href="#">{{name}}</a>
-        {{else}}
-        <a data-brand={{id}} class="o-tabs__item" href="#">{{name}}</a>
-        {{/if}}
-      {{/each}}
+        <a href="#" title="Fetch data from Transifex" class="o-link u-height-7x u-lineHeight-7x u-float-right js-{{page}} js-refresh">
+          <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
+            <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
+          </svg>Refresh
+        </a>
       </div>
     </div>
 
