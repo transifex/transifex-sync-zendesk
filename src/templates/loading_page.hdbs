@@ -122,8 +122,12 @@
               {{#if locale_error}}
               The source language of your Transifex project does not match the default language of your Zendesk account.
               {{else}}
-              We could not reach the Transifex servers.<br>
-              Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+                {{#if perm_error}}
+                Transifex Sync for Zendesk isn't available on your current Transifex plan. To translate your Help Center content, upgrade to the Growth plan.
+                {{else}}
+                We could not reach the Transifex servers.<br>
+                Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+                {{/if}}
               {{/if}}
             {{/if}}
           {{/if}}
