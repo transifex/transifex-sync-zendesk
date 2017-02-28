@@ -146,6 +146,7 @@ module.exports = function(T, t, api) {
             page_dynamic_content: t == 'dynamic',
             error: true,
             login_error: io.getPageError().split(':')[1] === 'login',
+            perm_error: io.getPageError().split(':')[1] === 'permission',
             locale_error: io.getPageError().split(':')[1] === 'locale',
             project_error: io.getPageError().split(':')[1] === 'not_found',
             transifex_error: io.getPageError().split(':')[0] === 'txProject',
