@@ -3,8 +3,6 @@
  * @module syncUtil
  */
 
-var io = require('io');
-
 module.exports = {
   resources: {
     PATTERN: /[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+/,
@@ -23,11 +21,35 @@ module.exports = {
     return c;
   },
 
-  txLocaletoZd: function(l) {
+  txLocaletoZd: function(l, zd_locales) {
+    var mappings = {
+      en: 'en-us',
+      ko_KR: 'ko',
+      ja_JP: 'ja',
+      bs_BA: 'ba',
+      da_DK: 'da',
+      el_GR: 'el',
+      et_EE: 'et',
+      ka_GE: 'ka',
+      ms_MY: 'ms',
+      sv_SE: 'sv',
+      uk_UA: 'uk',
+      vi_VN: 'vi',
+    };
+    if (mappings[l] !== undefined)
+      return mappings[l];
+
     l = l.toLowerCase().replace('_', '-');
-    // match TX locale 'en' always to ZD 'en-us'
-    if (l === 'en') l = 'en-us';
-    return l;
+    if (_.contains(zd_locales, l))
+      return l;
+
+    // match de_DE like codes to de
+    if (l.indexOf('-') !== -1) {
+      l = l.split('-');
+      if (l[0] == l[1] && _.contains(zd_locales, l[0]))
+        return l[0];
+    }
+    return null;
   },
 
   isStringinArray: function(s, arr) {

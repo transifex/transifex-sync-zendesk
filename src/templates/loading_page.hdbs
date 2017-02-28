@@ -75,6 +75,7 @@
         <a perpage="10" href="#" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
         <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x">25</a>
         <a perpage="50" href="#" class="o-link o-link--muted u-marginLeft-1x">50</a>
+        <a perpage="100" href="#" class="o-link o-link--muted u-marginLeft-1x">100</a>
       </div>
     </div>
 
@@ -122,8 +123,12 @@
               {{#if locale_error}}
               The source language of your Transifex project does not match the default language of your Zendesk account.
               {{else}}
-              We could not reach the Transifex servers.<br>
-              Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+                {{#if perm_error}}
+                Transifex Sync for Zendesk isn't available on your current Transifex plan. To translate your Help Center content, upgrade to the Growth plan.
+                {{else}}
+                We could not reach the Transifex servers.<br>
+                Please <a href="#" class="o-link js-{{page}} js-refresh">refresh</a> to try again.
+                {{/if}}
               {{/if}}
             {{/if}}
           {{/if}}

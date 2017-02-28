@@ -100,6 +100,7 @@
         <a perpage="10" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">10</a>
         <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x js-{{page}}">25</a>
         <a perpage="50" href="#" class="o-link o-link--muted u-marginLeft-1x js-{{page}}">50</a>
+        <a perpage="100" href="#" class="o-link o-link--muted u-marginLeft-1x js-{{page}}">100</a>
       </div>
     </div>
 

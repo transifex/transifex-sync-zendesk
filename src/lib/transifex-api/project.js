@@ -83,6 +83,10 @@ var project = module.exports = {
         logger.error('txProjectSyncError:', 'Login error');
         io.setPageError('txProject:login');
       }
+      else if (jqXHR.status === 403) {
+        logger.error('txProjectSyncError:', 'subscription permissions');
+        io.setPageError('txProject:permission');
+      }
       else {
         io.setPageError('txProject');
       }
