@@ -75,6 +75,7 @@
         <a perpage="10" href="#" class="o-link o-link--muted is-active u-marginHorizontal-1x">10</a>
         <a perpage="25" href="#" class="o-link o-link--muted u-marginHorizontal-1x">25</a>
         <a perpage="50" href="#" class="o-link o-link--muted u-marginLeft-1x">50</a>
+        <a perpage="100" href="#" class="o-link o-link--muted u-marginLeft-1x">100</a>
       </div>
     </div>
 
