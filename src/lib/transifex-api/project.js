@@ -126,15 +126,19 @@ var project = module.exports = {
     txProjectExistsDone: function(data, textStatus, jqXHR) {
       this.store('project_exists', true);
       io.popSync('check_exists_' + data.slug);
-      var resource_array = _.map(data.resources, function(resource) {
-        return resource.slug;
-      });
-      io.setResourceArray(resource_array);
+      var brand_id = parseInt(data.slug.split('-').pop());
+      var brands = this.store('brands');
+      brands[_.findIndex(brands, { id: brand_id })].exists = true;
+      this.store('brands', brands)
       this.checkAsyncComplete();
     },
     txProjectExistsError: function(data, textStatus, jqXHR) {
       this.store('project_exists', false);
       io.popSync('check_exists_' + data.slug);
+      var brand_id = parseInt(data.slug.split('-').pop());
+      var brands = this.store('brands');
+      brands[_.findIndex(brands, { id: brand_id })].exists = false;
+      this.store('brands', brands)
       this.checkAsyncComplete();
     },
     txProjectDone: function(data, textStatus, jqXHR) {

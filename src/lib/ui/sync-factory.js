@@ -42,6 +42,7 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-clear-search': M('ui<T>Tab'),
       'click .js-<t>.js-create-project': M('ui<T>CreateProject'),
       'click .js-<t>-brand [data-brand]': M('ui<T>BrandTab'),
+      'click .js-<t>-add-brand': M('ui<T>AddNewBrandToTX'),
     },
     eventHandlers: {
       'ui<T>Search': function(event) {
@@ -647,6 +648,22 @@ module.exports = function(T, t, api) {
             search_term: search_query,
           });
         }
+      },
+      'ui<T>AddNewBrandToTX': function(event) {
+        if (event) event.preventDefault();
+        var sorting = io.getSorting();
+        var search_query = io.getQuery();
+        this.switchTo('create_project', {
+          page: t,
+          page_articles: t == 'articles',
+          page_categories: t == 'categories',
+          page_sections: t == 'sections',
+          page_dynamic_content: t == 'dynamic',
+          query_term: io.getQuery(),
+          dataset: this[M('buildSyncPage<T>Data')](),
+          brands: this.buildBrandsData(),
+          search_term: search_query,
+        });
       },
       'ui<T>CreateProject': function(event) {
         if (event) event.preventDefault();

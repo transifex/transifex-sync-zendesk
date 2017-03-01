@@ -33,11 +33,11 @@ module.exports = function(name, key, api) {
     requests: {
       'zdGetBrands': function() {
         return {
-            url: this.base_url.substr(0,8) + 'brands.json',
-            type: 'GET',
-            cors: true,
-            dataType: 'json'
-          };
+          url: this.base_url.substr(0,8) + 'brands.json',
+          type: 'GET',
+          cors: true,
+          dataType: 'json'
+        };
       },
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
         var locale = this.store('default_locale');
@@ -148,9 +148,20 @@ module.exports = function(name, key, api) {
     eventHandlers: {
       'zdGetBrandsDone': function(data, textStatus) {
         io.popSync('brands');
+        // Assume that the first brand is the project slug
+        // at zendesk configuration
         data.brands[0].subdomain = this.store('page_title');
         this.selected_brand = data.brands[0];
+        data.brands[0].exists = true;
         this.store('brands', data.brands);
+        data.brands.shift();
+        // Check if brand slug exists in transifex
+        _.each(data.brands, function(brand) {
+          this.asyncCheckTxProjectExists(
+            this.project_slug + '-' + brand.id
+          );
+        }, this);
+        // Should be removed
         this.checkAsyncComplete();
       },
       'zdGetBrandsError': function(jqXHR, textStatus) {

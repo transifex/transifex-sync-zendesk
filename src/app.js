@@ -31,6 +31,7 @@ function txApp(modules) {
     this.store('page_title', ex.project_slug || 'Zendesk');
     this.organization = ex.organization_slug;
     this.tx = ex.tx;
+    this.project_slug = ex.project_slug;
     this.selected_brand = {
       subdomain: ex.project_slug
     }
