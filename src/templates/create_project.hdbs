@@ -120,11 +120,12 @@
 
         <div class="u-fontSize-large u-lineHeight-4x u-marginBottom-2x">Select the brand you want to translate</div>
 
-        <select class="o-select u-marginBottom-4x">
-          <option>Brand 1</option>
-          <option>Brand 2</option>
-          <option>Brand 3</option>
-          <option>Brand 4</option>
+        <select class="o-select u-marginBottom-4x js-brand-dropdown">
+{{#each brands}}
+  {{#unless exists}}
+          <option data-brand={{id}}>{{name}}</option>
+  {{/unless}}
+{{/each}}
         </select>
 
         <div class="u-fontSize-large u-lineHeight-4x u-marginTop-2x u-marginBottom-1x">Project details</div>
@@ -135,7 +136,7 @@
         <div class="u-display-flex u-marginBottom-4x">
           <div class="u-flexGrow-1">
             <label class="o-label" for="source_lang">Default language <span class="u-color-secondary">(Source language)</span></label>
-            <input name="source_lang" type="text" class="o-textinput u-marginBottom-2x" disabled="disabled" placeholder="Please choose a brand"/>
+            <input name="source_lang" type="text" class="o-textinput u-marginBottom-2x" disabled="disabled" placeholder="{{source.presentation_name}}" />
           </div>
           <div class="u-paddingHorizontal-gutter">
             <label class="o-label">&nbsp;</label>
@@ -147,11 +148,9 @@
               Please choose a brand to see the list of available languages
             </div>
             <div class="o-list u-color-secondary">
-              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Language 1</div>
-              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Language 2</div>
-              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Big Language 3</div>
-              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Bigger Language 4</div>
-              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">Biggestest Language 5</div>
+{{#each locales}}
+              <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">{{presentation_name}}</div>
+{{/each}}
             </div>
           </div>
         </div>

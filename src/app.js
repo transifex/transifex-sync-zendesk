@@ -12,6 +12,7 @@
     require('ui/sync-categories'),
     require('ui/sync-sections'),
     require('ui/sync-dynamic-content'),
+    require('ui/brand-project'),
     require('ui/notifications'),
   ]);
 }());

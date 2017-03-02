@@ -29,6 +29,9 @@ module.exports = function(name, key, api) {
       'zd<T>Search.done': M('zd<T>SearchDone'),
       'zdGetBrands.done': 'zdGetBrandsDone',
       'zdGetBrands.fail': 'zdGetBrandsError',
+      'zdGetBrandLocales.done': 'zdGetBrandLocalesDone',
+      'zdGetBrandLocales.fail': 'zdGetBrandLocalesError',
+      'zdGetLocales.done': 'zdGetLocalesDone',
     },
     requests: {
       'zdGetBrands': function() {
@@ -37,6 +40,17 @@ module.exports = function(name, key, api) {
           type: 'GET',
           cors: true,
           dataType: 'json'
+        };
+      },
+      'zdGetBrandLocales': function(brand_url) {
+        return {
+          url: `https://${brand_url}.zendesk.com/api/v2/help_center/locales.json`,
+          type: 'GET',
+          cors: true,
+          dataType: 'json',
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.brand_url = brand_url;
+          },
         };
       },
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
@@ -170,6 +184,22 @@ module.exports = function(name, key, api) {
         io.popSync('brands');
         this.checkAsyncComplete();
       },
+      'zdGetBrandLocalesDone': function(data, textStatus, jqXHR) {
+        io.popSync('brandLocales_' + jqXHR.brand_url);
+        this.store('brandLocales', _.compact(_.map(
+          _.filter(data.locales, locale => locale !== data.default_locale),
+          locale => _.find(io.getLocales(), { locale })
+        )));
+        this.store(
+          'brandSource',
+           _.find(io.getLocales(), l => l.locale.toLowerCase() === data.default_locale)
+        );
+        this.checkAsyncComplete();
+      },
+      'zdGetBrandLocalesError': function(jqXHR, textStatus) {
+        io.popSync('brandLocales_' + jqXHR.brand_url);
+        this.checkAsyncComplete();
+      },
       'zd<T>Done': function(data, textStatus) {
         logger.info(M('Zendesk <T> retrieved with status:'), textStatus);
         //map category/section name to title
@@ -256,9 +286,12 @@ module.exports = function(name, key, api) {
         io.pushSync('brands');
         this.ajax('zdGetBrands');
       },
+      'zdGetBrandLocales': function(brand_url) {
+        io.pushSync('brandLocales_' + brand_url);
+        this.ajax('zdGetBrandLocales', brand_url);
+      },
       'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
         logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
-        console.log('here here')
         var translationData = common.translationObjectFormat(this.$, resource_data, zdLocale, key);
 
         var existing_locales = this.store(factory.key + entry.id + '_locales');

@@ -633,36 +633,35 @@ module.exports = function(T, t, api) {
         if (event) event.preventDefault();
         var sorting = io.getSorting();
         var search_query = io.getQuery();
-        if (this.store('project_exists')) {
-          this[M('ui<T>SyncBrand')]();
-        } else {
-          this.switchTo('create_project', {
-            page: t,
-            page_articles: t == 'articles',
-            page_categories: t == 'categories',
-            page_sections: t == 'sections',
-            page_dynamic_content: t == 'dynamic',
-            query_term: io.getQuery(),
-            dataset: this[M('buildSyncPage<T>Data')](),
-            brands: this.buildBrandsData(),
-            search_term: search_query,
-          });
-        }
+        this[M('ui<T>SyncBrand')]();
       },
       'ui<T>AddNewBrandToTX': function(event) {
-        if (event) event.preventDefault();
-        var sorting = io.getSorting();
-        var search_query = io.getQuery();
-        this.switchTo('create_project', {
+        var brand_slug;
+        if (event && event.preventDefault) {
+          event.preventDefault();
+          brand_slug = _.find(this.store('brands'), {
+            exists: false,
+            has_help_center: true,
+          }).brand_url.replace('https://', '').replace('.zendesk.com', '');
+        } else {
+          brand_slug = event;
+        }
+        this.zdGetBrandLocales(brand_slug);
+        this.switchTo('loading_page', {
           page: t,
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
           page_dynamic_content: t == 'dynamic',
           query_term: io.getQuery(),
-          dataset: this[M('buildSyncPage<T>Data')](),
+        });
+        this.loadSyncPage = this[M('ui<T>AddBrandPage')];
+      },
+      'ui<T>AddBrandPage': function(event) {
+        this.switchTo('create_project', {
           brands: this.buildBrandsData(),
-          search_term: search_query,
+          locales: this.store('brandLocales'),
+          source: this.store('brandSource')
         });
       },
       'ui<T>CreateProject': function(event) {
