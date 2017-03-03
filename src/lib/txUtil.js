@@ -3,14 +3,14 @@
  * @module txUtil
  */
 
-var TX_PROJECT_API_URL_PATTERN = /(http|https):\/\/(www\.transifex\.com|tx.loc:8000)\/api\/2\/project\/(.*)\//;
-var TX_PROJECT_URL_PATTERN = /(https?:\/\/)(www\.transifex\.com|tx\.loc:8000)\/(.*)\/(.*)/;
+ var TX_PROJECT_API_URL_PATTERN = /(http|https):\/\/(www\.transifex\.com|tx.loc:8000)\/api\/2\/project\/(.*)\//;
+ var TX_PROJECT_URL_PATTERN = /(https?:\/\/)(www\.transifex\.com|tx\.loc:8000)\/(.*)\/(.*)\//;
 
 function convertUrlToApi(u) {
   if (isValidUrl(u)) {
     var m = TX_PROJECT_URL_PATTERN.exec(u);
-    if (m.length !== 5) return false;
-    var r = `${m[1]}://${m[2]}/api/2/project/${m[4]}/`;
+    if (m.length != 5) return false;
+    var r = `${m[1]}${m[2]}/api/2/project/${m[4]}/`;
     if (isValidAPIUrl(r)) return r;
   }
   return false;
