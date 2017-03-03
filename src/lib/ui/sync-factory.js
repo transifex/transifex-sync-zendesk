@@ -447,6 +447,7 @@ module.exports = function(T, t, api) {
       },
       'ui<T>ResourceStatsComplete': function() {
         logger.debug(M('ui<T>ResourceStatsComplete'));
+        console.log('here')
         var data = this[M('calcResourceName<T>')](this.store(zdApi.key)),
             num = data[t].length,
             resourceName, resource, has_error = false,
@@ -616,6 +617,7 @@ module.exports = function(T, t, api) {
         factory.currentpage = 1;
         var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';
         this.base_url = burl + '/api/v2/help_center/';
+        this.asyncGetTxProject();
         this[M('ui<T>Sync')]();
       },
       'ui<T>AddNewBrandToTX': function(event) {
