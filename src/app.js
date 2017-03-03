@@ -33,8 +33,10 @@ function txApp(modules) {
     this.organization = ex.organization_slug;
     this.tx = ex.tx;
     this.project_slug = ex.project_slug;
+
     this.selected_brand = {
-      subdomain: ex.project_slug
+      default: true,
+      tx_project: this.project_slug
     }
 
     //parse features

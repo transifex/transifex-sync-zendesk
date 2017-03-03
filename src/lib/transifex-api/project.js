@@ -6,7 +6,7 @@
 var logger = require('../logger'),
     io = require('../io'),
     syncUtil = require('../syncUtil'),
-    txutils = require('../txUtil');
+    txutils = require('../txUtil.js');
 
 var project = module.exports = {
   // selfies
@@ -54,7 +54,7 @@ var project = module.exports = {
     txProject: function() {
       logger.debug('txProject ajax request');
       return {
-        url: `${this.tx}/api/2/project/${this.selected_brand.subdomain}`,
+        url: `${this.tx}/api/2/project/${this.selected_brand.tx_project}`,
         data: {'details': true},
         headers: project.headers,
         type: 'GET',

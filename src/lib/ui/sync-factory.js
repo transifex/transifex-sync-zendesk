@@ -612,28 +612,11 @@ module.exports = function(T, t, api) {
         var query = io.getQuery();
         if (this.processing || !brand) return;
         this.selected_brand = _.findWhere(brands, {id: brand});
-        this.asyncCheckTxProjectExists(this.selected_brand.subdomain);
-        this.switchTo('loading_page', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          query_term: io.getQuery(),
-        });
-        this.loadSyncPage = this[M('ui<T>ChangeBrand')];
-      },
-      'ui<T>SyncBrand': function(event) {
+        this.selected_brand.tx_project = 'zd-' + this.selected_brand.id;
         factory.currentpage = 1;
         var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';
         this.base_url = burl + '/api/v2/help_center/';
         this[M('ui<T>Sync')]();
-      },
-      'ui<T>ChangeBrand': function(event) {
-        if (event) event.preventDefault();
-        var sorting = io.getSorting();
-        var search_query = io.getQuery();
-        this[M('ui<T>SyncBrand')]();
       },
       'ui<T>AddNewBrandToTX': function(event) {
         var brand_slug;

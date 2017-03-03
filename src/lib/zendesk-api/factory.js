@@ -165,8 +165,7 @@ module.exports = function(name, key, api) {
         // Assume that the first brand is the project slug
         // at zendesk configuration
         data.brands[0].subdomain = this.store('page_title');
-        this.selected_brand = data.brands[0];
-        data.brands[0].exists = true;
+        //data.brands[0].exists = true;
         this.store('brands', data.brands);
         data.brands.shift();
         // Check if brand slug exists in transifex
