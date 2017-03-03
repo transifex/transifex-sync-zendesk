@@ -123,7 +123,11 @@
         <select class="o-select u-marginBottom-4x js-brand-dropdown">
 {{#each brands}}
   {{#unless exists}}
-          <option data-brand={{id}}>{{name}}</option>
+    {{#if tobeAdded}}
+      <option selected value={{subdomain}}>{{name}}</option>
+    {{else}}
+      <option value={{subdomain}}>{{name}}</option>
+    {{/if}}
   {{/unless}}
 {{/each}}
         </select>
@@ -131,7 +135,7 @@
         <div class="u-fontSize-large u-lineHeight-4x u-marginTop-2x u-marginBottom-1x">Project details</div>
 
         <label class="o-label" for="project_name">Transifex project name</label>
-        <input name="project_name" type="text" class="o-textinput u-marginBottom-4x" placeholder="Start by choosing a brand"/>
+        <input name="project_name" type="text" class="o-textinput u-marginBottom-4x" value="{{brandName}}"/>
 
         <div class="u-display-flex u-marginBottom-4x">
           <div class="u-flexGrow-1">
@@ -143,22 +147,35 @@
             <div class="u-color-disabled u-lineHeight-form">to</div>
           </div>
           <div class="u-flexGrow-1">
+{{#if has_target}}
             <div class="o-label">Additional languages <span class="u-color-secondary">(Target languages, you can change that later)</span></div>
             <div class="u-color-disabled u-lineHeight-form u-display-none">
               Please choose a brand to see the list of available languages
             </div>
             <div class="o-list u-color-secondary">
-{{#each locales}}
+  {{#each locales}}
               <div class="o-list__item u-fontSize-normal u-lineHeight-4x u-borderBottom-divider u-paddingVertical-1x">{{presentation_name}}</div>
-{{/each}}
+  {{/each}}
             </div>
+{{else}}
+            <div class="o-label">Additional languages <span class="u-color-secondary">(Target languages, you can change that later)</span></div>
+            <div class="u-color-error u-lineHeight-form">
+              Your brand does not have any activated locales.
+            </div>
+{{/if}}
           </div>
         </div>
 
         <div class="u-marginTop-2x u-clearfix">
+{{#if has_target}}
           <a href="#" title="create a new project" class="o-button o-button--fill o-button--form u-marginRight-2x u-float-left js-{{page}} js-create-project">
             Create Transifex project
           </a>
+{{else}}
+          <a href="javascript:void(0)" title="create a new project" class="o-button o-button--fill o-button--form u-marginRight-2x u-float-left js-{{page}} is-disabled">
+            Create Transifex project
+          </a>
+{{/if}}
 
           <a href="#" title="Go back to Transifex Sync Home" class="o-link u-lineHeight-form u-paddingHorizontal-2x u-float-left">Cancel</a>
         </div>

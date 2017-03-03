@@ -646,6 +646,7 @@ module.exports = function(T, t, api) {
         } else {
           brand_slug = event;
         }
+        this.store('brandAdd', brand_slug);
         this.zdGetBrandLocales(brand_slug);
         this.switchTo('loading_page', {
           page: t,
@@ -655,14 +656,7 @@ module.exports = function(T, t, api) {
           page_dynamic_content: t == 'dynamic',
           query_term: io.getQuery(),
         });
-        this.loadSyncPage = this[M('ui<T>AddBrandPage')];
-      },
-      'ui<T>AddBrandPage': function(event) {
-        this.switchTo('create_project', {
-          brands: this.buildBrandsData(),
-          locales: this.store('brandLocales'),
-          source: this.store('brandSource')
-        });
+        this.loadSyncPage = this.uiAddBrandPage;
       },
       'ui<T>CreateProject': function(event) {
         if (event) event.preventDefault();
@@ -775,18 +769,6 @@ module.exports = function(T, t, api) {
             }
           }
         }
-      },
-      'buildBrandsData': function() {
-        var brands = this.store('brands');
-        if (!this.selected_brand) {
-          this.selected_brand = _.findWhere(brands, {default: true});
-        }
-        return _.chain(brands)
-          //.filter(datum => !datum.default) //Filter out default brand
-          .map(datum => _.extend(datum, {
-            selected: datum.id == this.selected_brand.id
-          }))
-          .value();
       },
       'buildSyncPage<T>Data': function() {
         var data = this.store(zdApi.key),
