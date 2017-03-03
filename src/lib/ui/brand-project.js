@@ -2,10 +2,13 @@
  * UI notifications
  * @module ui/sync-articles
  */
+var syncUtil = require('../syncUtil');
+
 
 module.exports = {
   events: {
     'change .js-brand-dropdown': 'uiBrandProjectSelect',
+    'click .js-create-project': 'uiBrandCreateProject',
   },
   eventHandlers: {
     uiAddBrandPage: function(event) {
@@ -18,6 +21,22 @@ module.exports = {
           subdomain: this.store('brandAdd')
         }).name
       });
+    },
+    uiBrandCreateProject: function(event) {
+      event.preventDefault();
+      var brand = _.find(this.store('brands'), {
+        subdomain: this.store('brandAdd')
+      })
+      this.asyncCreateTxProject(
+        `zd-${brand.id}`,
+        this.$('.js-brand-project-name').val(),
+        syncUtil.zdLocaletoTx(this.store('brandSource').locale),
+        _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx)
+      );
+      this.switchTo('loading_page', {
+
+      });
+      //this.loadSyncPage = this.uiArticlesChangeBrand;
     },
     uiBrandProjectSelect: function(event) {
       event.preventDefault();

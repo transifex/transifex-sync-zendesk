@@ -78,9 +78,10 @@ var project = module.exports = {
         cors: true
       };
     },
-    txProjectCreate: function(selected_brand, locale) {
+    txProjectCreate: function(slug, name, source, targets) {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
+      console.log(source)
       return {
         url: `${this.tx}/api/2/projects`,
         headers: project.headers,
@@ -88,15 +89,16 @@ var project = module.exports = {
         cache: false,
         contentType: 'application/json',
         data: JSON.stringify({
-          name: selected_brand.name,
-          slug: selected_brand.subdomain,
+          name: name,
+          slug: slug,
           organization: this.organization,
           private: true,
-          description: `Zendesk brand - ${selected_brand.name}`,
-          source_language_code: locale
+          description: `Zendesk brand - ${name}`,
+          source_language_code: source
         }),
         beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = selected_brand.subdomain;
+          jqxhr.slug = slug;
+          jqxhr.targets = targets;
         },
         cors: true
       };
@@ -177,8 +179,7 @@ var project = module.exports = {
     },
     txProjectCreateDone: function(data, textStatus, jqXHR) {
       io.popSync('create_project_' + jqXHR.slug);
-      _.map(this.store('project_locales'), (locale) => {
-        locale = syncUtil.zdLocaletoTx(locale);
+      _.map(jqXHR.targets, locale => {
         io.pushSync(`add_language_${jqXHR.slug}_${locale}`);
         this.ajax('txProjectAddLanguage', jqXHR.slug, locale);
       });
@@ -186,6 +187,7 @@ var project = module.exports = {
     },
     txProjectCreateError: function(jqXHR, textStatus) {
       io.popSync('create_project_' + jqXHR.slug);
+      io.setPageError('txProject:login');
       this.checkAsyncComplete();
     },
     txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
@@ -194,6 +196,7 @@ var project = module.exports = {
     },
     txProjectAddLanguageFail: function(jqXHR, textStatus) {
       io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
+      io.setPageError('txProject:login');
       this.checkAsyncComplete();
     },
   },
@@ -209,15 +212,15 @@ var project = module.exports = {
       io.pushSync('check_exists_' + slug);
       this.ajax('txProjectExists', slug);
     },
-    asyncCreateTxProject: function(selected_brand, locale) {
+    asyncCreateTxProject: function(slug, name, source, targets) {
       logger.debug('function: [asyncCreateTxProject]');
-      io.pushSync('create_project_' + selected_brand.subdomain);
-      this.ajax('txProjectCreate', selected_brand, locale);
+      io.pushSync('create_project_' + slug);
+      this.ajax('txProjectCreate', slug, name, source, targets);
     },
-    asyncAddLanguage: function(selected_brand, locale) {
+    asyncAddLanguage: function(slug, locale) {
       logger.debug('function: [asyncAddLanguage]');
-      io.pushSync(`add_language_${selected_brand.subdomain}_${locale}`);
-      this.ajax('txProjectAddLanguage', selected_brand, locale);
+      io.pushSync(`add_language_${slug}_${locale}`);
+      this.ajax('txProjectAddLanguage', slug, locale);
     },
   },
   helpers: {

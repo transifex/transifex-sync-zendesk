@@ -171,9 +171,7 @@ module.exports = function(name, key, api) {
         data.brands.shift();
         // Check if brand slug exists in transifex
         _.each(data.brands, function(brand) {
-          this.asyncCheckTxProjectExists(
-            this.project_slug + '-' + brand.id
-          );
+          this.asyncCheckTxProjectExists(`zd-${brand.id}`);
         }, this);
         // Should be removed
         this.checkAsyncComplete();

@@ -135,7 +135,7 @@
         <div class="u-fontSize-large u-lineHeight-4x u-marginTop-2x u-marginBottom-1x">Project details</div>
 
         <label class="o-label" for="project_name">Transifex project name</label>
-        <input name="project_name" type="text" class="o-textinput u-marginBottom-4x" value="{{brandName}}"/>
+        <input name="project_name" type="text" class="o-textinput u-marginBottom-4x js-brand-project-name" value="{{brandName}}"/>
 
         <div class="u-display-flex u-marginBottom-4x">
           <div class="u-flexGrow-1">
