@@ -57,16 +57,19 @@ module.exports = {
   actionHandlers: {
     buildBrandsData: function() {
       var brands = this.store('brands');
-      if (!this.selected_brand) {
+      if (this.selected_brand.default) {
         this.selected_brand = _.findWhere(brands, {default: true});
+        this.selected_brand.tx_project = this.project_slug;
       }
-      return _.chain(brands)
+      var r = _.chain(brands)
         //.filter(datum => !datum.default) //Filter out default brand
         .map(datum => _.extend(datum, {
           selected: datum.id == this.selected_brand.id,
           tobeAdded: datum.subdomain == this.store('brandAdd')
         }))
         .value();
+
+      return r;
     },
   },
 };

@@ -31,15 +31,15 @@
               <ul class="dropdown-menu u-maxWidth-midWidth o-interactive-list--highlight u-paddingBottom-none js-{{page}}-brand"
                 style="left: auto; right: 0;"
                 role="menu" aria-labelledby="dLabel">
-                {{#each brands}}
-                  {{#if selected}}
+{{#each brands}}
+  {{#if exists}}
+    {{#if selected}}
                 <li class="o-interactive-list__row is-active u-position-relative"><b class="u-padding-2x o-text-ellipsis u-color-primary">{{name}}</b></li>
-                  {{else}}
-                    {{#if exists}}
+    {{else}}
                 <li class="o-interactive-list__row"><a data-brand={{id}} class="o-link o-text-ellipsis u-padding-2x" href="#">{{name}}</a></li>
-                    {{/if}}
-                  {{/if}}
-                {{/each}}
+    {{/if}}
+  {{/if}}
+{{/each}}
                 <li class="u-borderTop-divider">
                   <a href="#" class="o-link u-padding-2x js-{{page}}-add-brand">
                     <svg viewBox="0 0 16 16" width="100%" height="100%" class="o-icon u-marginRight-1x">

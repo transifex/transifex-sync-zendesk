@@ -106,7 +106,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/HTML-${api}-${id}/upsert_zendesk/`,
+            url: `${this.tx}/${this.organization}/zd-${this.selected_brand.id}/HTML-${api}-${id}/upsert_zendesk/`,
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -140,7 +140,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: `${this.tx}/${this.organization}/${this.selected_brand.subdomain}/HTML-${api}-${id}/upsert_zendesk/`,
+            url: `${this.tx}/${this.organization}/zd-${this.selected_brand.id}/HTML-${api}-${id}/upsert_zendesk/`,
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -164,10 +164,10 @@ module.exports = function(name, key, api) {
         io.popSync('brands');
         // Assume that the first brand is the project slug
         // at zendesk configuration
-        data.brands[0].subdomain = this.store('page_title');
-        data.brands[0].exists = true;
+        let def_index = _.findIndex(data.brands, {default: true});
+        data.brands[def_index].exists = true;
         this.store('brands', data.brands);
-        data.brands.shift();
+        data.brands = _.reject(data.brands, {default: true});
         // Check if brand slug exists in transifex
         _.each(data.brands, function(brand) {
           this.asyncCheckTxProjectExists(`zd-${brand.id}`);
