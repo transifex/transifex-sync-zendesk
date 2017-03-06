@@ -605,8 +605,14 @@ module.exports = function(T, t, api) {
         this.loadSyncPage = this[M('ui<T>Init')];
       },
       'ui<T>BrandTab': function(event) {
-        if (event) event.preventDefault();
-        var brand = parseInt(this.$(event.target).data('brand'));
+        var brand;
+        if (event && event.preventDefault) {
+          event.preventDefault();
+          brand = parseInt(this.$(event.target).data('brand'));
+        } else {
+          brand = event; 
+        }
+        if (event)
         var brands = this.store('brands');
         var sorting = io.getSorting();
         var query = io.getQuery();

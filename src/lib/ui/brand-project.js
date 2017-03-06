@@ -33,10 +33,8 @@ module.exports = {
         syncUtil.zdLocaletoTx(this.store('brandSource').locale),
         _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx)
       );
-      this.switchTo('loading_page', {
-
-      });
-      //this.loadSyncPage = this.uiArticlesChangeBrand;
+      this.switchTo('loading_page', {});
+      this.loadSyncPage = this.uiArticlesSync;
     },
     uiBrandProjectSelect: function(event) {
       event.preventDefault();
