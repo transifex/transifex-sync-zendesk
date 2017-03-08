@@ -23,49 +23,6 @@
       </div>
     </div>
 
-    <!-- Header: Tabs area -->
-    {{!-- <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
-      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x">
-
-        {{#if page_articles}}
-        <a class="o-tabs__item is-active" href="#">Articles</a>
-        {{else}}
-        <a tab="articles" class="o-tabs__item" href="#">Articles</a>
-        {{/if}}
-
-        {{#if page_sections}}
-        <a class="o-tabs__item is-active" href="#">Sections</a>
-        {{else}}
-        <a tab="sections" class="o-tabs__item" href="#">Sections</a>
-        {{/if}}
-
-        {{#if page_categories}}
-        <a class="o-tabs__item is-active" href="#">Categories</a>
-        {{else}}
-        <a tab="categories" class="o-tabs__item" href="#">Categories</a>
-        {{/if}}
-
-        {{#if page_dynamic_content}}
-        <a class="o-tabs__item is-active" href="#">Dynamic Content</a>
-        {{else}}
-        <a tab="dynamic" class="o-tabs__item" href="#">Dynamic Content</a>
-        {{/if}}
-      </div>
-    </div> --}}
-
-    <!-- Header: Brand selection area -->
-    {{!-- <div class="u-position-relative u-width-100 u-paddingHorizontal-gutter u-borderBottom-divider">
-      <div class="o-tabs u-fontSize-normal u-lineHeight-7x u-height-7x js-{{page}}-brand">
-      {{#each brands}}
-        {{#if selected}}
-        <a data-brand={{id}} class="o-tabs__item is-active" href="#">{{name}}</a>
-        {{else}}
-        <a data-brand={{id}} class="o-tabs__item" href="#">{{name}}</a>
-        {{/if}}
-      {{/each}}
-      </div>
-    </div> --}}
-
     <!-- System messages/notifications -->
     <div class="u-paddingHorizontal-gutter js-notifications">
 
@@ -109,6 +66,25 @@
           </svg>
         </a>
       </div>
+
+{{#if has_target}}
+{{else}}
+      <div class="u-paddingTop-gutter">
+        <div class="c-system-message c-system-message--compact c-system-message--warning" data-notification="warning">
+          <svg class="c-system-message__symbol" viewBox="0 0 16 16">
+            <path class="path1" d="M15.704 12.642l-6.321-10.864c-0.296-0.494-0.79-0.79-1.383-0.79s-1.086 0.296-1.383 0.79l-6.321 10.864c-0.296 0.494-0.296 1.086 0 1.58s0.79 0.79 1.383 0.79h12.642c0.593 0 1.086-0.296 1.383-0.79s0.296-1.086 0-1.58zM1.679 13.432l6.321-10.864 6.321 10.963-12.642-0.099z"></path>
+            <path class="path2" d="M7.21 5.827v4.049h1.58v-4.049h-1.58z"></path>
+            <path class="path3" d="M8.79 11.457c0 0.436-0.354 0.79-0.79 0.79s-0.79-0.354-0.79-0.79c0-0.436 0.354-0.79 0.79-0.79s0.79 0.354 0.79 0.79z"></path>
+          </svg>
+          <div class="c-system-message__content">Selected brand has no active locales. Add additional languages from brand's Help Center settings and revisit this page.</div>
+          <a href="#" class="c-system-message__close js-notification-close">
+            <svg class="u-box-100" viewBox="0 0 16 16">
+              <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+{{/if}}
     </div>
   </div>
 
@@ -159,8 +135,8 @@
             </div>
 {{else}}
             <div class="o-label">Additional languages <span class="u-color-secondary">(Target languages, you can change that later)</span></div>
-            <div class="u-color-error u-lineHeight-form">
-              Your brand does not have any activated locales.
+            <div class="u-color-muted u-lineHeight-form">
+              No languages available
             </div>
 {{/if}}
           </div>
