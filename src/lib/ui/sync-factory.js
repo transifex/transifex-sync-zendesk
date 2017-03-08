@@ -610,14 +610,14 @@ module.exports = function(T, t, api) {
           event.preventDefault();
           brand = parseInt(this.$(event.target).data('brand'));
         } else {
-          brand = event; 
+          brand = event;
         }
-        if (event)
         var brands = this.store('brands');
         var sorting = io.getSorting();
         var query = io.getQuery();
         if (this.processing || !brand) return;
         this.selected_brand = _.findWhere(brands, {id: brand});
+        // TODO FIX it will break when returning to default branch
         this.selected_brand.tx_project = 'zd-' + this.selected_brand.id;
         factory.currentpage = 1;
         var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';

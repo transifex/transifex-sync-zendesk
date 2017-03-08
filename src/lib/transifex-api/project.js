@@ -81,7 +81,6 @@ var project = module.exports = {
     txProjectCreate: function(slug, name, source, targets) {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
-      console.log(source)
       return {
         url: `${this.tx}/api/2/projects`,
         headers: project.headers,
@@ -179,11 +178,19 @@ var project = module.exports = {
     },
     txProjectCreateDone: function(data, textStatus, jqXHR) {
       io.popSync('create_project_' + jqXHR.slug);
-      _.map(jqXHR.targets, locale => {
+      Promise.all(_.map(jqXHR.targets, locale => {
         io.pushSync(`add_language_${jqXHR.slug}_${locale}`);
-        this.ajax('txProjectAddLanguage', jqXHR.slug, locale);
-      });
-      this.checkAsyncComplete();
+        return this.ajax('txProjectAddLanguage', jqXHR.slug, locale);
+      })).then(() => {
+        var brands = this.store('brands');
+        var brand_id = parseInt(jqXHR.slug.substr(3));
+        this.store('brands', _.map(brands, (brand) => {
+          if (brand.id == brand_id) return _.extend(brand, {exists: true})
+          return brand;
+        }))
+        this.uiArticlesBrandTab(brand_id);
+      })
+
     },
     txProjectCreateError: function(jqXHR, textStatus) {
       io.popSync('create_project_' + jqXHR.slug);
@@ -192,12 +199,12 @@ var project = module.exports = {
     },
     txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
       io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
-      this.checkAsyncComplete();
+      // this.checkAsyncComplete(); Handled with promise all
     },
     txProjectAddLanguageFail: function(jqXHR, textStatus) {
       io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
       io.setPageError('txProject:login');
-      this.checkAsyncComplete();
+      // this.checkAsyncComplete();  Handled with promise all
     },
   },
   actionHandlers: {
