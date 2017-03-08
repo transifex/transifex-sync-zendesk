@@ -87,6 +87,9 @@ module.exports = {
       return l['locale'].toLowerCase();
     });
   },
+  getLocalesObj: function() {
+    return ZD_LOCALES;
+  },
   setLocales: function(locales) {
     ZD_LOCALES = locales;
   },

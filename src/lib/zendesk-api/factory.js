@@ -183,14 +183,14 @@ module.exports = function(name, key, api) {
       },
       'zdGetBrandLocalesDone': function(data, textStatus, jqXHR) {
         io.popSync('brandLocales_' + jqXHR.brand_url);
+
         this.store('brandLocales', _.compact(_.map(
           _.filter(data.locales, locale => locale !== data.default_locale),
-          locale => _.find(io.getLocales(), { locale })
+          locale => _.find(io.getLocalesObj(), { locale })
         )));
-        this.store(
-          'brandSource',
-           _.find(io.getLocales(), l => l.locale.toLowerCase() === data.default_locale)
-        );
+        this.store('brandSource', _.find(io.getLocalesObj(), l =>
+          l.locale.toLowerCase() === data.default_locale
+        ));
         this.checkAsyncComplete();
       },
       'zdGetBrandLocalesError': function(jqXHR, textStatus) {
