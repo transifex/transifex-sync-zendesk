@@ -25,7 +25,6 @@ function txApp(modules) {
   // App was activated
   function appActivated() {
     //set settings to be accessible from everywhere
-    this.settings.basic_auth = 'Basic ' + btoa(this.currentUser().email() + '/token:' + this.settings.zd_api_key);
     io.setSettings(this.settings);
 
     var ex = txutils.extractOrgFromUrl(this.settings.tx_project);

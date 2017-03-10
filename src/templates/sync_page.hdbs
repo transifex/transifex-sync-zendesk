@@ -31,18 +31,23 @@
               <ul class="dropdown-menu u-maxWidth-midWidth o-interactive-list--highlight u-paddingBottom-none js-{{page}}-brand"
                 style="left: auto; right: 0;"
                 role="menu" aria-labelledby="dLabel">
-{{#each brands}}
-  {{#if exists}}
-    {{#if selected}}
+{{#if has_zd_key}}
+  {{#each brands}}
+    {{#if exists}}
+      {{#if selected}}
                 <li class="o-interactive-list__row is-active u-position-relative"><b class="u-padding-2x o-text-ellipsis u-color-primary">{{name}}</b></li>
-    {{else}}
+      {{else}}
                 <li class="o-interactive-list__row"><a data-brand={{id}} class="o-link o-text-ellipsis u-padding-2x" href="#">{{name}}</a></li>
+      {{/if}}
     {{/if}}
-  {{/if}}
-{{/each}}
+  {{/each}}
+{{/if}}
+{{#unless has_zd_key}}
                 <li class="o-status is-warning u-padding-2x u-borderTop-divider u-fontSize-small u-color-muted">
                   To use your Zendesk brands with Transifex please visit <a href="#" target="_blank" rel="nofollow noreferrer" class="o-link" style="padding:0;font-size:inherit;display:inline;">Transifex&nbsp;documentation</a>.
                 </li>
+{{/unless}}
+{{#if has_zd_key}}
                 <li class="u-borderTop-divider">
                   <a href="#" class="o-link u-padding-2x js-{{page}}-add-brand">
                     <svg viewBox="0 0 16 16" width="100%" height="100%" class="o-icon u-marginRight-1x">
@@ -51,6 +56,7 @@
                     </svg>Add brand to translation
                   </a>
                 </li>
+{{/if}}
               </ul>
             </div>
 

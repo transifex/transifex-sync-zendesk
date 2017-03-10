@@ -180,6 +180,7 @@ module.exports = function(T, t, api) {
           dataset: pageData,
           brands: this.buildBrandsData(),
           search_term: search_query,
+          has_zd_key: this.settings.zd_api_key && this.settings.zd_api_key.length > 0,
         });
 
         var sorting = io.getSorting();

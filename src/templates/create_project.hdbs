@@ -67,8 +67,7 @@
         </a>
       </div>
 
-{{#if has_target}}
-{{else}}
+{{#unless has_target}}
       <div class="u-paddingTop-gutter">
         <div class="c-system-message c-system-message--compact c-system-message--warning" data-notification="warning">
           <svg class="c-system-message__symbol" viewBox="0 0 16 16">
@@ -84,7 +83,7 @@
           </a>
         </div>
       </div>
-{{/if}}
+{{/unless}}
     </div>
   </div>
 
