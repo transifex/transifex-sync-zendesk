@@ -781,7 +781,7 @@ module.exports = function(T, t, api) {
             zd_object_url = "https://" + subdomain + ".zendesk.com/hc/" + e.source_locale +
               "/" + type + "/" + e.id;
           }
-          tx_resource_url = `${this.tx}/${this.organization}/${this.selected_brand.tx_project}/${e.resource_name}`;
+          tx_resource_url = this.tx + '/' + this.organization + '/' + this.selected_brand.tx_project + '/' + e.resource_name;
           zd_object_updated = moment(e.updated_at).format(
             'MMM D YYYY h:mma');
           d = {};

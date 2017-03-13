@@ -36,7 +36,7 @@ function txApp(modules) {
     this.selected_brand = {
       default: true,
       tx_project: this.project_slug
-    }
+    };
 
     //parse features
     if (this.settings.features) {

@@ -16,7 +16,7 @@ module.exports = {
         brands: this.buildBrandsData(),
         locales: this.store('brandLocales'),
         source: this.store('brandSource'),
-        has_target: this.store('brandLocales').length != 0,
+        has_target: this.store('brandLocales').length !== 0,
         brandName: _.find(this.store('brands'), {
           subdomain: this.store('brandAdd')
         }).name
@@ -26,9 +26,9 @@ module.exports = {
       event.preventDefault();
       var brand = _.find(this.store('brands'), {
         subdomain: this.store('brandAdd')
-      })
+      });
       this.asyncCreateTxProject(
-        `zd-${brand.id}`,
+        'zd-' + brand.id,
         this.$('.js-brand-project-name').val(),
         syncUtil.zdLocaletoTx(this.store('brandSource').locale),
         _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx)
@@ -59,12 +59,15 @@ module.exports = {
         this.selected_brand = _.findWhere(brands, {default: true});
         this.selected_brand.tx_project = this.project_slug;
       }
+      var that = this;
       var r = _.chain(brands)
         //.filter(datum => !datum.default) //Filter out default brand
-        .map(datum => _.extend(datum, {
-          selected: datum.id == this.selected_brand.id,
-          tobeAdded: datum.subdomain == this.store('brandAdd')
-        }))
+        .map(function(datum) {
+          return _.extend(datum, {
+            selected: datum.id == that.selected_brand.id,
+            tobeAdded: datum.subdomain == that.store('brandAdd')
+          });
+        })
         .value();
 
       return r;

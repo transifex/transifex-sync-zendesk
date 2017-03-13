@@ -54,8 +54,10 @@ var project = module.exports = {
     txProject: function() {
       logger.debug('txProject ajax request');
       return {
-        url: `${this.tx}/api/2/project/${this.selected_brand.tx_project}`,
-        data: {'details': true},
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project,
+        data: {
+          'details': true
+        },
         headers: project.headers,
         type: 'GET',
         cache: false,
@@ -66,7 +68,7 @@ var project = module.exports = {
     txProjectExists: function(project_slug) {
       logger.debug('txProjectExists ajax request');
       return {
-        url: `${this.tx}/api/2/project/${project_slug}`,
+        url: this.tx + '/api/2/project/' + project_slug,
         headers: project.headers,
         data: {'details': true},
         type: 'GET',
@@ -82,7 +84,7 @@ var project = module.exports = {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
       return {
-        url: `${this.tx}/api/2/projects`,
+        url: this.tx + '/api/2/projects',
         headers: project.headers,
         type: 'POST',
         cache: false,
@@ -92,7 +94,7 @@ var project = module.exports = {
           slug: slug,
           organization: this.organization,
           private: true,
-          description: `Zendesk brand - ${name}`,
+          description: 'Zendesk brand - ' + name,
           source_language_code: source
         }),
         beforeSend: function(jqxhr, settings) {
@@ -106,13 +108,13 @@ var project = module.exports = {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
       return {
-        url: `${this.tx}/api/2/project/${project_slug}/languages`,
+        url: this.tx + '/api/2/project/' + project_slug + '/languages',
         headers: project.headers,
         type: 'POST',
         cache: false,
         contentType: 'application/json',
         data: JSON.stringify({
-          language_code,
+          language_code: language_code,
           coordinators: [settings.tx_username]
         }),
         beforeSend: function(jqxhr, settings) {
@@ -130,7 +132,7 @@ var project = module.exports = {
       var brand_id = parseInt(data.slug.split('-').pop());
       var brands = this.store('brands');
       brands[_.findIndex(brands, { id: brand_id })].exists = true;
-      this.store('brands', brands)
+      this.store('brands', brands);
       this.checkAsyncComplete();
     },
     txProjectExistsError: function(data, textStatus, jqXHR) {
@@ -139,7 +141,7 @@ var project = module.exports = {
       var brand_id = parseInt(data.slug.split('-').pop());
       var brands = this.store('brands');
       brands[_.findIndex(brands, { id: brand_id })].exists = false;
-      this.store('brands', brands)
+      this.store('brands', brands);
       this.checkAsyncComplete();
     },
     txProjectDone: function(data, textStatus, jqXHR) {
@@ -178,19 +180,19 @@ var project = module.exports = {
     },
     txProjectCreateDone: function(data, textStatus, jqXHR) {
       io.popSync('create_project_' + jqXHR.slug);
-      Promise.all(_.map(jqXHR.targets, locale => {
-        io.pushSync(`add_language_${jqXHR.slug}_${locale}`);
-        return this.ajax('txProjectAddLanguage', jqXHR.slug, locale);
-      })).then(() => {
-        var brands = this.store('brands');
+      var that = this;
+      Promise.all(_.map(jqXHR.targets, function(locale)  {
+        io.pushSync('add_language_' + jqXHR.slug + '_' + locale);
+        return that.ajax('txProjectAddLanguage', jqXHR.slug, locale);
+      })).then(function() {
+        var brands = that.store('brands');
         var brand_id = parseInt(jqXHR.slug.substr(3));
-        this.store('brands', _.map(brands, (brand) => {
-          if (brand.id == brand_id) return _.extend(brand, {exists: true})
+        that.store('brands', _.map(brands, function(brand) {
+          if (brand.id == brand_id) return _.extend(brand, {exists: true});
           return brand;
-        }))
-        this.uiArticlesBrandTab(brand_id);
-      })
-
+        }));
+        that.uiArticlesBrandTab(brand_id);
+      });
     },
     txProjectCreateError: function(jqXHR, textStatus) {
       io.popSync('create_project_' + jqXHR.slug);
@@ -198,11 +200,11 @@ var project = module.exports = {
       this.checkAsyncComplete();
     },
     txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
-      io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
+      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
       // this.checkAsyncComplete(); Handled with promise all
     },
     txProjectAddLanguageFail: function(jqXHR, textStatus) {
-      io.popSync(`add_language_${jqXHR.slug}_${jqXHR.language_code}`);
+      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
       io.setPageError('txProject:login');
       // this.checkAsyncComplete();  Handled with promise all
     },
@@ -226,7 +228,7 @@ var project = module.exports = {
     },
     asyncAddLanguage: function(slug, locale) {
       logger.debug('function: [asyncAddLanguage]');
-      io.pushSync(`add_language_${slug}_${locale}`);
+      io.pushSync('add_language_' + slug + '_' + locale);
       this.ajax('txProjectAddLanguage', slug, locale);
     },
   },

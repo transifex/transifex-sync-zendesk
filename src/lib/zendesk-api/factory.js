@@ -44,7 +44,7 @@ module.exports = function(name, key, api) {
       },
       'zdGetBrandLocales': function(brand_url) {
         return {
-          url: `https://${brand_url}.zendesk.com/api/v2/help_center/locales.json`,
+          url: 'https://' + brand_url + '.zendesk.com/api/v2/help_center/locales.json',
           type: 'GET',
           cors: true,
           dataType: 'json',
@@ -106,7 +106,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: `${this.tx}/${this.organization}/zd-${this.selected_brand.id}/HTML-${api}-${id}/upsert_zendesk/`,
+            url: this.tx + '/'  + this.organization + '/zd-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -140,7 +140,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: `${this.tx}/${this.organization}/zd-${this.selected_brand.id}/HTML-${api}-${id}/upsert_zendesk/`,
+            url: this.tx + '/'  + this.organization + '/zd-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -164,13 +164,13 @@ module.exports = function(name, key, api) {
         io.popSync('brands');
         // Assume that the first brand is the project slug
         // at zendesk configuration
-        let def_index = _.findIndex(data.brands, {default: true});
+        var def_index = _.findIndex(data.brands, {default: true});
         data.brands[def_index].exists = true;
         this.store('brands', data.brands);
         data.brands = _.reject(data.brands, {default: true});
         // Check if brand slug exists in transifex
         _.each(data.brands, function(brand) {
-          this.asyncCheckTxProjectExists(`zd-${brand.id}`);
+          this.asyncCheckTxProjectExists('zd-' + brand.id);
         }, this);
         // Should be removed
         this.checkAsyncComplete();
@@ -185,12 +185,16 @@ module.exports = function(name, key, api) {
         io.popSync('brandLocales_' + jqXHR.brand_url);
 
         this.store('brandLocales', _.compact(_.map(
-          _.filter(data.locales, locale => locale !== data.default_locale),
-          locale => _.find(io.getLocalesObj(), { locale })
+          _.filter(data.locales, function(locale) {
+              return locale !== data.default_locale;
+          }),
+          function(locale) {
+            return _.find(io.getLocalesObj(), { locale: locale });
+          }
         )));
-        this.store('brandSource', _.find(io.getLocalesObj(), l =>
-          l.locale.toLowerCase() === data.default_locale
-        ));
+        this.store('brandSource', _.find(io.getLocalesObj(), function(l) {
+          return l.locale.toLowerCase() === data.default_locale;
+        }));
         this.checkAsyncComplete();
       },
       'zdGetBrandLocalesError': function(jqXHR, textStatus) {
