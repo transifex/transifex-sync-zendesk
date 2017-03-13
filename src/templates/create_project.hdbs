@@ -152,7 +152,7 @@
           </a>
 {{/if}}
 
-          <a href="#" title="Go back to Transifex Sync Home" class="o-link u-lineHeight-form u-paddingHorizontal-2x u-float-left">Cancel</a>
+          <a href="#" title="Go back to Transifex Sync Home" class="o-link u-lineHeight-form u-paddingHorizontal-2x u-float-left js-cancel">Cancel</a>
         </div>
       </div>
     </div>

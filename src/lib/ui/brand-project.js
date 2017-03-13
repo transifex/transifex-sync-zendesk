@@ -9,6 +9,7 @@ module.exports = {
   events: {
     'change .js-brand-dropdown': 'uiBrandProjectSelect',
     'click .js-create-project': 'uiBrandCreateProject',
+    'click .js-cancel': 'uiArticlesSync',
   },
   eventHandlers: {
     uiAddBrandPage: function(event) {
@@ -50,7 +51,7 @@ module.exports = {
         page_dynamic_content: t == 'dynamic',
       });
       this.loadSyncPage = this.uiAddBrandPage;
-    }
+    },
   },
   actionHandlers: {
     buildBrandsData: function() {
