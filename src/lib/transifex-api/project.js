@@ -181,17 +181,12 @@ var project = module.exports = {
     txProjectCreateDone: function(data, textStatus, jqXHR) {
       io.popSync('create_project_' + jqXHR.slug);
       var that = this;
-      Promise.all(_.map(jqXHR.targets, function(locale)  {
+      this.store('localeCount', 0);
+      this.store('localeTarget', jqXHR.targets.length);
+
+      _.map(jqXHR.targets, function(locale)  {
         io.pushSync('add_language_' + jqXHR.slug + '_' + locale);
-        return that.ajax('txProjectAddLanguage', jqXHR.slug, locale);
-      })).then(function() {
-        var brands = that.store('brands');
-        var brand_id = parseInt(jqXHR.slug.substr(3));
-        that.store('brands', _.map(brands, function(brand) {
-          if (brand.id == brand_id) return _.extend(brand, {exists: true});
-          return brand;
-        }));
-        that.uiArticlesBrandTab(brand_id);
+        that.ajax('txProjectAddLanguage', jqXHR.slug, locale);
       });
     },
     txProjectCreateError: function(jqXHR, textStatus) {
@@ -201,7 +196,20 @@ var project = module.exports = {
     },
     txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
       io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
-      // this.checkAsyncComplete(); Handled with promise all
+      var localeCount = this.store('localeCount') + 1;
+      this.store('localeCount', localeCount);
+      var localeTarget = this.store('localeTarget');
+
+      if (localeCount === localeTarget) {
+        var brands = this.store('brands');
+        var brand_id = parseInt(jqXHR.slug.substr(3));
+        this.store('brands', _.map(brands, function(brand) {
+          if (brand.id == brand_id) return _.extend(brand, {exists: true});
+          return brand;
+        }));
+        this.uiArticlesBrandTab(brand_id);
+      }
+      // this.checkAsyncComplete(); Handled above
     },
     txProjectAddLanguageFail: function(jqXHR, textStatus) {
       io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
