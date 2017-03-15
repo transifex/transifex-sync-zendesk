@@ -6,7 +6,7 @@
 
 var common = require('../common'),
     io = require('../io'),
-    logger = require('../logger');
+    logger = require('../logger'),
     txProject = require('../transifex-api/project');
 
 // e.g. name=Articles, key=article, api=articles

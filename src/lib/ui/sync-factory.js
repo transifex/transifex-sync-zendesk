@@ -176,6 +176,7 @@ module.exports = function(T, t, api) {
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
           project_name: this.selected_brand.name,
+          is_default_brand: this.selected_brand.default,
           page: t,
           page_articles: t == 'articles',
           page_categories: t == 'categories',
