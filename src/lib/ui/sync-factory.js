@@ -626,7 +626,7 @@ module.exports = function(T, t, api) {
         if (this.processing || !brand) return;
         this.selected_brand = _.findWhere(brands, {id: brand});
         // TODO FIX it will break when returning to default branch
-        this.selected_brand.tx_project = (!this.selected_brand.default) ? 'zd-' + this.selected_brand.id : this.project_slug;
+        this.selected_brand.tx_project = (!this.selected_brand.default) ? 'zd-' + this.organization + '-' + this.selected_brand.id : this.project_slug;
 
         factory.currentpage = 1;
         var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';

@@ -29,7 +29,7 @@ module.exports = {
         subdomain: this.store('brandAdd')
       });
       this.asyncCreateTxProject(
-        'zd-' + brand.id,
+        'zd-' + this.organization + '-' + brand.id,
         this.$('.js-brand-project-name').val(),
         syncUtil.zdLocaletoTx(this.store('brandSource').locale),
         _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx)
@@ -43,7 +43,7 @@ module.exports = {
       this.store('brandAdd', brand);
       this.zdGetBrandLocales(brand);
       var t = 'brandsCreate';
-      this.switchTo('loading_page', {
+      this.switchTo('create_project_loading', {
         page: t,
         page_articles: t == 'articles',
         page_categories: t == 'categories',
