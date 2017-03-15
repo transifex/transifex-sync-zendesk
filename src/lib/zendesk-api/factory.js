@@ -166,6 +166,7 @@ module.exports = function(name, key, api) {
         // at zendesk configuration
         var def_index = _.findIndex(data.brands, {default: true});
         data.brands[def_index].exists = true;
+        this.selected_brand = data.brands[def_index];
         this.store('brands', data.brands);
         data.brands = _.reject(data.brands, {default: true});
         // Check if brand slug exists in transifex

@@ -175,6 +175,7 @@ module.exports = function(T, t, api) {
         var search_query = io.getQuery();
         var pageData = this[M('buildSyncPage<T>Data')]();
         this.switchTo('sync_page', {
+          project_name: this.selected_brand.name,
           page: t,
           page_articles: t == 'articles',
           page_categories: t == 'categories',
@@ -772,16 +773,15 @@ module.exports = function(T, t, api) {
             limit = entries[t].length,
             ret = [],
             d, e, s,
-            subdomain = this.currentAccount().subdomain(),
             tx_completed, zd_object_url, tx_resource_url, zd_object_updated;
         for (var i = 0; i < limit; i++) {
           e = entries[t][i];
           s = this.store(txResource.key + e.resource_name);
           tx_completed = this.completedLanguages(s);
           if (t == "dynamic"){
-            zd_object_url = "https://" + subdomain + ".zendesk.com/agent/admin/dynamic_content/";
+            zd_object_url = this.selected_brand.brand_url + "/agent/admin/dynamic_content/";
           } else {
-            zd_object_url = "https://" + subdomain + ".zendesk.com/hc/" + e.source_locale +
+            zd_object_url = this.selected_brand.brand_url + "/hc/" + e.source_locale +
               "/" + type + "/" + e.id;
           }
           tx_resource_url = this.tx + '/' + this.organization + '/' + this.selected_brand.tx_project + '/' + e.resource_name;

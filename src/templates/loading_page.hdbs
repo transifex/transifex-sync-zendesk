@@ -13,7 +13,7 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
+            <div class="u-fontSize-small u-lineHeight-3x"><br/></div>
             <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
             <div class=" u-color-disabled">
               <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>

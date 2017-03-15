@@ -13,7 +13,7 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
+            <div class="u-fontSize-small u-lineHeight-3x">{{project_name}}</div>
             <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
             <div class=" u-color-disabled">
               <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
@@ -53,7 +53,7 @@
                     <svg viewBox="0 0 16 16" width="100%" height="100%" class="o-icon u-marginRight-1x">
                       <path class="path1" d="M7.4 7.4h-3.5v1.4h3.5v3.2h1.3v-3.2h3.3v-1.4h-3.3v-3.5h-1.3v3.5z"></path>
                       <path class="path2" d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 14.7c-3.7 0-6.7-3-6.7-6.7s3-6.7 6.7-6.7 6.7 3 6.7 6.7-3 6.7-6.7 6.7z"></path>
-                    </svg>Add brand to translation
+                    </svg>Translate another brand
                   </a>
                 </li>
 {{/if}}
