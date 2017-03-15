@@ -7,6 +7,7 @@
 var common = require('../common'),
     io = require('../io'),
     logger = require('../logger');
+    txProject = require('../transifex-api/project');
 
 // e.g. name=Articles, key=article, api=articles
 module.exports = function(name, key, api) {
@@ -154,7 +155,8 @@ module.exports = function(name, key, api) {
               jqxhr.id = id;
               jqxhr.locale = locale;
             },
-            contentType: 'application/json'
+            contentType: 'application/json',
+            headers: txProject.headers,
           };
         }
       },
