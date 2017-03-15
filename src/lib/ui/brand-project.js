@@ -14,7 +14,7 @@ module.exports = {
   eventHandlers: {
     uiAddBrandPage: function(event) {
       this.switchTo('create_project', {
-        brands: this.buildBrandsData(),
+        brands: this.buildBrandsData().brands,
         locales: this.store('brandLocales'),
         source: this.store('brandSource'),
         has_target: this.store('brandLocales').length !== 0,
@@ -56,6 +56,9 @@ module.exports = {
   actionHandlers: {
     buildBrandsData: function() {
       var brands = this.store('brands');
+      var has_more = (_.filter(brands, function(b) {
+        return !b.exists && b.has_help_center;
+      }).length > 0);
       if (this.selected_brand.default) {
         this.selected_brand = _.findWhere(brands, {default: true});
         this.selected_brand.tx_project = this.project_slug;
@@ -71,7 +74,7 @@ module.exports = {
         })
         .value();
 
-      return r;
+      return {brands: r, has_more: has_more};
     },
   },
 };

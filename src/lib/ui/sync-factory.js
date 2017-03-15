@@ -174,6 +174,7 @@ module.exports = function(T, t, api) {
 
         var search_query = io.getQuery();
         var pageData = this[M('buildSyncPage<T>Data')]();
+        var brandsData = this.buildBrandsData();
         this.switchTo('sync_page', {
           project_name: this.selected_brand.name,
           is_default_brand: this.selected_brand.default,
@@ -183,7 +184,8 @@ module.exports = function(T, t, api) {
           page_sections: t == 'sections',
           page_dynamic_content: t == 'dynamic',
           dataset: pageData,
-          brands: this.buildBrandsData(),
+          brands: brandsData.brands,
+          has_more_brands: brandsData.has_more,
           search_term: search_query,
           has_zd_key: this.settings.zd_api_key && this.settings.zd_api_key.length > 0,
         });
