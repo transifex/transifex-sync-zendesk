@@ -34,7 +34,7 @@ module.exports = {
         syncUtil.zdLocaletoTx(this.store('brandSource').locale),
         _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx)
       );
-      this.switchTo('create_project_loading', {});
+      this.switchTo('create_project_loading', {creating_project: true});
       this.loadSyncPage = this.uiArticlesSync;
     },
     uiBrandProjectSelect: function(event) {
