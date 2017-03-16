@@ -162,6 +162,11 @@ var dynamic_content = module.exports = {
     },
 
     asyncGetZdDynamicContentFull: function(page, sortby, sortdirection, numperpage) {
+      if (!this.selected_brand.default) {
+        this.store(dynamic_content.key, {items: []});
+        this.checkAsyncComplete();
+        return;
+      }
       io.pushSync(dynamic_content.key);
       this.ajax('dynamicContentItems', page, sortby, sortdirection, numperpage);
     },

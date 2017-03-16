@@ -90,12 +90,10 @@
         <a tab="categories" class="o-tabs__item" href="#">Categories</a>
         {{/if}}
 
-        {{#if is_default_brand}}
-          {{#if page_dynamic_content}}
-            <a class="o-tabs__item is-active" href="#">Dynamic Content</a>
-          {{else}}
-            <a tab="dynamic" class="o-tabs__item" href="#">Dynamic Content</a>
-          {{/if}}
+        {{#if page_dynamic_content}}
+          <a class="o-tabs__item is-active" href="#">Dynamic Content</a>
+        {{else}}
+          <a tab="dynamic" class="o-tabs__item" href="#">Dynamic Content</a>
         {{/if}}
 
         <a href="#" title="Fetch data from Transifex" class="o-link u-height-7x u-lineHeight-7x u-float-right js-{{page}} js-refresh">
@@ -317,12 +315,27 @@
             Please check your spelling or search for another term.
           </div>
           {{else}}
-          <div class="c-emptystate__title">
-            No content was found in your Help Center
-          </div>
-          <div class="c-emptystate__description">
-            Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first.
-          </div>
+          {{#if page_dynamic_content}}
+            {{#if is_default_brand}}
+              <div class="c-emptystate__title">
+                No content was found in your Help Center
+              </div>
+              <div class="c-emptystate__description">
+                Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first.
+              </div>
+            {{else}}
+              <div class="c-emptystate__title">
+                Switch to your default brand to manage dynamic content
+              </div>
+            {{/if}}
+          {{else}}
+            <div class="c-emptystate__title">
+              No content was found in your Help Center
+            </div>
+            <div class="c-emptystate__description">
+              Please <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/203664366">add content</a> to your Help Center first.
+            </div>
+          {{/if}}
           {{/if}}
         </div>
       </div>

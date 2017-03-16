@@ -33,6 +33,7 @@
         <a class="o-tabs__item {{#if page_articles}}is-active{{/if}}" href="#">Articles</a>
         <a class="o-tabs__item {{#if page_sections}}is-active{{/if}}" href="#">Sections</a>
         <a class="o-tabs__item {{#if page_categories}}is-active{{/if}}" href="#">Categories</a>
+        <a class="o-tabs__item {{#if page_dynamic_content}}is-active{{/if}}" href="#">Dynamic Content</a>
 
         <a href="#" title="Fetch data from Transifex" class="o-link u-height-7x u-lineHeight-7x u-float-right is-disabled">
           <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
