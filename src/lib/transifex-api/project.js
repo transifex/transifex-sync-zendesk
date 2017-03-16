@@ -80,7 +80,7 @@ var project = module.exports = {
         cors: true
       };
     },
-    txProjectCreate: function(slug, name, source, targets) {
+    txProjectCreate: function(slug, name, source, targets, brand_id) {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
       return {
@@ -100,11 +100,12 @@ var project = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.slug = slug;
           jqxhr.targets = targets;
+          jqxhr.brand_id = brand_id;
         },
         cors: true
       };
     },
-    txProjectAddLanguage: function(project_slug, language_code) {
+    txProjectAddLanguage: function(project_slug, language_code, brand_id) {
       logger.debug('txProjectCreate ajax request');
       var settings = io.getSettings();
       return {
@@ -120,6 +121,7 @@ var project = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.slug = project_slug;
           jqxhr.language_code = language_code;
+          jqxhr.brand_id = brand_id;
         },
         cors: true
       };
@@ -186,7 +188,7 @@ var project = module.exports = {
 
       _.map(jqXHR.targets, function(locale)  {
         io.pushSync('add_language_' + jqXHR.slug + '_' + locale);
-        that.ajax('txProjectAddLanguage', jqXHR.slug, locale);
+        that.ajax('txProjectAddLanguage', jqXHR.slug, locale, jqXHR.brand_id);
       });
     },
     txProjectCreateError: function(jqXHR, textStatus) {
@@ -202,7 +204,7 @@ var project = module.exports = {
 
       if (localeCount === localeTarget) {
         var brands = this.store('brands');
-        var brand_id = parseInt(jqXHR.slug.substr(3));
+        var brand_id = jqXHR.brand_id;
         this.store('brands', _.map(brands, function(brand) {
           if (brand.id == brand_id) return _.extend(brand, {exists: true});
           return brand;
@@ -229,15 +231,10 @@ var project = module.exports = {
       io.pushSync('check_exists_' + slug);
       this.ajax('txProjectExists', slug);
     },
-    asyncCreateTxProject: function(slug, name, source, targets) {
+    asyncCreateTxProject: function(slug, name, source, targets, brand_id) {
       logger.debug('function: [asyncCreateTxProject]');
       io.pushSync('create_project_' + slug);
-      this.ajax('txProjectCreate', slug, name, source, targets);
-    },
-    asyncAddLanguage: function(slug, locale) {
-      logger.debug('function: [asyncAddLanguage]');
-      io.pushSync('add_language_' + slug + '_' + locale);
-      this.ajax('txProjectAddLanguage', slug, locale);
+      this.ajax('txProjectCreate', slug, name, source, targets, brand_id);
     },
   },
   helpers: {

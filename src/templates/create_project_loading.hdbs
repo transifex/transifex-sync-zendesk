@@ -76,7 +76,7 @@
 
       <div class="u-textAlign-center u-paddingBottom-3x">
         <div class="u-fontSize-large u-lineHeight-6x u-color-disabled">
-        {#if creating_project }}
+        {{#if creating_project }}
           Creating project in Transifex
         {{else}}
           Switching brands...

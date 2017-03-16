@@ -32,7 +32,8 @@ module.exports = {
         'zd-' + this.organization + '-' + brand.id,
         this.$('.js-brand-project-name').val(),
         syncUtil.zdLocaletoTx(this.store('brandSource').locale),
-        _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx)
+        _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx),
+        brand.id
       );
       this.switchTo('create_project_loading', {creating_project: true});
       this.loadSyncPage = this.uiArticlesSync;

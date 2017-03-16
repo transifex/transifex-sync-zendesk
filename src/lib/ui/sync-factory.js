@@ -40,7 +40,6 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'keyup .js-<t>.js-search': M('ui<T>Search'),
       'click .js-<t>.js-clear-search': M('ui<T>Tab'),
-      'click .js-<t>.js-create-project': M('ui<T>CreateProject'),
       'click .js-<t>-brand [data-brand]': M('ui<T>BrandTab'),
       'click .js-<t>-add-brand': M('ui<T>AddNewBrandToTX'),
     },
@@ -656,28 +655,6 @@ module.exports = function(T, t, api) {
           query_term: io.getQuery(),
         });
         this.loadSyncPage = this.uiAddBrandPage;
-      },
-      'ui<T>CreateProject': function(event) {
-        if (event) event.preventDefault();
-        logger.debug(M('ui<T>CreateProject'));
-        var pageData = this[M('buildSyncPage<T>Data')]();
-
-        var target_locale = this.store('default_locale');
-        var split_locale = target_locale.split('-');
-        if (split_locale.length > 1) {
-          split_locale[1] = split_locale[1].toUpperCase();
-          target_locale = split_locale.join('_');
-        }
-        this.asyncCreateTxProject( this.selected_brand, target_locale );
-        this.switchTo('loading_page', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          query_term: io.getQuery(),
-        });
-        this.loadSyncPage = this[M('ui<T>SyncBrand')];
       },
     },
     actionHandlers: {
