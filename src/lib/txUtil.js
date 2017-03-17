@@ -25,6 +25,8 @@ function isValidUrl(u) {
 }
 
 function extractOrgFromUrl(u) {
+  if (u.endsWith('dashboard/'))
+    u = u.replace('dashboard/', '');
   var response = {
     organization_slug: '',
     project_slug: ''
