@@ -147,7 +147,7 @@
             Create Transifex project
           </a>
 {{else}}
-          <a href="javascript:void(0)" title="create a new project" class="o-button o-button--fill o-button--form u-marginRight-2x u-float-left js-{{page}} is-disabled">
+          <a href="#" title="create a new project" class="o-button o-button--fill o-button--form u-marginRight-2x u-float-left js-{{page}} is-disabled">
             Create Transifex project
           </a>
 {{/if}}
