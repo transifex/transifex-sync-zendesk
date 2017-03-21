@@ -85,6 +85,9 @@ var dynamic_content = module.exports = {
       var that = this,
           existing_locales;
       logger.info('Dynamic content retrieved with status:', textStatus);
+      // return nothing if we are not in the default brand
+      if (!this.selected_brand.default)
+        data = {items: []};
       //map name to title
       if (data) {
         _.each(data.items, function(entry) {
@@ -162,11 +165,6 @@ var dynamic_content = module.exports = {
     },
 
     asyncGetZdDynamicContentFull: function(page, sortby, sortdirection, numperpage) {
-      if (!this.selected_brand.default) {
-        this.store(dynamic_content.key, {items: []});
-        this.checkAsyncComplete();
-        return;
-      }
       io.pushSync(dynamic_content.key);
       this.ajax('dynamicContentItems', page, sortby, sortdirection, numperpage);
     },
