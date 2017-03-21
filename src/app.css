@@ -283,6 +283,7 @@ span {
 .u-marginHorizontal-4x { margin-left: $baseline-grid*4 !important; margin-right: $baseline-grid*4 !important; }
 .u-marginBottom-4x { margin-bottom: $baseline-grid*4 !important; }
 
+.u-paddingTop-none { padding-top: 0 !important; }
 .u-paddingBottom-none { padding-bottom: 0 !important; }
 .u-paddingLeft-1x  { padding-left: $baseline-grid !important; }
 .u-paddingRight-1x { padding-right: $baseline-grid !important; }

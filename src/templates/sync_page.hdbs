@@ -28,14 +28,14 @@
                 <path class="path1" d="M14.171 2.971l-6.171 6.286-6.171-6.171-1.829 1.943 8 8 8-8-1.829-2.057z"></path>
                 </svg>
               </a>
-              <ul class="dropdown-menu u-maxWidth-midWidth o-interactive-list--highlight u-paddingBottom-none js-{{page}}-brand"
+              <ul class="dropdown-menu u-maxWidth-midWidth o-interactive-list--highlight u-paddingBottom-none u-paddingTop-none js-{{page}}-brand"
                 style="left: auto; right: 0;"
                 role="menu" aria-labelledby="dLabel">
 {{#if has_zd_key}}
   {{#each brands}}
     {{#if exists}}
       {{#if selected}}
-                <li class="o-interactive-list__row is-active u-position-relative"><b class="u-padding-2x o-text-ellipsis u-color-primary">{{name}}</b></li>
+                <li class="o-interactive-list__row is-active u-padding-2x u-position-relative"><b class="o-text-ellipsis u-color-primary">{{name}}</b></li>
       {{else}}
                 <li class="o-interactive-list__row"><a data-brand={{id}} class="o-link o-text-ellipsis u-padding-2x" href="#">{{name}}</a></li>
       {{/if}}
@@ -43,7 +43,7 @@
   {{/each}}
 {{/if}}
 {{#unless has_zd_key}}
-                <li class="o-status is-warning u-padding-2x u-borderTop-divider u-fontSize-small u-color-muted">
+                <li class="o-status is-warning u-padding-2x u-fontSize-small u-color-muted">
                   To use your Zendesk brands with Transifex please visit <a href="#" target="_blank" rel="nofollow noreferrer" class="o-link" style="padding:0;font-size:inherit;display:inline;">Transifex&nbsp;documentation</a>.
                 </li>
 {{/unless}}
