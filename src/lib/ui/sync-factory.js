@@ -174,9 +174,11 @@ module.exports = function(T, t, api) {
         var search_query = io.getQuery();
         var pageData = this[M('buildSyncPage<T>Data')]();
         var brandsData = this.buildBrandsData();
+        var default_brand = _.find(brandsData.brands, {default: true});
         this.switchTo('sync_page', {
           project_name: this.selected_brand.name,
           is_default_brand: this.selected_brand.default,
+          default_brand_name: default_brand.name,
           page: t,
           page_articles: t == 'articles',
           page_categories: t == 'categories',

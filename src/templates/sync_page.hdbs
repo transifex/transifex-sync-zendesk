@@ -44,7 +44,7 @@
 {{/if}}
 {{#unless has_zd_key}}
                 <li class="o-status is-warning u-padding-2x u-fontSize-small u-color-muted">
-                  To translate multiple brands in Zendesk, please add a Zendesk API token. <a href="#" target="_blank" rel="nofollow noreferrer" class="o-link" style="padding:0;font-size:inherit;display:inline;">Learn&nbsp;more</a>.
+                  To translate multiple brands in Zendesk, please add a Zendesk API token. <a href="https://docs.transifex.com/integrations/zendesk#multibrand" target="_blank" rel="nofollow noreferrer" class="o-link" style="padding:0;font-size:inherit;display:inline;">Learn&nbsp;more</a>.
                 </li>
 {{/unless}}
 {{#if has_zd_key}}
@@ -325,7 +325,7 @@
               </div>
             {{else}}
               <div class="c-emptystate__title">
-                Switch to your default brand to manage dynamic content
+                Please switch to the {{default_brand_name}} brand to manage dynamic content.
               </div>
             {{/if}}
           {{else}}
