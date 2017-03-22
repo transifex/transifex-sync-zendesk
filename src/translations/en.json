@@ -28,6 +28,12 @@
           "title": "Enter the Transifex Project URL you wish to export to."
         }
       },
+      "zd_api_key": {
+        "label": {
+          "value": "Zendesk API Key",
+          "title": "Enter your Zendesk API key."
+        }
+      },
       "features": {
         "label": {
           "value": "Sync application feature switch",

@@ -27,9 +27,14 @@
       "required": true
     },
     {
+      "name": "zd_api_key",
+      "type": "text",
+      "required": false
+    },
+    {
       "name": "features",
       "type": "hidden",
-      "required": false 
+      "required": false
     }
   ]
 }

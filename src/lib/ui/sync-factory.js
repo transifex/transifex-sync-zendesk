@@ -40,6 +40,8 @@ module.exports = function(T, t, api) {
       'click .js-<t>.js-select-all': M('ui<T>SelectAll'),
       'keyup .js-<t>.js-search': M('ui<T>Search'),
       'click .js-<t>.js-clear-search': M('ui<T>Tab'),
+      'click .js-<t>-brand [data-brand]': M('ui<T>BrandTab'),
+      'click .js-<t>-add-brand': M('ui<T>AddNewBrandToTX'),
     },
     eventHandlers: {
       'ui<T>Search': function(event) {
@@ -80,6 +82,7 @@ module.exports = function(T, t, api) {
         if (event) event.preventDefault();
         if (this.processing) return;
         this.loadSyncPage = this.uiArticlesTab;
+        this.zdGetBrands();
         this.asyncGetActivatedLocales();
         this.asyncGetCurrentLocale();
         this.asyncGetTxProject();
@@ -129,14 +132,17 @@ module.exports = function(T, t, api) {
         );
       },
       'ui<T>Tab': function(event) {
+        var default_locale, project_locale;
         if (event) event.preventDefault();
         if (this.processing) return;
-        var default_locale = this.store('default_locale').split('-')[0],
-            project_locale = this.store(txProject.key).source_language_code.split('_')[0];
-        if (project_locale !== default_locale){
-          io.setPageError('txProject:locale');
-        }
         io.setQuery('');
+        if (!io.getPageError()) {
+          default_locale = this.store('default_locale').split('-')[0];
+          project_locale = this.store(txProject.key).source_language_code.split('_')[0];
+          if (project_locale !== default_locale){
+            io.setPageError('txProject:locale');
+          }
+        }
         if (io.getPageError()) {
           this.switchTo('loading_page', {
             page: t,
@@ -167,14 +173,22 @@ module.exports = function(T, t, api) {
 
         var search_query = io.getQuery();
         var pageData = this[M('buildSyncPage<T>Data')]();
+        var brandsData = this.buildBrandsData();
+        var default_brand = _.find(brandsData.brands, {default: true});
         this.switchTo('sync_page', {
+          project_name: this.selected_brand.name,
+          is_default_brand: this.selected_brand.default,
+          default_brand_name: default_brand.name,
           page: t,
           page_articles: t == 'articles',
           page_categories: t == 'categories',
           page_sections: t == 'sections',
           page_dynamic_content: t == 'dynamic',
           dataset: pageData,
+          brands: brandsData.brands,
+          has_more_brands: brandsData.has_more,
           search_term: search_query,
+          has_zd_key: this.settings.zd_api_key && this.settings.zd_api_key.length > 0,
         });
 
         var sorting = io.getSorting();
@@ -599,6 +613,51 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
+      'ui<T>BrandTab': function(event) {
+        var brand;
+        if (event && event.preventDefault) {
+          event.preventDefault();
+          brand = parseInt(this.$(event.target).data('brand'));
+        } else {
+          brand = event;
+        }
+        var brands = this.store('brands');
+        var sorting = io.getSorting();
+        var query = io.getQuery();
+        if (this.processing || !brand) return;
+        this.selected_brand = _.findWhere(brands, {id: brand});
+        // TODO FIX it will break when returning to default branch
+        this.selected_brand.tx_project = (!this.selected_brand.default) ? 'zd-' + this.organization + '-' + this.selected_brand.id : this.project_slug;
+
+        factory.currentpage = 1;
+        var burl = (!this.selected_brand.default) ? this.selected_brand.brand_url : '';
+        this.base_url = burl + '/api/v2/help_center/';
+        this.asyncGetTxProject();
+        this[M('ui<T>Sync')]();
+      },
+      'ui<T>AddNewBrandToTX': function(event) {
+        var brand_slug;
+        if (event && event.preventDefault) {
+          event.preventDefault();
+          brand_slug = _.find(this.store('brands'), {
+            exists: false,
+            has_help_center: true,
+          }).brand_url.replace('https://', '').replace('.zendesk.com', '');
+        } else {
+          brand_slug = event;
+        }
+        this.store('brandAdd', brand_slug);
+        this.zdGetBrandLocales(brand_slug);
+        this.switchTo('loading_page', {
+          page: t,
+          page_articles: t == 'articles',
+          page_categories: t == 'categories',
+          page_sections: t == 'sections',
+          page_dynamic_content: t == 'dynamic',
+          query_term: io.getQuery(),
+        });
+        this.loadSyncPage = this.uiAddBrandPage;
+      },
     },
     actionHandlers: {
       'start<T>Process': function(action) {
@@ -696,19 +755,18 @@ module.exports = function(T, t, api) {
             limit = entries[t].length,
             ret = [],
             d, e, s,
-            subdomain = this.currentAccount().subdomain(),
             tx_completed, zd_object_url, tx_resource_url, zd_object_updated;
         for (var i = 0; i < limit; i++) {
           e = entries[t][i];
           s = this.store(txResource.key + e.resource_name);
           tx_completed = this.completedLanguages(s);
           if (t == "dynamic"){
-            zd_object_url = "https://" + subdomain + ".zendesk.com/agent/admin/dynamic_content/";
+            zd_object_url = this.selected_brand.brand_url + "/agent/admin/dynamic_content/";
           } else {
-            zd_object_url = "https://" + subdomain + ".zendesk.com/hc/" + e.source_locale +
+            zd_object_url = this.selected_brand.brand_url + "/hc/" + e.source_locale +
               "/" + type + "/" + e.id;
           }
-          tx_resource_url = txProject.dashboard_url.replace(/\/$/, '') + '/' + e.resource_name;
+          tx_resource_url = this.tx + '/' + this.organization + '/' + this.selected_brand.tx_project + '/' + e.resource_name + '/';
           zd_object_updated = moment(e.updated_at).format(
             'MMM D YYYY h:mma');
           d = {};

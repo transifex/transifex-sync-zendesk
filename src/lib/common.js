@@ -1,7 +1,7 @@
 var zdArticle = require('zendesk-api/article');
 var txResource = require('transifex-api/resource');
 var syncUtil = require('syncUtil');
-var io = require('io');
+var io = require('./io.js');
 
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
