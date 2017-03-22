@@ -42,6 +42,9 @@ var config = module.exports = {
       var locale = _.find(data['locales'], function(l){
         return l.default;
       });
+      this.store('project_locales', _.map(data.locales, function (locale) {
+        return locale.locale.toLowerCase();
+      }));
       this.store('default_locale', locale.locale.toLowerCase());
       io.popSync(config.key + 'default');
       this.checkAsyncComplete();

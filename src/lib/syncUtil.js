@@ -52,6 +52,14 @@ module.exports = {
     return null;
   },
 
+  zdLocaletoTx: function(l) {
+    var split_locale = l.split('-');
+    if (split_locale.length > 1) {
+      split_locale[1] = split_locale[1].toUpperCase();
+    }
+    return split_locale.join('_');
+  },
+
   isStringinArray: function(s, arr) {
     return (_.some(arr, function(i) {
       return i == s;

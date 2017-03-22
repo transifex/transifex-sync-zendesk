@@ -5,7 +5,8 @@
 
 var logger = require('../logger'),
     io = require('../io'),
-    txutils = require('../txUtil');
+    syncUtil = require('../syncUtil'),
+    txutils = require('../txUtil.js');
 
 var project = module.exports = {
   // selfies
@@ -19,7 +20,13 @@ var project = module.exports = {
   password: '',
   events: {
     'txProject.done': 'txProjectDone',
-    'txProject.fail': 'txProjectSyncError'
+    'txProject.fail': 'txProjectSyncError',
+    'txProjectExists.done': 'txProjectExistsDone',
+    'txProjectExists.fail': 'txProjectExistsError',
+    'txProjectCreate.done': 'txProjectCreateDone',
+    'txProjectCreate.fail': 'txProjectCreateError',
+    'txProjectAddLanguage.done': 'txProjectAddLanguageDone',
+    'txProjectAddLanguage.fail': 'txProjectAddLanguageFail',
   },
   initialize: function() {
     var settings = io.getSettings();
@@ -47,8 +54,10 @@ var project = module.exports = {
     txProject: function() {
       logger.debug('txProject ajax request');
       return {
-        url: project.url,
-        data: {'details': true},
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project,
+        data: {
+          'details': true
+        },
         headers: project.headers,
         type: 'GET',
         cache: false,
@@ -56,8 +65,87 @@ var project = module.exports = {
         cors: true
       };
     },
+    txProjectExists: function(project_slug) {
+      logger.debug('txProjectExists ajax request');
+      return {
+        url: this.tx + '/api/2/project/' + project_slug,
+        headers: project.headers,
+        data: {'details': true},
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        beforeSend: function(jqxhr, settings) {
+          jqxhr.slug = project_slug;
+        },
+        cors: true
+      };
+    },
+    txProjectCreate: function(slug, name, source, targets, brand_id) {
+      logger.debug('txProjectCreate ajax request');
+      var settings = io.getSettings();
+      return {
+        url: this.tx + '/api/2/projects',
+        headers: project.headers,
+        type: 'POST',
+        cache: false,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: name,
+          slug: slug,
+          organization: this.organization,
+          private: true,
+          description: 'Zendesk brand - ' + name,
+          source_language_code: source
+        }),
+        beforeSend: function(jqxhr, settings) {
+          jqxhr.slug = slug;
+          jqxhr.targets = targets;
+          jqxhr.brand_id = brand_id;
+        },
+        cors: true
+      };
+    },
+    txProjectAddLanguage: function(project_slug, language_code, brand_id) {
+      logger.debug('txProjectCreate ajax request');
+      var settings = io.getSettings();
+      return {
+        url: this.tx + '/api/2/project/' + project_slug + '/languages',
+        headers: project.headers,
+        type: 'POST',
+        cache: false,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          language_code: language_code,
+          coordinators: [settings.tx_username]
+        }),
+        beforeSend: function(jqxhr, settings) {
+          jqxhr.slug = project_slug;
+          jqxhr.language_code = language_code;
+          jqxhr.brand_id = brand_id;
+        },
+        cors: true
+      };
+    },
   },
   eventHandlers: {
+    txProjectExistsDone: function(data, textStatus, jqXHR) {
+      this.store('project_exists', true);
+      io.popSync('check_exists_' + data.slug);
+      var brand_id = parseInt(data.slug.split('-').pop());
+      var brands = this.store('brands');
+      brands[_.findIndex(brands, { id: brand_id })].exists = true;
+      this.store('brands', brands);
+      this.checkAsyncComplete();
+    },
+    txProjectExistsError: function(data, textStatus, jqXHR) {
+      this.store('project_exists', false);
+      io.popSync('check_exists_' + data.slug);
+      var brand_id = parseInt(data.slug.split('-').pop());
+      var brands = this.store('brands');
+      brands[_.findIndex(brands, { id: brand_id })].exists = false;
+      this.store('brands', brands);
+      this.checkAsyncComplete();
+    },
     txProjectDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Project Retrieved with status:', textStatus);
       this.store(project.key, data);
@@ -92,6 +180,44 @@ var project = module.exports = {
       }
       this.checkAsyncComplete();
     },
+    txProjectCreateDone: function(data, textStatus, jqXHR) {
+      io.popSync('create_project_' + jqXHR.slug);
+      var that = this;
+      this.store('localeCount', 0);
+      this.store('localeTarget', jqXHR.targets.length);
+
+      _.map(jqXHR.targets, function(locale)  {
+        io.pushSync('add_language_' + jqXHR.slug + '_' + locale);
+        that.ajax('txProjectAddLanguage', jqXHR.slug, locale, jqXHR.brand_id);
+      });
+    },
+    txProjectCreateError: function(jqXHR, textStatus) {
+      io.popSync('create_project_' + jqXHR.slug);
+      io.setPageError('txProject:login');
+      this.checkAsyncComplete();
+    },
+    txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
+      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
+      var localeCount = this.store('localeCount') + 1;
+      this.store('localeCount', localeCount);
+      var localeTarget = this.store('localeTarget');
+
+      if (localeCount === localeTarget) {
+        var brands = this.store('brands');
+        var brand_id = jqXHR.brand_id;
+        this.store('brands', _.map(brands, function(brand) {
+          if (brand.id == brand_id) return _.extend(brand, {exists: true});
+          return brand;
+        }));
+        this.uiArticlesBrandTab(brand_id);
+      }
+      // this.checkAsyncComplete(); Handled above
+    },
+    txProjectAddLanguageFail: function(jqXHR, textStatus) {
+      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
+      io.setPageError('txProject:login');
+      // this.checkAsyncComplete();  Handled with promise all
+    },
   },
   actionHandlers: {
     asyncGetTxProject: function() {
@@ -99,6 +225,16 @@ var project = module.exports = {
       io.setRetries('txProject', 0);
       io.pushSync(project.key);
       this.ajax('txProject');
+    },
+    asyncCheckTxProjectExists: function(slug) {
+      logger.debug('function: [asyncGetTxProject]');
+      io.pushSync('check_exists_' + slug);
+      this.ajax('txProjectExists', slug);
+    },
+    asyncCreateTxProject: function(slug, name, source, targets, brand_id) {
+      logger.debug('function: [asyncCreateTxProject]');
+      io.pushSync('create_project_' + slug);
+      this.ajax('txProjectCreate', slug, name, source, targets, brand_id);
     },
   },
   helpers: {

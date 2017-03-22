@@ -12,6 +12,7 @@
     require('ui/sync-categories'),
     require('ui/sync-sections'),
     require('ui/sync-dynamic-content'),
+    require('ui/brand-project'),
     require('ui/notifications'),
   ]);
 }());
@@ -25,10 +26,17 @@ function txApp(modules) {
   function appActivated() {
     //set settings to be accessible from everywhere
     io.setSettings(this.settings);
-    this.store(
-      'page_title',
-      txutils.extractOrgFromUrl(this.settings.tx_project).project_slug || 'Zendesk'
-    );
+
+    var ex = txutils.extractOrgFromUrl(this.settings.tx_project);
+    this.store('page_title', ex.project_slug || 'Zendesk');
+    this.organization = ex.organization_slug;
+    this.tx = ex.tx;
+    this.project_slug = ex.project_slug;
+
+    this.selected_brand = {
+      default: true,
+      tx_project: this.project_slug
+    };
 
     //parse features
     if (this.settings.features) {
@@ -44,6 +52,7 @@ function txApp(modules) {
     _.each(modules, function(mod) {
       if (mod.initialize) mod.initialize();
     }, this);
+
 
     // Do Async!!!!
     // Queue async calls and set callback page init
@@ -91,6 +100,7 @@ function txApp(modules) {
       app = _.extend(app, mod.helpers);
     }
   }
+  app.base_url = '/api/v2/help_center/';
 
   app =  _.extend(app, {
     events: events,
