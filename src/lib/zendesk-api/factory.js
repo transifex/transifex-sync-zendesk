@@ -120,7 +120,8 @@ module.exports = function(name, key, api) {
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
             },
-            contentType: 'application/json'
+            contentType: 'application/json',
+            headers: txProject.headers,
           };
         }
       },
