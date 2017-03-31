@@ -13,7 +13,7 @@
           </div>
 
           <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x">{{store "page_title"}}</div>
+            <div class="u-fontSize-small u-lineHeight-3x"><br/></div>
             <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
             <div class=" u-color-disabled">
               <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
@@ -21,11 +21,7 @@
           </div>
 
           <div class="u-textAlign-right u-display-flex u-alignItems-center">
-            <a href="#" title="Fetch data from Transifex" class="o-link u-height-button u-lineHeight-button is-disabled">
-              <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
-                <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
-              </svg>Refresh
-            </a>
+
           </div>
         </div>
       </div>
@@ -38,6 +34,12 @@
         <a class="o-tabs__item {{#if page_sections}}is-active{{/if}}" href="#">Sections</a>
         <a class="o-tabs__item {{#if page_categories}}is-active{{/if}}" href="#">Categories</a>
         <a class="o-tabs__item {{#if page_dynamic_content}}is-active{{/if}}" href="#">Dynamic Content</a>
+
+        <a href="#" title="Fetch data from Transifex" class="o-link u-height-7x u-lineHeight-7x u-float-right is-disabled">
+          <svg viewBox="0 0 16 16" class="o-icon u-marginRight-1x">
+            <path class="path1" d="M13.091 5.091l-2.909 2.909h2.182c0 2.41-1.954 4.364-4.364 4.364-0.727 0-1.433-0.182-2.036-0.509l-1.062 1.062c0.895 0.567 1.956 0.902 3.098 0.902 3.213 0 5.818-2.605 5.818-5.818h2.182zM3.636 8c0-2.41 1.954-4.364 4.364-4.364 0.727 0 1.433 0.182 2.036 0.509l1.062-1.062c-0.895-0.567-1.956-0.902-3.098-0.902-3.213 0-5.818 2.605-5.818 5.818h-2.182l2.909 2.909 2.909-2.909z"></path>
+          </svg>Refresh
+        </a>
       </div>
     </div>
 
@@ -55,7 +57,7 @@
           Send Articles
           {{/if}}
           {{#if page_dynamic_content}}
-          Send Dynamic Content 
+          Send Dynamic Content
           {{/if}}
         </a>
         <a href="#" title="Update Zendesk translations" class="o-button o-button--form is-disabled">

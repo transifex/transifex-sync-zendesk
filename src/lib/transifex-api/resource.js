@@ -45,7 +45,7 @@ var resource = module.exports = {
     txResourceStats: function(resourceName) {
       logger.debug('txResourceStats ajax request:', resourceName);
       return {
-        url: resource.url + resourceName + '/stats/',
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/stats/',
         type: 'GET',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
@@ -58,8 +58,7 @@ var resource = module.exports = {
     txResource: function(resourceName, languageCode) {
       logger.debug('txResource ajax request:', resourceName + '||' + languageCode);
       return {
-        url: resource.url + resourceName + '/translation/' + languageCode +
-          '/',
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/translation/' + languageCode + '/',
         type: 'GET',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
@@ -73,7 +72,7 @@ var resource = module.exports = {
     txInsertResource: function(data, resourceName) {
       logger.debug('txInsertResource ajax request:', data + '||' + data.i18n_type);
       return {
-        url: resource.inserturl,
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resources/',
         type: 'POST',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
@@ -88,7 +87,7 @@ var resource = module.exports = {
     txUpdateResource: function(data, resourceName) {
       logger.debug('txUpdateResource ajax request:', data + '||' + resourceName + '||' + data.i18n_type);
       return {
-        url: resource.url + resourceName + '/content',
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/content/',
         type: 'PUT',
         headers: resource.headers,
         beforeSend: function(jqxhr, settings) {
