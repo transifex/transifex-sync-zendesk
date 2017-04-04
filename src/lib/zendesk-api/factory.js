@@ -107,7 +107,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx + '/'  + this.organization + '/zd-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
+            url: this.tx + '/'  + this.organization + '/zd-' + this.organization + '-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -142,7 +142,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx + '/'  + this.organization + '/zd-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
+            url: this.tx + '/'  + this.organization + '/zd-' + this.organization + '-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
             type: 'POST',
             cors: true,
             data: JSON.stringify({
