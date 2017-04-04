@@ -91,7 +91,7 @@ module.exports = function(name, key, api) {
           contentType: 'application/json'
         };
       },
-      'zd<T>Insert': function(data, id) {
+      'zd<T>Insert': function(data, id, locale) {
         var that = this;
         io.pushSync(factory.key + 'download' + id);
         if (!this.selected_brand || this.selected_brand.default) {
@@ -102,6 +102,7 @@ module.exports = function(name, key, api) {
             data: JSON.stringify(data),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
+              jqxhr.locale = locale;
             },
             contentType: 'application/json'
           };
@@ -119,6 +120,7 @@ module.exports = function(name, key, api) {
             }),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
+              jqxhr.locale = locale;
             },
             contentType: 'application/json',
             headers: txProject.headers,
