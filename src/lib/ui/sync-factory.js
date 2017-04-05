@@ -347,12 +347,12 @@ module.exports = function(T, t, api) {
 
         var content_type = t == 'dynamic' ? 'dynamic content items' : m('<t>');
         if (failed === 0) {
-          this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected ' + content_type + ' .');
+          this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected ' + content_type + '.');
         } else if (failed == total) {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
-          this.notifyError('Translations could not be updated for any of the selected ' + content_type + ' .');
+          this.notifyError('Translations could not be updated for any of the selected ' + content_type + '.');
         } else {
           this.$('.js-locale-problem')
             .removeClass('js-locale-problem')

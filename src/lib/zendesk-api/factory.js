@@ -91,7 +91,7 @@ module.exports = function(name, key, api) {
           contentType: 'application/json'
         };
       },
-      'zd<T>Insert': function(data, id) {
+      'zd<T>Insert': function(data, id, locale) {
         var that = this;
         io.pushSync(factory.key + 'download' + id);
         if (!this.selected_brand || this.selected_brand.default) {
@@ -102,12 +102,13 @@ module.exports = function(name, key, api) {
             data: JSON.stringify(data),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
+              jqxhr.locale = locale;
             },
             contentType: 'application/json'
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx + '/'  + this.organization + '/zd-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
+            url: this.tx + '/'  + this.organization + '/zd-' + this.organization + '-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -119,6 +120,7 @@ module.exports = function(name, key, api) {
             }),
             beforeSend: function(jqxhr, settings) {
               jqxhr.id = id;
+              jqxhr.locale = locale;
             },
             contentType: 'application/json',
             headers: txProject.headers,
@@ -142,7 +144,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx + '/'  + this.organization + '/zd-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
+            url: this.tx + '/'  + this.organization + '/zd-' + this.organization + '-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
             type: 'POST',
             cors: true,
             data: JSON.stringify({
