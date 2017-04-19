@@ -169,8 +169,17 @@ module.exports = function(name, key, api) {
         io.popSync('brands');
         // Assume that the first brand is the project slug
         // at zendesk configuration
+        var subdomain = this.currentAccount().subdomain();
+        var agent_index = _.findIndex(data.brands, {subdomain: subdomain});
         var def_index = _.findIndex(data.brands, {default: true});
-        data.brands[def_index].exists = true;
+        data.brands[agent_index].exists = true;
+        // For all indents and purposes in this app the default brand will 
+        // be the brand associated with the main subdomain of the account
+        if (agent_index !== def_index ) {
+          data.brands[agent_index].default = true;
+          data.brands[def_index].default = false;
+          def_index = agent_index;
+        }
         _.extend(this.selected_brand, data.brands[def_index]);
         this.store('brands', data.brands);
         data.brands = _.reject(data.brands, {default: true});
