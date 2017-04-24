@@ -26,6 +26,7 @@ function txApp(modules) {
   function appActivated() {
     //set settings to be accessible from everywhere
     io.setSettings(this.settings);
+    io.setEmail(this.currentUser().email());
 
     var ex = txutils.extractOrgFromUrl(this.settings.tx_project);
     this.store('page_title', ex.project_slug || 'Zendesk');
