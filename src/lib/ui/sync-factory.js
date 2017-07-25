@@ -707,8 +707,9 @@ module.exports = function(T, t, api) {
           obj = this[M('calcResourceName<T>')](data);
           num = obj[t].length;
           for (var i = 0; i < num; i++) {
-            this[M('asyncGetZd<T>Translations')](obj[t][i].id);
+            this[M('batchAddGetZd<T>Translations')](obj[t][i].id);
           }
+          this[M('batchExecGetZd<T>Translations')]();
         }
       },
       'syncResourceStats<T>': function() {

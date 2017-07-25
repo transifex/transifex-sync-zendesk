@@ -16,7 +16,10 @@ var SETTINGS = {},
     RETRIES = {},
     ZD_LOCALES = {},
     RESOURCE_ARRAY = [],
-    QUERY = '';
+    QUERY = '',
+    BATCH = [];
+
+
 
 module.exports = {
   setSettings: function(settings) {
@@ -34,6 +37,16 @@ module.exports = {
   },
   getFeature: function(feature) {
     return FEATURES[feature];
+  },
+
+  pushBatch: function(key) {
+    BATCH.push(key);
+  },
+
+  resetBatch: function(key) {
+    var ret = BATCH;
+    BATCH = [];
+    return ret;
   },
 
   pushSync: function(key) {

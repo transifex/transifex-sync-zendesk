@@ -21,6 +21,8 @@ module.exports = function(name, key, api) {
     events: {
       'zd<T>Full.done': M('zd<T>Done'),
       'zd<T>GetTranslations.done': M('zd<T>GetTranslationsDone'),
+      'zd<T>BatchGetTranslations.done': M('zd<T>BatchGetTranslationsDone'),
+      'zd<T>BatchGetTranslations.fail': M('zd<T>SyncError'),
       'zd<T>Update.done': M('zd<T>UpdateDone'),
       'zd<T>Insert.done': M('zd<T>InsertDone'),
       'zd<T>Update.fail': M('zd<T>UpdateFail'),
@@ -87,6 +89,17 @@ module.exports = function(name, key, api) {
           cors: true,
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
+          },
+          contentType: 'application/json'
+        };
+      },
+      'zd<T>BatchGetTranslations': function(ids) {
+        return {
+          url: this.base_url + api + '/tickets/show_many.json?ids=' + ids.join(','),
+          type: 'GET',
+          cors: true,
+          beforeSend: function(jqxhr, settings) {
+            jqxhr.ids = ids;
           },
           contentType: 'application/json'
         };
@@ -173,7 +186,7 @@ module.exports = function(name, key, api) {
         var agent_index = _.findIndex(data.brands, {subdomain: subdomain});
         var def_index = _.findIndex(data.brands, {default: true});
         data.brands[agent_index].exists = true;
-        // For all indents and purposes in this app the default brand will 
+        // For all indents and purposes in this app the default brand will
         // be the brand associated with the main subdomain of the account
         if (agent_index !== def_index ) {
           data.brands[agent_index].default = true;
@@ -258,6 +271,9 @@ module.exports = function(name, key, api) {
         io.popSync(factory.key + jqXHR.id);
         this.checkAsyncComplete();
       },
+      'zd<T>BatchGetTranslationsDone': function(data, textStatus, jqXHR) {
+        console.log(data);
+      },
       'zd<T>InsertDone': function(data, textStatus, jqXHR) {
         var key = factory.key + jqXHR.id + '_locales';
         var existing_locales = this.store(key);
@@ -324,6 +340,15 @@ module.exports = function(name, key, api) {
         logger.debug(M('function: [asyncGetZd<T>Translation]'));
         io.pushSync(factory.key + id);
         this.ajax(M('zd<T>GetTranslations'), id);
+      },
+      'batchAddGetZd<T>Translations': function(id) {
+        logger.debug(M('function: [batchAddZd<T>Translation]'));
+        io.pushBatch(id);
+      },
+      'batchExecGetZd<T>Translations': function() {
+        logger.debug(M('function: [batchExecZd<T>Translation]'));
+        io.pushSync(factory.key + '_batch');
+        this.ajax(M('zd<T>BatchGetTranslations'), io.resetBatch());
       },
       'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage, search_query) {
         logger.debug(M('function: [asyncGetZd<T>Full] params: [page]') +
