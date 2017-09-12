@@ -322,18 +322,18 @@ module.exports = function(name, key, api) {
         io.pushSync('brandLocales_' + brand_url);
         this.ajax('zdGetBrandLocales', brand_url);
       },
-      'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
-        logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
+      'zdUpsert<T>Translation': function(resource_data, entryid, zdLocale) {
+        logger.info(M('Upsert <T> with Id:') + entryid + 'and locale:' + zdLocale);
         var translationData = common.translationObjectFormat(this.$, resource_data, zdLocale, key);
 
-        var existing_locales = this.store(factory.key + entry.id + '_locales');
+        var existing_locales = this.store(factory.key + entryid + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
         });
         if (checkLocaleExists) {
-          this.ajax(M('zd<T>Update'), translationData, entry.id, zdLocale);
+          this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale);
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, entry.id, zdLocale);
+          this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale);
         }
       },
       'asyncGetZd<T>Translations': function(id) {
