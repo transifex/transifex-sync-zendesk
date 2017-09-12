@@ -28,8 +28,6 @@ module.exports = function(T, t, api) {
     events: {
       'click [tab="<t>"]': M('ui<T>Tab'),
       'click .js-<t>.js-goto-page': M('ui<T>GotoPage'),
-      'click .js-<t>.js-goto-next': M('ui<T>NextPage'),
-      'click .js-<t>.js-goto-prev': M('ui<T>PrevPage'),
       'click .js-<t>.js-sortby-title': M('ui<T>SortByTitle'),
       'click .js-<t>.js-sortby-updated_at': M('ui<T>SortByUpdated'),
       'click .js-<t>[perpage]': M('ui<T>PerPage'),
@@ -517,31 +515,28 @@ module.exports = function(T, t, api) {
         this.loadSyncPage = this[M('ui<T>LanguageComplete')];
         this[M('syncCompletedLanguages<T>')]();
       },
+
       'ui<T>LanguageComplete': function() {
         logger.debug(M('ui<T>LanguageComplete'));
+
         var data = this[M('calcResourceName<T>')](this.store(zdApi.key)),
-            num = data[t].length,
             numLanguages = 0,
             resourceName = '',
-            resource = {},
-            languageArray = [],
-            resourceLanguage = {};
-        for (var i = 0; i < num; i++) {
+            resource = {};
+
+        for (var i = 0; i < data[t].length; i++) {
           resourceName = data[t][i].resource_name;
           resource = this.store(txResource.key + resourceName);
           //TODO depends on resource typeness
           if (typeof resource !== 'number') {
-            languageArray = this.completedLanguages(resource);
-            numLanguages = languageArray.length;
-            for (var ii = 0; ii < numLanguages; ii++) {
-              resourceLanguage = this.store(txResource.key + resourceName + languageArray[ii]);
-              if (resourceLanguage) {
-                this.$('#' + resourceName).addClass('js-can-download');
-              }
+            numLanguages = this.completedLanguages(resource).length;
+            if (numLanguages) {
+              this.$('#' + resourceName).addClass('js-can-download');
             }
           }
         }
       },
+
       'ui<T>GotoPage': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
@@ -565,54 +560,7 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
-      'ui<T>NextPage': function(event) {
-        if (event) event.preventDefault();
-        if (this.processing) return;
 
-        logger.debug(M('ui<T>NextPage'));
-        var page = this.$(event.target).attr("data-current-page"),
-            nextPage = parseInt(page, 10) + 1,
-            sorting = io.getSorting(),
-            query = io.getQuery();
-        factory.currentpage = nextPage;
-        this[M('asyncGetZd<T>Full')](
-          factory.currentpage, sorting.sortby,
-          sorting.sortdirection, sorting.perpage, query
-        );
-        this.switchTo('loading_page', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          query_term: query,
-        });
-        this.loadSyncPage = this[M('ui<T>Init')];
-      },
-      'ui<T>PrevPage': function(event) {
-        if (event) event.preventDefault();
-        if (this.processing) return;
-
-        logger.debug(M('ui<T>PrevPage'));
-        var page = this.$(event.target).attr("data-current-page"),
-            prevPage = parseInt(page, 10) - 1,
-            sorting = io.getSorting(),
-            query = io.getQuery();
-        factory.currentpage = prevPage;
-        this[M('asyncGetZd<T>Full')](
-          factory.currentpage, sorting.sortby,
-          sorting.sortdirection, sorting.perpage, query
-        );
-        this.switchTo('loading_page', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          query_term: query,
-        });
-        this.loadSyncPage = this[M('ui<T>Init')];
-      },
       'ui<T>BrandTab': function(event) {
         var brand;
         if (event && event.preventDefault) {
@@ -798,7 +746,9 @@ module.exports = function(T, t, api) {
           ret = _.extend(ret, {
             page_prev_enabled: this.isFewer(data, currentPage),
             page_next_enabled: this.isMore(data, currentPage),
-            current_page: this.getCurrentPage(data),
+            current_page: currentPage,
+            prev_page: currentPage - 1,
+            next_page: currentPage + 1,
             pagination_visible: paginationVisible,
             pages: this.getPages(data)
           });
