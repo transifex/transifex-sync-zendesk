@@ -16,6 +16,7 @@ var SETTINGS = {},
     RETRIES = {},
     ZD_LOCALES = {},
     RESOURCE_ARRAY = [],
+    ZD_USER_EMAIL = '',
     QUERY = '';
 
 module.exports = {
@@ -26,6 +27,12 @@ module.exports = {
     return SETTINGS;
   },
 
+  setEmail: function(email) {
+    ZD_USER_EMAIL = email;
+  },
+  getEmail: function() {
+    return ZD_USER_EMAIL;
+  },
   setFeatures: function(features) {
     FEATURES = features;
   },
