@@ -28,8 +28,6 @@ module.exports = function(T, t, api) {
     events: {
       'click [tab="<t>"]': M('ui<T>Tab'),
       'click .js-<t>.js-goto-page': M('ui<T>GotoPage'),
-      'click .js-<t>.js-goto-next': M('ui<T>NextPage'),
-      'click .js-<t>.js-goto-prev': M('ui<T>PrevPage'),
       'click .js-<t>.js-sortby-title': M('ui<T>SortByTitle'),
       'click .js-<t>.js-sortby-updated_at': M('ui<T>SortByUpdated'),
       'click .js-<t>[perpage]': M('ui<T>PerPage'),
@@ -245,11 +243,9 @@ module.exports = function(T, t, api) {
           object_ids.push(this.$(row).attr('id'));
         });
         var project = this.store(txProject.key),
-            sourceLocale = this.getSourceLocale(project),
             data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
-            entry, resource, txResourceName, completedLocales,
-            zdLocale, translation, zd_locales;
+            entry, resource, txResourceName, completedLocales;
 
         var objects = _.filter(obj[m('<t>')], function(o){
           return object_ids.indexOf(o.resource_name) !== -1;
@@ -258,7 +254,6 @@ module.exports = function(T, t, api) {
         io.opResetAll();
         this.loadSyncPage = this[M('ui<T>DownloadComplete')];
 
-        zd_locales = io.getLocales();
         for (var i = 0; i < objects.length; i++) {
           entry = objects[i];
           txResourceName = entry.resource_name;
@@ -266,11 +261,7 @@ module.exports = function(T, t, api) {
           completedLocales = this.completedLanguages(resource);
 
           for (var ii = 0; ii < completedLocales.length; ii++) { // iterate through list of locales
-            translation = this.store(txResource.key + txResourceName + completedLocales[ii]);
-            if (typeof translation.content === 'string') {
-              zdLocale = syncUtil.txLocaletoZd(completedLocales[ii], zd_locales);
-              this[M('zdUpsert<T>Translation')](translation.content, entry, zdLocale);
-            }
+            this.asyncGetTxResource(txResourceName, completedLocales[ii], entry.id);
           }
         }
       },
@@ -514,34 +505,30 @@ module.exports = function(T, t, api) {
           this.notifyWarning('Some Transifex resources could not be loaded. Please refresh to try again.');
         }
         this.$(m('.js-<t>.js-select-all')).prop('disabled', false);
-        this.loadSyncPage = this[M('ui<T>LanguageComplete')];
-        this[M('syncCompletedLanguages<T>')]();
+        this[M('ui<T>LanguageComplete')]();
       },
+
       'ui<T>LanguageComplete': function() {
         logger.debug(M('ui<T>LanguageComplete'));
+
         var data = this[M('calcResourceName<T>')](this.store(zdApi.key)),
-            num = data[t].length,
             numLanguages = 0,
             resourceName = '',
-            resource = {},
-            languageArray = [],
-            resourceLanguage = {};
-        for (var i = 0; i < num; i++) {
+            resource = {};
+
+        for (var i = 0; i < data[t].length; i++) {
           resourceName = data[t][i].resource_name;
           resource = this.store(txResource.key + resourceName);
           //TODO depends on resource typeness
           if (typeof resource !== 'number') {
-            languageArray = this.completedLanguages(resource);
-            numLanguages = languageArray.length;
-            for (var ii = 0; ii < numLanguages; ii++) {
-              resourceLanguage = this.store(txResource.key + resourceName + languageArray[ii]);
-              if (resourceLanguage) {
-                this.$('#' + resourceName).addClass('js-can-download');
-              }
+            numLanguages = this.completedLanguages(resource).length;
+            if (numLanguages) {
+              this.$('#' + resourceName).addClass('js-can-download');
             }
           }
         }
       },
+
       'ui<T>GotoPage': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
@@ -565,54 +552,7 @@ module.exports = function(T, t, api) {
         });
         this.loadSyncPage = this[M('ui<T>Init')];
       },
-      'ui<T>NextPage': function(event) {
-        if (event) event.preventDefault();
-        if (this.processing) return;
 
-        logger.debug(M('ui<T>NextPage'));
-        var page = this.$(event.target).attr("data-current-page"),
-            nextPage = parseInt(page, 10) + 1,
-            sorting = io.getSorting(),
-            query = io.getQuery();
-        factory.currentpage = nextPage;
-        this[M('asyncGetZd<T>Full')](
-          factory.currentpage, sorting.sortby,
-          sorting.sortdirection, sorting.perpage, query
-        );
-        this.switchTo('loading_page', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          query_term: query,
-        });
-        this.loadSyncPage = this[M('ui<T>Init')];
-      },
-      'ui<T>PrevPage': function(event) {
-        if (event) event.preventDefault();
-        if (this.processing) return;
-
-        logger.debug(M('ui<T>PrevPage'));
-        var page = this.$(event.target).attr("data-current-page"),
-            prevPage = parseInt(page, 10) - 1,
-            sorting = io.getSorting(),
-            query = io.getQuery();
-        factory.currentpage = prevPage;
-        this[M('asyncGetZd<T>Full')](
-          factory.currentpage, sorting.sortby,
-          sorting.sortdirection, sorting.perpage, query
-        );
-        this.switchTo('loading_page', {
-          page: t,
-          page_articles: t == 'articles',
-          page_categories: t == 'categories',
-          page_sections: t == 'sections',
-          page_dynamic_content: t == 'dynamic',
-          query_term: query,
-        });
-        this.loadSyncPage = this[M('ui<T>Init')];
-      },
       'ui<T>BrandTab': function(event) {
         var brand;
         if (event && event.preventDefault) {
@@ -688,6 +628,7 @@ module.exports = function(T, t, api) {
         this.$('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
         this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
       },
+
       'end<T>Process': function() {
         this.processing = false;
         this.$(m('.js-<t>.js-refresh')).removeClass('is-disabled');
@@ -698,6 +639,7 @@ module.exports = function(T, t, api) {
           prop('checked', false);
         this[M('ui<T>UpdateButtons')]();
       },
+
       'sync<T>Translations': function() {
         logger.debug(M('sync<T>Translations started'));
         var data = this.store(zdApi.key),
@@ -711,6 +653,7 @@ module.exports = function(T, t, api) {
           }
         }
       },
+
       'syncResourceStats<T>': function() {
         logger.debug(M('syncResourceStats<T> started'));
         var data = this.store(zdApi.key),
@@ -724,30 +667,7 @@ module.exports = function(T, t, api) {
           }
         }
       },
-      'syncCompletedLanguages<T>': function() {
-        // Requires txProject, zdApis, and ResourceStats
-        logger.debug(M('syncCompletedLanguages<T> started'));
-        // Local function vars
-        var data = this[M('calcResourceName<T>')](this.store(zdApi.key)),
-            num = data[t].length,
-            numLanguages = 0,
-            resourceName = '',
-            resource = {},
-            languageArray = [];
-        for (var i = 0; i < num; i++) {
-          resourceName = data[t][i].resource_name;
-          resource = this.store(txResource.key + resourceName);
-          //TODO depends on resource typeness, fast n loose
-          if (typeof resource == 'object') {
-            languageArray = this.completedLanguages(resource);
-            numLanguages = languageArray.length;
-            for (var ii = 0; ii < numLanguages; ii++) {
-              // Side effect: make api calls and load resources
-              this.asyncGetTxResource(resourceName, languageArray[ii]);
-            }
-          }
-        }
-      },
+
       'buildSyncPage<T>Data': function() {
         var data = this.store(zdApi.key),
             entries = this[M('calcResourceName<T>')](data),
@@ -798,13 +718,16 @@ module.exports = function(T, t, api) {
           ret = _.extend(ret, {
             page_prev_enabled: this.isFewer(data, currentPage),
             page_next_enabled: this.isMore(data, currentPage),
-            current_page: this.getCurrentPage(data),
+            current_page: currentPage,
+            prev_page: currentPage - 1,
+            next_page: currentPage + 1,
             pagination_visible: paginationVisible,
             pages: this.getPages(data)
           });
         }
         return ret;
       },
+
       'handleSearch<T>': function(){
         if (t != 'articles') {
           this.$('.js-search').addClass("u-display-none");
