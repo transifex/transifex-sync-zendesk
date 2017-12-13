@@ -98,6 +98,7 @@ Here is an example:
 TestMattJJacko
 Password
 https://www.transifex.com/test-organization-4/zendesk-test/
+<zendesk_token>
 {"html-tx-resource":false}
 0
 true
