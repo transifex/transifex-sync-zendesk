@@ -26,6 +26,7 @@ module.exports = function(T, t, api) {
     // selfies
     currentpage: '1',
     events: {
+      'pane.activated': 'uiSync',
       'click [tab="<t>"]': M('ui<T>Tab'),
       'click .js-<t>.js-goto-page': M('ui<T>GotoPage'),
       'click .js-<t>.js-sortby-title': M('ui<T>SortByTitle'),
@@ -133,6 +134,7 @@ module.exports = function(T, t, api) {
         var default_locale, project_locale;
         if (event) event.preventDefault();
         if (this.processing) return;
+        sessionStorage.setItem('TxActiveTab', T);
         io.setQuery('');
         if (!io.getPageError()) {
           default_locale = this.store('default_locale').split('-')[0];
@@ -264,6 +266,13 @@ module.exports = function(T, t, api) {
             this.asyncGetTxResource(txResourceName, completedLocales[ii], entry.id);
           }
         }
+      },
+      'uiSync': function(event) {
+        if (event) event.preventDefault();
+        if (this.processing) return;
+
+        var page = sessionStorage.getItem('TxActiveTab') || 'Articles';
+        this['ui' + page + 'Sync']();
       },
       'ui<T>Sync': function(event) {
         if (event) event.preventDefault();
