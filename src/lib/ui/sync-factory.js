@@ -334,13 +334,14 @@ module.exports = function(T, t, api) {
 
         _.each(io.opGetAll(), function(status, opName) {
           total++;
-          var resourceName = m('<t>') + '-' + opName.split('_')[0];
-          var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
-          var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
           if (status !== 'success') {
             failed++;
-            el.removeClass('u-color-secondary').addClass('js-locale-problem');
+            var er = this.$(m('.js-<t>[data-resource="' + opName + '"] [data-locale]'));
+            er.removeClass('u-color-secondary').addClass('js-locale-problem');
           } else {
+            var resourceName = m('<t>') + '-' + opName.split('_')[0];
+            var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
+            var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
             el.addClass('js-locale-ok');
           }
         }, this);
