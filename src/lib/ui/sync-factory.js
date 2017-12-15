@@ -653,7 +653,7 @@ module.exports = function(T, t, api) {
       'sync<T>Translations': function() {
         logger.debug(M('sync<T>Translations started'));
         var data = this.store(zdApi.key),
-            OKToGetTranslations = (typeof data === 'undefined') ? false : true,
+            OKToGetTranslations = typeof data != 'undefined' && data != null,
             obj, num;
         if (OKToGetTranslations) {
           obj = this[M('calcResourceName<T>')](data);
@@ -667,7 +667,7 @@ module.exports = function(T, t, api) {
       'syncResourceStats<T>': function() {
         logger.debug(M('syncResourceStats<T> started'));
         var data = this.store(zdApi.key),
-            OKToGetResourceStats = (typeof data === 'undefined') ? false : true,
+            OKToGetResourceStats = typeof data != 'undefined' && data != null,
             obj, num;
         if (OKToGetResourceStats) {
           obj = this[M('calcResourceName<T>')](data);
@@ -679,8 +679,11 @@ module.exports = function(T, t, api) {
       },
 
       'buildSyncPage<T>Data': function() {
-        var data = this.store(zdApi.key),
-            entries = this[M('calcResourceName<T>')](data),
+        var data = this.store(zdApi.key);
+        if (data === null) {
+          return;
+        }
+        var entries = this[M('calcResourceName<T>')](data),
             type = t,
             limit = entries[t].length,
             ret = [],
