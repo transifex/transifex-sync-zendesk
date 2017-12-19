@@ -1,14 +1,9 @@
 {
   "app": {
-    "package": "txsync_zendesk_app",
-    "description": {
-      "value": "Translate your Zendesk Help Center",
-      "title": "Translate your Zendesk Help Center"
-    },
-    "name": {
-      "value": "Transifex Sync",
-      "title": "Transifex Sync"
-    },
+    "name": "Transifex Sync",
+    "short_description": "Translate your Zendesk Help Center",
+    "long_description": "With Transifex and Transifex Sync, you can store all your translatable content, work with translators, and track the progress of your translations from a central place. There’s no need to copy and paste translations into your Help Center or send any files around. And it even works for multiple brands in Zendesk.\n\nHere’s how Transifex Sync works:\n\n* Push articles, section titles, category titles, and dynamic content from Zendesk to Transifex for translation.\n* Translate with the help of your translation agency, conveniently order translations from a variety of translation providers, or crowdsource your translations.\n* Pull finished translations back into Zendesk.\n\nReady to get started? Install Transifex Sync and head over to the [Transifex website](https://www.transifex.com/signup/?utm_source=zd-marketplace&amp;utm_campaign=int-zd) to start a trial. From here, you’ll be able to connect your Zendesk Help Center with a specific project to start translating!",
+    "installation_instructions": "Before installing Transifex Sync, [please sign up](https://www.transifex.com/signup/?utm_source=zd-marketplace&amp;utm_campaign=int-zd) for a Transifex account if you don’t have one already. Then create a new project within Transifex to store all your content. For the complete instructions on creating a project, visit the [Transifex Sync documentation](http://docs.transifex.com/integrations/zendesk/?utm_source=zd-marketplace&amp;utm_campaign=int-zd).\n\nOnce you’ve created a project, log in to your Zendesk Agent and navigate to the Admin section (look for the gear icon in the bottom left). Select Marketplace from the menu, then search for \"Transifex Sync\".\n\nFrom the search results, click the Transifex Sync app icon. Hit Install App to begin the installation process.\n\nNext, configure your Transifex Sync app settings:\n\n* Title: Name for the application.\n* Transifex Username\n* Transifex Password: As an alternative to using your username and password, you can [use an API key](https://docs.transifex.com/api/introduction#authentication).\n* Transifex Project URL: To get the project’s URL, go to your Dashboard, select the project, and click on the name of the project. Then copy and paste the whole URL into this field. It should look something like this: https://www.transifex.com/Organization-Slug/Project-Slug/.\n* Zendesk API Key: If you plan to translate multiple brands, [generate an API token](https://support.zendesk.com/hc/en-us/articles/226022787) and paste it in this field. If you’re only translating a single brand, no need to put anything in.\n* Enable Role Restrictions: Select which users within Zendesk should have access to this app.\n\nClick Install and you’re done! At any time, you can access the Transifex Sync app by clicking the Tx icon in the sidebar.\n\nFor more information on using Transifex Sync, please refer to the documentation [here](http://docs.transifex.com/integrations/zendesk/?utm_source=zd-marketplace&amp;utm_campaign=int-zd).",
     "parameters": {
       "tx_username": {
         "label": {

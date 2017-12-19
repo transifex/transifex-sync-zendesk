@@ -55,7 +55,7 @@ var resource = module.exports = {
         cors: true
       };
     },
-    txResource: function(resourceName, languageCode) {
+    txResource: function(resourceName, languageCode, entryid) {
       logger.debug('txResource ajax request:', resourceName + '||' + languageCode);
       return {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/translation/' + languageCode + '/',
@@ -64,6 +64,7 @@ var resource = module.exports = {
         beforeSend: function(jqxhr, settings) {
           jqxhr.resourceName = resourceName;
           jqxhr.languageCode = languageCode;
+          jqxhr.entryid = entryid;
         },
         dataType: 'json',
         cors: true
@@ -124,16 +125,21 @@ var resource = module.exports = {
 
     txResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource retrieved with status:', textStatus);
-      this.store(resource.key + jqXHR.resourceName + jqXHR.languageCode,
-        data);
+      var zd_locales = io.getLocales();
+      var zdLocale = syncUtil.txLocaletoZd(jqXHR.languageCode, zd_locales);
+      var type = this.resolveResourceType(jqXHR.resourceName);
+
+      this['zdUpsert<T>Translation'.replace('<T>', type)](
+        data.content, jqXHR.entryid, zdLocale
+      );
       io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
-      this.checkAsyncComplete();
     },
+
     txResourceError: function(jqXHR, textStatus) {
       logger.info('Transifex Resource Retrieved with status:', textStatus);
       var retries = io.getRetries('txResource' + jqXHR.resourceName);
       if (jqXHR.status == 401 && retries < 2) {
-        this.ajax('txResource', jqXHR.resourceName);
+        this.ajax('txResource', jqXHR.resourceName, jqXHR.languageCode, jqXHR.entryid);
         io.setRetries('txResource' + jqXHR.resourceName, retries + 1);
       } else {
         io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
@@ -146,16 +152,19 @@ var resource = module.exports = {
     txInsertResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource inserted with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
+
       io.opSet(jqXHR.resourceName, 'success');
       io.pushResource(jqXHR.resourceName);
       this.checkAsyncComplete();
     },
+
     txUpdateResourceDone: function(data, textStatus, jqXHR) {
       logger.info('Transifex Resource updated with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
       io.opSet(jqXHR.resourceName, 'success');
       this.checkAsyncComplete();
     },
+
     txUpsertResourceError: function(jqXHR, textStatus) {
       logger.info('Transifex Resource Retrieved with status:', textStatus);
       io.popSync(resource.key + jqXHR.resourceName + 'upsert');
@@ -197,10 +206,10 @@ var resource = module.exports = {
       io.setRetries('txResourceStats' + name, 0);
       this.ajax('txResourceStats', name);
     },
-    asyncGetTxResource: function(name, code) {
+    asyncGetTxResource: function(name, code, entryid) {
       logger.info('asyncGetTxResource:', name + code);
       io.pushSync(resource.key + name + code);
-      this.ajax('txResource', name, code);
+      this.ajax('txResource', name, code, entryid);
     },
     asyncTxUpsertResource: function(data, name) {
       logger.info('asyncTxUpdateResource:', name);
@@ -223,5 +232,14 @@ var resource = module.exports = {
       });
       return Math.ceil(sum / locale_count);
     },
+    resolveResourceType: function(resourceName) {
+      var t = resourceName.split('-')[1];
+      return {
+        'articles': 'Articles',
+        'sections': 'Sections',
+        'categories': 'Categories',
+        'dynamic': 'DynamicContent'
+      }[t];
+    }
   },
 };

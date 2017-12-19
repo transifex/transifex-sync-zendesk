@@ -141,12 +141,12 @@ var dynamic_content = module.exports = {
     },
   },
   actionHandlers: {
-    zdUpsertDynamicContentTranslation: function(resource_data, entry, zd_locale) {
-      logger.info('Upsert Dynamic Content with Id:' + entry.id + 'and locale:' + zd_locale);
+    zdUpsertDynamicContentTranslation: function(resource_data, entryid, zd_locale) {
+      logger.info('Upsert Dynamic Content with Id:' + entryid + 'and locale:' + zd_locale);
 
       var data, variant, locale_id,
           translation_data = common.translationObjectFormat(this.$, resource_data, zd_locale),
-          existing_locales = this.store(dynamic_content.key + entry.id + '_locales');
+          existing_locales = this.store(dynamic_content.key + entryid + '_locales');
       locale_id = io.getIdFromLocale(zd_locale);
       data = {
         variant: {
@@ -154,13 +154,17 @@ var dynamic_content = module.exports = {
           locale_id: locale_id
         }
       };
+      var entry = _.findWhere(
+        this.store(dynamic_content.key)[dynamic_content.api],
+        {'id': entryid}
+      );
       if (_.contains(existing_locales, zd_locale)) {
         variant = _.find(entry.variants, function(v){
           return v.locale_id == locale_id;
         });
-        this.ajax('variantUpdate', data, entry.id, zd_locale, variant.id);
+        this.ajax('variantUpdate', data, entryid, zd_locale, variant.id);
       } else {
-        this.ajax('variantInsert', data, entry.id, zd_locale);
+        this.ajax('variantInsert', data, entryid, zd_locale);
       }
     },
 

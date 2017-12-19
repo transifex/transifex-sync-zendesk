@@ -34,6 +34,18 @@ module.exports = function(name, key, api) {
       'zdGetBrandLocales.fail': 'zdGetBrandLocalesError',
       'zdGetLocales.done': 'zdGetLocalesDone',
     },
+    initialize: function() {
+      var token, email,
+          settings = io.getSettings();
+      factory.headers = {};
+      if (settings.zd_api_key) {
+        email = io.getEmail();
+        token = btoa(email + '/token:' + settings.zd_api_key);
+        factory.headers = {
+          Authorization: 'Basic ' + token,
+        };
+      }
+    },
     requests: {
       'zdGetBrands': function() {
         return {
@@ -52,6 +64,7 @@ module.exports = function(name, key, api) {
           beforeSend: function(jqxhr, settings) {
             jqxhr.brand_url = brand_url;
           },
+          headers: factory.headers,
         };
       },
       'zd<T>Full': function(page, sortby, sortdirection, numperpage) {
@@ -64,7 +77,8 @@ module.exports = function(name, key, api) {
               parameters['pageString'] + parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
             cors: true,
-            dataType: 'json'
+            dataType: 'json',
+            headers: factory.headers,
           };
       },
       'zd<T>Search': function(page, sortby, sortdirection, numperpage, search_query) {
@@ -77,7 +91,8 @@ module.exports = function(name, key, api) {
             parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
             cors: true,
-            dataType: 'json'
+            dataType: 'json',
+            headers: factory.headers,
           };
       },
       'zd<T>GetTranslations': function(id) {
@@ -88,7 +103,8 @@ module.exports = function(name, key, api) {
           beforeSend: function(jqxhr, settings) {
             jqxhr.id = id;
           },
-          contentType: 'application/json'
+          contentType: 'application/json',
+          headers: factory.headers,
         };
       },
       'zd<T>Insert': function(data, id, locale) {
@@ -108,7 +124,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx + '/'  + this.organization + '/zd-' + this.organization + '-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
+            url: this.get_upsert_url('HTML-' + api + '-' + id),
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -144,7 +160,7 @@ module.exports = function(name, key, api) {
           };
         } else { // Pass it through Transifex Proxy
           return {
-            url: this.tx + '/'  + this.organization + '/zd-' + this.organization + '-' + this.selected_brand.id + '/HTML-' + api + '-' + id + '/upsert_zendesk/',
+            url: this.get_upsert_url('HTML-' + api + '-' + id),
             type: 'POST',
             cors: true,
             data: JSON.stringify({
@@ -306,18 +322,18 @@ module.exports = function(name, key, api) {
         io.pushSync('brandLocales_' + brand_url);
         this.ajax('zdGetBrandLocales', brand_url);
       },
-      'zdUpsert<T>Translation': function(resource_data, entry, zdLocale) {
-        logger.info(M('Upsert <T> with Id:') + entry.id + 'and locale:' + zdLocale);
+      'zdUpsert<T>Translation': function(resource_data, entryid, zdLocale) {
+        logger.info(M('Upsert <T> with Id:') + entryid + 'and locale:' + zdLocale);
         var translationData = common.translationObjectFormat(this.$, resource_data, zdLocale, key);
 
-        var existing_locales = this.store(factory.key + entry.id + '_locales');
+        var existing_locales = this.store(factory.key + entryid + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
         });
         if (checkLocaleExists) {
-          this.ajax(M('zd<T>Update'), translationData, entry.id, zdLocale);
+          this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale);
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, entry.id, zdLocale);
+          this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale);
         }
       },
       'asyncGetZd<T>Translations': function(id) {
@@ -400,6 +416,15 @@ module.exports = function(name, key, api) {
         response[api] = ret;
         return response;
       },
+      get_upsert_url: function(resource_slug) {
+        // org, project and resource slug
+        var slugs = [
+          this.organization,
+          'zd-' + this.organization + '-' + this.selected_brand.id,
+          resource_slug,
+        ];
+        return this.tx + '/' + slugs.join('/') + '/upsert_zendesk/';
+      }
     },
   };
 
