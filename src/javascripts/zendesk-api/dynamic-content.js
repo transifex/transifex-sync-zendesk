@@ -2,8 +2,8 @@ var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
     syncUtil = require('../syncUtil'),
-    txProject = require('transifex-api/project'),
-    txResource = require('transifex-api/resource');
+    txProject = require('../transifex-api/project'),
+    txResource = require('../transifex-api/resource');
 
 var dynamic_content = module.exports = {
   // selfies

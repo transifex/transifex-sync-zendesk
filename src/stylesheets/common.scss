@@ -127,10 +127,10 @@ $form-label-disabled-color: $text-muted-color;
 /* Base &resets parts */
 
 // override zendesk container padding + margin
-& {
-  margin-top: 0 !important;
-  padding: 0 !important;
-}
+//& {
+  //margin-top: 0 !important;
+  //padding: 0 !important;
+//}
 
 * {
   box-sizing: border-box;

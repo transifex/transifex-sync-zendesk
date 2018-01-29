@@ -7,7 +7,8 @@
 var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
-    txProject = require('../transifex-api/project');
+    txProject = require('../transifex-api/project'),
+    findIndex = require('lodash.findindex');
 
 // e.g. name=Articles, key=article, api=articles
 module.exports = function(name, key, api) {
@@ -32,7 +33,7 @@ module.exports = function(name, key, api) {
       'zdGetBrands.fail': 'zdGetBrandsError',
       'zdGetBrandLocales.done': 'zdGetBrandLocalesDone',
       'zdGetBrandLocales.fail': 'zdGetBrandLocalesError',
-      'zdGetLocales.done': 'zdGetLocalesDone',
+      //'zdGetLocales.done': 'zdGetLocalesDone',
     },
     initialize: function() {
       var token, email,
@@ -131,7 +132,7 @@ module.exports = function(name, key, api) {
               translations_json: data,
               zendesk_url: this.base_url + api + '/' + id +
                 '/translations.json',
-              username: this.currentUser().email(),
+              username: io.getEmail(),
               token: this.settings.zd_api_key,
             }),
             beforeSend: function(jqxhr, settings) {
@@ -167,7 +168,7 @@ module.exports = function(name, key, api) {
               translations_json: data,
               zendesk_url: this.base_url + api + '/' + id +
                 '/translations.json',
-              username: this.currentUser().email(),
+              username: io.getEmail(),
               token: this.settings.zd_api_key,
             }),
             beforeSend: function(jqxhr, settings) {
@@ -185,26 +186,29 @@ module.exports = function(name, key, api) {
         io.popSync('brands');
         // Assume that the first brand is the project slug
         // at zendesk configuration
-        var subdomain = this.currentAccount().subdomain();
-        var agent_index = _.findIndex(data.brands, {subdomain: subdomain});
-        var def_index = _.findIndex(data.brands, {default: true});
-        data.brands[agent_index].exists = true;
-        // For all indents and purposes in this app the default brand will 
-        // be the brand associated with the main subdomain of the account
-        if (agent_index !== def_index ) {
-          data.brands[agent_index].default = true;
-          data.brands[def_index].default = false;
-          def_index = agent_index;
-        }
-        _.extend(this.selected_brand, data.brands[def_index]);
-        this.store('brands', data.brands);
-        data.brands = _.reject(data.brands, {default: true});
-        // Check if brand slug exists in transifex
-        _.each(data.brands, function(brand) {
-          this.asyncCheckTxProjectExists('zd-' + this.organization + '-' + brand.id);
-        }, this);
-        // Should be removed
-        this.checkAsyncComplete();
+        this.zafClient.get('currentAccount.subdomain')
+          .then(response => {
+            var subdomain = response['currentAccount.subdomain'];
+            var agent_index = findIndex(data.brands, {subdomain: subdomain});
+            var def_index = findIndex(data.brands, {default: true});
+            data.brands[agent_index].exists = true;
+            // For all indents and purposes in this app the default brand will 
+            // be the brand associated with the main subdomain of the account
+            if (agent_index !== def_index ) {
+              data.brands[agent_index].default = true;
+              data.brands[def_index].default = false;
+              def_index = agent_index;
+            }
+            _.extend(this.selected_brand, data.brands[def_index]);
+            this.store('brands', data.brands);
+            data.brands = _.reject(data.brands, {default: true});
+            // Check if brand slug exists in transifex
+            _.each(data.brands, function(brand) {
+              this.asyncCheckTxProjectExists('zd-' + this.organization + '-' + brand.id);
+            }, this);
+            // Should be removed
+            this.checkAsyncComplete();
+          });
       },
       'zdGetBrandsError': function(jqXHR, textStatus) {
         logger.info('Brands not retrieved: ', textStatus);

@@ -1,32 +1,35 @@
-(function() {
-  return txApp([
-    require('transifex-api/project'),
-    require('transifex-api/resource'),
-    require('zendesk-api/article'),
-    require('zendesk-api/category'),
-    require('zendesk-api/section'),
-    require('zendesk-api/dynamic-content'),
-    require('zendesk-api/config'),
-    require('zendesk-api/pagination'),
-    require('ui/sync-articles'),
-    require('ui/sync-categories'),
-    require('ui/sync-sections'),
-    require('ui/sync-dynamic-content'),
-    require('ui/brand-project'),
-    require('ui/notifications'),
-  ]);
-}());
+import BaseApp from 'base_app';
 
-var logger = require('logger'),
-    io = require('io'),
-    txutils = require('txUtil');
+var App = txApp([
+  require('./transifex-api/project'),
+  require('./transifex-api/resource'),
+  require('./zendesk-api/article'),
+  require('./zendesk-api/category'),
+  require('./zendesk-api/section'),
+  require('./zendesk-api/dynamic-content'),
+  require('./zendesk-api/config'),
+  require('./zendesk-api/pagination'),
+  require('./ui/sync-articles'),
+  require('./ui/sync-categories'),
+  require('./ui/sync-sections'),
+  require('./ui/sync-dynamic-content'),
+  require('./ui/brand-project'),
+  require('./ui/notifications'),
+]);
+
+var logger = require('./logger'),
+    io = require('./io'),
+    txutils = require('./txUtil');
 
 function txApp(modules) {
   // App was activated
   function appActivated() {
     //set settings to be accessible from everywhere
     io.setSettings(this.settings);
-    io.setEmail(this.currentUser().email());
+    this.zafClient.get('currentUser.email').
+      then((data) => {
+        io.setEmail(data['currentUser.email']);
+      });
 
     var ex = txutils.extractOrgFromUrl(this.settings.tx_project);
     this.store('page_title', ex.project_slug || 'Zendesk');
@@ -76,7 +79,7 @@ function txApp(modules) {
   // Note certain deps come from the framework:
   // this.$ = jQuery
   var events = {
-      'app.activated': 'appActivated',
+      'app.created': 'appActivated',
       'app.willDestroy': 'appWillDestroy'
     },
     requests = {},
@@ -110,6 +113,10 @@ function txApp(modules) {
     appWillDestroy: appWillDestroy,
     checkAsyncComplete: checkAsyncComplete,
   });
+
   return app;
 
 }
+
+
+export default BaseApp.extend(App);

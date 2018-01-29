@@ -1,6 +1,4 @@
-var zdArticle = require('zendesk-api/article');
-var txResource = require('transifex-api/resource');
-var syncUtil = require('syncUtil');
+var syncUtil = require('./syncUtil');
 var io = require('./io.js');
 
 var common = module.exports = {
