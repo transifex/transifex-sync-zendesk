@@ -8,7 +8,7 @@
     {{/each}}
   </head>
   <body>
-    <section data-main></section>
+    <section data-main class="transifex-app"></section>
     {{#each htmlWebpackPlugin.options.vendorJs}}
       <script type="text/javascript" src="{{this}}"></script>
     {{/each}}
