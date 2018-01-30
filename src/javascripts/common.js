@@ -1,17 +1,19 @@
+import $ from 'jquery';
+
 var syncUtil = require('./syncUtil');
 var io = require('./io.js');
 
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
-  translationObjectFormat: function($, response, locale, zd_type) {
+  translationObjectFormat: function(response, locale, zd_type) {
     if (io.getFeature('html-tx-resource')) {
-      return common.translationObjectHTML($, response, locale, zd_type);
+      return common.translationObjectHTML(response, locale, zd_type);
     } else {
       return syncUtil.zdGetTranslationObject(response, locale, zd_type);
     }
   },
 
-  translationObjectHTML: function($, res, l, zd_type) {
+  translationObjectHTML: function(res, l, zd_type) {
     var el = $('<div></div>'),
         title, body;
     el.html(res);
@@ -82,7 +84,7 @@ var common = module.exports = {
     }
   },
 
-  addCompletedLocales: function($, name, locales) {
+  addCompletedLocales: function(name, locales) {
     var linkId = "#" + "locales-" + name;
     if (!(_.isEmpty(locales))) {
       var tpl = _.template('<span class="u-color-secondary u-fontSize-small" data-locale="<%= loc.toLowerCase() %>"><%- loc %></span>');

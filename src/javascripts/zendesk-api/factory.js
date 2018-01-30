@@ -4,6 +4,8 @@
  * @module zendesk-api/factory
  */
 
+import $ from 'jquery';
+
 var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
@@ -259,13 +261,13 @@ module.exports = function(name, key, api) {
         this.store(key, existing_locales);
 
         io.popSync(factory.key + 'download' + entryid);
-        io.opSet(entryid + '_' + locale, 'OK');
+        io.opSet(entryid + '_' + locale, 'success');
         logger.info('Transifex Resource inserted with status:', 'OK');
         this.checkAsyncComplete();
       },
       'zd<T>UpdateDone': function(data, entryid, locale) {
         io.popSync(factory.key + 'download' + entryid + locale);
-        io.opSet(entryid + '_' + locale, 'OK');
+        io.opSet(entryid + '_' + locale, 'success');
         logger.info('Transifex Resource updated with status: OK');
         this.checkAsyncComplete();
       },
@@ -306,7 +308,7 @@ module.exports = function(name, key, api) {
       },
       'zdUpsert<T>Translation': function(resource_data, entryid, zdLocale) {
         logger.info(M('Upsert <T> with Id:') + entryid + 'and locale:' + zdLocale);
-        var translationData = common.translationObjectFormat(this.$, resource_data, zdLocale, key);
+        var translationData = common.translationObjectFormat(resource_data, zdLocale, key);
 
         var existing_locales = this.store(factory.key + entryid + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){

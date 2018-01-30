@@ -186,8 +186,8 @@ var project = module.exports = {
       _.map(targets, function(locale)  {
         io.pushSync('add_language_' + slug + '_' + locale);
         that.ajax('txProjectAddLanguage', slug, locale, brand_id)
-          .done(data => this.txProjectAddLanguageDone(data, slug, locale, brand_id))
-          .fail(xhr => this.txProjectAddLanguageFail(xhr, slug, locale));
+          .done(data => that.txProjectAddLanguageDone(data, slug, locale, brand_id))
+          .fail(xhr => that.txProjectAddLanguageFail(xhr, slug, locale));
       });
     },
     txProjectCreateError: function(slug) {
@@ -247,10 +247,10 @@ var project = module.exports = {
       io.pushSync('create_project_' + slug);
       this.ajax('txProjectCreate', slug, name, source, targets, brand_id)
         .done(data => {
-          txProjectCreateDone(data, slug, targets, brand_id);
+          this.txProjectCreateDone(data, slug, targets, brand_id);
         })
         .fail(xhr => {
-          txProjectCreateError(slug);
+          this.txProjectCreateError(slug);
         });
     },
   },

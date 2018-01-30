@@ -3,6 +3,7 @@
  * @module ui/sync-factory
  */
 
+import $ from 'jquery';
 
 var txProject = require('../transifex-api/project'),
     txResource = require('../transifex-api/resource'),
@@ -46,12 +47,12 @@ module.exports = function(T, t, api) {
       'ui<T>Search': function(event) {
         if (this.processing) return;
         var code = event.which || event.keyCode;
-        var search_query = this.$(m('.js-<t>.js-search :input')).val();
+        var search_query = $(m('.js-<t>.js-search :input')).val();
         if(search_query !== '') {
-          this.$('.js-clear-search').removeClass("u-display-none");
+          $('.js-clear-search').removeClass("u-display-none");
         }
         else if (io.getQuery() === ''){
-          this.$('.js-clear-search').addClass("u-display-none");
+          $('.js-clear-search').addClass("u-display-none");
         }
         if (code == 13){
           event.preventDefault();
@@ -88,21 +89,21 @@ module.exports = function(T, t, api) {
       },
       'ui<T>SelectAll': function(event) {
         if (this.processing) return;
-        if (this.$(event.target).is(':checked')) {
-          this.$(m('.js-<t>.js-checkbox:not(:disabled)')).prop('checked', true);
+        if ($(event.target).is(':checked')) {
+          $(m('.js-<t>.js-checkbox:not(:disabled)')).prop('checked', true);
         }
         else {
-          this.$(m('.js-<t>.js-checkbox')).prop('checked', false);
+          $(m('.js-<t>.js-checkbox')).prop('checked', false);
         }
         this[M('ui<T>UpdateButtons')](event);
       },
       'ui<T>UpdateButtons': function(event) {
         if (this.processing) return;
-        var ready_for_download = this.$(m('.js-<t>.js-checkbox.js-can-download:checked')).length,
-            selected = this.$(m('.js-<t>.js-checkbox:checked')),
+        var ready_for_download = $(m('.js-<t>.js-checkbox.js-can-download:checked')).length,
+            selected = $(m('.js-<t>.js-checkbox:checked')),
             selected_count = selected.length,
-            batch_upload = this.$(m('.js-<t>.js-batch-upload')),
-            batch_download = this.$(m('.js-<t>.js-batch-download'));
+            batch_upload = $(m('.js-<t>.js-batch-upload')),
+            batch_download = $(m('.js-<t>.js-batch-download'));
 
         batch_upload.removeClass('has-spinner');
         batch_download.removeClass('has-spinner');
@@ -125,9 +126,9 @@ module.exports = function(T, t, api) {
           batch_download.text('Get Translations');
         }
         //update select all
-        this.$(m('.js-<t>.js-select-all')).prop(
+        $(m('.js-<t>.js-select-all')).prop(
           'checked',
-          selected_count == this.$(m('.js-<t>.js-checkbox:not(:disabled)')).length
+          selected_count == $(m('.js-<t>.js-checkbox:not(:disabled)')).length
         );
       },
       'ui<T>Tab': function(event) {
@@ -192,24 +193,24 @@ module.exports = function(T, t, api) {
         });
 
         var sorting = io.getSorting();
-        this.$('.js-sortby-' + sorting.sortby).addClass("is-active");
-        this.$('[perpage="' + sorting.perpage + '"]').addClass('is-active');
-        this.$('.js-goto-page[data-page="' + factory.currentpage + '"]').addClass('is-active');
+        $('.js-sortby-' + sorting.sortby).addClass("is-active");
+        $('[perpage="' + sorting.perpage + '"]').addClass('is-active');
+        $('.js-goto-page[data-page="' + factory.currentpage + '"]').addClass('is-active');
 
-        this.original_upload_text = this.$(m('.js-<t>.js-batch-upload')).text();
+        this.original_upload_text = $(m('.js-<t>.js-batch-upload')).text();
         this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
-        this.$('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip();
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
         if (this.processing) return;
 
         var object_ids = [],
-            selected = this.$(m(".js-<t>.js-can-upload:checked"));
+            selected = $(m(".js-<t>.js-can-upload:checked"));
         _.each(selected, function(row){
-          object_ids.push(this.$(row).attr('id'));
+          object_ids.push($(row).attr('id'));
         });
         var data = this.store(zdApi.key),
             obj = this[M('calcResourceName<T>')](data),
@@ -240,9 +241,9 @@ module.exports = function(T, t, api) {
         if (this.processing) return;
 
         var object_ids = [],
-            selected = this.$(m(".js-<t>.js-can-download:checked"));
+            selected = $(m(".js-<t>.js-can-download:checked"));
         _.each(selected, function(row){
-          object_ids.push(this.$(row).attr('id'));
+          object_ids.push($(row).attr('id'));
         });
         var project = this.store(txProject.key),
             data = this.store(zdApi.key),
@@ -300,7 +301,7 @@ module.exports = function(T, t, api) {
         var total = 0, failed = 0;
         _.each(io.opGetAll(), function(status, resourceName) {
           total++;
-          var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-item="controller"]'));
+          var el = $(m('.js-<t>[data-resource="' + resourceName + '"] [data-item="controller"]'));
           var is_new = !(el.find('[data-status="not_found"]').hasClass('is-hidden'));
           el.addClass('o-status').removeClass('o-interactive-list__item');
           if (status == 'success') {
@@ -319,10 +320,10 @@ module.exports = function(T, t, api) {
           this.notifySuccess(total + ' ' + content_type + '  were successfully uploaded to Transifex.');
         } else if (failed == total) {
           this.notifyError('None of the selected ' + content_type + ' could be uploaded to Transifex.');
-          this.$('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-error');
+          $('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-error');
         } else {
           this.notifyWarning((total - failed) + ' ' + content_type + ' were successfully uploaded to Transifex, ' + failed + ' ' + api + ' could not be uploaded.');
-          this.$('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-warning');
+          $('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-warning');
         }
       },
       'ui<T>DownloadComplete': function() {
@@ -336,12 +337,12 @@ module.exports = function(T, t, api) {
           total++;
           if (status !== 'success') {
             failed++;
-            var er = this.$(m('.js-<t>[data-resource="' + opName + '"] [data-locale]'));
+            var er = $(m('.js-<t>[data-resource="' + opName + '"] [data-locale]'));
             er.removeClass('u-color-secondary').addClass('js-locale-problem');
           } else {
             var resourceName = m('<t>') + '-' + opName.split('_')[0];
             var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
-            var el = this.$(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
+            var el = $(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
             el.addClass('js-locale-ok');
           }
         }, this);
@@ -350,12 +351,12 @@ module.exports = function(T, t, api) {
         if (failed === 0) {
           this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected ' + content_type + '.');
         } else if (failed == total) {
-          this.$('.js-locale-problem')
+          $('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemError');
           this.notifyError('Translations could not be updated for any of the selected ' + content_type + '.');
         } else {
-          this.$('.js-locale-problem')
+          $('.js-locale-problem')
             .removeClass('js-locale-problem')
             .addClass('u-color-systemWarning');
           if (failed == 1) {
@@ -365,8 +366,8 @@ module.exports = function(T, t, api) {
           }
         }
 
-        this.$(m('.js-<t>[data-resource]')).each(function() {
-          var el = that.$(this); // Makes me sad...
+        $(m('.js-<t>[data-resource]')).each(function() {
+          var el = $(this);
           if (el.find('.js-locale-ok').length) {
             el.find('.js-locale-ok').removeClass('js-locale-ok');
             el.addClass('o-status').removeClass('o-interactive-list__item');
@@ -389,7 +390,7 @@ module.exports = function(T, t, api) {
         if (this.processing) return;
         var sorting = io.getSorting(),
             query = io.getQuery();
-        sorting.perpage = this.$(event.target).closest('[perpage]').attr('perpage');
+        sorting.perpage = $(event.target).closest('[perpage]').attr('perpage');
         io.setSorting(sorting);
         factory.currentpage = '1';
         this[M('asyncGetZd<T>Full')](
@@ -474,12 +475,12 @@ module.exports = function(T, t, api) {
           resourceName = data[t][i].resource_name;
           resource = this.store(txResource.key + resourceName);
           var tx_completed = this.completedLanguages(resource);
-          common.addCompletedLocales(this.$, resourceName, tx_completed);
+          common.addCompletedLocales(resourceName, tx_completed);
 
           if (tx_completed.length) {
-            this.$('#' + resourceName).prop('disabled', false).addClass('js-can-download');
+            $('#' + resourceName).prop('disabled', false).addClass('js-can-download');
           }
-          var el_item = this.$(m('.js-<t>[data-resource="' + resourceName + '"]'));
+          var el_item = $(m('.js-<t>[data-resource="' + resourceName + '"]'));
           el_item.find('[data-status]').addClass('is-hidden');
           el_item.find('[data-item="controller"]').
             addClass('o-interactive-list__item').
@@ -487,7 +488,7 @@ module.exports = function(T, t, api) {
 
           //not uploaded resource
           if (typeof resource === 'number' && !_.contains(resource_slugs, resourceName)) {
-            this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
+            $('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="not_found"]').removeClass('is-hidden');
           }
           //normal
@@ -499,7 +500,7 @@ module.exports = function(T, t, api) {
               el_item.find('.js-trans-percentage').text(completion);
               el_item.find('[data-status="in_translation"]').removeClass('is-hidden');
             }
-            this.$('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
+            $('#' + resourceName).prop('disabled', false).addClass('js-can-upload');
             el_item.find('[data-status="found"]').removeClass('is-hidden');
             el_item.find('[data-status="found"]').attr('data-original-title', projectResources[resourceName]);
           }
@@ -514,7 +515,7 @@ module.exports = function(T, t, api) {
         if (has_error) {
           this.notifyWarning('Some Transifex resources could not be loaded. Please refresh to try again.');
         }
-        this.$(m('.js-<t>.js-select-all')).prop('disabled', false);
+        $(m('.js-<t>.js-select-all')).prop('disabled', false);
         this[M('ui<T>LanguageComplete')]();
       },
 
@@ -533,7 +534,7 @@ module.exports = function(T, t, api) {
           if (typeof resource !== 'number') {
             numLanguages = this.completedLanguages(resource).length;
             if (numLanguages) {
-              this.$('#' + resourceName).addClass('js-can-download');
+              $('#' + resourceName).addClass('js-can-download');
             }
           }
         }
@@ -544,7 +545,7 @@ module.exports = function(T, t, api) {
         if (this.processing) return;
 
         logger.debug(M('ui<T>GotoPage'));
-        var page = this.$(event.target).attr("data-page"),
+        var page = $(event.target).attr("data-page"),
             sorting = io.getSorting(),
             query = io.getQuery();
         factory.currentpage = page;
@@ -567,7 +568,7 @@ module.exports = function(T, t, api) {
         var brand;
         if (event && event.preventDefault) {
           event.preventDefault();
-          brand = parseInt(this.$(event.target).data('brand'));
+          brand = parseInt($(event.target).data('brand'));
         } else {
           brand = event;
         }
@@ -613,39 +614,38 @@ module.exports = function(T, t, api) {
       'start<T>Process': function(action) {
         this.processing = true;
         this.notifyReset();
-        this.$(m('.js-<t>.js-refresh')).addClass('is-disabled');
-        this.$(m('.js-<t>.js-batch-upload')).addClass('is-disabled');
-        this.$(m('.js-<t>.js-batch-download')).addClass('is-disabled');
-        this.$(m('.js-<t>.js-checkbox')).prop('disabled', true);
-        this.$(m('.js-<t>.js-select-all')).prop('disabled', true);
-        var $ = this.$;
-        this.$(m('.js-<t>[data-resource]')).each(function() {
+        $(m('.js-<t>.js-refresh')).addClass('is-disabled');
+        $(m('.js-<t>.js-batch-upload')).addClass('is-disabled');
+        $(m('.js-<t>.js-batch-download')).addClass('is-disabled');
+        $(m('.js-<t>.js-checkbox')).prop('disabled', true);
+        $(m('.js-<t>.js-select-all')).prop('disabled', true);
+        $(m('.js-<t>[data-resource]')).each(function() {
           $(this).find('[data-item="controller"]:not(.js-perma-fail)').
             removeClass('o-status is-success is-error is-warning').
             addClass('o-interactive-list__item');
         });
         if (action == 'upload') {
-          this.$(m('.js-<t>.js-batch-upload')).
+          $(m('.js-<t>.js-batch-upload')).
             addClass('has-spinner').
             html('<span class="o-spinner o-button__spinner"></span>');
         }
         else if (action == 'download') {
-          this.$(m('.js-<t>.js-batch-download')).
+          $(m('.js-<t>.js-batch-download')).
             addClass('has-spinner').
             html('<span class="o-spinner o-button__spinner"></span>');
         }
         //Clean up previous state
-        this.$('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
-        this.$(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
+        $('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
+        $(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
       },
 
       'end<T>Process': function() {
         this.processing = false;
-        this.$(m('.js-<t>.js-refresh')).removeClass('is-disabled');
-        this.$(m('.js-<t>.js-checkbox')).prop('checked', false);
-        this.$(m('.js-<t>.js-checkbox.js-can-upload')).prop('disabled', false);
-        this.$(m('.js-<t>.js-checkbox.js-can-download')).prop('disabled', false);
-        this.$(m('.js-<t>.js-select-all')).prop('disabled', false).
+        $(m('.js-<t>.js-refresh')).removeClass('is-disabled');
+        $(m('.js-<t>.js-checkbox')).prop('checked', false);
+        $(m('.js-<t>.js-checkbox.js-can-upload')).prop('disabled', false);
+        $(m('.js-<t>.js-checkbox.js-can-download')).prop('disabled', false);
+        $(m('.js-<t>.js-select-all')).prop('disabled', false).
           prop('checked', false);
         this[M('ui<T>UpdateButtons')]();
       },
@@ -743,7 +743,7 @@ module.exports = function(T, t, api) {
 
       'handleSearch<T>': function(){
         if (t != 'articles') {
-          this.$('.js-search').addClass("u-display-none");
+          $('.js-search').addClass("u-display-none");
         }
         var search_query = this.store("search_query");
       }

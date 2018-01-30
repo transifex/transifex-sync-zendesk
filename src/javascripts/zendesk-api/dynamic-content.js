@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
@@ -108,7 +110,7 @@ var dynamic_content = module.exports = {
       logger.info('DC variants inserted with status:', 'OK');
       io.popSync(dynamic_content.key + entryid + 'insert' + locale);
       var existing_locales = this.store(dynamic_content.key + entryid + '_locales');
-      io.opSet(entryid + '_' + locale, 'OK');
+      io.opSet(entryid + '_' + locale, 'success');
       existing_locales.push(locale);
       this.store(dynamic_content.key + entryid + '_locales', existing_locales);
       this.checkAsyncComplete();
@@ -122,7 +124,7 @@ var dynamic_content = module.exports = {
     variantUpdateDone: function(data, entryid, locale) {
       logger.info('DC variant updated with status:', 'OK');
       io.popSync(dynamic_content.key + entryid + 'update' + locale);
-      io.opSet(entryid + '_' + locale, 'OK');
+      io.opSet(entryid + '_' + locale, 'success');
       this.checkAsyncComplete();
     },
     variantUpdateFail: function(jqXHR, entryid, locale) {
@@ -134,10 +136,10 @@ var dynamic_content = module.exports = {
   },
   actionHandlers: {
     zdUpsertDynamicContentTranslation: function(resource_data, entryid, zd_locale) {
-      logger.info('Upsert Dynamic Content with Id:' + entryid + 'and locale:' + zd_locale);
+      logger.info('Upsert Dynamic Content with Id:' + entryid + ' and locale:' + zd_locale);
 
       var data, variant, locale_id,
-          translation_data = common.translationObjectFormat(this.$, resource_data, zd_locale),
+          translation_data = common.translationObjectFormat(resource_data, zd_locale),
           existing_locales = this.store(dynamic_content.key + entryid + '_locales');
       locale_id = io.getIdFromLocale(zd_locale);
       data = {

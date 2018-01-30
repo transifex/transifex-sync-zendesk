@@ -2,6 +2,8 @@
  * UI notifications
  * @module ui/sync-articles
  */
+import $ from 'jquery';
+
 var syncUtil = require('../syncUtil');
 
 
@@ -17,7 +19,7 @@ module.exports = {
         brands: this.buildBrandsData().brands,
         locales: this.store('brandLocales'),
         source: this.store('brandSource'),
-        has_target: this.store('brandLocales').length !== 0,
+        has_target: Boolean(this.store('brandLocales') && this.store('brandLocales').length),
         brandName: _.find(this.store('brands'), {
           subdomain: this.store('brandAdd')
         }).name
@@ -30,7 +32,7 @@ module.exports = {
       });
       this.asyncCreateTxProject(
         'zd-' + this.organization + '-' + brand.id,
-        this.$('.js-brand-project-name').val(),
+        $('.js-brand-project-name').val(),
         syncUtil.zdLocaletoTx(this.store('brandSource').locale),
         _.map(this.store('brandLocales'), 'locale').map(syncUtil.zdLocaletoTx),
         brand.id
@@ -40,7 +42,7 @@ module.exports = {
     },
     uiBrandProjectSelect: function(event) {
       event.preventDefault();
-      var brand = this.$(event.target).val();
+      var brand = $(event.target).val();
       this.store('brandAdd', brand);
       this.zdGetBrandLocales(brand);
       var t = 'brandsCreate';
