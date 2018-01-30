@@ -19,22 +19,6 @@ module.exports = function(name, key, api) {
   var factory = {
     key: 'zd_' + key,
     base_url: '/api/v2/help_center/',
-    events: {
-      'zd<T>Full.done': M('zd<T>Done'),
-      'zd<T>GetTranslations.done': M('zd<T>GetTranslationsDone'),
-      'zd<T>Update.done': M('zd<T>UpdateDone'),
-      'zd<T>Insert.done': M('zd<T>InsertDone'),
-      'zd<T>Update.fail': M('zd<T>UpdateFail'),
-      'zd<T>Insert.fail': M('zd<T>InsertFail'),
-      'zd<T>GetTranslations.fail': M('zd<T>SyncError'),
-      'zd<T>Full.fail': M('zd<T>SyncError'),
-      'zd<T>Search.done': M('zd<T>SearchDone'),
-      'zdGetBrands.done': 'zdGetBrandsDone',
-      'zdGetBrands.fail': 'zdGetBrandsError',
-      'zdGetBrandLocales.done': 'zdGetBrandLocalesDone',
-      'zdGetBrandLocales.fail': 'zdGetBrandLocalesError',
-      //'zdGetLocales.done': 'zdGetLocalesDone',
-    },
     initialize: function() {
       var token, email,
           settings = io.getSettings();
@@ -153,10 +137,6 @@ module.exports = function(name, key, api) {
               locale + '.json',
             type: 'PUT',
             data: JSON.stringify(data),
-            beforeSend: function(jqxhr, settings) {
-              jqxhr.id = id;
-              jqxhr.locale = locale;
-            },
             contentType: 'application/json'
           };
         } else { // Pass it through Transifex Proxy
@@ -171,10 +151,6 @@ module.exports = function(name, key, api) {
               username: io.getEmail(),
               token: this.settings.zd_api_key,
             }),
-            beforeSend: function(jqxhr, settings) {
-              jqxhr.id = id;
-              jqxhr.locale = locale;
-            },
             contentType: 'application/json',
             headers: txProject.headers,
           };
@@ -182,7 +158,7 @@ module.exports = function(name, key, api) {
       },
     },
     eventHandlers: {
-      'zdGetBrandsDone': function(data, textStatus) {
+      'zdGetBrandsDone': function(data) {
         io.popSync('brands');
         // Assume that the first brand is the project slug
         // at zendesk configuration
@@ -210,14 +186,14 @@ module.exports = function(name, key, api) {
             this.checkAsyncComplete();
           });
       },
-      'zdGetBrandsError': function(jqXHR, textStatus) {
-        logger.info('Brands not retrieved: ', textStatus);
+      'zdGetBrandsError': function(jqXHR) {
+        logger.info('Brands not retrieved: ', jqXHR.statusText);
         this.store('brands', []);
         io.popSync('brands');
         this.checkAsyncComplete();
       },
-      'zdGetBrandLocalesDone': function(data, textStatus, jqXHR) {
-        io.popSync('brandLocales_' + jqXHR.brand_url);
+      'zdGetBrandLocalesDone': function(data, brand_url) {
+        io.popSync('brandLocales_' + brand_url);
 
         this.store('brandLocales', _.compact(_.map(
           _.filter(data.locales, function(locale) {
@@ -232,12 +208,12 @@ module.exports = function(name, key, api) {
         }));
         this.checkAsyncComplete();
       },
-      'zdGetBrandLocalesError': function(jqXHR, textStatus) {
-        io.popSync('brandLocales_' + jqXHR.brand_url);
+      'zdGetBrandLocalesError': function(jqXHR, brand_url) {
+        io.popSync('brandLocales_' + brand_url);
         this.checkAsyncComplete();
       },
-      'zd<T>Done': function(data, textStatus) {
-        logger.info(M('Zendesk <T> retrieved with status:'), textStatus);
+      'zd<T>Done': function(data) {
+        logger.info(M('Zendesk <T> retrieved with status:'), 'OK');
         //map category/section name to title
         if (data) {
           if (data.categories) {
@@ -256,8 +232,8 @@ module.exports = function(name, key, api) {
         io.popSync(factory.key);
         this.checkAsyncComplete();
       },
-      'zd<T>SyncError': function(jqXHR, textStatus) {
-        logger.info(M('Zendesk <T> Retrieved with status:'), textStatus);
+      'zd<T>SyncError': function(jqXHR) {
+        logger.info(M('Zendesk <T> Retrieved with status:'), jqXHR.statusText);
         io.popSync(factory.key);
         //this.uiErrorPageInit();
         if (jqXHR.status === 401) {
@@ -269,46 +245,44 @@ module.exports = function(name, key, api) {
         }
         this.checkAsyncComplete();
       },
-      'zd<T>GetTranslationsDone': function(data, textStatus, jqXHR) {
-        logger.info(M('Zendesk <T> Translations retrieved with status:'), textStatus);
-        var existing_locales = _.map(data['translations'], function(t){
-          return t['locale'];
-        });
-        this.store(factory.key + jqXHR.id + '_locales', existing_locales);
-        io.popSync(factory.key + jqXHR.id);
+      'zd<T>GetTranslationsDone': function(data, entryid) {
+        logger.info(M('Zendesk <T> Translations retrieved with status:'), 'OK');
+        let existing_locales = _.map(data['translations'], t => t['locale']);
+        this.store(factory.key + entryid + '_locales', existing_locales);
+        io.popSync(factory.key + entryid);
         this.checkAsyncComplete();
       },
-      'zd<T>InsertDone': function(data, textStatus, jqXHR) {
-        var key = factory.key + jqXHR.id + '_locales';
+      'zd<T>InsertDone': function(data, entryid, locale) {
+        var key = factory.key + entryid + '_locales';
         var existing_locales = this.store(key);
-        existing_locales.push(jqXHR.locale);
+        existing_locales.push(locale);
         this.store(key, existing_locales);
 
-        io.popSync(factory.key + 'download' + jqXHR.id);
-        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
-        logger.info('Transifex Resource inserted with status:', textStatus);
+        io.popSync(factory.key + 'download' + entryid);
+        io.opSet(entryid + '_' + locale, 'OK');
+        logger.info('Transifex Resource inserted with status:', 'OK');
         this.checkAsyncComplete();
       },
-      'zd<T>UpdateDone': function(data, textStatus, jqXHR) {
-        io.popSync(factory.key + 'download' + jqXHR.id + jqXHR.locale);
-        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
-        logger.info('Transifex Resource updated with status:', textStatus);
+      'zd<T>UpdateDone': function(data, entryid, locale) {
+        io.popSync(factory.key + 'download' + entryid + locale);
+        io.opSet(entryid + '_' + locale, 'OK');
+        logger.info('Transifex Resource updated with status: OK');
         this.checkAsyncComplete();
       },
-      'zd<T>InsertFail': function(jqXHR, textStatus) {
-        io.popSync(factory.key + 'download' + jqXHR.id);
-        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
-        logger.info('Transifex Resource update failed with status:', textStatus);
+      'zd<T>InsertFail': function(jqXHR, entryid, locale) {
+        io.popSync(factory.key + 'download' + entryid);
+        io.opSet(entryid + '_' + locale, jqXHR.statusText);
+        logger.info('Transifex Resource update failed with status:', jqXHR.statusText);
         this.checkAsyncComplete();
       },
-      'zd<T>UpdateFail': function(jqXHR, textStatus) {
-        io.popSync(factory.key + 'download' + jqXHR.id + jqXHR.locale);
-        io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
-        logger.info('Transifex Resource update failed with status:', textStatus);
+      'zd<T>UpdateFail': function(jqXHR, entryid, locale) {
+        io.popSync(factory.key + 'download' + entryid + locale);
+        io.opSet(entryid + '_' + locale, jqXHR.statusText);
+        logger.info('Transifex Resource update failed with status:', jqXHR.statusText);
         this.checkAsyncComplete();
       },
-      'zd<T>SearchDone': function(data, textStatus) {
-        logger.info(M('Zendesk Search <T> retrieved with status:'), textStatus);
+      'zd<T>SearchDone': function(data) {
+        logger.info(M('Zendesk Search <T> retrieved with status:'), 'OK');
         data['articles'] = data['results'];
         delete data['results'];
         this.store(factory.key, data);
@@ -320,11 +294,15 @@ module.exports = function(name, key, api) {
     actionHandlers: {
       'zdGetBrands': function() {
         io.pushSync('brands');
-        this.ajax('zdGetBrands');
+        this.ajax('zdGetBrands')
+          .done(data => this.zdGetBrandsDone(data))
+          .fail(xhr => this.zdGetBrandsError(xhr));
       },
       'zdGetBrandLocales': function(brand_url) {
         io.pushSync('brandLocales_' + brand_url);
-        this.ajax('zdGetBrandLocales', brand_url);
+        this.ajax('zdGetBrandLocales', brand_url)
+          .done(data => this.zdGetBrandLocalesDone(data, brand_url))
+          .fail(xhr => this.zdGetBrandLocalesError(xhr, brand_url));
       },
       'zdUpsert<T>Translation': function(resource_data, entryid, zdLocale) {
         logger.info(M('Upsert <T> with Id:') + entryid + 'and locale:' + zdLocale);
@@ -335,15 +313,21 @@ module.exports = function(name, key, api) {
           return l == zdLocale;
         });
         if (checkLocaleExists) {
-          this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale);
+          this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale)
+            .done(data => this[M("zd<T>UpdateDone")](data, entryid, zdLocale))
+            .fail(xhr => this[M("zd<T>UpdateFail")](xhr, entryid, zdLocale));
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale);
+          this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale)
+            .done(data => this[M("zd<T>InsertDone")](data, entryid, zdLocale))
+            .fail(xhr => this[M("zd<T>InsertFail")](xhr, entryid, zdLocale));
         }
       },
       'asyncGetZd<T>Translations': function(id) {
         logger.debug(M('function: [asyncGetZd<T>Translation]'));
         io.pushSync(factory.key + id);
-        this.ajax(M('zd<T>GetTranslations'), id);
+        this.ajax(M('zd<T>GetTranslations'), id)
+          .done(data => this[M("zd<T>GetTranslationsDone")](data, id))
+          .fail(xhr => this[M("zd<T>SyncError")](xhr));
       },
       'asyncGetZd<T>Full': function(page, sortby, sortdirection, numperpage, search_query) {
         logger.debug(M('function: [asyncGetZd<T>Full] params: [page]') +
@@ -352,10 +336,13 @@ module.exports = function(name, key, api) {
         io.pushSync(factory.key);
 
         if(search_query){
-          this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query);
+          this.ajax(M('zd<T>Search'), page, sortby, sortdirection, numperpage, search_query)
+            .done(data => this[M("zd<T>SearchDone")](data));
         }
         else{
-          this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage);
+          this.ajax(M('zd<T>Full'), page, sortby, sortdirection, numperpage)
+            .done(data => this[M("zd<T>Done")](data))
+            .fail(xhr => this[M("zd<T>SyncError")](xhr));
         }
       },
       'get<T>ForTranslation': function(entry){

@@ -19,10 +19,6 @@ var project = module.exports = {
   },
   username: '',
   password: '',
-  events: {
-    'txProjectAddLanguage.done': 'txProjectAddLanguageDone',
-    'txProjectAddLanguage.fail': 'txProjectAddLanguageFail',
-  },
   initialize: function() {
     var settings = io.getSettings();
     var url = settings.tx_project;
@@ -189,7 +185,9 @@ var project = module.exports = {
 
       _.map(targets, function(locale)  {
         io.pushSync('add_language_' + slug + '_' + locale);
-        that.ajax('txProjectAddLanguage', slug, locale, brand_id);
+        that.ajax('txProjectAddLanguage', slug, locale, brand_id)
+          .done(data => this.txProjectAddLanguageDone(data, slug, locale, brand_id))
+          .fail(xhr => this.txProjectAddLanguageFail(xhr, slug, locale));
       });
     },
     txProjectCreateError: function(slug) {
@@ -197,15 +195,15 @@ var project = module.exports = {
       io.setPageError('txProject:login');
       this.checkAsyncComplete();
     },
-    txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
-      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
+    txProjectAddLanguageDone: function(data, slug, language_code, brand_id) {
+      io.popSync('add_language_' + slug + '_' + language_code);
       var localeCount = this.store('localeCount') + 1;
       this.store('localeCount', localeCount);
       var localeTarget = this.store('localeTarget');
 
       if (localeCount === localeTarget) {
         var brands = this.store('brands');
-        var brand_id = jqXHR.brand_id;
+        var brand_id = brand_id;
         this.store('brands', _.map(brands, function(brand) {
           if (brand.id == brand_id) return _.extend(brand, {exists: true});
           return brand;
@@ -214,8 +212,8 @@ var project = module.exports = {
       }
       // this.checkAsyncComplete(); Handled above
     },
-    txProjectAddLanguageFail: function(jqXHR, textStatus) {
-      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
+    txProjectAddLanguageFail: function(jqXHR, slug, language_code) {
+      io.popSync('add_language_' + slug + '_' + language_code);
       io.setPageError('txProject:login');
       // this.checkAsyncComplete();  Handled with promise all
     },
