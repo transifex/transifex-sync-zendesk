@@ -3,15 +3,21 @@ REPORTER = spec
 init:
 	npm install;
 	ln -s ./node_modules/webpack/bin/webpack.js ./webpack
-	ln -s ./node_modules/gulp/bin/gulp.js ./gulp
-	ln -s ./node_modules/babel-cli/bin/babel.js ./babel
 	ln -s ./node_modules/mocha/bin/mocha ./mocha
 
+clean:
+	rm ./dist/assets/index.html
+	rm ./dist/assets/main.js
+	rm ./dist/assets/main.css
+
 build:
-	cp -rf ./src/ ./dist/
+	webpack
 
 run:
-	cd ./dist;cat ../inputs.txt | zat server;
+	cat inputs.txt | zat server --path=./dist;
+
+jstest:
+	node mocha test/setup/node.js test/unit
 
 validate:
 	cd ./dist;zat validate
