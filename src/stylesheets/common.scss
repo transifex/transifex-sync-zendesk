@@ -196,6 +196,7 @@ html, body, section[data-main] { height: 100%; }
   .u-position-relative  { position: relative !important; }
 
   .u-float-left   { float: left !important; }
+  .u-float-right   { float: right !important; }
 
   .u-clearfix {
     &:before,
@@ -507,6 +508,7 @@ html, body, section[data-main] { height: 100%; }
   .o-link {
     color: $link-active-color;
     text-decoration: none;
+    background-image: none !important;
     transition: color 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease-out;
     -moz-transition: color 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease-out;
     -webkit-transition: color 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease-out;
@@ -532,6 +534,7 @@ html, body, section[data-main] { height: 100%; }
       color: lighten( $link-active-color, $lightness-once-percentage );
       cursor: pointer;
       text-decoration: underline;
+      background-color: $background-muted-color;
     }
 
     &:focus,
@@ -854,6 +857,9 @@ html, body, section[data-main] { height: 100%; }
     &:focus,
     &.is-focus {
       border-color: $form-focus-border-color;
+      /* Avoid the default Bootstrap's effect */
+      box-shadow: none;
+      -webkit-box-shadow: none;
     }
 
     &[disabled],
