@@ -31,8 +31,6 @@ never get final versions).
 
 ## Project Directory Structure
 ```
-├── bin
-│   └── repl.js           // interactive ES6 CLI environment
 ├── dist                  // The folder in which webpack packages the built version of your app
 ├── docs                  // FUTURE: Planning docs
 ├── inputs.txt            // Preconfigured settings for testing
