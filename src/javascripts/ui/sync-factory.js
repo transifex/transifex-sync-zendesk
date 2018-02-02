@@ -205,7 +205,7 @@ module.exports = function(T, t, api) {
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
-        if (this.processing) return;
+        if (this.processing || $(event.target).hasClass('is-disabled')) return;
 
         var object_ids = [],
             selected = $(m(".js-<t>.js-can-upload:checked"));
@@ -238,7 +238,7 @@ module.exports = function(T, t, api) {
       },
       'ui<T>BatchDownload': function(event) {
         if (event) event.preventDefault();
-        if (this.processing) return;
+        if (this.processing || $(event.target).hasClass('is-disabled')) return;
 
         var object_ids = [],
             selected = $(m(".js-<t>.js-can-download:checked"));
