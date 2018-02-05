@@ -2,8 +2,8 @@ REPORTER = spec
 
 init:
 	npm install;
-	ln -s ./node_modules/webpack/bin/webpack.js ./webpack
-	ln -s ./node_modules/mocha/bin/mocha ./mocha
+	ln -sf ./node_modules/webpack/bin/webpack.js ./webpack
+	ln -sf ./node_modules/mocha/bin/mocha ./mocha
 
 clean:
 	rm ./dist/assets/index.html
@@ -11,7 +11,7 @@ clean:
 	rm ./dist/assets/main.css
 
 build:
-	webpack
+	./webpack
 
 run:
 	cat inputs.txt | zat server --path=./dist;

@@ -59,7 +59,7 @@ never get final versions).
 ```
 
 
-## Running the code (Legacy)
+## Running the code
 
 Be sure you Download and install 'zat' tool by running:
 ```bash
@@ -100,11 +100,8 @@ can create an `inputs.txt` file with these settings.  Here is an example:
 username
 pass (or API key)
 https://www.transifex.com/test-organization-4/zendesk-test/
+<zendesk_api_key>
 {"html-tx-resource":false}
-0
-true
-false
-30000
 ```
 
 ## Dependencies
@@ -127,7 +124,7 @@ files that are loaded via HTTP and are not directly packed within the app.
 
 ## Feature Toggle - For planned future enhancement
 
-For backwardis compatibility there is a feature switch specified in the
+For backwards compatibility there is a feature switch specified in the
 configuration. Feature switches are a JSON object of key names.  Because of the
 limited types available in manifest.json...they are specified as a JSON string.
 This uses the 'features' config set in the manifest as a `Text` field, so you
