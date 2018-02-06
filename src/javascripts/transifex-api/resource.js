@@ -35,9 +35,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/stats/',
         type: 'GET',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-        },
         dataType: 'json',
         cors: true
       };
@@ -48,11 +45,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/translation/' + languageCode + '/',
         type: 'GET',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.languageCode = languageCode;
-          jqxhr.entryid = entryid;
-        },
         dataType: 'json',
         cors: true
       };
@@ -63,10 +55,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resources/',
         type: 'POST',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.type = data.i18n_type;
-        },
         data: JSON.stringify(data),
         contentType: 'application/json',
         cors: true
@@ -78,10 +66,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/content/',
         type: 'PUT',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.type = data.i18n_type;
-        },
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',

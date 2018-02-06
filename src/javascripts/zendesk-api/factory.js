@@ -48,9 +48,6 @@ module.exports = function(name, key, api) {
           type: 'GET',
           cors: true,
           dataType: 'json',
-          beforeSend: function(jqxhr, settings) {
-            jqxhr.brand_url = brand_url;
-          },
           headers: factory.headers,
         };
       },
@@ -87,9 +84,6 @@ module.exports = function(name, key, api) {
           url: this.base_url + api + '/' + id + '/translations.json',
           type: 'GET',
           cors: true,
-          beforeSend: function(jqxhr, settings) {
-            jqxhr.id = id;
-          },
           contentType: 'application/json',
           headers: factory.headers,
         };
@@ -103,10 +97,6 @@ module.exports = function(name, key, api) {
               '/translations.json',
             type: 'POST',
             data: JSON.stringify(data),
-            beforeSend: function(jqxhr, settings) {
-              jqxhr.id = id;
-              jqxhr.locale = locale;
-            },
             contentType: 'application/json'
           };
         } else { // Pass it through Transifex Proxy
@@ -121,10 +111,6 @@ module.exports = function(name, key, api) {
               username: io.getEmail(),
               token: this.settings.zd_api_key,
             }),
-            beforeSend: function(jqxhr, settings) {
-              jqxhr.id = id;
-              jqxhr.locale = locale;
-            },
             contentType: 'application/json',
             headers: txProject.headers,
           };

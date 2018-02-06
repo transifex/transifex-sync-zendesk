@@ -42,9 +42,6 @@ var dynamic_content = module.exports = {
             pageString + sortbyString + sortdirectionString,
         type: 'GET',
         dataType: 'json',
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.per_page = numperpage;
-        },
       };
     },
     variantInsert: function(data, id, locale) {
@@ -53,10 +50,6 @@ var dynamic_content = module.exports = {
         url: dynamic_content.base_url + 'items/' + id + '/variants.json',
         type: 'POST',
         data: JSON.stringify(data),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.id = id;
-          jqxhr.locale = locale;
-        },
         contentType: 'application/json'
       };
     },
@@ -66,10 +59,6 @@ var dynamic_content = module.exports = {
         url: dynamic_content.base_url + 'items/' + id + '/variants/' + variant_id + '.json',
         type: 'PUT',
         data: JSON.stringify(data),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.id = id;
-          jqxhr.locale = locale;
-        },
         contentType: 'application/json'
       };
     },

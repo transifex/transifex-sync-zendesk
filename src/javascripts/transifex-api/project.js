@@ -65,9 +65,6 @@ var project = module.exports = {
         type: 'GET',
         cache: false,
         dataType: 'json',
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = project_slug;
-        },
         cors: true
       };
     },
@@ -88,11 +85,6 @@ var project = module.exports = {
           description: 'Zendesk brand - ' + name,
           source_language_code: source
         }),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = slug;
-          jqxhr.targets = targets;
-          jqxhr.brand_id = brand_id;
-        },
         cors: true
       };
     },
@@ -109,11 +101,6 @@ var project = module.exports = {
           language_code: language_code,
           coordinators: [settings.tx_username]
         }),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = project_slug;
-          jqxhr.language_code = language_code;
-          jqxhr.brand_id = brand_id;
-        },
         cors: true
       };
     },
