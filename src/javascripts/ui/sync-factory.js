@@ -201,7 +201,9 @@ module.exports = function(T, t, api) {
         this.loadSyncPage = this[M('ui<T>ResourceStatsComplete')];
         this[M('syncResourceStats<T>')]();
         this[M('sync<T>Translations')]();
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip({
+          container: 'body',
+        });
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();
