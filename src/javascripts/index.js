@@ -6,6 +6,8 @@ import ZAFClient from 'zendesk_app_framework_sdk';
 import I18n from 'i18n';
 import TxApp from './app';
 
+let io = require('./io');
+
 // Create a new ZAFClient
 var client = ZAFClient.init();
 
@@ -14,7 +16,10 @@ client.on('app.registered', function(appData) {
   client.get('currentUser.locale').then(userData => {
     // load translations based on the account's current locale
     I18n.loadTranslations(userData['currentUser.locale']);
-    // create a new instance of your app
-    let txapp = new TxApp(client, appData);
+    client.get('currentUser.email').then(userEmail => {
+      io.setEmail(userEmail['currentUser.email']);
+      // create a new instance of your app
+      let txapp = new TxApp(client, appData);
+    });
   });
 });
