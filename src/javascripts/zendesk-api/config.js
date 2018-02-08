@@ -6,12 +6,6 @@ var config = module.exports = {
   // selfies
   base_url: '/api/v2/',
   key: 'zd_config',
-  events: {
-    'activatedLocales.done': 'activatedLocalesDone',
-    'activatedLocales.fail': 'activatedLocalesFail',
-    'defaultLocale.done': 'defaultLocaleDone',
-    'defaultLocale.fail': 'defaultLocaleFail',
-  },
   requests: {
     activatedLocales: function() {
       logger.debug('Retrieving activated locales for account');
@@ -31,17 +25,15 @@ var config = module.exports = {
     },
   },
   eventHandlers: {
-    activatedLocalesDone: function(data, textStatus, jqXHR) {
-      logger.info('Activated Locales Retrieved with status:', textStatus);
+    activatedLocalesDone: function(data) {
+      logger.info('Activated Locales Retrieved with status:', 'OK');
       io.setLocales(data.locales);
       io.popSync(config.key + 'activated');
       this.checkAsyncComplete();
     },
-    defaultLocaleDone: function(data, textStatus, jqXHR) {
-      logger.info('Activated Locales Retrieved with status:', textStatus);
-      var locale = _.find(data['locales'], function(l){
-        return l.default;
-      });
+    defaultLocaleDone: function(data) {
+      logger.info('Activated Locales Retrieved with status:', 'OK');
+      var locale = _.find(data['locales'], l => l.default);
       this.store('project_locales', _.map(data.locales, function (locale) {
         return locale.locale.toLowerCase();
       }));
@@ -49,14 +41,14 @@ var config = module.exports = {
       io.popSync(config.key + 'default');
       this.checkAsyncComplete();
     },
-    defaultLocaleFail: function(jqXHR, textStatus) {
-      logger.info('Locales Retrieved with status:', textStatus);
+    defaultLocaleFail: function(jqXHR) {
+      logger.info('Locales Retrieved with status:', jqXHR.statusText);
       io.popSync(config.key + 'default');
       io.setPageError('zdLocales');
       this.checkAsyncComplete();
     },
-    activatedLocalesFail: function(jqXHR, textStatus) {
-      logger.info('Locales Retrieved with status:', textStatus);
+    activatedLocalesFail: function(jqXHR) {
+      logger.info('Locales Retrieved with status:', jqXHR.statusText);
       io.popSync(config.key + 'activated');
       io.setPageError('zdLocales');
       this.checkAsyncComplete();
@@ -65,11 +57,23 @@ var config = module.exports = {
   actionHandlers: {
     asyncGetActivatedLocales: function() {
       io.pushSync(config.key + 'activated');
-      this.ajax('activatedLocales');
+      this.ajax('activatedLocales')
+        .done(data => {
+          this.activatedLocalesDone(data);
+        })
+        .fail(xhr => {
+          this.activatedLocalesFail(xhr);
+        });
     },
     asyncGetCurrentLocale: function() {
       io.pushSync(config.key + 'default');
-      this.ajax('defaultLocale');
+      this.ajax('defaultLocale')
+        .done(data => {
+          this.defaultLocaleDone(data);
+        })
+        .fail(xhr => {
+          this.defaultLocaleFail(xhr);
+        });
     },
   }
 };

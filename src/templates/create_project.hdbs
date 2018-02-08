@@ -3,21 +3,10 @@
   <div class="u-position-relative">
     <!-- Header: Info area -->
     <div class="c-infoarea">
-      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
+      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-3x u-paddingBottom-3x u-borderBottom-divider">
         <div class="u-display-flex">
 
-          <div class="u-width-7x u-marginRight-2x">
-            <div class="o-initials-logo u-box-7x u-lineHeight-7x u-fontSize-big">
-              tx
-            </div>
-          </div>
-
-          <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-big u-lineHeight-4x u-marginTop-1x">Add a brand for translation</div>
-            <div class="u-fontSize-small u-color-muted">
-              Create a new project in Transifex to translate another brand in Zendesk
-            </div>
-          </div>
+          <div class="u-fontSize-medium u-lineHeight-4x u-flexGrow-1 u-color-primary">Add a brand for translation</div>
 
         </div>
       </div>

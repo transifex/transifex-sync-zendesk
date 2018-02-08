@@ -1,6 +1,6 @@
-import txProject from '../../src/lib/transifex-api/project.js';
-import txUtil from '../../src/lib/txUtil.js';
-import io from '../../src/lib/io.js';
+import txProject from '../../src/javascripts/transifex-api/project.js';
+import txUtil from '../../src/javascripts/txUtil.js';
+import io from '../../src/javascripts/io.js';
 import {
   install
 }

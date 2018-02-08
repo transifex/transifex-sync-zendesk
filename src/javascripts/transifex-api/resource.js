@@ -20,19 +20,6 @@ var resource = module.exports = {
   },
   username: '',
   password: '',
-  events: {
-    'txResourceStats.done': 'txResourceStatsDone',
-    'txResourceStats.fail': 'txResourceStatsError',
-
-    'txResource.done': 'txResourceDone',
-    'txResource.fail': 'txResourceError',
-
-    'txInsertResource.done': 'txInsertResourceDone',
-    'txInsertResource.fail': 'txUpsertResourceError',
-
-    'txUpdateResource.done': 'txUpdateResourceDone',
-    'txUpdateResource.fail': 'txUpsertResourceError',
-  },
   initialize: function() {
     var settings = io.getSettings();
     resource.username = settings.tx_username;
@@ -48,9 +35,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/stats/',
         type: 'GET',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-        },
         dataType: 'json',
         cors: true
       };
@@ -61,11 +45,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/translation/' + languageCode + '/',
         type: 'GET',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.languageCode = languageCode;
-          jqxhr.entryid = entryid;
-        },
         dataType: 'json',
         cors: true
       };
@@ -76,10 +55,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resources/',
         type: 'POST',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.type = data.i18n_type;
-        },
         data: JSON.stringify(data),
         contentType: 'application/json',
         cors: true
@@ -91,10 +66,6 @@ var resource = module.exports = {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/content/',
         type: 'PUT',
         headers: resource.headers,
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.resourceName = resourceName;
-          jqxhr.type = data.i18n_type;
-        },
         data: JSON.stringify(data),
         cache: false,
         contentType: 'application/json',
@@ -103,73 +74,85 @@ var resource = module.exports = {
     },
   },
   eventHandlers: {
-    txResourceStatsDone: function(data, textStatus, jqXHR) {
-      logger.info('Transifex Resource Stats retrieved with status:', textStatus);
-      this.store(resource.key + jqXHR.resourceName, data);
-      io.popSync(resource.key + jqXHR.resourceName);
+    txResourceStatsDone: function(data, resourceName) {
+      logger.info('Transifex Resource Stats retrieved with status:', 'OK');
+      this.store(resource.key + resourceName, data);
+      io.popSync(resource.key + resourceName);
       this.checkAsyncComplete();
     },
-    txResourceStatsError: function(jqXHR, textStatus) {
-      logger.info('Transifex Resource Stats Retrieved with status:', textStatus);
-      var retries = io.getRetries('txResourceStats' + jqXHR.resourceName);
+    txResourceStatsError: function(jqXHR, name) {
+      logger.info('Transifex Resource Stats Retrieved with status:', jqXHR.statusText);
+      var retries = io.getRetries('txResourceStats' + name);
       if (jqXHR.status == 401 && retries < 2) {
-        this.ajax('txResourceStats', jqXHR.resourceName);
-        io.setRetries('txResourceStats' + jqXHR.resourceName, retries + 1);
+        this.ajax('txResourceStats', name)
+          .done(data => {
+            this.txResourceStatsDone(data, name);
+          })
+          .fail(xhr => {
+            this.txResourceStatsError(xhr, name);
+          });
+        io.setRetries('txResourceStats' + name, retries + 1);
       } else {
-        io.popSync(resource.key + jqXHR.resourceName);
+        io.popSync(resource.key + name);
         // Save error status instead of resource
-        this.store(resource.key + jqXHR.resourceName, jqXHR.status);
+        this.store(resource.key + name, jqXHR.status);
         this.checkAsyncComplete();
       }
     },
 
-    txResourceDone: function(data, textStatus, jqXHR) {
-      logger.info('Transifex Resource retrieved with status:', textStatus);
+    txResourceDone: function(data, resourceName, languageCode, entryid) {
+      logger.info('Transifex Resource retrieved with status:', 'OK');
       var zd_locales = io.getLocales();
-      var zdLocale = syncUtil.txLocaletoZd(jqXHR.languageCode, zd_locales);
-      var type = this.resolveResourceType(jqXHR.resourceName);
+      var zdLocale = syncUtil.txLocaletoZd(languageCode, zd_locales);
+      var type = this.resolveResourceType(resourceName);
 
       this['zdUpsert<T>Translation'.replace('<T>', type)](
-        data.content, jqXHR.entryid, zdLocale
+        data.content, entryid, zdLocale
       );
-      io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
+      io.popSync(resource.key + resourceName + languageCode);
     },
 
-    txResourceError: function(jqXHR, textStatus) {
-      logger.info('Transifex Resource Retrieved with status:', textStatus);
-      var retries = io.getRetries('txResource' + jqXHR.resourceName);
+    txResourceError: function(jqXHR, resourceName, languageCode, entryid) {
+      logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
+      var retries = io.getRetries('txResource' + resourceName);
       if (jqXHR.status == 401 && retries < 2) {
-        this.ajax('txResource', jqXHR.resourceName, jqXHR.languageCode, jqXHR.entryid);
-        io.setRetries('txResource' + jqXHR.resourceName, retries + 1);
+        this.ajax('txResource', resourceName, languageCode, entryid)
+          .done(data => {
+            this.txResourceDone(data, resourceName, languageCode, entryid);
+          })
+          .fail(xhr => {
+            this.txResourceError(xhr, resourceName, languageCode, entryid);
+          });
+        io.setRetries('txResource' + resourceName, retries + 1);
       } else {
-        io.popSync(resource.key + jqXHR.resourceName + jqXHR.languageCode);
-        this.store(resource.key + jqXHR.resourceName, jqXHR.status);
-        io.opSet(jqXHR.resourceName, 'fail');
+        io.popSync(resource.key + resourceName + languageCode);
+        this.store(resource.key + resourceName, jqXHR.status);
+        io.opSet(resourceName, 'fail');
         this.checkAsyncComplete();
       }
     },
 
-    txInsertResourceDone: function(data, textStatus, jqXHR) {
-      logger.info('Transifex Resource inserted with status:', textStatus);
-      io.popSync(resource.key + jqXHR.resourceName + 'upsert');
+    txInsertResourceDone: function(data, resourceName) {
+      logger.info('Transifex Resource inserted with status:', 'OK');
+      io.popSync(resource.key + resourceName + 'upsert');
 
-      io.opSet(jqXHR.resourceName, 'success');
-      io.pushResource(jqXHR.resourceName);
+      io.opSet(resourceName, 'success');
+      io.pushResource(resourceName);
       this.checkAsyncComplete();
     },
 
-    txUpdateResourceDone: function(data, textStatus, jqXHR) {
-      logger.info('Transifex Resource updated with status:', textStatus);
-      io.popSync(resource.key + jqXHR.resourceName + 'upsert');
-      io.opSet(jqXHR.resourceName, 'success');
+    txUpdateResourceDone: function(data, resourceName) {
+      logger.info('Transifex Resource updated with status:', 'OK');
+      io.popSync(resource.key + resourceName + 'upsert');
+      io.opSet(resourceName, 'success');
       this.checkAsyncComplete();
     },
 
-    txUpsertResourceError: function(jqXHR, textStatus) {
-      logger.info('Transifex Resource Retrieved with status:', textStatus);
-      io.popSync(resource.key + jqXHR.resourceName + 'upsert');
-      this.store(resource.key + jqXHR.resourceName, jqXHR.status);
-      io.opSet(jqXHR.resourceName, 'fail');
+    txUpsertResourceError: function(jqXHR, resourceName) {
+      logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
+      io.popSync(resource.key + resourceName + 'upsert');
+      this.store(resource.key + resourceName, jqXHR.status);
+      io.opSet(resourceName, 'fail');
       this.checkAsyncComplete();
     },
   },
@@ -195,21 +178,37 @@ var resource = module.exports = {
       //check list of resources in the project
       io.opSet(slug, 'processing');
       if (syncUtil.isStringinArray(slug, resources)) {
-        this.ajax('txUpdateResource', content, slug);
+        this.ajax('txUpdateResource', content, slug)
+          .done(data => this.txUpdateResourceDone(data, slug))
+          .fail(xhr => this.txUpsertResourceError(xhr, slug));
       } else {
-        this.ajax('txInsertResource', content, slug);
+        this.ajax('txInsertResource', content, slug)
+          .done(data => this.txInsertResourceDone(data, slug))
+          .fail(xhr => this.txUpsertResourceError(xhr, slug));
       }
     },
     asyncGetTxResourceStats: function(name) {
       logger.info('asyncGetTxResourceStats:', name);
       io.pushSync(resource.key + name);
       io.setRetries('txResourceStats' + name, 0);
-      this.ajax('txResourceStats', name);
+      this.ajax('txResourceStats', name)
+        .done(data => {
+          this.txResourceStatsDone(data, name);
+        })
+        .fail(xhr => {
+          this.txResourceStatsError(xhr, name);
+        });
     },
     asyncGetTxResource: function(name, code, entryid) {
       logger.info('asyncGetTxResource:', name + code);
       io.pushSync(resource.key + name + code);
-      this.ajax('txResource', name, code, entryid);
+      this.ajax('txResource', name, code, entryid)
+        .done(data => {
+          this.txResourceDone(data, name, code, entryid);
+        })
+        .fail(xhr => {
+          this.txResourceError(xhr, name, code, entryid);
+        });
     },
     asyncTxUpsertResource: function(data, name) {
       logger.info('asyncTxUpdateResource:', name);

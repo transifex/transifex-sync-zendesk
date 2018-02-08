@@ -6,7 +6,8 @@
 var logger = require('../logger'),
     io = require('../io'),
     syncUtil = require('../syncUtil'),
-    txutils = require('../txUtil.js');
+    txutils = require('../txUtil.js'),
+    findIndex = require('lodash.findindex');
 
 var project = module.exports = {
   // selfies
@@ -18,16 +19,6 @@ var project = module.exports = {
   },
   username: '',
   password: '',
-  events: {
-    'txProject.done': 'txProjectDone',
-    'txProject.fail': 'txProjectSyncError',
-    'txProjectExists.done': 'txProjectExistsDone',
-    'txProjectExists.fail': 'txProjectExistsError',
-    'txProjectCreate.done': 'txProjectCreateDone',
-    'txProjectCreate.fail': 'txProjectCreateError',
-    'txProjectAddLanguage.done': 'txProjectAddLanguageDone',
-    'txProjectAddLanguage.fail': 'txProjectAddLanguageFail',
-  },
   initialize: function() {
     var settings = io.getSettings();
     var url = settings.tx_project;
@@ -74,9 +65,6 @@ var project = module.exports = {
         type: 'GET',
         cache: false,
         dataType: 'json',
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = project_slug;
-        },
         cors: true
       };
     },
@@ -97,11 +85,6 @@ var project = module.exports = {
           description: 'Zendesk brand - ' + name,
           source_language_code: source
         }),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = slug;
-          jqxhr.targets = targets;
-          jqxhr.brand_id = brand_id;
-        },
         cors: true
       };
     },
@@ -118,36 +101,31 @@ var project = module.exports = {
           language_code: language_code,
           coordinators: [settings.tx_username]
         }),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.slug = project_slug;
-          jqxhr.language_code = language_code;
-          jqxhr.brand_id = brand_id;
-        },
         cors: true
       };
     },
   },
   eventHandlers: {
-    txProjectExistsDone: function(data, textStatus, jqXHR) {
+    txProjectExistsDone: function(data, slug) {
       this.store('project_exists', true);
-      io.popSync('check_exists_' + data.slug);
-      var brand_id = parseInt(data.slug.split('-').pop());
+      io.popSync('check_exists_' + slug);
+      var brand_id = parseInt(slug.split('-').pop());
       var brands = this.store('brands');
-      brands[_.findIndex(brands, { id: brand_id })].exists = true;
+      brands[findIndex(brands, { id: brand_id })].exists = true;
       this.store('brands', brands);
       this.checkAsyncComplete();
     },
-    txProjectExistsError: function(data, textStatus, jqXHR) {
+    txProjectExistsError: function(xhr, slug) {
       this.store('project_exists', false);
-      io.popSync('check_exists_' + data.slug);
-      var brand_id = parseInt(data.slug.split('-').pop());
+      io.popSync('check_exists_' + slug);
+      var brand_id = parseInt(slug.split('-').pop());
       var brands = this.store('brands');
-      brands[_.findIndex(brands, { id: brand_id })].exists = false;
+      brands[findIndex(brands, { id: brand_id })].exists = false;
       this.store('brands', brands);
       this.checkAsyncComplete();
     },
-    txProjectDone: function(data, textStatus, jqXHR) {
-      logger.info('Transifex Project Retrieved with status:', textStatus);
+    txProjectDone: function(data, status) {
+      logger.info('Transifex Project Retrieved with status:', status);
       this.store(project.key, data);
       var resource_array = _.map(data.resources, function(resource) {
         return resource.slug;
@@ -164,7 +142,13 @@ var project = module.exports = {
         io.setPageError('txProject:not_found');
       }
       else if (jqXHR.status === 401 && io.getRetries('txProject') < 1) {
-        this.ajax('txProject');
+        this.ajax('txProject')
+          .done(data => {
+            this.txProjectDone(data, 'OK');
+          })
+          .fail(xhr => {
+            this.txProjectSyncError(xhr, 'error');
+          });
         io.setRetries('txProject', io.getRetries('txProject') + 1);
       }
       else if (jqXHR.status === 401) {
@@ -180,31 +164,33 @@ var project = module.exports = {
       }
       this.checkAsyncComplete();
     },
-    txProjectCreateDone: function(data, textStatus, jqXHR) {
-      io.popSync('create_project_' + jqXHR.slug);
+    txProjectCreateDone: function(data, slug, targets, brand_id) {
+      io.popSync('create_project_' + slug);
       var that = this;
       this.store('localeCount', 0);
-      this.store('localeTarget', jqXHR.targets.length);
+      this.store('localeTarget', targets.length);
 
-      _.map(jqXHR.targets, function(locale)  {
-        io.pushSync('add_language_' + jqXHR.slug + '_' + locale);
-        that.ajax('txProjectAddLanguage', jqXHR.slug, locale, jqXHR.brand_id);
+      _.map(targets, function(locale)  {
+        io.pushSync('add_language_' + slug + '_' + locale);
+        that.ajax('txProjectAddLanguage', slug, locale, brand_id)
+          .done(data => that.txProjectAddLanguageDone(data, slug, locale, brand_id))
+          .fail(xhr => that.txProjectAddLanguageFail(xhr, slug, locale));
       });
     },
-    txProjectCreateError: function(jqXHR, textStatus) {
-      io.popSync('create_project_' + jqXHR.slug);
+    txProjectCreateError: function(slug) {
+      io.popSync('create_project_' + slug);
       io.setPageError('txProject:login');
       this.checkAsyncComplete();
     },
-    txProjectAddLanguageDone: function(data, textStatus, jqXHR) {
-      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
+    txProjectAddLanguageDone: function(data, slug, language_code, brand_id) {
+      io.popSync('add_language_' + slug + '_' + language_code);
       var localeCount = this.store('localeCount') + 1;
       this.store('localeCount', localeCount);
       var localeTarget = this.store('localeTarget');
 
       if (localeCount === localeTarget) {
         var brands = this.store('brands');
-        var brand_id = jqXHR.brand_id;
+        var brand_id = brand_id;
         this.store('brands', _.map(brands, function(brand) {
           if (brand.id == brand_id) return _.extend(brand, {exists: true});
           return brand;
@@ -213,8 +199,8 @@ var project = module.exports = {
       }
       // this.checkAsyncComplete(); Handled above
     },
-    txProjectAddLanguageFail: function(jqXHR, textStatus) {
-      io.popSync('add_language_' + jqXHR.slug + '_' + jqXHR.language_code);
+    txProjectAddLanguageFail: function(jqXHR, slug, language_code) {
+      io.popSync('add_language_' + slug + '_' + language_code);
       io.setPageError('txProject:login');
       // this.checkAsyncComplete();  Handled with promise all
     },
@@ -224,17 +210,35 @@ var project = module.exports = {
       logger.debug('function: [asyncGetTxProject]');
       io.setRetries('txProject', 0);
       io.pushSync(project.key);
-      this.ajax('txProject');
+      this.ajax('txProject')
+        .done(data => {
+          this.txProjectDone(data, 'OK');
+        })
+        .fail(xhr => {
+          this.txProjectSyncError(xhr, 'error');
+        });
     },
     asyncCheckTxProjectExists: function(slug) {
       logger.debug('function: [asyncGetTxProject]');
       io.pushSync('check_exists_' + slug);
-      this.ajax('txProjectExists', slug);
+      this.ajax('txProjectExists', slug)
+        .done(data => {
+          this.txProjectExistsDone(data, slug);
+        })
+        .fail(xhr => {
+          this.txProjectExistsError(xhr, slug);
+        });
     },
     asyncCreateTxProject: function(slug, name, source, targets, brand_id) {
       logger.debug('function: [asyncCreateTxProject]');
       io.pushSync('create_project_' + slug);
-      this.ajax('txProjectCreate', slug, name, source, targets, brand_id);
+      this.ajax('txProjectCreate', slug, name, source, targets, brand_id)
+        .done(data => {
+          this.txProjectCreateDone(data, slug, targets, brand_id);
+        })
+        .fail(xhr => {
+          this.txProjectCreateError(slug);
+        });
     },
   },
   helpers: {

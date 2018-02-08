@@ -7,9 +7,13 @@
   },
   "defaultLocale": "en",
   "private": false,
-  "location": "nav_bar",
-  "version": "2.3.6",
-  "frameworkVersion": "1.0",
+  "location": {
+    "support": {
+      "nav_bar": "assets/index.html"
+    }
+  },
+  "version": "3.0.0",
+  "frameworkVersion": "2.0",
   "parameters": [
     {
       "name": "tx_username",

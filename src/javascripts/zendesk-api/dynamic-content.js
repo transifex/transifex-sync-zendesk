@@ -1,9 +1,11 @@
+import $ from 'jquery';
+
 var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
     syncUtil = require('../syncUtil'),
-    txProject = require('transifex-api/project'),
-    txResource = require('transifex-api/resource');
+    txProject = require('../transifex-api/project'),
+    txResource = require('../transifex-api/resource');
 
 var dynamic_content = module.exports = {
   // selfies
@@ -11,14 +13,6 @@ var dynamic_content = module.exports = {
   key: 'zd_dynamic_content',
   api: 'items',
   label: 'dynamic',
-  events: {
-    'dynamicContentItems.done': 'dynamicContentItemsDone',
-    'dynamicContentItems.fail': 'dynamicContentItemsFail',
-    'variantInsert.done': 'variantInsertDone',
-    'variantInsert.fail': 'variantInsertFail',
-    'variantUpdate.done': 'variantUpdateDone',
-    'variantUpdate.fail': 'variantUpdateFail',
-  },
   requests: {
     dynamicContentItems: function(page, sortby, sortdirection, numperpage) {
       logger.debug('Retrieving dynamic content items for account');
@@ -48,9 +42,6 @@ var dynamic_content = module.exports = {
             pageString + sortbyString + sortdirectionString,
         type: 'GET',
         dataType: 'json',
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.per_page = numperpage;
-        },
       };
     },
     variantInsert: function(data, id, locale) {
@@ -59,10 +50,6 @@ var dynamic_content = module.exports = {
         url: dynamic_content.base_url + 'items/' + id + '/variants.json',
         type: 'POST',
         data: JSON.stringify(data),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.id = id;
-          jqxhr.locale = locale;
-        },
         contentType: 'application/json'
       };
     },
@@ -72,19 +59,15 @@ var dynamic_content = module.exports = {
         url: dynamic_content.base_url + 'items/' + id + '/variants/' + variant_id + '.json',
         type: 'PUT',
         data: JSON.stringify(data),
-        beforeSend: function(jqxhr, settings) {
-          jqxhr.id = id;
-          jqxhr.locale = locale;
-        },
         contentType: 'application/json'
       };
     },
   },
   eventHandlers: {
-    dynamicContentItemsDone: function(data, textStatus, jqXHR) {
+    dynamicContentItemsDone: function(data, per_page) {
       var that = this,
           existing_locales;
-      logger.info('Dynamic content retrieved with status:', textStatus);
+      logger.info('Dynamic content retrieved with status:', 'OK');
       // return nothing if we are not in the default brand
       if (!this.selected_brand.default)
         data = {items: []};
@@ -99,53 +82,53 @@ var dynamic_content = module.exports = {
         });
       }
       data.page_count = 1;
-      if (data.count > jqXHR.per_page) {
-        data.page_count = Math.ceil(data.count / jqXHR.per_page);
+      if (data.count > per_page) {
+        data.page_count = Math.ceil(data.count / per_page);
       }
       this.store(dynamic_content.key, data);
       io.popSync(dynamic_content.key);
       this.checkAsyncComplete();
     },
-    dynamicContentItemsFail: function(jqXHR, textStatus) {
-      logger.info('Dynamic content retrieved with status:', textStatus);
+    dynamicContentItemsFail: function(jqXHR) {
+      logger.info('Dynamic content retrieved with status:', jqXHR.statusText);
       io.popSync(dynamic_content.key);
       io.setPageError('dynamicContent');
       this.checkAsyncComplete();
     },
-    variantInsertDone: function(data, textStatus, jqXHR) {
-      logger.info('DC variants inserted with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'insert' + jqXHR.locale);
-      var existing_locales = this.store(dynamic_content.key + jqXHR.id + '_locales');
-      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
-      existing_locales.push(jqXHR.locale);
-      this.store(dynamic_content.key + jqXHR.id + '_locales', existing_locales);
+    variantInsertDone: function(data, entryid, locale) {
+      logger.info('DC variants inserted with status:', 'OK');
+      io.popSync(dynamic_content.key + entryid + 'insert' + locale);
+      var existing_locales = this.store(dynamic_content.key + entryid + '_locales');
+      io.opSet(entryid + '_' + locale, 'success');
+      existing_locales.push(locale);
+      this.store(dynamic_content.key + entryid + '_locales', existing_locales);
       this.checkAsyncComplete();
     },
-    variantInsertFail: function(data, textStatus, jqXHR) {
-      logger.info('DC variant inserted with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'insert' + jqXHR.locale);
-      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
+    variantInsertFail: function(jqXHR, entryid, locale) {
+      logger.info('DC variant inserted with status:', jqXHR.statusText);
+      io.popSync(dynamic_content.key + entryid + 'insert' + locale);
+      io.opSet(entryid + '_' + locale, jqXHR.statusText);
       this.checkAsyncComplete();
     },
-    variantUpdateDone: function(data, textStatus, jqXHR) {
-      logger.info('DC variant updated with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'update' + jqXHR.locale);
-      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
+    variantUpdateDone: function(data, entryid, locale) {
+      logger.info('DC variant updated with status:', 'OK');
+      io.popSync(dynamic_content.key + entryid + 'update' + locale);
+      io.opSet(entryid + '_' + locale, 'success');
       this.checkAsyncComplete();
     },
-    variantUpdateFail: function(data, textStatus, jqXHR) {
-      logger.info('DC variant inserted with status:', textStatus);
-      io.popSync(dynamic_content.key + jqXHR.id + 'update' + jqXHR.locale);
-      io.opSet(jqXHR.id + '_' + jqXHR.locale, textStatus);
+    variantUpdateFail: function(jqXHR, entryid, locale) {
+      logger.info('DC variant inserted with status:', jqXHR.statusText);
+      io.popSync(dynamic_content.key + entryid + 'update' + locale);
+      io.opSet(entryid + '_' + locale, jqXHR.statusText);
       this.checkAsyncComplete();
     },
   },
   actionHandlers: {
     zdUpsertDynamicContentTranslation: function(resource_data, entryid, zd_locale) {
-      logger.info('Upsert Dynamic Content with Id:' + entryid + 'and locale:' + zd_locale);
+      logger.info('Upsert Dynamic Content with Id:' + entryid + ' and locale:' + zd_locale);
 
       var data, variant, locale_id,
-          translation_data = common.translationObjectFormat(this.$, resource_data, zd_locale),
+          translation_data = common.translationObjectFormat(resource_data, zd_locale),
           existing_locales = this.store(dynamic_content.key + entryid + '_locales');
       locale_id = io.getIdFromLocale(zd_locale);
       data = {
@@ -162,15 +145,21 @@ var dynamic_content = module.exports = {
         variant = _.find(entry.variants, function(v){
           return v.locale_id == locale_id;
         });
-        this.ajax('variantUpdate', data, entryid, zd_locale, variant.id);
+        this.ajax('variantUpdate', data, entryid, zd_locale, variant.id)
+          .done(data => this.variantUpdateDone(data, entryid, zd_locale))
+          .fail(xhr => this.variantUpdateFail(xhr, entryid, zd_locale));
       } else {
-        this.ajax('variantInsert', data, entryid, zd_locale);
+        this.ajax('variantInsert', data, entryid, zd_locale)
+          .done(data => this.variantInsertDone(data, entryid, zd_locale))
+          .fail(xhr => this.variantInsertFail(xhr, entryid, zd_locale));
       }
     },
 
     asyncGetZdDynamicContentFull: function(page, sortby, sortdirection, numperpage) {
       io.pushSync(dynamic_content.key);
-      this.ajax('dynamicContentItems', page, sortby, sortdirection, numperpage);
+      this.ajax('dynamicContentItems', page, sortby, sortdirection, numperpage)
+        .done(data => this.dynamicContentItemsDone(data, numperpage))
+        .fail(xhr => this.dynamicContentItemsFail(xhr));
     },
     getDynamicContentForTranslation: function(entry){
       return {
