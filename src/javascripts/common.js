@@ -5,7 +5,7 @@ var io = require('./io.js');
 
 var common = module.exports = {
   gblTemplate: "<html><head></head><body><h1><%= title %></h1><%= body %></body></html>",
-  translationObjectFormat: function(response, locale, zd_type) {
+  translationObjectFormat: (response, locale, zd_type) => {
     if (io.getFeature('html-tx-resource')) {
       return common.translationObjectHTML(response, locale, zd_type);
     } else {
@@ -13,7 +13,7 @@ var common = module.exports = {
     }
   },
 
-  translationObjectHTML: function(res, l, zd_type) {
+  translationObjectHTML: (res, l, zd_type) => {
     var el = $('<div></div>'),
         title, body;
     el.html(res);
@@ -45,7 +45,7 @@ var common = module.exports = {
     };
   },
 
-  txRequestJSON: function(entry, category) {
+  txRequestJSON: (entry, category) => {
     var req = {
       name: entry.name,
       slug: entry.resource_name,
@@ -61,7 +61,7 @@ var common = module.exports = {
     return o3;
   },
 
-  txRequestHTML: function(entry, category) {
+  txRequestHTML: (entry, category) => {
     var gblTemplate = common.gblTemplate;
     var zdEntryContent = _.template(gblTemplate)(entry);
 
@@ -76,7 +76,7 @@ var common = module.exports = {
     return txRequestMade;
   },
 
-  txRequestFormat: function(entry, category) {
+  txRequestFormat: (entry, category) => {
     if (io.getFeature('html-tx-resource')) {
       return common.txRequestHTML(entry, category);
     } else {
@@ -84,13 +84,11 @@ var common = module.exports = {
     }
   },
 
-  addCompletedLocales: function(name, locales) {
+  addCompletedLocales: (name, locales) => {
     var linkId = "#" + "locales-" + name;
     if (!(_.isEmpty(locales))) {
       var tpl = _.template('<span class="u-color-secondary u-fontSize-small" data-locale="<%= loc.toLowerCase() %>"><%- loc %></span>');
-      $(linkId).html(_.map(locales, function(locale) {
-        return tpl({loc: locale});
-      }).join(', '));
+      $(linkId).html(_.map(locales, locale => tpl({loc: locale})).join(', '));
       $(linkId).attr('title', locales.join(', '));
     } else {
       $(linkId).text('-');

@@ -10,19 +10,19 @@ function message() {
 }
 
 module.exports = {
-  info: function() {
+  info: () => {
      if (enabled && typeof console !== 'undefined')
        console.log('[INFO] ' + message.apply(this, arguments));
   },
-  error: function() {
+  error: () => {
      if (typeof console !== 'undefined')
        console.error('[ERROR] ' + message.apply(this, arguments));
   },
-  warn: function() {
+  warn: () => {
      if (enabled && typeof console !== 'undefined')
        console.warn('[WARN] ' + message.apply(this, arguments));
   },
-  debug: function() {
+  debug: () => {
      if (enabled && typeof console !== 'undefined')
        console.debug('[DEBUG] ' + message.apply(this, arguments));
   }
