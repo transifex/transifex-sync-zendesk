@@ -20,112 +20,72 @@ var SETTINGS = {},
     QUERY = '';
 
 module.exports = {
-  setSettings: function(settings) {
+  setSettings: settings => {
     SETTINGS = settings;
   },
-  getSettings: function() {
-    return SETTINGS;
-  },
+  getSettings: () => SETTINGS,
 
-  setEmail: function(email) {
+  setEmail: email => {
     ZD_USER_EMAIL = email;
   },
-  getEmail: function() {
-    return ZD_USER_EMAIL;
-  },
-  setFeatures: function(features) {
+  getEmail: () => ZD_USER_EMAIL,
+  setFeatures: features => {
     FEATURES = features;
   },
-  hasFeature: function(feature) {
-    return FEATURES[feature] !== undefined;
-  },
-  getFeature: function(feature) {
-    return FEATURES[feature];
-  },
+  hasFeature: feature => FEATURES[feature] !== undefined,
+  getFeature: feature => FEATURES[feature],
 
-  pushSync: function(key) {
+  pushSync: key => {
     SYNC_STATUS.push(key);
   },
-  popSync: function(key) {
+  popSync: key => {
     SYNC_STATUS = _.without(SYNC_STATUS, key);
   },
-  isSync: function(key) {
-    return _.contains(SYNC_STATUS, key);
-  },
-  syncLength: function() {
-    return SYNC_STATUS.length;
-  },
+  isSync: key => _.contains(SYNC_STATUS, key),
+  syncLength: () => SYNC_STATUS.length,
 
-  setSorting: function(obj) {
+  setSorting: obj => {
     SORTING = obj;
   },
-  getSorting: function() {
-    return SORTING || {};
-  },
+  getSorting: () => SORTING || {},
 
-  getRetries: function(key){
-    return RETRIES[key] || 0;
-  },
-  setRetries: function(key, value){
+  getRetries: key => RETRIES[key] || 0,
+  setRetries: (key, value) => {
     RETRIES[key] = value;
   },
 
-  setPageError: function(error) {
+  setPageError: error => {
     PAGE_ERROR = error || '';
   },
-  getPageError: function() {
-    return PAGE_ERROR;
-  },
+  getPageError: () => PAGE_ERROR,
 
-  opResetAll: function() {
+  opResetAll: () => {
     OP = {};
   },
-  opSet: function(key, status) {
+  opSet: (key, status) => {
     OP[key] = status;
   },
-  opGet: function(key) {
-    return OP[key];
-  },
-  opGetAll: function() {
-    return OP;
-  },
-  getLocales: function() {
-    return _.map(ZD_LOCALES, function(l){
-      return l['locale'].toLowerCase();
-    });
-  },
-  getLocalesObj: function() {
-    return ZD_LOCALES;
-  },
-  setLocales: function(locales) {
-    ZD_LOCALES = _.map(locales, function(l){
+  opGet: key => OP[key],
+  opGetAll: () => OP,
+  getLocales: () => _.map(ZD_LOCALES, l => l['locale'].toLowerCase()),
+  getLocalesObj: () => ZD_LOCALES,
+  setLocales: locales => {
+    ZD_LOCALES = _.map(locales, l => {
       l.locale = l.locale.toLowerCase();
       return l;
     });
   },
-  getLocaleFromId: function(id) {
-    return _.find(ZD_LOCALES, function(l){
-      return l['id'] === id;
-    })['locale'];
-  },
-  getIdFromLocale: function(locale) {
-    return _.find(ZD_LOCALES, function(l){
-      return l['locale'].toLowerCase() == locale;
-    })['id'];
-  },
-  getResourceArray: function() {
-    return RESOURCE_ARRAY;
-  },
-  setResourceArray: function(arr) {
+  getLocaleFromId: id => _.find(ZD_LOCALES, l => l['id'] === id)['locale'],
+  getIdFromLocale: locale => _.find(ZD_LOCALES, l => l['locale'].toLowerCase() == locale)['id'],
+  getResourceArray: () => RESOURCE_ARRAY,
+  setResourceArray: arr => {
     RESOURCE_ARRAY = arr;
   },
-  pushResource: function(slug) {
+  pushResource: slug => {
     RESOURCE_ARRAY.push(slug);
   },
-  getQuery: function() {
-    return QUERY;
-  },
-  setQuery: function(q) {
+  getQuery: () => QUERY,
+  setQuery: q => {
     QUERY = q;
   },
 };

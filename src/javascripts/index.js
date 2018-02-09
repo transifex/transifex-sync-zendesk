@@ -12,7 +12,7 @@ let io = require('./io');
 var client = ZAFClient.init();
 
 // add an event listener to detect once your app is registered with the framework
-client.on('app.registered', function(appData) {
+client.on('app.registered', appData => {
   client.get('currentUser.locale').then(userData => {
     // load translations based on the account's current locale
     I18n.loadTranslations(userData['currentUser.locale']);

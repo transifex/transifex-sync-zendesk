@@ -1,0 +1,172 @@
+/* Components */
+/* -- Infoarea -- */
+.c-infoarea {
+  position: relative;
+  background-color: $background-muted-color;
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+
+  &__section {
+    &:before,
+    &:after {
+      content: " ";
+      display: table;
+    }
+    &:after {
+      clear: both;
+    }
+  }
+}
+
+
+/* -- System messages -- */
+
+.c-system-message {
+  position: relative;
+
+  display: flex;
+
+  &:before,
+  &:after {
+    content: ' ';
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+  width: 100%;
+
+  padding: $baseline-grid*3;
+
+  margin-bottom: $baseline-grid*5;
+
+  color: $text-secondary-color;
+  font-size: $default-font-size;
+  line-height: $baseline-grid*3;
+
+  border-width: 1px;
+  border-style: solid;
+  border-left-width: 4px;
+  border-radius: $default-border-radius;
+  -moz-border-radius: $default-border-radius;
+  -webkit-border-radius: $default-border-radius;
+
+  background-color: $white-color;
+
+  &--compact {
+    padding-top: $baseline-grid*2;
+    padding-bottom: $baseline-grid*2;
+
+    margin-bottom: $baseline-grid*2;
+  }
+
+  &--success { border-color: $status-success-color; }
+  &--success .c-system-message__symbol { fill: $status-success-color; }
+
+  &--warning { border-color: $status-warning-color; }
+  &--warning .c-system-message__symbol { fill: $status-warning-color; }
+
+  &--error { border-color: $status-error-color; }
+  &--error .c-system-message__symbol { fill: $status-error-color; }
+
+  &__content {
+    position: relative;
+    flex: 1 0 0%;
+    -webkit-flex: 1 0 0%;
+  }
+
+  &__symbol {
+    position: relative;
+    width: $large-font-size;
+    height: $large-font-size;
+
+    margin-top: 0;
+    margin-right: $gutter-width/2;
+  }
+
+  &__close {
+    position: absolute;
+    display: block;
+
+    width: $baseline-grid*1.5;
+    height: $baseline-grid*1.5;
+
+    top: $baseline-grid;
+    right: $baseline-grid;
+
+    color: $link-muted-color !important;
+
+    opacity: 0.4;
+
+    z-index: $zindex1;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__svgFill {
+    fill: currentColor;
+  }
+}
+
+/* -- Empty state -- */
+.c-emptystate {
+  position: relative;
+
+  color: $text-disabled-color;
+  text-align: center;
+
+  padding-top: $baseline-grid*10;
+  padding-bottom: $baseline-grid*2;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  &--large {
+    .c-emptystate__symbol {
+      width: $baseline-grid*12;
+      height: $baseline-grid*12;
+
+      margin-bottom: $baseline-grid*4;
+    }
+
+    .c-emptystate__title {
+      font-size: $big-font-size;
+      line-height: $baseline-grid*5;
+
+      margin-bottom: $baseline-grid*2;
+    }
+  }
+
+
+  &__symbol {
+    width: $baseline-grid*8;
+    height: $baseline-grid*8;
+
+    fill: currentColor;
+
+    margin-bottom: $baseline-grid*3;
+  }
+
+  &__title {
+    font-size: $large-font-size;
+    font-weight: $thin-text-weight;
+    line-height: $baseline-grid*4;
+
+    margin-bottom: $baseline-grid;
+  }
+
+  &__description {
+    font-size: $default-font-size;
+    font-weight: $thin-text-weight;
+    line-height: $baseline-grid*3;
+  }
+}

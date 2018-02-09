@@ -1,6 +1,6 @@
 var pagination = module.exports = {
   helpers: {
-    checkPagination: function(a) {
+    checkPagination: a => {
       var i = a.page_count;
       if (typeof i === 'string') {
         i = parseInt(i, 10);
@@ -12,25 +12,9 @@ var pagination = module.exports = {
       }
       return false;
     },
-    getPages: function(a) {
-      var i = a.page_count;
-      return _.range(1, i + 1);
-    },
-    getCurrentPage: function(a) {
-      var i = a.page;
-      return i;
-    },
-    isFewer: function(a, i) {
-      if (i > 1) {
-        return true;
-      }
-      return false;
-    },
-    isMore: function(a, i) {
-      if (a.page_count > i) {
-        return true;
-      }
-      return false;
-    },
+    getPages: a => _.range(1, a.page_count + 1),
+    getCurrentPage: a => a.page,
+    isFewer: (a, i) => (i > 1),
+    isMore: (a, i) => (a.page_count > i),
   }
 };

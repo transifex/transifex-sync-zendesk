@@ -1,0 +1,1057 @@
+/* Objects */
+
+/* -- Button object -- */
+.o-button {
+
+  // Config
+  $block-height: $button-height;
+  $button-spacing: $baseline-grid*2;
+  $button-paddingHorizontal: $form-paddingHorizontal;
+
+  // Default state
+  display: inline-block;
+  min-width: 120px;
+  max-width: 250px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  background-color: transparent;
+
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: $button-paddingHorizontal;
+  padding-right: $button-paddingHorizontal;
+
+  color: $action-CTA-color;
+  font-weight: $toned-text-weight;
+  text-transform: none;
+  font-size: $default-font-size;
+  height: $block-height;
+  line-height: $block-height*1-1px; //fix for border and box sizing
+  text-align: center;
+  vertical-align: baseline; // reset vertical alignment for object
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow:ellipsis;
+  border-radius: $default-border-radius;
+  -moz-border-radius: $default-border-radius;
+  -webkit-border-radius: $default-border-radius;
+  border: 1px solid $action-CTA-color;
+  cursor: pointer;
+
+  transition: color 0.15s ease-out, opacity 0.15s ease-out, background-color 0.15s ease-out;
+  -moz-transition: color 0.15s ease-out, opacity 0.15s ease-out, background-color 0.15s ease-out;
+  -webkit-transition: color 0.15s ease-out, opacity 0.15s ease-out, background-color 0.15s ease-out;
+
+  outline: 0;
+
+  &.is-hover,
+  &:hover {
+    text-decoration: none;
+    color: $action-CTA-hover-color;
+    border-color: $action-CTA-hover-color;
+    background-color: fade-out( $action-CTA-hover-color , 1 - $active-element-fade-once );
+
+  }
+
+  &.is-active,
+  &:active {
+    text-decoration: none;
+    color: $action-CTA-clicked-color;
+    border-color: $action-CTA-clicked-color;
+    background-color: fade-out( $action-CTA-clicked-color ,1 - $active-element-fade-once );
+
+    &:hover {
+      border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage );
+    }
+
+  }
+
+  // we only keep has-spinner
+  &.has-spinner {
+    font-size: 0;
+
+    // change name as bem child with __spinner
+    .o-button__spinner {
+      margin-top: $block-height*0.2-1px; // remove border height
+      width: $block-height*0.6;
+      height: $block-height*0.6;
+    }
+
+ }
+
+ &:not(.has-spinner) {
+   .o-button__spinner {
+     display: none;
+   }
+ }
+
+ &--fill {
+    background-color: $action-CTA-color;
+    color: $white-color;
+
+    &.is-hover,
+    &:hover {
+      background-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage);
+      border-color: lighten( $action-CTA-color, 1 - $lightness-once-percentage);
+      color: $white-color;
+    }
+
+    &.is-active,
+    &:active {
+      background-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage);
+      border-color: lighten( $action-CTA-color, 1 - $lightness-twice-percentage);
+      color: $white-color;
+    }
+
+  }
+
+
+
+  &--form {
+    height: $form-height; // input height
+    line-height: $form-height*1-2px; //fix for border and box sizing
+
+    // revisit spinner to fit on --form button
+    &.has-spinner {
+      .o-button__spinner {
+        margin-top: $form-height*0.2-1px;
+        width: $form-height*0.6;
+        height: $form-height*0.6;
+      }
+    }
+  }
+
+  &[disabled],
+  &.is-disabled {
+    border-color: $action-disabled-color;
+    color: $action-disabled-text-color;
+    background-color: transparent;
+
+    &:hover,
+    &:hover:active,
+    &:active {
+      cursor: not-allowed;
+      border: 1px solid $action-disabled-color;
+      background-color: transparent;
+      color: $action-disabled-text-color;
+    }
+
+  }
+
+  &.is-hidden {
+    display: none !important;
+  }
+}
+
+/* -- Text ellipsis object -- */
+.o-text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -- Link object -- */
+
+.o-link {
+  color: $link-active-color;
+  text-decoration: none;
+  background-image: none !important;
+  transition: color 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease-out;
+  -moz-transition: color 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease-out;
+  -webkit-transition: color 0.1s ease-out, opacity 0.1s ease-out, background-color 0.1s ease-out;
+
+  &:active {
+    color: lighten( $link-active-color, $lightness-twice-percentage );
+    &:hover,
+    &.is-hover {
+      text-decoration: none;
+    }
+  }
+
+  &.is-active {
+    font-weight: $important-text-weight;
+    &:hover,
+    &.is-hover {
+      text-decoration: none;
+    }
+  }
+
+  &:hover,
+  &.is-hover {
+    color: lighten( $link-active-color, $lightness-once-percentage );
+    cursor: pointer;
+    text-decoration: underline;
+    background-color: $background-muted-color;
+  }
+
+  &:focus,
+  &.is-focus {
+    outline: none;
+    font-weight: $important-text-weight;
+  }
+
+  &--muted {
+    color: $link-muted-color;
+    &:hover,
+    &.is-hover {
+      color: $link-active-color;
+    }
+
+    &.is-active {
+      color: $link-active-color;
+    }
+  }
+
+  &:disabled,
+  &.is-disabled {
+    color: $link-disabled-color;
+    cursor: not-allowed;
+    font-weight: $normal-text-weight;
+    text-decoration: none;
+    .o-link__svgFill {
+      fill: $link-disabled-color;
+    }
+    &:hover,
+    &.is-hover {
+      color: $link-disabled-color;
+      text-decoration: none;
+      cursor: default;
+      background-color: transparent;
+      .o-link__svgFill {
+        fill: $link-disabled-color;
+      }
+    }
+    &:focus,
+    &.is-focus {
+      background-color: transparent;
+      .o-link__svgFill {
+        fill: $link-disabled-color;
+      }
+    }
+    &:active {
+      color: $link-disabled-color;
+      font-weight: normal;
+      .o-link__svgFill {
+        fill: $link-disabled-color;
+      }
+    }
+    &.is-active {
+      color: $link-disabled-color;
+      .o-link__svgFill {
+        fill: $link-disabled-color;
+      }
+    }
+  }
+}
+
+/* -- List  object -- */
+.o-list {
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+
+  &__item {
+    display: block;
+  }
+}
+
+/* -- Label object -- */
+.o-label {
+  font-size: $form-label-font-size;
+  line-height: $form-label-line-height;
+
+  color: $form-label-color;
+}
+
+/* -- Checkbox object -- */
+
+.o-checkbox {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+
+  &-controller {
+    position: relative;
+  }
+
+  & + .o-checkbox__label {
+    position: relative;
+    min-width: $form-height;
+    max-width: 100%;
+    min-height: $form-height;
+
+    font-size: $form-font-size;
+    line-height: $normal-line-height;
+
+    padding-top: ($form-height - $normal-line-height)*0.5;
+    padding-bottom: ($form-height - $normal-line-height)*0.5;
+
+    text-align: left;
+    padding-left: $form-font-size + $form-paddingHorizontal;
+
+    display: inline-block;
+
+    &.o-checkbox__labelhighlight,
+    .o-checkbox__labelhighlight {
+      color: $form-text-color;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      overflow: hidden;
+
+      width: 1em;
+      height: 1em;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+
+      left: 0;
+      top: $form-height/2;
+      margin-top: -0.6em;
+
+      border: 1px solid $form-border-color;
+      background-color: $form-background-color;
+
+      border-radius: $form-border-radius;
+      -moz-border-radius: $form-border-radius;
+      -webkit-border-radius: $form-border-radius;
+
+      transition: 0.1s border-color, 0.1s background-color;
+      -moz-transition: 0.1s border-color, 0.1s background-color;
+      -webkit-transition: 0.1s border-color, 0.1s background-color;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      display: block;
+      overflow: hidden;
+
+      width: 0.6em;
+      height: 0.3em;
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+
+      left: 0.2em;
+      top: $form-height/2;
+      margin-top: -0.3em;
+
+      transform: rotate( -45deg );
+      -moz-transform: rotate( -45deg );
+      -webkit-transform: rotate( -45deg );
+
+      border-left: 2px solid $form-background-color;
+      border-bottom: 2px solid $form-background-color;
+
+      opacity: 0;
+
+      transition: 0.1s opacity, 0.1s border-color;
+      -moz-transition: 0.1s opacity, 0.1s border-color;
+      -webkit-transition: 0.1s opacity, 0.1s border-color;
+    }
+
+    &:hover,
+    &.is-hover {
+      cursor: pointer;
+      .o-checkbox__labelhighlight {
+        cursor: pointer;
+      }
+
+      &:before {
+        border-color: $action-CTA-hover-color;
+        background-color: fade-out( $action-CTA-hover-color ,1 - $active-element-fade-once );
+      }
+
+    }
+
+  }
+
+  &:focus {
+    & + .o-checkbox__label {
+      &:before {
+        border-color: $action-CTA-hover-color;
+        background-color: fade-out( $action-CTA-hover-color ,1 - $active-element-fade-once );
+      }
+    }
+
+    &:checked,
+    &.is-checked {
+      & + .o-checkbox__label {
+        &:before {
+          border-color: $action-CTA-hover-color;
+          background-color: $action-CTA-hover-color;
+        }
+      }
+    }
+  }
+
+  &:checked,
+  &.is-checked {
+    & + .o-checkbox__label {
+      &.o-checkbox__labelhighlight,
+      .o-checkbox__labelhighlight {
+        font-weight: $important-text-weight;
+      }
+
+      &:before {
+        border-color: $action-CTA-color;
+        background-color: $action-CTA-color;
+      }
+      &:after {
+        opacity: 1;
+      }
+
+      &:hover,
+      &.is-hover {
+        &:before {
+          border-color: $action-CTA-hover-color;
+          background-color: $action-CTA-hover-color;
+        }
+      }
+    }
+  }
+
+  &:disabled,
+  &.is-disabled {
+
+    & + .o-checkbox__label {
+      cursor: not-allowed;
+      .o-checkbox__labelhighlight {
+        cursor: not-allowed;
+      }
+
+      color: $form-disabled-text-color;
+
+      &:before {
+        border-color: $form-disabled-border-color;
+        background-color: $form-background-color;
+      }
+    }
+
+    &:checked,
+    &.is-checked,
+    &.is-active {
+      & + .o-checkbox__label {
+        &:after {
+          border-left-color: $form-disabled-text-color;
+          border-bottom-color: $form-disabled-text-color;
+        }
+
+        &:hover,
+        &.is-hover {
+          &:before {
+            border-color: $form-disabled-border-color !important;
+            background-color: $form-background-color !important;
+          }
+        }
+      }
+    }
+  }
+
+
+  &--bare {
+    & + .o-checkbox__label {
+      min-width: 1em;
+      min-height: auto;
+      width: 1em;
+      padding-left: 0;
+    }
+  }
+
+  &__helptext {
+    padding-left: $form-font-size + $form-paddingHorizontal;
+  }
+}
+
+/* -- Textinput object -- */
+
+.o-textinput {
+
+  width: 100%;
+  height: $form-height;
+
+  padding-top: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-bottom: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-left: $form-paddingHorizontal;
+  padding-left: $form-paddingHorizontal;
+  padding-right: $form-paddingHorizontal;
+
+  font-size: $form-font-size;
+  line-height: $form-multiline-height;
+  background-color: $form-background-color;
+
+  border: 1px solid $form-border-color;
+  border-radius: $form-border-radius;
+  -moz-border-radius: $form-border-radius;
+  -webkit-border-radius: $form-border-radius;
+
+  &::-webkit-input-placeholder{ color: $form-placeholder-color; }
+  &:-moz-placeholder          { color: $form-placeholder-color; }
+  &::-moz-placeholder         { color: $form-placeholder-color; }
+  &:-ms-input-placeholder     { color: $form-placeholder-color; }
+
+  &:hover,
+  &:focus,
+  &.is-focus {
+    border-color: $form-focus-border-color;
+    /* Avoid the default Bootstrap's effect */
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
+
+  &[disabled],
+  &.is-disabled {
+    border-color: $form-disabled-border-color;
+    color: $form-placeholder-color;
+  }
+
+  // added when there is an input error
+  &.has-error { border-color: $status-error-color; }
+}
+
+/* -- Input with icon -- */
+.o-inputwith-icon {
+  position: relative;
+  width: 100%;
+  height: $form-height;
+
+  &--hasaction {
+    .o-inputwith-icon__input {
+      padding-right: $form-height;
+    }
+  }
+
+  // TODO: move all --muted in textinput.less
+  &--muted {
+    .o-inputwith-icon__input {
+      transition: border-color 0.15s, background-color 0.15s;
+      -moz-transition: border-color 0.15s, background-color 0.15s;
+      -webkit-transition: border-color 0.15s, background-color 0.15s;
+    }
+    .o-inputwith-icon__input:not(:focus) {
+      background-color: fade-out( $divider-color, 1 - $fade-once-percentage );
+      border-color:  fade-out( $divider-color, 1 - $fade-once-percentage );
+    }
+
+    .o-inputwith-icon__input:not(:focus):hover {
+      border-color:  $form-border-color;
+    }
+
+    .o-inputwith-icon__input.is-focus {
+      background-color: $form-background-color;
+      border-color: $form-border-color;
+    }
+
+    .o-inputwith-icon__input.is-focus:hover {
+      border-color: $form-focus-border-color;
+    }
+  }
+
+  &__input {
+    display: block;
+    padding-left: $form-height;
+  }
+
+  &__symbol {
+    position: absolute;
+    display: block;
+    width: $form-height*1 - 4*$baseline-grid;
+    height: $form-height*1 - 4*$baseline-grid;
+
+    top: 2*$baseline-grid;
+    left: 2*$baseline-grid;
+
+    color: $form-disabled-text-color;
+
+    z-index: $zindex1;
+  }
+
+  &__action {
+    position: absolute;
+    display: block;
+
+    width: $form-height*1-3*$baseline-grid;
+    height: $form-height*1-3*$baseline-grid;
+    line-height: $form-height*1-3*$baseline-grid;
+
+    top: $baseline-grid*1.5;
+    right: $baseline-grid*1.5;
+
+    padding: $baseline-grid*0.5;
+
+    opacity: 0.4;
+
+    z-index: $zindex1;
+
+    &:hover,
+    &.is-hover {
+      opacity: 0.8;
+    }
+
+    &:disabled,
+    &.is-disabled {
+      opacity: 0.4;
+    }
+  }
+}
+
+/* -- Select object -- */
+.o-select {
+  $dropdown-max-height: $form-height*6.5;
+
+  position: relative;
+
+  width: 100%;
+  height: $form-height;
+  overflow: visible;
+
+  padding-top: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-bottom: ($form-height - 1px - $form-multiline-height)*0.5;
+  padding-left: $form-paddingHorizontal;
+  padding-left: $form-paddingHorizontal;
+  padding-right: $form-paddingHorizontal;
+
+  font-size: $form-font-size;
+  line-height: $form-multiline-height;
+  background-color: $form-background-color;
+
+  border: 1px solid $form-border-color;
+  border-radius: $form-border-radius;
+  -moz-border-radius: $form-border-radius;
+  -webkit-border-radius: $form-border-radius;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &:hover,
+  &:focus {
+    outline: none;
+  }
+}
+
+/* -- Tabs object -- */
+.o-tabs {
+  position: relative;
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+  &__item {
+    position: relative;
+    display: block;
+    float: left;
+
+    min-width: $baseline-grid*18;
+    height: inherit;
+
+    padding-left: $baseline-grid*3;
+    padding-right: $baseline-grid*3;
+
+    text-align: center;
+    color: $link-muted-color;
+    line-height: inherit;
+
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+
+      left: 0;
+      bottom: 0;
+
+      width: 100%;
+      height: 3px;
+
+      opacity: 0;
+
+      transition: opacity 0.15s;
+      -moz-transition: opacity 0.15s;
+      -webkit-transition: opacity 0.15s;
+
+      background-color: $brand-color;
+    }
+
+    &:hover,
+    &.is-hover {
+      color: $brand-color;
+    }
+
+    &:active,
+    &.is-active {
+      color: $brand-color;
+      font-weight: $important-text-weight;
+
+      &:before {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* -- Icon -- */
+
+.o-icon {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  top: 0.14em;
+  fill: currentColor;
+  vertical-align: inherit;
+}
+
+
+/* -- Badge -- */
+
+.o-badge {
+  display: inline-block;
+  padding-left: $baseline-grid/2;
+  padding-right: $baseline-grid/2;
+  min-width: $baseline-grid*6;
+
+  line-height: $baseline-grid*3;
+  font-size: $tiny-font-size;
+  font-weight: $toned-text-weight;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none !important;
+  text-indent: 0;
+
+  color: $white-color !important;
+  background-color: $text-disabled-color;
+
+  border-radius: $baseline-grid/2;
+  -moz-border-radius: $baseline-grid/2;
+  -webkit-border-radius: $baseline-grid/2;
+
+  &--over {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: $zindex1;
+  }
+}
+
+/* -- Pagination -- */
+
+.o-pagination{
+
+  width: 100%;
+  text-align: center;
+
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+  &__prev, &__next, &__page{
+    display: inline-block;
+
+    color: $link-active-color;
+    font-size: $small-font-size;
+
+    padding: $baseline-grid $baseline-grid*2;
+    margin: 0 $baseline-grid;
+
+
+    &.is-disabled {
+      color: $text-disabled-color;
+      cursor: not-allowed;
+    }
+
+
+    &.is-active{
+      border: 1px solid $link-active-color;
+      border-radius: $default-border-radius;
+      -moz-border-radius: $default-border-radius;
+      -webkit-border-radius: $default-border-radius;
+
+      font-weight: $important-text-weight;
+
+      color: $link-active-color;
+    }
+
+  }
+
+
+}
+
+/* -- Spinner -- */
+
+.o-spinner {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  width: $baseline-grid*4;
+  height: $baseline-grid*4;
+  margin: 0.5em;
+  color: inherit;
+  border-color: $brand-color;
+  border-bottom-color: transparent;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -webkit-animation: o-spinner-anim 1.3s linear infinite;
+  -moz-animation: o-spinner-anim 1.3s linear infinite;
+  animation: o-spinner-anim 1.3s linear infinite;
+
+  &--big {
+    width: $baseline-grid*8;
+    height: $baseline-grid*8;
+
+    -webkit-animation: o-spinner-anim 1s linear infinite;
+    -moz-animation: o-spinner-anim 1s linear infinite;
+    animation: o-spinner-anim 1s linear infinite;
+  }
+
+  &--small { width: $baseline-grid*3; height: $baseline-grid*3; margin: 0;}
+
+}
+
+
+@-webkit-keyframes o-spinner-anim
+{
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes o-spinner-anim
+{
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@keyframes o-spinner-anim
+{
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+/* -- Status -- */
+
+.o-status {
+  position: relative;
+
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+  &:before {
+    content: "" !important; //needed to override u-clearfix utility
+    position: absolute;
+    display: block !important; //needed to override u-clearfix utility
+
+    top: 0;
+    left: 0;
+
+    width: 4px;
+    height: 100%;
+  }
+
+  &.is-disabled {
+    .o-status__text {
+      color: $text-disabled-color;
+    }
+  }
+
+  &.is-success {
+    &:before {
+      background-color: $status-success-color;
+    }
+    .o-status__text {
+      color: $status-success-color;
+    }
+  }
+
+  &.is-information {
+    &:before {
+      background-color: $status-information-color;
+    }
+    .o-status__text {
+      color: $status-information-color;
+    }
+  }
+
+  &.is-warning {
+    &:before {
+      background-color: $status-warning-color;
+    }
+    .o-status__text {
+      color: $status-warning-color;
+    }
+  }
+
+  &.is-error {
+    &:before {
+      background-color: $status-error-color;
+    }
+    .o-status__text {
+      color: $status-error-color;
+    }
+  }
+
+}
+
+/* -- interactive -- */
+
+.o-interactive {
+
+  &-toggle__on,
+  &-toggle__off {
+    position: relative;
+    float: left;
+    transition: max-width .15s, margin .15s, opacity .15s, 0.15s text-indent;
+    -moz-transition: max-width .15s, margin .15s, opacity .15s, 0.15s text-indent;
+    -webkit-transition: max-width .15s, margin .15s, opacity .15s, 0.15s text-indent;
+  }
+
+  &-list--highlight {
+
+    .o-interactive-list__item {
+      position: relative;
+
+      transition: background-color 0.15s;
+      -moz-transition: background-color 0.15s;
+      -webkit-transition: background-color 0.15s;
+
+      &:before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 4px;
+        height: 100%;
+
+        top: 0;
+        left: 0;
+
+        background-color: $action-CTA-color;
+
+        opacity: 0;
+
+        transition: .15s opacity;
+        -moz-transition: .15s opacity;
+        -webkit-transition: .15s opacity;
+      }
+    }
+
+    .o-interactive-list__row {
+      position: relative;
+
+      transition: background-color 0.15s;
+      -moz-transition: background-color 0.15s;
+      -webkit-transition: background-color 0.15s;
+
+      // nasty hack for tablesorter elements!!
+      & > td:first-child,
+      .o-interactive-list__cell {
+        border-left: 4px solid transparent;
+
+        transition: .15s border-color;
+        -moz-transition: .15s border-color;
+        -webkit-transition: .15s border-color;
+      }
+    }
+  }
+
+  &-list--highlight {
+    // highlight non disabled list items and rows
+
+    .o-interactive-list__item:not(.is-disabled):hover {
+
+      &:before {
+        opacity: 1;
+      }
+    }
+
+    .o-interactive-list__row:not(.is-disabled):hover {
+
+      & > td:first-child,
+      .o-interactive-list__cell {
+        border-left-color: $action-CTA-color;
+      }
+    }
+  }
+
+}
+
+/* -- Scrollable -- */
+
+.o-scrollable {
+  overflow: auto;
+
+}
+
+/* -- Initials logo -- */
+
+.o-initials-logo {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  font-size: 120%;
+  vertical-align: middle;
+  text-align: center;
+
+  color: $brand-color;
+  font-weight: $toned-text-weight;
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    display: block;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border: 2px solid $brand-color;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+  }
+}
+
