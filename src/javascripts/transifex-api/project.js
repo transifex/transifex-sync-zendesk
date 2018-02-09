@@ -170,16 +170,79 @@ var project = module.exports = {
       this.store('localeCount', 0);
       this.store('localeTarget', targets.length);
 
-      _.map(targets, function(locale)  {
-        io.pushSync('add_language_' + slug + '_' + locale);
-        that.ajax('txProjectAddLanguage', slug, locale, brand_id)
-          .done(data => that.txProjectAddLanguageDone(data, slug, locale, brand_id))
-          .fail(xhr => that.txProjectAddLanguageFail(xhr, slug, locale));
+      // Mark the resource as existing
+      let brands = this.store('brands');
+      brands[findIndex(brands, { id: brand_id })].exists = true;
+      this.store('brands', brands);
+
+      // Inform the user about the newly created resource
+      let messages = this.store('messages') || [];
+      let msg = 'Project ' + slug + ' created';
+      messages.push({
+        type: 'success',
+        message: msg,
       });
+      logger.info('Message added: [SUCCESS] ' + msg);
+      this.store('messages', messages);
+
+      // Try to create language groups
+      let total = targets.length, succeeded = 0, failed = 0;
+
+      _.map(targets, locale => {
+        io.pushSync('add_language_' + slug + '_' + locale);
+
+        that.ajax('txProjectAddLanguage', slug, locale, brand_id)
+          .done(data => {
+            that.txProjectAddLanguageDone(data, slug, locale, brand_id);
+            succeeded++;
+            that.languagesComplete(total, succeeded, failed);
+          })
+          .fail(xhr => {
+            that.txProjectAddLanguageFail(xhr, slug, locale);
+            failed++;
+            that.languagesComplete(total, succeeded, failed);
+          });
+      });
+    },
+    languagesComplete: function (total, succeeded, failed) {
+      // This method will be run every time a language request is finished
+      // Don't notify the user until all the requests are finished
+      if (succeeded + failed < total) return;
+      // Inform the user about the newly created resource
+      let messages = this.store('messages') || [];
+      let msg = '', type = '';
+
+      if (failed == total) {
+        msg = 'Failed to add languages to the newly created project';
+        type = 'error';
+      } else if (succeeded == total) {
+        msg = 'All languages were successfully added to project';
+        type = 'success';
+      } else {
+        msg = '' + succeeded + ' out of ' + total + ' languages were created';
+        type = 'warning';
+      }
+
+      messages.push({
+        type: type,
+        message: msg,
+      });
+      this.store('messages', messages);
+
+      this.checkAsyncComplete();
     },
     txProjectCreateError: function(slug) {
       io.popSync('create_project_' + slug);
       io.setPageError('txProject:login');
+
+      // Inform the user about the newly created resource
+      let messages = this.store('messages') || [];
+      messages.push({
+        type: 'error',
+        message: 'Failed to create project in Transifex'
+      });
+      this.store('messages', messages);
+
       this.checkAsyncComplete();
     },
     txProjectAddLanguageDone: function(data, slug, language_code, brand_id) {
