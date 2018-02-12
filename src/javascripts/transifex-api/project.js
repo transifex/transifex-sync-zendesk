@@ -127,10 +127,7 @@ var project = module.exports = {
     txProjectDone: function(data, status) {
       logger.info('Transifex Project Retrieved with status:', status);
       this.store(project.key, data);
-      var resource_array = _.map(data.resources, function(resource) {
-        return resource.slug;
-      });
-      io.setResourceArray(resource_array);
+      io.setResourceArray(data.resources);
       io.popSync(project.key);
       this.checkAsyncComplete();
     },
