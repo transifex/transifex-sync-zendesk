@@ -191,11 +191,11 @@ var project = module.exports = {
         })
 
       Promise.all(promises).then((results) => {
-        that.languagesComplete(true);
+        that.languagesComplete(true, slug);
       })
       .catch(err => {
         // Receives first rejection among the Promises
-        that.languagesComplete(false);
+        that.languagesComplete(false, slug);
       });
 
       this.store('brands', _.map(brands, function(brand) {
@@ -204,7 +204,7 @@ var project = module.exports = {
       }));
       this.uiArticlesBrandTab(brand_id);
     },
-    languagesComplete: function (success) {
+    languagesComplete: function (success, slug) {
       // Inform the user about the newly created resource
       let messages = this.store('messages') || [];
       let msg = '', type = '';
@@ -213,7 +213,11 @@ var project = module.exports = {
         msg = 'All languages were successfully added to project';
         type = 'success';
       } else {
-        msg = 'Failed to add languages to the newly created project';
+        let project_link = this.tx.concat('/', this.organization,
+                                          '/', slug, '/languages/');
+        msg = 'Some languages failed to be added to project.' +
+          ' You can go to <a href="' + project_link + '">the project page</a>' +
+          ' to add / remove target languages.';
         type = 'warning';
       }
 
