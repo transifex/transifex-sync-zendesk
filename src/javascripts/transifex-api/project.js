@@ -167,42 +167,80 @@ var project = module.exports = {
     txProjectCreateDone: function(data, slug, targets, brand_id) {
       io.popSync('create_project_' + slug);
       var that = this;
-      this.store('localeCount', 0);
-      this.store('localeTarget', targets.length);
 
-      _.map(targets, function(locale)  {
-        io.pushSync('add_language_' + slug + '_' + locale);
-        that.ajax('txProjectAddLanguage', slug, locale, brand_id)
-          .done(data => that.txProjectAddLanguageDone(data, slug, locale, brand_id))
-          .fail(xhr => that.txProjectAddLanguageFail(xhr, slug, locale));
+      // Mark the resource as existing
+      let brands = this.store('brands');
+      brands[findIndex(brands, { id: brand_id })].exists = true;
+      this.store('brands', brands);
+
+      // Inform the user about the newly created resource
+      let messages = this.store('messages') || [];
+      let msg = 'Project ' + slug + ' created';
+      messages.push({
+        type: 'success',
+        message: msg,
       });
+      logger.info('Message added: [SUCCESS] ' + msg);
+      this.store('messages', messages);
+
+      // Try to create language groups
+      let total = targets.length, succeeded = 0, failed = 0;
+
+      let promises = _.map(targets, locale => {
+          return that.ajax('txProjectAddLanguage', slug, locale, brand_id);
+        })
+
+      Promise.all(promises).then((results) => {
+        that.languagesComplete(true, slug);
+      })
+      .catch(err => {
+        // Receives first rejection among the Promises
+        that.languagesComplete(false, slug);
+      });
+
+      this.store('brands', _.map(brands, function(brand) {
+        if (brand.id == brand_id) return _.extend(brand, {exists: true});
+        return brand;
+      }));
+      this.uiArticlesBrandTab(brand_id);
     },
+    languagesComplete: function (success, slug) {
+      // Inform the user about the newly created resource
+      let messages = this.store('messages') || [];
+      let msg = '', type = '';
+
+      if (success) {
+        msg = 'All languages were successfully added to project';
+        type = 'success';
+      } else {
+        let project_link = this.tx.concat('/', this.organization,
+                                          '/', slug, '/languages/');
+        msg = 'Some languages failed to be added to project.' +
+          ' You can go to <a href="' + project_link + '">the project page</a>' +
+          ' to add / remove target languages.';
+        type = 'warning';
+      }
+
+      messages.push({
+        type: type,
+        message: msg,
+      });
+      this.store('messages', messages);
+    },
+
     txProjectCreateError: function(slug) {
       io.popSync('create_project_' + slug);
       io.setPageError('txProject:login');
-      this.checkAsyncComplete();
-    },
-    txProjectAddLanguageDone: function(data, slug, language_code, brand_id) {
-      io.popSync('add_language_' + slug + '_' + language_code);
-      var localeCount = this.store('localeCount') + 1;
-      this.store('localeCount', localeCount);
-      var localeTarget = this.store('localeTarget');
 
-      if (localeCount === localeTarget) {
-        var brands = this.store('brands');
-        var brand_id = brand_id;
-        this.store('brands', _.map(brands, function(brand) {
-          if (brand.id == brand_id) return _.extend(brand, {exists: true});
-          return brand;
-        }));
-        this.uiArticlesBrandTab(brand_id);
-      }
-      // this.checkAsyncComplete(); Handled above
-    },
-    txProjectAddLanguageFail: function(jqXHR, slug, language_code) {
-      io.popSync('add_language_' + slug + '_' + language_code);
-      io.setPageError('txProject:login');
-      // this.checkAsyncComplete();  Handled with promise all
+      // Inform the user about the newly created resource
+      let messages = this.store('messages') || [];
+      messages.push({
+        type: 'error',
+        message: 'Failed to create project in Transifex'
+      });
+      this.store('messages', messages);
+
+      this.checkAsyncComplete();
     },
   },
   actionHandlers: {

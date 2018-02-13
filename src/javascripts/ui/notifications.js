@@ -5,33 +5,27 @@
 import $ from 'jquery';
 
 module.exports = {
-  events: {
-    'click .js-notification-close': 'uiNotificationsClose',
-  },
-  eventHandlers: {
-    uiNotificationsClose: function(event) {
-      if (event) event.preventDefault();
-      $('[data-notification]').addClass('u-display-none');
-    }
-  },
   actionHandlers: {
+    closeNotification: e => $(e.target).parents('[data-notification]').remove(),
     notifySuccess: function(message) {
-      $('[data-notification="warning"], [data-notification="error"]').addClass('u-display-none');
-      $('[data-notification="success"]').removeClass('u-display-none').
-        find('.js-notification-message').text(message);
+      this.notify(message, 'success');
     },
     notifyWarning: function(message) {
-      $('[data-notification="success"], [data-notification="error"]').addClass('u-display-none');
-      $('[data-notification="warning"]').removeClass('u-display-none').
-        find('.js-notification-message').text(message);
+      this.notify(message, 'warning');
     },
     notifyError: function(message) {
-      $('[data-notification="success"], [data-notification="warning"]').addClass('u-display-none');
-      $('[data-notification="error"]').removeClass('u-display-none').
-        find('.js-notification-message').text(message);
+      this.notify(message, 'error');
+    },
+    notify: function(message, type) {
+      let msg = $('[data-notification="' + type + '"]').clone(false);
+      // Make notification visible and mark it as removable
+      msg.removeClass('u-display-none').addClass('js-notification-temp');
+      msg.find('.js-notification-message').html(message);
+      msg.find('.js-notification-close').click(this.closeNotification);
+      msg.appendTo('.js-notifications');
     },
     notifyReset: function() {
-      this.uiNotificationsClose();
+      $('.js-notification-temp').remove();
     }
   },
 };
