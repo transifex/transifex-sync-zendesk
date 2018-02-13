@@ -167,8 +167,6 @@ var project = module.exports = {
     txProjectCreateDone: function(data, slug, targets, brand_id) {
       io.popSync('create_project_' + slug);
       var that = this;
-      this.store('localeCount', 0);
-      this.store('localeTarget', targets.length);
 
       // Mark the resource as existing
       let brands = this.store('brands');
@@ -188,38 +186,34 @@ var project = module.exports = {
       // Try to create language groups
       let total = targets.length, succeeded = 0, failed = 0;
 
-      _.map(targets, locale => {
-        io.pushSync('add_language_' + slug + '_' + locale);
+      let promises = _.map(targets, locale => {
+          return that.ajax('txProjectAddLanguage', slug, locale, brand_id);
+        })
 
-        that.ajax('txProjectAddLanguage', slug, locale, brand_id)
-          .done(data => {
-            that.txProjectAddLanguageDone(data, slug, locale, brand_id);
-            succeeded++;
-            that.languagesComplete(total, succeeded, failed);
-          })
-          .fail(xhr => {
-            that.txProjectAddLanguageFail(xhr, slug, locale);
-            failed++;
-            that.languagesComplete(total, succeeded, failed);
-          });
+      Promise.all(promises).then((results) => {
+        that.languagesComplete(true);
+      })
+      .catch(err => {
+        // Receives first rejection among the Promises
+        that.languagesComplete(false);
       });
+
+      this.store('brands', _.map(brands, function(brand) {
+        if (brand.id == brand_id) return _.extend(brand, {exists: true});
+        return brand;
+      }));
+      this.uiArticlesBrandTab(brand_id);
     },
-    languagesComplete: function (total, succeeded, failed) {
-      // This method will be run every time a language request is finished
-      // Don't notify the user until all the requests are finished
-      if (succeeded + failed < total) return;
+    languagesComplete: function (success) {
       // Inform the user about the newly created resource
       let messages = this.store('messages') || [];
       let msg = '', type = '';
 
-      if (failed == total) {
-        msg = 'Failed to add languages to the newly created project';
-        type = 'error';
-      } else if (succeeded == total) {
+      if (success) {
         msg = 'All languages were successfully added to project';
         type = 'success';
       } else {
-        msg = '' + succeeded + ' out of ' + total + ' languages were created';
+        msg = 'Failed to add languages to the newly created project';
         type = 'warning';
       }
 
@@ -228,9 +222,8 @@ var project = module.exports = {
         message: msg,
       });
       this.store('messages', messages);
-
-      this.checkAsyncComplete();
     },
+
     txProjectCreateError: function(slug) {
       io.popSync('create_project_' + slug);
       io.setPageError('txProject:login');
@@ -244,28 +237,6 @@ var project = module.exports = {
       this.store('messages', messages);
 
       this.checkAsyncComplete();
-    },
-    txProjectAddLanguageDone: function(data, slug, language_code, brand_id) {
-      io.popSync('add_language_' + slug + '_' + language_code);
-      var localeCount = this.store('localeCount') + 1;
-      this.store('localeCount', localeCount);
-      var localeTarget = this.store('localeTarget');
-
-      if (localeCount === localeTarget) {
-        var brands = this.store('brands');
-        var brand_id = brand_id;
-        this.store('brands', _.map(brands, function(brand) {
-          if (brand.id == brand_id) return _.extend(brand, {exists: true});
-          return brand;
-        }));
-        this.uiArticlesBrandTab(brand_id);
-      }
-      // this.checkAsyncComplete(); Handled above
-    },
-    txProjectAddLanguageFail: function(jqXHR, slug, language_code) {
-      io.popSync('add_language_' + slug + '_' + language_code);
-      io.setPageError('txProject:login');
-      // this.checkAsyncComplete();  Handled with promise all
     },
   },
   actionHandlers: {
