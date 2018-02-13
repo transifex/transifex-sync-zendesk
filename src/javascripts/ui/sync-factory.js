@@ -205,12 +205,7 @@ module.exports = function(T, t, api) {
           container: 'body',
         });
 
-        let messages = this.store('messages') || [];
-        _.each(messages, notification =>
-          this.notify(notification['message'], notification['type'])
-        );
-        // Empty the messages queue
-        this.store('messages', []);
+        this.displayQueuedNotifications();
       },
       'ui<T>BatchUpload': function(event) {
         if (event) event.preventDefault();

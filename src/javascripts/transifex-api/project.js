@@ -174,14 +174,8 @@ var project = module.exports = {
       this.store('brands', brands);
 
       // Inform the user about the newly created resource
-      let messages = this.store('messages') || [];
       let msg = 'Project ' + slug + ' created';
-      messages.push({
-        type: 'success',
-        message: msg,
-      });
-      logger.info('Message added: [SUCCESS] ' + msg);
-      this.store('messages', messages);
+      this.queueNotification(msg, 'success');
 
       // Try to create language groups
       let total = targets.length, succeeded = 0, failed = 0;
