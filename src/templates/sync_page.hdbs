@@ -6,7 +6,7 @@
       <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-3x u-paddingBottom-2x u-borderBottom-divider">
         <div class="u-display-flex">
 
-          <div class="u-fontSize-big u-lineHeight-4x u-flexGrow-1 u-color-primary">{{project_name}}</div>
+          <div class="u-fontSize-big u-lineHeight-5x u-flexGrow-1 u-color-primary">{{project_name}}</div>
 
           <div class="u-display-flex u-alignItems-center">
             <!-- Brand selection area -->
