@@ -172,12 +172,12 @@ var resource = module.exports = {
 
     txRenameResourceDone: function(data, resourceSlug) {
       logger.info('Transifex resource renamed with status:', 'OK');
-      this.notifySuccess('Resource ' + resourceSlug + ' name updated');
+      io.renameDone();
     },
 
     txRenameResourceError: function(jqXHR, resourceSlug) {
       logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
-      this.notifyError('Failed to update resource ' + resourceSlug + ' name');
+      io.renameFail();
     },
   },
   actionHandlers: {
@@ -209,6 +209,11 @@ var resource = module.exports = {
           this.ajax('txRenameResource', {"name": new_name}, slug)
             .done(data => this.txRenameResourceDone(data, slug))
             .fail(xhr => this.txRenameResourceError(xhr, slug));
+
+          // Save the new name to the resources array so we won't try to rename
+          // the same resource twice
+          resources[resource_index]['name'] = new_name;
+          io.setResourceArray(resources);
         }
         this.ajax('txUpdateResource', content, slug)
           .done(data => this.txUpdateResourceDone(data, slug))

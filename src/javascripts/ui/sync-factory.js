@@ -328,6 +328,16 @@ module.exports = function(T, t, api) {
           this.notifyWarning((total - failed) + ' ' + content_type + ' were successfully uploaded to Transifex, ' + failed + ' ' + api + ' could not be uploaded.');
           $('[data-resource] .o-status[data-item="controller"]:not(.is-success)').addClass('is-warning');
         }
+
+        // Display any possible information about resource renaming
+        let renames = io.getRenames();
+        if (renames['done'] > 0) {
+          this.notifySuccess(renames['done'] + ' resources renamed in Transifex');
+        }
+        if (renames['fail'] > 0) {
+          this.notifyWarning(renames['fail'] + ' resources failed to be renamed in Transifex');
+        }
+        io.clearRenames();
       },
       'ui<T>DownloadComplete': function() {
         var that = this;
