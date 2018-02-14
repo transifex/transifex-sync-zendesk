@@ -127,10 +127,7 @@ var project = module.exports = {
     txProjectDone: function(data, status) {
       logger.info('Transifex Project Retrieved with status:', status);
       this.store(project.key, data);
-      var resource_array = _.map(data.resources, function(resource) {
-        return resource.slug;
-      });
-      io.setResourceArray(resource_array);
+      io.setResourceArray(data.resources);
       io.popSync(project.key);
       this.checkAsyncComplete();
     },
@@ -174,14 +171,8 @@ var project = module.exports = {
       this.store('brands', brands);
 
       // Inform the user about the newly created resource
-      let messages = this.store('messages') || [];
       let msg = 'Project ' + slug + ' created';
-      messages.push({
-        type: 'success',
-        message: msg,
-      });
-      logger.info('Message added: [SUCCESS] ' + msg);
-      this.store('messages', messages);
+      this.queueNotification(msg, 'success');
 
       // Try to create language groups
       let total = targets.length, succeeded = 0, failed = 0;

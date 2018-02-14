@@ -10,6 +10,8 @@ var txProject = require('./project'),
     logger = require('../logger'),
     txutils = require('../txUtil');
 
+const findIndex = require('lodash.findindex');
+
 var resource = module.exports = {
   // selfies
   key: 'tx_resource',
@@ -64,6 +66,18 @@ var resource = module.exports = {
       logger.debug('txUpdateResource ajax request:', data + '||' + resourceName + '||' + data.i18n_type);
       return {
         url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceName + '/content/',
+        type: 'PUT',
+        headers: resource.headers,
+        data: JSON.stringify(data),
+        cache: false,
+        contentType: 'application/json',
+        cors: true
+      };
+    },
+    txRenameResource: function(data, resourceSlug) {
+      logger.debug('txRenameResource ajax request:', data + '||' + resourceSlug);
+      return {
+        url: this.tx + '/api/2/project/' + this.selected_brand.tx_project + '/resource/' + resourceSlug + '/',
         type: 'PUT',
         headers: resource.headers,
         data: JSON.stringify(data),
@@ -155,6 +169,16 @@ var resource = module.exports = {
       io.opSet(resourceName, 'fail');
       this.checkAsyncComplete();
     },
+
+    txRenameResourceDone: function(data, resourceSlug) {
+      logger.info('Transifex resource renamed with status:', 'OK');
+      io.renameDone();
+    },
+
+    txRenameResourceError: function(jqXHR, resourceSlug) {
+      logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
+      io.renameFail();
+    },
   },
   actionHandlers: {
     completedLanguages: function(stats) {
@@ -173,11 +197,24 @@ var resource = module.exports = {
     },
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);
-      var project = this.store(txProject.key);
-      var resources = io.getResourceArray();
-      //check list of resources in the project
+      // Check list of resources in the Transifex project
+      let project = this.store(txProject.key);
+      let resources = io.getResourceArray();
       io.opSet(slug, 'processing');
-      if (syncUtil.isStringinArray(slug, resources)) {
+      let resource_index = findIndex(resources, {slug: slug});
+      if (resource_index > -1) {
+        let new_name = content.name,
+            old_name = resources[resource_index]['name'];
+        if (new_name != old_name) {
+          this.ajax('txRenameResource', {"name": new_name}, slug)
+            .done(data => this.txRenameResourceDone(data, slug))
+            .fail(xhr => this.txRenameResourceError(xhr, slug));
+
+          // Save the new name to the resources array so we won't try to rename
+          // the same resource twice
+          resources[resource_index]['name'] = new_name;
+          io.setResourceArray(resources);
+        }
         this.ajax('txUpdateResource', content, slug)
           .done(data => this.txUpdateResourceDone(data, slug))
           .fail(xhr => this.txUpsertResourceError(xhr, slug));

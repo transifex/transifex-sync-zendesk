@@ -17,7 +17,11 @@ var SETTINGS = {},
     ZD_LOCALES = {},
     RESOURCE_ARRAY = [],
     ZD_USER_EMAIL = '',
-    QUERY = '';
+    QUERY = '',
+    RENAMES = {
+      done: 0,
+      failed: 0,
+    };
 
 module.exports = {
   setSettings: settings => {
@@ -87,5 +91,19 @@ module.exports = {
   getQuery: () => QUERY,
   setQuery: q => {
     QUERY = q;
+  },
+
+  renameDone: () => {
+    RENAMES['done']++;
+  },
+  renameFailed: () => {
+    RENAMES['failed']++;
+  },
+  getRenames: () => RENAMES,
+  clearRenames: () => {
+    RENAMES = {
+      done: 0,
+      failed: 0,
+    };
   },
 };
