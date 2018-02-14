@@ -3,13 +3,12 @@
   <div class="u-position-relative">
     <!-- Header: Info area -->
     <div class="c-infoarea">
-      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-2x u-paddingBottom-2x u-borderBottom-divider">
+      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-2x u-paddingBottom-2x u-borderBottom-divider u-minHeight-11x">
         <div class="u-display-flex">
 
           <div class="u-fontSize-big u-lineHeight-5x u-flexGrow-1 u-color-primary">&nbsp;</div>
 
           <div class="u-textAlign-right u-display-flex u-alignItems-center">
-
           </div>
         </div>
       </div>

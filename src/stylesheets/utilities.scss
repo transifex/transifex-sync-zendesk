@@ -156,3 +156,7 @@
   flex: 1 0 0;
   -webkit-flex: 1 0 0;
 }
+
+.u-minHeight-11x {
+  min-height: 11 * $baseline-grid;
+}
