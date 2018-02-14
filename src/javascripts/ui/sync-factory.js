@@ -277,8 +277,7 @@ module.exports = function(T, t, api) {
           }
         }
       },
-      'uiSync': function(event) {
-        if (event) event.preventDefault();
+      'uiSync': function() {
         if (this.processing) return;
 
         var page = sessionStorage.getItem('TxActiveTab') || 'Articles';
