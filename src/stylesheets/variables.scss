@@ -1,0 +1,124 @@
+/* Configs part */
+
+/* --- Zindexes subset --- */
+$zindex1: 1;
+$zindex2: 2;
+$zindex3: 3;
+$zindex4: 4;
+
+/* -- Typography subset -- */
+
+$baseline-grid: 6px;
+
+$default-font-family: proxima-nova,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+$system-font-family: Monaco, Consolas, monospace;
+
+$tiny-font-size:   10px;
+$small-font-size:   12px;
+$default-font-size: 14px;
+$default-plus-font-size: 16px;
+$large-font-size:   18px;
+$big-font-size:     25px;
+$bigger-font-size:  30px;
+$enormous-font-size:40px;
+$enormous-plus-font-size: 48;
+$huge-font-size: 49px;
+$gargantuan-font-size: 60px;
+
+
+$thin-text-weight: 100;
+$normal-text-weight: 100;
+$toned-text-weight: 400;
+$important-text-weight: 600;
+
+$normal-line-height: $baseline-grid*3;
+
+/* --- Variables subset --- */
+$default-border-radius: 3px;
+
+$button-height: $baseline-grid*5;
+
+$fade-once-percentage: 0.5;
+$fade-twice-percentage: 0.16;
+$lightness-once-percentage: 0.5;
+$lightness-twice-percentage: 0.1;
+$active-element-fade-once: 0.08;
+
+$gutter-width: $baseline-grid*4;
+$top-navigation-bar-height: $baseline-grid*8;
+$HELPER-sizing-variations: 30;
+
+/* --- Colors subset --- */
+$brand-color: #0064AB;
+
+$background-main-color: #E9EBEF;
+$background-data-color: #FFFFFF;
+$background-muted-color: #F4F5F7;
+$background-active-color: #F4F5F7;
+
+$divider-color: #DEE1E7;
+
+$secondaryNavigation-background-color: #283344;
+$secondaryNavigation-background-highlight-color: #5A616D;
+$secondaryNavigation-symbol-color: #464E5A;
+$secondaryNavigation-symbol-highlight-color: #6E7889;
+$secondaryNavigation-text-active: #8E9CB3;
+$secondaryNavigation-text-highlight-active-color: #FFFFFF;
+
+$background-graph-back: #F4F6FB;
+$background-graph-base: #BFE4FF;
+$background-graph-extend: #84CCFF;
+
+$action-main-color: $brand-color;
+$action-CTA-color: $brand-color;
+$action-CTA-hover-color: lighten( $action-CTA-color, $lightness-once-percentage );
+$action-CTA-clicked-color: lighten( $action-CTA-color, $lightness-twice-percentage );
+$action-disabled-text-color: #CFCFCF;
+$action-disabled-color: #E1E1E1;
+$action-disabled-onMuted-color: #D7D7D7;
+$action-disabled-onMuted-text-color: #C4C4C4;
+
+$link-active-color: #2954BB;
+$link-muted-color: #828181;
+$link-disabled-color: #CFCFCF;
+$link-disabled-onMuted-color: #C4C4C4;
+
+$secondary-notification-color: #5BD5C5;
+$secondary-issue-color: #855BD5;
+$status-success-color: #18C125;
+$status-error-color: #FE5D65;
+$status-warning-color: #FCB93B;
+$status-information-color: #0086E6;
+
+$text-important-color: #333333;
+$text-primary-color: #333333;
+$text-secondary-color: #828181;
+$text-muted-color: #B6B6B6;
+$text-disabled-color: #CFCFCF;
+
+$black-color: #000000;
+$white-color: #FFFFFF;
+
+/* --- Forms subset --- */
+$form-height: $baseline-grid*6;
+$form-background-color: #FFFFFF;;
+$form-font-size: $default-font-size;
+$form-font-weight: $toned-text-weight;
+$form-active-font-weight: $important-text-weight;
+$form-multiline-height: $normal-line-height;
+$form-text-color: $text-important-color;
+$form-disabled-text-color: $text-muted-color;
+$form-unselected-text-color: $text-secondary-color;
+$form-placeholder-color: #CFCFCF;
+$form-border-radius: $default-border-radius;
+$form-border-color: #A7A7A7;
+$form-focus-border-color: $text-important-color;
+$form-disabled-border-color: #E1E1E1;
+$form-paddingHorizontal: ($baseline-grid*2 - 1px);
+$form-label-font-size: $default-font-size;
+$form-label-line-height: $baseline-grid*3;
+$form-label-color: $text-primary-color;
+$form-label-secondary-font-size: $small-font-size;
+$form-label-secondary-color: $text-secondary-color;
+$form-label-disabled-color: $text-muted-color;
+

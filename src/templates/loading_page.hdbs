@@ -3,25 +3,12 @@
   <div class="u-position-relative">
     <!-- Header: Info area -->
     <div class="c-infoarea">
-      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-4x u-paddingBottom-4x u-borderBottom-divider">
+      <div class="c-infoarea__section u-paddingHorizontal-gutter u-paddingTop-2x u-paddingBottom-2x u-borderBottom-divider u-minHeight-11x">
         <div class="u-display-flex">
 
-          <div class="u-width-7x u-marginRight-2x">
-            <div class="o-initials-logo u-box-7x u-lineHeight-7x u-fontSize-big">
-              tx
-            </div>
-          </div>
-
-          <div class="u-flexGrow-1 u-color-primary">
-            <div class="u-fontSize-small u-lineHeight-3x"><br/></div>
-            <div class="u-fontSize-big u-lineHeight-4x">Transifex Sync</div>
-            <div class=" u-color-disabled">
-              <a href="http://docs.transifex.com/integrations/zendesk/" class="o-link u-fontSize-small u-lineHeight-3x" target="_blank">How to use Transifex Sync</a>
-            </div>
-          </div>
+          <div class="u-fontSize-big u-lineHeight-5x u-flexGrow-1 u-color-primary">&nbsp;</div>
 
           <div class="u-textAlign-right u-display-flex u-alignItems-center">
-
           </div>
         </div>
       </div>
