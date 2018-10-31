@@ -8,7 +8,8 @@ var txProject = require('./project'),
     syncUtil = require('../syncUtil'),
     io = require('../io'),
     logger = require('../logger'),
-    txutils = require('../txUtil');
+    txutils = require('../txUtil'),
+    common = require('../common');
 
 const findIndex = require('lodash.findindex');
 
@@ -22,6 +23,8 @@ var resource = module.exports = {
   },
   username: '',
   password: '',
+  batch: '',
+  category: '',
   initialize: function() {
     var settings = io.getSettings();
     resource.username = settings.tx_username;
@@ -142,7 +145,7 @@ var resource = module.exports = {
         io.popSync(resource.key + resourceName + languageCode);
         this.store(resource.key + resourceName, jqXHR.status);
         io.opSet(resourceName, 'fail');
-        this.checkAsyncComplete();
+        this.txUpsertResourceNext();
       }
     },
 
@@ -152,14 +155,14 @@ var resource = module.exports = {
 
       io.opSet(resourceName, 'success');
       io.pushResource(resourceName);
-      this.checkAsyncComplete();
+      this.txUpsertResourceNext();
     },
 
     txUpdateResourceDone: function(data, resourceName) {
       logger.info('Transifex Resource updated with status:', 'OK');
       io.popSync(resource.key + resourceName + 'upsert');
       io.opSet(resourceName, 'success');
-      this.checkAsyncComplete();
+      this.txUpsertResourceNext();
     },
 
     txUpsertResourceError: function(jqXHR, resourceName) {
@@ -167,7 +170,7 @@ var resource = module.exports = {
       io.popSync(resource.key + resourceName + 'upsert');
       this.store(resource.key + resourceName, jqXHR.status);
       io.opSet(resourceName, 'fail');
-      this.checkAsyncComplete();
+      this.txUpsertResourceNext();
     },
 
     txRenameResourceDone: function(data, resourceSlug) {
@@ -194,6 +197,31 @@ var resource = module.exports = {
       });
 
       return arr;
+    },
+    txUpsertBatchResources: function(category, objects) {
+      // Save all resource objects 
+      resource.batch = objects;
+      resource.category = category;
+      // Start upserting resources
+      this.txUpsertResourceNext();
+    },
+    txUpsertResourceNext: function() {
+      // If the array length is empty, no other resources left to be upserted, so at
+      // this point we can notify the frontend.
+      if (!resource.batch.length) {
+          this.checkAsyncComplete();
+          return;
+      }
+      // Get the next resource to upsert
+      let entry = resource.batch.shift();
+      let txResourceName = entry.resource_name;
+      // The getArticlesForTranslation() can be found in factory.js as 
+      // get<T>ForTranslation(). In our case, <T> is Articles.
+      let resource_request = common.txRequestFormat(
+        this.getArticlesForTranslation(entry), resource.category
+      );
+      io.pushSync(resource.key + txResourceName + 'upsert');
+      this.txUpsertResource(resource_request, txResourceName);
     },
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);

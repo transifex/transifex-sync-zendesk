@@ -232,13 +232,7 @@ module.exports = function(T, t, api) {
         this[M('start<T>Process')]('upload');
         io.opResetAll();
         this.loadSyncPage = this[M('ui<T>UpsertComplete')];
-        for (var i = 0; i < objects.length; i++) {
-          entry = objects[i];
-          txResourceName = entry.resource_name;
-          resource_request = common.txRequestFormat(this[M('get<T>ForTranslation')](entry), category);
-          io.pushSync(txResource.key + txResourceName + 'upsert');
-          this.txUpsertResource(resource_request, txResourceName);
-        }
+        this.txUpsertBatchResources(category, objects);
       },
       'ui<T>BatchDownload': function(event) {
         if (event) event.preventDefault();
