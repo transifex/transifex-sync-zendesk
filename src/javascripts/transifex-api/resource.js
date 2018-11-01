@@ -23,7 +23,9 @@ var resource = module.exports = {
   },
   username: '',
   password: '',
-  batch: '',
+  // A list that keeps a batch of resources to be uploaded
+  batchArray: [],
+  // Category to be used when uploading multiple resources
   category: '',
   initialize: function() {
     var settings = io.getSettings();
@@ -198,22 +200,37 @@ var resource = module.exports = {
 
       return arr;
     },
-    txUpsertBatchResources: function(category, objects) {
-      // Save all resource objects 
-      resource.batch = objects;
+    txUpsertBatchResources: function(category, batchArray) {
+      /**
+       * Upsert multiple resources
+       * 
+       * @param {string} category Possible values: 'Resources' | 'Dynamic'
+       * @param {list} batchArray An array of resources to be upserted
+       */
+      resource.batchArray = batchArray;
       resource.category = category;
-      // Start upserting resources
+      /*
+       * Start upserting resources one at a time. The txUpsertResourceNext function
+       * will upsert the first resource, and will call itshef again (itterating to the
+       * next one) once its finished (we use ajax's 'done' event to know when a resource 
+       * is finished).
+       */
       this.txUpsertResourceNext();
     },
     txUpsertResourceNext: function() {
-      // If the array length is empty, no other resources left to be upserted, so at
-      // this point we can notify the frontend.
-      if (!resource.batch.length) {
+      /**
+       * Take the next resource of the batchArray and try to upsert it.
+       */
+      if (!resource.batchArray.length) {
+        /**
+         * If the array length is empty, no other resources left to be upserted, so at
+         * this point we can notify the frontend.
+         */
           this.checkAsyncComplete();
           return;
       }
       // Get the next resource to upsert
-      let entry = resource.batch.shift();
+      let entry = resource.batchArray.shift();
       let txResourceName = entry.resource_name;
       // The getArticlesForTranslation() can be found in factory.js as 
       // get<T>ForTranslation(). In our case, <T> is Articles.
