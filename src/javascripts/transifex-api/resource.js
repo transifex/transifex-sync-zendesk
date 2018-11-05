@@ -200,13 +200,15 @@ var resource = module.exports = {
 
       return arr;
     },
-    txUpsertBatchResources: function(category, batchArray) {
+    txUpsertBatchResources: function(getTForTranslationFunction, category, batchArray) {
       /**
        * Upsert multiple resources
        * 
+       * @param {function} getTForTranslationFunction Reference to the get<T>ForTranslation function
        * @param {string} category Possible values: 'Resources' | 'Dynamic'
        * @param {list} batchArray An array of resources to be upserted
        */
+      resource.getTForTranslationFunction = getTForTranslationFunction
       resource.batchArray = batchArray;
       resource.category = category;
       /*
@@ -235,7 +237,7 @@ var resource = module.exports = {
       // The getArticlesForTranslation() can be found in factory.js as 
       // get<T>ForTranslation(). In our case, <T> is Articles.
       let resource_request = common.txRequestFormat(
-        this.getArticlesForTranslation(entry), resource.category
+        resource.getTForTranslationFunction(entry), resource.category
       );
       io.pushSync(resource.key + txResourceName + 'upsert');
       this.txUpsertResource(resource_request, txResourceName);
