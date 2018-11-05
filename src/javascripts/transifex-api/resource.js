@@ -228,9 +228,12 @@ var resource = module.exports = {
          * If the array length is empty, no other resources left to be upserted, so at
          * this point we can notify the frontend.
          */
+          this.notifyReset();
           this.checkAsyncComplete();
           return;
       }
+      this.notifyReset();
+      this.notifyInfo('' + resource.batchArray.length + ' resources remaining');
       // Get the next resource to upsert
       let entry = resource.batchArray.shift();
       let txResourceName = entry.resource_name;
