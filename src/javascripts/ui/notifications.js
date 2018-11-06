@@ -18,6 +18,9 @@ module.exports = {
     notifyError: function(message) {
       this.notify(message, 'error');
     },
+    notifyInfo: function(message) {
+      this.notify(message, 'info');
+    },
     notify: function(message, type) {
       let msg = $('[data-notification="' + type + '"]').clone(false);
       msg.removeAttr('data-notification');

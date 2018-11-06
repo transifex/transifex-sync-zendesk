@@ -8,7 +8,8 @@ var txProject = require('./project'),
     syncUtil = require('../syncUtil'),
     io = require('../io'),
     logger = require('../logger'),
-    txutils = require('../txUtil');
+    txutils = require('../txUtil'),
+    common = require('../common');
 
 const findIndex = require('lodash.findindex');
 
@@ -22,6 +23,10 @@ var resource = module.exports = {
   },
   username: '',
   password: '',
+  // A list that keeps a batch of resources to be uploaded
+  batchArray: [],
+  // Category to be used when uploading multiple resources
+  category: '',
   initialize: function() {
     var settings = io.getSettings();
     resource.username = settings.tx_username;
@@ -142,7 +147,7 @@ var resource = module.exports = {
         io.popSync(resource.key + resourceName + languageCode);
         this.store(resource.key + resourceName, jqXHR.status);
         io.opSet(resourceName, 'fail');
-        this.checkAsyncComplete();
+        this.txUpsertResourceNext();
       }
     },
 
@@ -152,14 +157,14 @@ var resource = module.exports = {
 
       io.opSet(resourceName, 'success');
       io.pushResource(resourceName);
-      this.checkAsyncComplete();
+      this.txUpsertResourceNext();
     },
 
     txUpdateResourceDone: function(data, resourceName) {
       logger.info('Transifex Resource updated with status:', 'OK');
       io.popSync(resource.key + resourceName + 'upsert');
       io.opSet(resourceName, 'success');
-      this.checkAsyncComplete();
+      this.txUpsertResourceNext();
     },
 
     txUpsertResourceError: function(jqXHR, resourceName) {
@@ -167,7 +172,7 @@ var resource = module.exports = {
       io.popSync(resource.key + resourceName + 'upsert');
       this.store(resource.key + resourceName, jqXHR.status);
       io.opSet(resourceName, 'fail');
-      this.checkAsyncComplete();
+      this.txUpsertResourceNext();
     },
 
     txRenameResourceDone: function(data, resourceSlug) {
@@ -194,6 +199,51 @@ var resource = module.exports = {
       });
 
       return arr;
+    },
+    txUpsertBatchResources: function(getTForTranslationFunction, category, batchArray) {
+      /**
+       * Upsert multiple resources
+       * 
+       * @param {function} getTForTranslationFunction Reference to the get<T>ForTranslation function
+       * @param {string} category Possible values: 'Resources' | 'Dynamic'
+       * @param {list} batchArray An array of resources to be upserted
+       */
+      resource.getTForTranslationFunction = getTForTranslationFunction
+      resource.batchArray = batchArray;
+      resource.category = category;
+      /*
+       * Start upserting resources one at a time. The txUpsertResourceNext function
+       * will upsert the first resource, and will call itshef again (itterating to the
+       * next one) once its finished (we use ajax's 'done' event to know when a resource 
+       * is finished).
+       */
+      this.txUpsertResourceNext();
+    },
+    txUpsertResourceNext: function() {
+      /**
+       * Take the next resource of the batchArray and try to upsert it.
+       */
+      if (!resource.batchArray.length) {
+        /**
+         * If the array length is empty, no other resources left to be upserted, so at
+         * this point we can notify the frontend.
+         */
+          this.notifyReset();
+          this.checkAsyncComplete();
+          return;
+      }
+      this.notifyReset();
+      this.notifyInfo('' + resource.batchArray.length + ' resources remaining');
+      // Get the next resource to upsert
+      let entry = resource.batchArray.shift();
+      let txResourceName = entry.resource_name;
+      // The getArticlesForTranslation() can be found in factory.js as 
+      // get<T>ForTranslation(). In our case, <T> is Articles.
+      let resource_request = common.txRequestFormat(
+        resource.getTForTranslationFunction(entry), resource.category
+      );
+      io.pushSync(resource.key + txResourceName + 'upsert');
+      this.txUpsertResource(resource_request, txResourceName);
     },
     txUpsertResource: function(content, slug) {
       logger.info('txUpsertResource:', content + '||' + slug);

@@ -179,6 +179,23 @@
         </a>
       </div>
 
+      <div class="c-system-message c-system-message--compact c-system-message--info u-display-none" data-notification="info">
+        <svg class="c-system-message__symbol" viewBox="0 0 16 16">
+            <path d="M8 0c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zM8 14.4c-3.5 0-6.4-2.9-6.4-6.4s2.9-6.4 6.4-6.4 6.4 2.9 6.4 6.4c0 3.5-2.9 6.4-6.4 6.4z"></path>
+            <path d="M7.2 7.4v4.2h1.6v-4.2z"></path>
+            <path d="M8.8 5.2c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
+        </svg>
+        <div>
+          <div class="c-system-message__title">Uploading files to Transifex</div>
+          <div class="c-system-message__content js-notification-message"></div>
+        </div>
+        <a href="#" class="c-system-message__close js-notification-close">
+          <svg class="u-box-100" viewBox="0 0 16 16">
+            <path class="path1" d="M8 5.905l-5.905-5.714-2.095 2.095 5.714 5.905-5.333 5.333 2.095 2.286 5.524-5.524 5.524 5.524 2.095-2.286-5.524-5.333 5.905-5.905-2.286-2.095-5.714 5.714z"></path>
+          </svg>
+        </a>
+      </div>
+
     </div>
 
     <!-- Header: List header -->
