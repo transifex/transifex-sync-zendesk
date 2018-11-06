@@ -35,6 +35,7 @@ dist/assets/main.js
 dist/assets/main.js.map
 dist/translations/
 dist/tmp/
+dist/.zat
 
 # Users Environment Variables
 .lock-wscript

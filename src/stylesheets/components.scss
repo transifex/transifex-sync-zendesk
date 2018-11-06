@@ -76,6 +76,10 @@
   &--error { border-color: $status-error-color; }
   &--error .c-system-message__symbol { fill: $status-error-color; }
 
+  &--info { border-color: $status-information-color; }
+  &--info .c-system-message__symbol { fill: $status-information-color; }
+  &--info .c-system-message__title { color: $status-information-color; }
+
   &__content {
     position: relative;
     flex: 1 0 0%;
@@ -110,6 +114,11 @@
     &:hover {
       opacity: 0.8;
     }
+  }
+
+  &__title {
+    font-weight: bold;
+    margin-bottom: $baseline-grid;
   }
 
   &__svgFill {
