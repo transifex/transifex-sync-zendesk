@@ -254,17 +254,7 @@ module.exports = function(T, t, api) {
         this[M('start<T>Process')]('download');
         io.opResetAll();
         this.loadSyncPage = this[M('ui<T>DownloadComplete')];
-
-        for (var i = 0; i < objects.length; i++) {
-          entry = objects[i];
-          txResourceName = entry.resource_name;
-          resource = this.store(txResource.key + txResourceName);
-          completedLocales = this.completedLanguages(resource);
-
-          for (var ii = 0; ii < completedLocales.length; ii++) { // iterate through list of locales
-            this.asyncGetTxResource(txResourceName, completedLocales[ii], entry.id);
-          }
-        }
+        this.zdUpsertBatchTranslations(objects);
       },
       'uiSync': function() {
         if (this.processing) return;
@@ -336,6 +326,7 @@ module.exports = function(T, t, api) {
       'ui<T>DownloadComplete': function() {
         var that = this;
         logger.debug('Download complete');
+        this.notifyReset();
         this[M('end<T>Process')]();
         var resource_prefix = io.getFeature('html-tx-resource') ? 'HTML-' : '';
         var total = 0, failed = 0;

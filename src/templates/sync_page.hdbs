@@ -186,7 +186,7 @@
             <path d="M8.8 5.2c0 0.442-0.358 0.8-0.8 0.8s-0.8-0.358-0.8-0.8c0-0.442 0.358-0.8 0.8-0.8s0.8 0.358 0.8 0.8z"></path>
         </svg>
         <div>
-          <div class="c-system-message__title">Uploading files to Transifex</div>
+          <div class="c-system-message__title">Syncing contents with Transifex</div>
           <div class="c-system-message__content js-notification-message"></div>
         </div>
         <a href="#" class="c-system-message__close js-notification-close">
