@@ -19,7 +19,7 @@ var resource = module.exports = {
   url: '',
   inserturl: '',
   headers: {
-    'X-Source-Zendesk': 'ZendeskApp/3.0.0'
+    'X-Source-Zendesk': 'ZendeskApp/3.0.2'
   },
   username: '',
   password: '',
@@ -191,7 +191,7 @@ var resource = module.exports = {
           locales = io.getLocales(),
           default_locale = this.store('default_locale');
       _.each(stats, function(value, key) {
-        var match = (value['completed'] === "100%");
+        var match = (value['untranslated_entities'] == 0);
         var zd_key = syncUtil.txLocaletoZd(key, locales);
         if (match && zd_key && zd_key !== default_locale) {
           arr.push(key);

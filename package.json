@@ -1,22 +1,32 @@
 {
   "name": "transifex-sync-zendesk",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "Sync translations between Zendesk Help Center and Transifex",
   "main": "dist/app.js",
-  "scripts": {
-    "test": "gulp",
-    "lint": "gulp lint",
-    "test-browser": "gulp test-browser",
-    "watch": "gulp watch",
-    "build": "gulp build",
-    "coverage": "gulp coverage"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/matthewjackowski/custard-moon.git"
+    "url": "https://github.com/transifex/transifex-sync-zendesk/"
   },
   "keywords": [],
   "author": "Matthew Jackowski <mattjjacko@gmail.com>",
+  "contributors": [
+    "Sofia Margariti <sofia@transifex.com>",
+    "Matthew Jackowski <mattjjacko@gmail.com>",
+    "Alex Psi <alexpsi256@gmail.com>",
+    "Rigas Papathanasopoulos <rigas@transifex.com>",
+    "Nikos Vasileiou <nikosv@transifex.com>",
+    "Mike Giannakopoulos <mikeg@transifex.com>",
+    "Sofia Margariti <sofiamargariti@hotmail.com>",
+    "Rigas Papathanasopoulos <rigaspapas@gmail.com>",
+    "nsiddarthreddy <nsiddarthreddy@gmail.com>",
+    "Dionysis Tsoumas <diotsoumas@transifex.com>",
+    "samuelchan22 <samuel@transifex.com>",
+    "Samuel Chan <samuel@transifex.com>",
+    "Matthew <matthew@julies-imac.attlocal.net>",
+    "Dennis Tsoumas <diotsoumas@gmail.com>",
+    "NoahTX <noah@transifex.com>",
+    "Diego Búrigo Zacarão <diegobz@transifex.com>"
+  ],
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/transifex/transifex-sync-zendesk/issues"

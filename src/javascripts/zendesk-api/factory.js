@@ -10,6 +10,7 @@ var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
     txProject = require('../transifex-api/project'),
+    txResource = require('../transifex-api/resource'),
     findIndex = require('lodash.findindex');
 
 // e.g. name=Articles, key=article, api=articles
@@ -249,25 +250,25 @@ module.exports = function(name, key, api) {
         io.popSync(factory.key + 'download' + entryid);
         io.opSet(entryid + '_' + locale, 'success');
         logger.info('Transifex Resource inserted with status:', 'OK');
-        this.checkAsyncComplete();
+        this.zdUpsertTranslationNext();
       },
       'zd<T>UpdateDone': function(data, entryid, locale) {
         io.popSync(factory.key + 'download' + entryid + locale);
         io.opSet(entryid + '_' + locale, 'success');
         logger.info('Transifex Resource updated with status: OK');
-        this.checkAsyncComplete();
+        this.zdUpsertTranslationNext();
       },
       'zd<T>InsertFail': function(jqXHR, entryid, locale) {
         io.popSync(factory.key + 'download' + entryid);
         io.opSet(entryid + '_' + locale, jqXHR.statusText);
         logger.info('Transifex Resource update failed with status:', jqXHR.statusText);
-        this.checkAsyncComplete();
+        this.zdUpsertTranslationNext();
       },
       'zd<T>UpdateFail': function(jqXHR, entryid, locale) {
         io.popSync(factory.key + 'download' + entryid + locale);
         io.opSet(entryid + '_' + locale, jqXHR.statusText);
         logger.info('Transifex Resource update failed with status:', jqXHR.statusText);
-        this.checkAsyncComplete();
+        this.zdUpsertTranslationNext();
       },
       'zd<T>SearchDone': function(data) {
         logger.info(M('Zendesk Search <T> retrieved with status:'), 'OK');
@@ -341,6 +342,38 @@ module.exports = function(name, key, api) {
           name: entry.name,
           title: entry.title || entry.name,
         };
+      },
+      zdUpsertBatchTranslations: function(resourceList) {
+        this.store('batchTranslations', resourceList);
+        this.zdUpsertTranslationNext();
+      },
+      zdUpsertTranslationNext: function() {
+        /**
+         * Take the next resource of the batchArray and try to upsert it.
+         */
+        let resources = this.store('batchTranslations');
+        if (!resources.length) {
+          // When the pull is complete, we save the translations to Zendesk.
+          this.notifyReset();
+          this.notifyInfo(`Updating Zendesk translation files. ${io.syncLength()} files left.`);
+          this.checkAsyncComplete();
+          return;
+        }
+        this.notifyReset();
+        // Get the next translation to upsert
+        let entry = resources.shift();
+        this.store('batchTranslations', resources);
+        let txResourceName = entry.resource_name;
+        let resource = this.store(txResource.key + txResourceName);
+        let completedLocales = this.completedLanguages(resource);
+
+        let msg = `Getting translation in <b>${completedLocales.length} languages</b> for resource <b>${entry.title}</b>`
+        if (resources.length > 0)
+          msg = `${msg}.</br>${resources.length} resources queued.`;
+        this.notifyInfo(msg);
+        for (var i = 0; i < completedLocales.length; i++) { // iterate through list of locales
+          this.asyncGetTxResource(txResourceName, completedLocales[i], entry.id);
+        }
       },
     },
     helpers: {
