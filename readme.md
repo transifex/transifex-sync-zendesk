@@ -76,6 +76,14 @@ Build source:
 make build
 ```
 
+Sentry support:
+
+If you want to enable Sentry (recommended) you need to define the `SENTRY_DSN` environment variable
+
+```bash
+SENTRY_DSN=https://some_hash@sentry.io/123 make build
+```
+
 Remove built files:
 ```bash
 make clean

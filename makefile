@@ -11,7 +11,7 @@ clean:
 	rm ./dist/assets/main.css
 
 build:
-	./webpack
+	./webpack --env.SENTRY_DSN=${SENTRY_DSN}
 
 run:
 	cat inputs.txt | zat server --path=./dist;
