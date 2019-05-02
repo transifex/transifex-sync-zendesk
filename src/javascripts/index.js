@@ -8,6 +8,8 @@ import TxApp from './app';
 
 let io = require('./io');
 
+// SENTRY_INTEGRATION
+
 // Create a new ZAFClient
 var client = ZAFClient.init();
 
