@@ -15,21 +15,24 @@ module.exports = {
   },
   eventHandlers: {
     uiAddBrandPage: function(event) {
+      var brand = _.find(
+        this.store('brands'),
+        item => item.subdomain == this.store('brandAdd')
+      );
       this.switchTo('create_project', {
         brands: this.buildBrandsData().brands,
         locales: this.store('brandLocales'),
         source: this.store('brandSource'),
         has_target: Boolean(this.store('brandLocales') && this.store('brandLocales').length),
-        brandName: _.find(this.store('brands'), {
-          subdomain: this.store('brandAdd')
-        }).name
+        brandName: brand ? brand.name : 'Unknown brand name'
       });
     },
     uiBrandCreateProject: function(event) {
       event.preventDefault();
-      var brand = _.find(this.store('brands'), {
-        subdomain: this.store('brandAdd')
-      });
+      var brand = _.find(
+        this.store('brands'),
+        item => item.subdomain == this.store('brandAdd')
+      );
       this.asyncCreateTxProject(
         'zd-' + this.organization + '-' + brand.id,
         $('.js-brand-project-name').val(),
