@@ -142,9 +142,13 @@ var dynamic_content = module.exports = {
         {'id': entryid}
       );
       if (_.contains(existing_locales, zd_locale)) {
-        variant = _.find(entry.variants, function(v){
-          return v.locale_id == locale_id;
-        });
+        variant = _.find(
+          entry.variants,
+          variant => variant.locale_id == locale_id
+        );
+        if (_.isUndefined(variant)) {
+          this.variantUpdateFail({statusText: 'No variant'}, entryid, zd_locale);
+        }
         this.ajax('variantUpdate', data, entryid, zd_locale, variant.id)
           .done(data => this.variantUpdateDone(data, entryid, zd_locale))
           .fail(xhr => this.variantUpdateFail(xhr, entryid, zd_locale));
