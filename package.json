@@ -1,6 +1,6 @@
 {
   "name": "transifex-sync-zendesk",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "Sync translations between Zendesk Help Center and Transifex",
   "main": "dist/app.js",
   "repository": {
