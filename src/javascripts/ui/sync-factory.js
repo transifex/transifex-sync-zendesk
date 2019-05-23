@@ -588,10 +588,11 @@ module.exports = function(T, t, api) {
         var brand_slug;
         if (event && event.preventDefault) {
           event.preventDefault();
-          brand_slug = _.find(this.store('brands'), {
+          let brand = _.find(this.store('brands'), {
             exists: false,
             has_help_center: true,
-          }).brand_url.replace('https://', '').replace('.zendesk.com', '');
+          });
+          brand_slug = brand.subdomain;
         } else {
           brand_slug = event;
         }
