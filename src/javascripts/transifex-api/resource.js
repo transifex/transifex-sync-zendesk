@@ -19,7 +19,7 @@ var resource = module.exports = {
   url: '',
   inserturl: '',
   headers: {
-    'X-Source-Zendesk': 'ZendeskApp/3.0.5'
+    'X-Source-Zendesk': 'ZendeskApp/3.0.6'
   },
   username: '',
   password: '',
