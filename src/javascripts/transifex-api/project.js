@@ -15,7 +15,7 @@ var project = module.exports = {
   key: 'tx_project',
   url: '',
   headers: {
-    'X-Source-Zendesk': 'ZendeskApp/3.0.5'
+    'X-Source-Zendesk': 'ZendeskApp/3.0.6'
   },
   username: '',
   password: '',
@@ -122,6 +122,7 @@ var project = module.exports = {
       var brands = this.store('brands');
       brands[findIndex(brands, { id: brand_id })].exists = false;
       this.store('brands', brands);
+      Sentry.captureMessage(`txProjectExistsError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       this.checkAsyncComplete();
     },
     txProjectDone: function(data, status) {
@@ -159,6 +160,7 @@ var project = module.exports = {
       else {
         io.setPageError('txProject');
       }
+      Sentry.captureMessage(`txProjectSyncError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       this.checkAsyncComplete();
     },
     txProjectCreateDone: function(data, slug, targets, brand_id) {
@@ -231,6 +233,7 @@ var project = module.exports = {
       });
       this.store('messages', messages);
 
+      Sentry.captureMessage(`txProjectCreateError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       this.checkAsyncComplete();
     },
   },

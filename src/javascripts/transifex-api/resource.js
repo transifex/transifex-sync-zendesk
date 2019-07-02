@@ -19,7 +19,7 @@ var resource = module.exports = {
   url: '',
   inserturl: '',
   headers: {
-    'X-Source-Zendesk': 'ZendeskApp/3.0.5'
+    'X-Source-Zendesk': 'ZendeskApp/3.0.6'
   },
   username: '',
   password: '',
@@ -101,6 +101,7 @@ var resource = module.exports = {
     },
     txResourceStatsError: function(jqXHR, name) {
       logger.info('Transifex Resource Stats Retrieved with status:', jqXHR.statusText);
+      Sentry.captureMessage(`txResourceStatsError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       var retries = io.getRetries('txResourceStats' + name);
       if (jqXHR.status == 401 && retries < 2) {
         this.ajax('txResourceStats', name)
@@ -133,6 +134,7 @@ var resource = module.exports = {
 
     txResourceError: function(jqXHR, resourceName, languageCode, entryid) {
       logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
+      Sentry.captureMessage(`txResourceError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       var retries = io.getRetries('txResource' + resourceName);
       if (jqXHR.status == 401 && retries < 2) {
         this.ajax('txResource', resourceName, languageCode, entryid)
@@ -169,6 +171,7 @@ var resource = module.exports = {
 
     txUpsertResourceError: function(jqXHR, resourceName) {
       logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
+      Sentry.captureMessage(`txUpsertResourceError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       io.popSync(resource.key + resourceName + 'upsert');
       this.store(resource.key + resourceName, jqXHR.status);
       io.opSet(resourceName, 'fail');
@@ -182,6 +185,7 @@ var resource = module.exports = {
 
     txRenameResourceError: function(jqXHR, resourceSlug) {
       logger.info('Transifex Resource Retrieved with status:', jqXHR.statusText);
+      Sentry.captureMessage(`txRenameResourceError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
       io.renameFail();
     },
   },
