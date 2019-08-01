@@ -122,7 +122,7 @@ var project = module.exports = {
       var brands = this.store('brands');
       brands[findIndex(brands, { id: brand_id })].exists = false;
       this.store('brands', brands);
-      Sentry.captureMessage(`txProjectExistsError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
+      Sentry.captureMessage(`txProjectExistsError: [${xhr.status} ${xhr.statusText}] ${xhr.responseText || xhr.responseJSON}`);
       this.checkAsyncComplete();
     },
     txProjectDone: function(data, status) {
@@ -221,7 +221,7 @@ var project = module.exports = {
       this.store('messages', messages);
     },
 
-    txProjectCreateError: function(slug) {
+    txProjectCreateError: function(xhr, slug) {
       io.popSync('create_project_' + slug);
       io.setPageError('txProject:login');
 
@@ -233,7 +233,7 @@ var project = module.exports = {
       });
       this.store('messages', messages);
 
-      Sentry.captureMessage(`txProjectCreateError: [${jqXHR.status} ${jqXHR.statusText}] ${jqXHR.responseText || jqXHR.responseJSON}`);
+      Sentry.captureMessage(`txProjectCreateError: [${xhr.status} ${xhr.statusText}] ${xhr.responseText || xhr.responseJSON}`);
       this.checkAsyncComplete();
     },
   },
@@ -269,7 +269,7 @@ var project = module.exports = {
           this.txProjectCreateDone(data, slug, targets, brand_id);
         })
         .fail(xhr => {
-          this.txProjectCreateError(slug);
+          this.txProjectCreateError(xhr, slug);
         });
     },
   },
