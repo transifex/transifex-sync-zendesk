@@ -157,7 +157,7 @@ module.exports = function(name, key, api) {
             var agent_index = findIndex(data.brands, {subdomain: subdomain});
             var def_index = findIndex(data.brands, {default: true});
             data.brands[agent_index].exists = true;
-            // For all indents and purposes in this app the default brand will 
+            // For all indents and purposes in this app the default brand will
             // be the brand associated with the main subdomain of the account
             if (agent_index !== def_index ) {
               data.brands[agent_index].default = true;

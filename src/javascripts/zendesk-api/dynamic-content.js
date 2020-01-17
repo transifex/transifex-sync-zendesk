@@ -103,24 +103,28 @@ var dynamic_content = module.exports = {
       existing_locales.push(locale);
       this.store(dynamic_content.key + entryid + '_locales', existing_locales);
       this.checkAsyncComplete();
+      this.zdUpsertTranslationNext();
     },
     variantInsertFail: function(jqXHR, entryid, locale) {
       logger.info('DC variant inserted with status:', jqXHR.statusText);
       io.popSync(dynamic_content.key + entryid + 'insert' + locale);
       io.opSet(entryid + '_' + locale, jqXHR.statusText);
       this.checkAsyncComplete();
+      this.zdUpsertTranslationNext();
     },
     variantUpdateDone: function(data, entryid, locale) {
       logger.info('DC variant updated with status:', 'OK');
       io.popSync(dynamic_content.key + entryid + 'update' + locale);
       io.opSet(entryid + '_' + locale, 'success');
       this.checkAsyncComplete();
+      this.zdUpsertTranslationNext();
     },
     variantUpdateFail: function(jqXHR, entryid, locale) {
       logger.info('DC variant inserted with status:', jqXHR.statusText);
       io.popSync(dynamic_content.key + entryid + 'update' + locale);
       io.opSet(entryid + '_' + locale, jqXHR.statusText);
       this.checkAsyncComplete();
+      this.zdUpsertTranslationNext();
     },
   },
   actionHandlers: {

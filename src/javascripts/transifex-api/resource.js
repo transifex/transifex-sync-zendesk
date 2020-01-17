@@ -207,7 +207,7 @@ var resource = module.exports = {
     txUpsertBatchResources: function(getTForTranslationFunction, category, batchArray) {
       /**
        * Upsert multiple resources
-       * 
+       *
        * @param {function} getTForTranslationFunction Reference to the get<T>ForTranslation function
        * @param {string} category Possible values: 'Resources' | 'Dynamic'
        * @param {list} batchArray An array of resources to be upserted
@@ -218,7 +218,7 @@ var resource = module.exports = {
       /*
        * Start upserting resources one at a time. The txUpsertResourceNext function
        * will upsert the first resource, and will call itshef again (itterating to the
-       * next one) once its finished (we use ajax's 'done' event to know when a resource 
+       * next one) once its finished (we use ajax's 'done' event to know when a resource
        * is finished).
        */
       this.txUpsertResourceNext();
@@ -241,7 +241,7 @@ var resource = module.exports = {
       // Get the next resource to upsert
       let entry = resource.batchArray.shift();
       let txResourceName = entry.resource_name;
-      // The getArticlesForTranslation() can be found in factory.js as 
+      // The getArticlesForTranslation() can be found in factory.js as
       // get<T>ForTranslation(). In our case, <T> is Articles.
       let resource_request = common.txRequestFormat(
         resource.getTForTranslationFunction(entry), resource.category
