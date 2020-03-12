@@ -71,7 +71,7 @@ module.exports = function(name, key, api) {
           page, sortby, sortdirection, numperpage);
 
         return {
-            url: this.base_url + 'articles/search.json?query=' + search_query +
+            url: this.base_url + 'articles/search.json?locale=*&query=' + search_query +
             '&' + parameters['numberperpageString'] + parameters['pageString'] +
             parameters['sortbyString'] + parameters['sortdirectionString'],
             type: 'GET',
