@@ -78,5 +78,47 @@ module.exports = {
     return {
       "translation": o
     };
+  },
+
+  zdRetriableOperation: function(promiseFunction, maxRetries, doneCallback,
+    failCallback) {
+    const step = 1000; // ms
+    const maxDelay = 10 * step; // ms
+    const cappedBackOffDelay = 3 * step; // ms
+    const backoffBase = 0.2;
+
+    let attempCount = 0;
+    const pause = (duration) => new Promise(res => setTimeout(res, duration));
+
+    const backoff = (retries, fn) =>
+      fn()
+      .done(data => doneCallback(data))
+      .fail(xhr => {
+        if (retries > 1) {
+          attempCount++;
+          
+          let suggestedDelay = Math.min(cappedBackOffDelay,
+            backoffBase * Math.pow(2, attempCount) * step);
+
+          const min = 0;
+          const max = Math.floor(suggestedDelay);
+          const jitter = Math.floor(Math.random() * (max - min + 1)) + min;
+          suggestedDelay = Math.floor((jitter + suggestedDelay) / 2);
+
+          if (suggestedDelay >= maxDelay) {
+            failCallback(xhr, { errorMessage: 'failed_timeout' });
+          } else {
+            pause(suggestedDelay).then(() => {
+              backoff(retries - 1, fn);
+            });
+          }
+        } else {
+          failCallback(xhr, { errorMessage: 'failed_all_retries' });
+        }
+      });
+    
+    backoff(maxRetries, () => {
+      return promiseFunction;
+    });
   }
 };
