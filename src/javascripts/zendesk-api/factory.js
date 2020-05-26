@@ -9,6 +9,7 @@ import $ from 'jquery';
 var common = require('../common'),
     io = require('../io'),
     logger = require('../logger'),
+    syncUtil = require('../syncUtil'),
     txProject = require('../transifex-api/project'),
     txResource = require('../transifex-api/resource'),
     findIndex = require('lodash.findindex');
@@ -294,6 +295,7 @@ module.exports = function(name, key, api) {
           .fail(xhr => this.zdGetBrandLocalesError(xhr, brand_url));
       },
       'zdUpsert<T>Translation': function(resource_data, entryid, zdLocale) {
+        const that = this;
         logger.info(M('Upsert <T> with Id:') + entryid + 'and locale:' + zdLocale);
         var translationData = common.translationObjectFormat(resource_data, zdLocale, key);
 
@@ -301,14 +303,19 @@ module.exports = function(name, key, api) {
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
         });
+        
         if (checkLocaleExists) {
-          this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale)
-            .done(data => this[M("zd<T>UpdateDone")](data, entryid, zdLocale))
-            .fail(xhr => this[M("zd<T>UpdateFail")](xhr, entryid, zdLocale));
+          syncUtil.zdRetriableOperation(this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale), 5,
+            (data) => that[M("zd<T>UpdateDone")](data, entryid, zdLocale),
+            (xhr, error) => {
+              that[M("zd<T>UpdateFail")](xhr, entryid, zdLocale);
+            });        
         } else {
-          this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale)
-            .done(data => this[M("zd<T>InsertDone")](data, entryid, zdLocale))
-            .fail(xhr => this[M("zd<T>InsertFail")](xhr, entryid, zdLocale));
+          syncUtil.zdRetriableOperation(this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale), 5,
+            (data) => that[M("zd<T>InsertDone")](data, entryid, zdLocale),
+            (xhr, error) => {
+              that[M("zd<T>InsertFail")](xhr, entryid, zdLocale);
+            });            
         }
       },
       'asyncGetZd<T>Translations': function(id) {
