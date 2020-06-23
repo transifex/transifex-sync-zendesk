@@ -83,15 +83,15 @@ module.exports = {
   zdRetriableOperation: function(promiseFunction, maxRetries, doneCallback,
     failCallback) {
     const step = 1000; // ms
-    const maxDelay = 10 * step; // ms
-    const cappedBackOffDelay = 3 * step; // ms
+    const maxDelay = 30 * step; // ms
+    const cappedBackOffDelay = 9 * step; // ms
     const backoffBase = 0.2;
 
     let attempCount = 0;
     const pause = (duration) => new Promise(res => setTimeout(res, duration));
 
-    const backoff = (retries, fn) =>
-      fn()
+    const backoff = (retries) =>
+      promiseFunction
       .done(data => doneCallback(data))
       .fail(xhr => {
         if (retries > 1) {
@@ -108,8 +108,9 @@ module.exports = {
           if (suggestedDelay >= maxDelay) {
             failCallback(xhr, { errorMessage: 'failed_timeout' });
           } else {
+            failCallback(xhr, { errorMessage: 'failed_retry ' + attempCount });
             pause(suggestedDelay).then(() => {
-              backoff(retries - 1, fn);
+              backoff(retries - 1);
             });
           }
         } else {
@@ -117,8 +118,6 @@ module.exports = {
         }
       });
     
-    backoff(maxRetries, () => {
-      return promiseFunction;
-    });
+    backoff(maxRetries);
   }
 };
