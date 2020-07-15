@@ -108,7 +108,6 @@ module.exports = {
           if (suggestedDelay >= maxDelay) {
             failCallback(xhr, { errorMessage: 'failed_timeout' });
           } else {
-            failCallback(xhr, { errorMessage: 'failed_retry ' + attempCount });
             pause(suggestedDelay).then(() => {
               backoff(retries - 1);
             });
