@@ -302,16 +302,16 @@ module.exports = function(name, key, api) {
         var existing_locales = this.store(factory.key + entryid + '_locales');
         var checkLocaleExists = _.any(existing_locales, function(l){
           return l == zdLocale;
-        });
+        });        
         
         if (checkLocaleExists) {
-          syncUtil.zdRetriableOperation(this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale), 5,
+          syncUtil.zdRetriableOperation(this.ajax(M('zd<T>Update'), translationData, entryid, zdLocale), 10,
             (data) => that[M("zd<T>UpdateDone")](data, entryid, zdLocale),
             (xhr, error) => {
               that[M("zd<T>UpdateFail")](xhr, entryid, zdLocale);
             });        
         } else {
-          syncUtil.zdRetriableOperation(this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale), 5,
+          syncUtil.zdRetriableOperation(this.ajax(M('zd<T>Insert'), translationData, entryid, zdLocale), 10,
             (data) => that[M("zd<T>InsertDone")](data, entryid, zdLocale),
             (xhr, error) => {
               that[M("zd<T>InsertFail")](xhr, entryid, zdLocale);
