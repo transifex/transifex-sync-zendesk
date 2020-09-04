@@ -38,7 +38,7 @@ var config = module.exports = {
     // Merges the extra locales into the generic locales from Zendesk
     activatedExtraLocalesDone: function(data) {
       logger.info('Activated Extra Locales Retrieved with status:', 'OK');
-      io.appendLocales(data.locales);
+      io.extendLocales(data.locales);
       io.popSync(config.key + 'activated');
       this.checkAsyncComplete();
     },
@@ -77,6 +77,8 @@ var config = module.exports = {
       this.ajax('activatedLocales')
         .done(data => {
           this.activatedLocalesDone(data);
+          // Retrieve the activated locales along with the extra locales
+          // and extend the locales with the new ones
           this.ajax('activatedExtraLocales')
           .done(data => {
             this.activatedExtraLocalesDone(data);

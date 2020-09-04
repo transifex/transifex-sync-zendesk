@@ -79,7 +79,7 @@ module.exports = {
       return l;
     });
   },
-  appendLocales: locales => {
+  extendLocales: locales => {
     var extraLocales = _.map(locales, l => {
       l.locale = l.locale.toLowerCase();
       return l;
