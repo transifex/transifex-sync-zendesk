@@ -79,6 +79,13 @@ module.exports = {
       return l;
     });
   },
+  extendLocales: locales => {
+    var extraLocales = _.map(locales, l => {
+      l.locale = l.locale.toLowerCase();
+      return l;
+    });
+    ZD_LOCALES = _.uniq(_.union(ZD_LOCALES, extraLocales), x => x.locale);
+  },
   getLocaleFromId: id => _.find(ZD_LOCALES, l => l['id'] === id)['locale'],
   getIdFromLocale: locale => _.find(ZD_LOCALES, l => l['locale'].toLowerCase() == locale)['id'],
   getResourceArray: () => RESOURCE_ARRAY,
