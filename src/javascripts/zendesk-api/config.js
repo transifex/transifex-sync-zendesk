@@ -7,6 +7,16 @@ var config = module.exports = {
   base_url: '/api/v2/',
   key: 'zd_config',
   requests: {
+    // Retrieves all the activated locales plus the extra custom locales
+    // added by customer
+    activatedExtraLocales: function() {
+      logger.debug('Retrieving activated locales for account');
+      return {
+        url: config.base_url + 'locales.json',
+        type: 'GET',
+        dataType: 'json',
+      };
+    },
     activatedLocales: function() {
       logger.debug('Retrieving activated locales for account');
       return {
@@ -25,6 +35,13 @@ var config = module.exports = {
     },
   },
   eventHandlers: {
+    // Merges the extra locales into the generic locales from Zendesk
+    activatedExtraLocalesDone: function(data) {
+      logger.info('Activated Extra Locales Retrieved with status:', 'OK');
+      io.extendLocales(data.locales);
+      io.popSync(config.key + 'activated');
+      this.checkAsyncComplete();
+    },
     activatedLocalesDone: function(data) {
       logger.info('Activated Locales Retrieved with status:', 'OK');
       io.setLocales(data.locales);
@@ -60,6 +77,15 @@ var config = module.exports = {
       this.ajax('activatedLocales')
         .done(data => {
           this.activatedLocalesDone(data);
+          // Retrieve the activated locales along with the extra locales
+          // and extend the locales with the new ones
+          this.ajax('activatedExtraLocales')
+          .done(data => {
+            this.activatedExtraLocalesDone(data);
+          })
+          .fail(xhr => {
+            this.activatedLocalesFail(xhr);
+          });
         })
         .fail(xhr => {
           this.activatedLocalesFail(xhr);

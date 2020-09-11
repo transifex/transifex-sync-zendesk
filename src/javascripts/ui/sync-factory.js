@@ -333,14 +333,13 @@ module.exports = function(T, t, api) {
 
         _.each(io.opGetAll(), function(status, opName) {
           total++;
+          var resourceName = m('<t>') + '-' + opName.split('_')[0];
+          var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
+          var el = $(m('#locales-' + resource_prefix + resourceName)).find('[data-locale="' + resourceLoc + '"]');
           if (status !== 'success') {
             failed++;
-            var er = $(m('.js-<t>[data-resource="' + opName + '"] [data-locale]'));
-            er.removeClass('u-color-secondary').addClass('js-locale-problem');
+            el.removeClass('u-color-secondary').addClass('o-status__text');
           } else {
-            var resourceName = m('<t>') + '-' + opName.split('_')[0];
-            var resourceLoc  = opName.split('_')[1].toLowerCase().replace('-','_');
-            var el = $(m('.js-<t>[data-resource="' + resourceName + '"] [data-locale="' + resourceLoc + '"]'));
             el.addClass('js-locale-ok');
           }
         }, this);
@@ -349,14 +348,8 @@ module.exports = function(T, t, api) {
         if (failed === 0) {
           this.notifySuccess('Translations were successfully updated in ' + total + ' languages for all selected ' + content_type + '.');
         } else if (failed == total) {
-          $('.js-locale-problem')
-            .removeClass('js-locale-problem')
-            .addClass('u-color-systemError');
           this.notifyError('Translations could not be updated for any of the selected ' + content_type + '.');
         } else {
-          $('.js-locale-problem')
-            .removeClass('js-locale-problem')
-            .addClass('u-color-systemWarning');
           if (failed == 1) {
             this.notifyWarning('Translations were successfully updated for ' + (total - failed) + ' languages of the selected ' + content_type + ', 1 language could not be updated.');
           } else {
@@ -372,13 +365,13 @@ module.exports = function(T, t, api) {
             el.addClass('is-success');
           }
 
-          if (el.find('[data-locale].u-color-systemError').length ||
-              el.find('[data-locale].u-color-systemWarning').length) {
+          if (el.find('[data-locale].o-status__text').length) {
             el.addClass('o-status').removeClass('o-interactive-list__item');
-            if (failed == total)
+            if (failed == total) {
               el.addClass('is-error');
-            else
+            } else {
               el.addClass('is-warning');
+            }
           }
         });
 
@@ -634,7 +627,7 @@ module.exports = function(T, t, api) {
             html('<span class="o-spinner o-button__spinner"></span>');
         }
         //Clean up previous state
-        $('[data-locale]').removeClass('u-color-systemError u-color-systemWarning').addClass('u-color-secondary');
+        $('[data-locale]').removeClass('o-status__text').addClass('u-color-secondary');
         $(m('.js-<t>[data-resource]')).removeClass('o-status is-error is-warning is-success').addClass('o-interactive-list__item');
       },
 
