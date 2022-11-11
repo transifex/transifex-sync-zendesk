@@ -53,7 +53,7 @@
     "jquery": "^3.4.1",
     "jsdom": "^9.4.1",
     "json-loader": "^0.5.7",
-    "loader-utils": "^1.1.0",
+    "loader-utils": "^1.4.1",
     "lodash.findindex": "^4.6.0",
     "mocha": "^2.3.4",
     "node-sass": "^4.12.0",
